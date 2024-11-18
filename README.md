@@ -43,7 +43,6 @@ make
 
 ```bash
 ```
-:relaxed:
 
 ## Example of the project 📸
 
