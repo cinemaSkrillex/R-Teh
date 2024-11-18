@@ -1,2 +1,7 @@
 .vscode/settings.json
 .vscode/c_cpp_properties.json
+bootstrap/main.cpp
+bootstrap/a.out
+.gitignore
+.gitignore
+*.o
