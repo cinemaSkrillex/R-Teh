@@ -9,12 +9,19 @@
 
 #include <cstddef>
 
+class Registry;
+class ManageEntities;
+
 class Entity {
   public:
-    explicit Entity(std::size_t id) : _id{id} {};
-
     operator std::size_t() const { return _id; }
 
   private:
+    // constructor is private to prevent other classes from creating entities
+    explicit Entity(std::size_t id) : _id{id} {};
     std::size_t _id;
+
+    // Allow the registry to create entities
+    friend class Registry;
+    friend class ManageEntities;
 };
