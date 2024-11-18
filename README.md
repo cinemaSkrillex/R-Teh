@@ -44,6 +44,14 @@ make
 ```bash
 ```
 
+## Commit tag
+
+- [ADD] : Add a new feature :sparkles:
+- [FIX] : Fix a bug :bug:
+- [DEL] : Remove a feature :x:
+- [DOC] : Add documentation :book:
+- [TST] : Add tests :microscope:
+
 ## Example of the project 📸
 
 ## Have fun! 🎉
