@@ -6,7 +6,7 @@ SRC = main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
-TARGET = main
+TARGET = a.out
 
 all: $(TARGET)
 

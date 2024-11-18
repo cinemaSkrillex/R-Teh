@@ -66,6 +66,9 @@ class Registry {
 
     // Remove an entity from all component arrays
     void remove_entity(Entity const& entity) {
+        if (!_entity_manager.is_valid(entity)) {
+            throw std::invalid_argument("remove_entity: Invalid entity");
+        }
         for (auto& erase_function : _erase_functions) {
             erase_function(*this, entity);
         }
@@ -73,9 +76,17 @@ class Registry {
 
     Entity spawn_entity() { return _entity_manager.spawn_entity(); }
 
-    Entity entity_from_index(std::size_t idx) { return _entity_manager.entity_from_index(idx); }
+    Entity entity_from_index(std::size_t idx) {
+        if (idx >= _entity_manager.size()) {
+            throw std::out_of_range("entity_from_index: Entity index out of range");
+        }
+        return _entity_manager.entity_from_index(idx);
+    }
 
     void kill_entity(Entity const& e) {
+        if (!_entity_manager.is_valid(e)) {
+            throw std::invalid_argument("kill_entity: Invalid entity");
+        }
         _entity_manager.kill_entity(e);
         remove_entity(e);
     }
@@ -85,6 +96,12 @@ class Registry {
         auto& components = get_components<Component>();
         components[to]   = std::forward<Component>(c);
         return components[to];
+    }
+
+    // add more than one component at once
+    template <typename... Components>
+    void add_components(Entity const& to, Components&&... components) {
+        (add_component(to, std::forward<Components>(components)), ...);
     }
 
     template <typename Component, typename... Params>

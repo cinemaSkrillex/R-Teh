@@ -5,3 +5,4 @@ bootstrap/a.out
 .gitignore
 .gitignore
 *.o
+a.out
