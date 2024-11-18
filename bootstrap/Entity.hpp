@@ -10,11 +10,11 @@
 #include <cstddef>
 
 class Entity {
-public:
+  public:
     explicit Entity(std::size_t id) : _id{id} {};
 
     operator std::size_t() const { return _id; }
 
-private:
+  private:
     std::size_t _id;
 };

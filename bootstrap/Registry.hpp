@@ -15,10 +15,9 @@
 #include "SparseArray.hpp"
 
 class Registry {
-public:
+  public:
     // Register a component type by adding a SparseArray to the registry
-    template <class Component>
-    SparseArray<Component>& register_component() {
+    template <class Component> SparseArray<Component>& register_component() {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) == _components_arrays.end()) {
@@ -31,8 +30,7 @@ public:
     }
 
     // Get the component array for a given type (non-const version)
-    template <class Component>
-    SparseArray<Component>& get_components() {
+    template <class Component> SparseArray<Component>& get_components() {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) != _components_arrays.end()) {
@@ -43,8 +41,7 @@ public:
     }
 
     // Get the component array for a given type (const version)
-    template <class Component>
-    SparseArray<Component> const& get_components() const {
+    template <class Component> SparseArray<Component> const& get_components() const {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) != _components_arrays.end()) {
@@ -54,6 +51,6 @@ public:
         }
     }
 
-private:
+  private:
     std::unordered_map<std::type_index, std::any> _components_arrays;
 };

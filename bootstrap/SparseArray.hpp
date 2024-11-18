@@ -15,23 +15,23 @@
 template <typename Component>
 
 class SparseArray {
-public :
-    using value_type = std::optional<Component>; // Optional component type
-    using reference_type = value_type&;
+  public:
+    using value_type           = std::optional<Component>; // Optional component type
+    using reference_type       = value_type&;
     using const_reference_type = const value_type&;
-    using container_t = std::vector<value_type>; // Optionally add your allocator template here.
-    using size_type = typename container_t::size_type;
-    using iterator = typename container_t::iterator;
+    using container_t    = std::vector<value_type>; // Optionally add your allocator template here.
+    using size_type      = typename container_t::size_type;
+    using iterator       = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
 
     // Constructors
-    SparseArray() = default;
-    SparseArray(const SparseArray& other) = default;
+    SparseArray()                             = default;
+    SparseArray(const SparseArray& other)     = default;
     SparseArray(SparseArray&& other) noexcept = default;
-    ~SparseArray() = default;
+    ~SparseArray()                            = default;
 
     // Assignment operators
-    SparseArray& operator=(const SparseArray& other) = default;
+    SparseArray& operator=(const SparseArray& other)     = default;
     SparseArray& operator=(SparseArray&& other) noexcept = default;
 
     // Element access
@@ -44,11 +44,11 @@ public :
     const_reference_type operator[](size_t idx) const { return _data[idx]; }
 
     // Iterators
-    iterator begin() { return _data.begin(); }
+    iterator       begin() { return _data.begin(); }
     const_iterator begin() const { return _data.begin(); }
     const_iterator cbegin() const { return _data.cbegin(); }
 
-    iterator end() { return _data.end(); }
+    iterator       end() { return _data.end(); }
     const_iterator end() const { return _data.end(); }
     const_iterator cend() const { return _data.cend(); }
 
@@ -72,24 +72,20 @@ public :
     }
 
     // Emplace at a specific index (build component in-place)
-    template <class... Params>
-    reference_type emplace_at(size_type pos, Params&&... params) {
+    template <class... Params> reference_type emplace_at(size_type pos, Params&&... params) {
         if (pos >= _data.size()) {
             _data.resize(pos + 1);
         }
 
-        using allocator_type = typename container_t::allocator_type;
+        using allocator_type     = typename container_t::allocator_type;
         allocator_type allocator = _data.get_allocator();
 
         if (_data[pos].has_value()) {
             std::allocator_traits<allocator_type>::destroy(allocator, std::addressof(_data[pos]));
         }
 
-        std::allocator_traits<allocator_type>::construct(
-            allocator,
-            std::addressof(_data[pos]),
-            std::forward<Params>(params)...
-        );
+        std::allocator_traits<allocator_type>::construct(allocator, std::addressof(_data[pos]),
+                                                         std::forward<Params>(params)...);
 
         return _data[pos];
     }
@@ -111,6 +107,6 @@ public :
         return static_cast<size_type>(-1); // Return an invalid index if not found
     }
 
-private:
+  private:
     container_t _data;
 };
