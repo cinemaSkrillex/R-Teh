@@ -44,3 +44,9 @@ The draw system is responsible for drawing the entities with a Position and Draw
 You can see that the update method takes a Registry object as a parameter. The Registry object is a class that manages the entities and their components.
 
 It then gets the Position and Drawable components from the registry and iterates over them to draw the entities.
+
+## More documentations about systems
+
+- [control_system.md](control_system.md)
+- [draw_system.md](draw_system.md)
+- [movement_system.md](movement_system.md)
