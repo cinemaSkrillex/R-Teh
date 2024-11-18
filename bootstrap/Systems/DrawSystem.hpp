@@ -11,9 +11,9 @@
 #include "Position.hpp"
 #include "Drawable.hpp"
 
-class RenderSystem {
+class DrawSystem {
   public:
-    RenderSystem(sf::RenderWindow& window) : _window(window) {}
+    DrawSystem(sf::RenderWindow& window) : _window(window) {}
 
     void update(Registry& registry) {
         auto& positions = registry.get_components<Position>();
