@@ -18,9 +18,9 @@ class ControlSystem {
   public:
     ControlSystem() {
         // Default key bindings (can be changed with bindKey)
-        keyBindings[sf::Keyboard::W] = Action::MoveUp;
+        keyBindings[sf::Keyboard::Z] = Action::MoveUp;
         keyBindings[sf::Keyboard::S] = Action::MoveDown;
-        keyBindings[sf::Keyboard::A] = Action::MoveLeft;
+        keyBindings[sf::Keyboard::Q] = Action::MoveLeft;
         keyBindings[sf::Keyboard::D] = Action::MoveRight;
 
         // Initialize action handlers
