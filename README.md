@@ -27,8 +27,22 @@ This project is a multiplayer game engine, running games like R-TYPE.
 - CMake
 - Windows vm
 
-## How to build the project 🔨
+## Install the dependencies
 
+Our project uses the vcpkg package manager to manage the dependencies.
+
+On Windows:
+```bash
+vcpkg install --triplet x64-windows
+```
+
+On Linux:
+```bash
+vcpkg install --triplet x64-linux
+```
+
+## How to build the project 🔨
+ 
 ```bash
 cd build
 make

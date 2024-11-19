@@ -6,3 +6,4 @@ bootstrap/a.out
 .gitignore
 *.o
 a.out
+vcpkg_installed/
