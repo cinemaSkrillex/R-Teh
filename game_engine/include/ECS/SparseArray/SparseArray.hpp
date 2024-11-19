@@ -56,56 +56,17 @@ class SparseArray {
     size_type size() const { return _data.size(); }
 
     // Insert at a specific index
-    reference_type insert_at(size_type pos, const Component& component) {
-        if (pos >= _data.size()) {
-            _data.resize(pos + 1);
-        }
-        _data[pos] = component;
-        return _data[pos];
-    }
-    reference_type insert_at(size_type pos, Component&& component) {
-        if (pos >= _data.size()) {
-            _data.resize(pos + 1);
-        }
-        _data[pos] = std::move(component);
-        return _data[pos];
-    }
+    reference_type insert_at(size_type pos, const Component& component);
+    reference_type insert_at(size_type pos, Component&& component);
 
     // Emplace at a specific index (build component in-place)
-    template <class... Params> reference_type emplace_at(size_type pos, Params&&... params) {
-        if (pos >= _data.size()) {
-            _data.resize(pos + 1);
-        }
-
-        using allocator_type     = typename container_t::allocator_type;
-        allocator_type allocator = _data.get_allocator();
-
-        if (_data[pos].has_value()) {
-            std::allocator_traits<allocator_type>::destroy(allocator, std::addressof(_data[pos]));
-        }
-
-        std::allocator_traits<allocator_type>::construct(allocator, std::addressof(_data[pos]),
-                                                         std::forward<Params>(params)...);
-
-        return _data[pos];
-    }
+    template <class... Params> reference_type emplace_at(size_type pos, Params&&... params);
 
     // Erase at a specific index
-    void erase(size_type pos) {
-        if (pos < _data.size()) {
-            _data[pos].reset();
-        }
-    }
+    void erase(size_type pos);
 
     // Get the index of a component
-    size_type get_index(const value_type& component) const {
-        for (size_type i = 0; i < _data.size(); ++i) {
-            if (std::addressof(_data[i]) == std::addressof(component)) {
-                return i;
-            }
-        }
-        return static_cast<size_type>(-1); // Return an invalid index if not found
-    }
+    size_type get_index(const value_type& component) const;
 
   private:
     container_t _data;

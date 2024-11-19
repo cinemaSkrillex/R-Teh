@@ -65,32 +65,10 @@ class Registry {
     // Entity management methods
 
     // Remove an entity from all component arrays
-    void remove_entity(Entity const& entity) {
-        if (!_entity_manager.is_valid(entity)) {
-            throw std::invalid_argument("remove_entity: Invalid entity");
-        }
-        for (auto& erase_function : _erase_functions) {
-            erase_function(*this, entity);
-        }
-    }
-
-    Entity spawn_entity() { return _entity_manager.spawn_entity(); }
-
-    Entity entity_from_index(std::size_t idx) {
-        if (idx >= _entity_manager.size()) {
-            throw std::out_of_range("entity_from_index: Entity index out of range");
-        }
-        return _entity_manager.entity_from_index(idx);
-    }
-
-    void kill_entity(Entity const& e) {
-        if (!_entity_manager.is_valid(e)) {
-            throw std::invalid_argument("kill_entity: Invalid entity");
-        }
-        _entity_manager.kill_entity(e);
-        remove_entity(e);
-    }
-
+    void   remove_entity(Entity const& entity);
+    Entity spawn_entity();
+    Entity entity_from_index(std::size_t idx);
+    void   kill_entity(Entity const& e);
     template <typename Component>
     typename SparseArray<Component>::reference_type add_component(Entity const& to, Component&& c) {
         auto& components = get_components<Component>();
@@ -129,11 +107,7 @@ class Registry {
             [this, &f](float deltaTime) { f(*this, get_components<Components>()...); });
     }
     // Run all systems
-    void run_systems(float deltaTime) {
-        for (auto& system : _systems) {
-            system(deltaTime);
-        }
-    }
+    void run_systems(float deltaTime);
 
   private:
     std::unordered_map<std::type_index, std::any>              _components_arrays;
