@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -I. -I./ -I./Systems -std=c++17 $(shell find include -type d -exec echo -I{} \;)
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
-SRC = main.cpp
+SRC = main.cpp $(shell find src -name '*.cpp')
 
 OBJ = $(SRC:.cpp=.o)
 
