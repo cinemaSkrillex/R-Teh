@@ -11,8 +11,7 @@
 #include "Velocity.hpp"
 #include "Controllable.hpp"
 #include "Acceleration.hpp"
-
-enum class Action { MoveUp, MoveDown, MoveLeft, MoveRight };
+#include "ActionEnum.hpp"
 
 class ControlSystem {
   public:

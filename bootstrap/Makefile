@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -I. -I./Components -I./Systems -std=c++17
+CXXFLAGS = -I. -I./ -I./Systems -std=c++17 $(shell find include -type d -exec echo -I{} \;)
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 SRC = main.cpp
