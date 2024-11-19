@@ -45,12 +45,15 @@ vcpkg install --triplet x64-linux
  
 ```bash
 cd build
-make
+cmake ..
+cmake --build .
 ```
 
 ## How to run the project 🚀
 
+Launch the server:
 ```bash
+./build/network/rtype_server [PORT]
 ```
 
 ## How to run the tests 🧪
