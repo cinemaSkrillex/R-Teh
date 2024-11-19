@@ -59,7 +59,6 @@ template <class... Containers> class zipper_iterator {
     size_t                    _idx;
     static constexpr std ::index_sequence_for<Containers...> _seq{};
 };
-}
 
 template <class... Containers> class zipper {
   public:
