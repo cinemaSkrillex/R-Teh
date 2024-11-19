@@ -117,8 +117,27 @@ class Registry {
         components[from].reset();
     }
 
+    // Add a system to the registry
+    template <class... Components, typename Function> void add_system(Function&& f) {
+        _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
+            f(*this, deltaTime, get_components<Components>()...);
+        });
+    }
+
+    template <class... Components, typename Function> void add_system(Function const& f) {
+        _systems.push_back(
+            [this, &f](float deltaTime) { f(*this, get_components<Components>()...); });
+    }
+    // Run all systems
+    void run_systems(float deltaTime) {
+        for (auto& system : _systems) {
+            system(deltaTime);
+        }
+    }
+
   private:
     std::unordered_map<std::type_index, std::any>              _components_arrays;
+    std::vector<std::function<void(float)>>                    _systems;
     std::vector<std::function<void(Registry&, Entity const&)>> _erase_functions;
     ManageEntities                                             _entity_manager;
 };

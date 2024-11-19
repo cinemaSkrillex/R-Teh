@@ -15,10 +15,8 @@ class DrawSystem {
   public:
     DrawSystem(sf::RenderWindow& window) : _window(window) {}
 
-    void update(Registry& registry) {
-        auto& positions = registry.get_components<Position>();
-        auto& drawables = registry.get_components<Drawable>();
-
+    void update(Registry& registry, SparseArray<Position>& positions,
+                SparseArray<Drawable>& drawables, float deltaTime) {
         for (std::size_t i = 0; i < drawables.size(); ++i) {
             if (drawables[i] && positions[i]) {
                 sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));

@@ -12,9 +12,8 @@
 
 class MovementSystem {
   public:
-    void update(Registry& registry, float deltaTime) {
-        auto& positions  = registry.get_components<Position>();
-        auto& velocities = registry.get_components<Velocity>();
+    void update(Registry& registry, SparseArray<Position>& positions,
+                SparseArray<Velocity>& velocities, float deltaTime) {
 
         for (std::size_t i = 0; i < positions.size(); ++i) {
             if (positions[i] && velocities[i]) {

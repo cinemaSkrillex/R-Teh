@@ -38,11 +38,9 @@ class ControlSystem {
         };
     }
 
-    void update(Registry& registry) {
-        auto& velocities    = registry.get_components<Velocity>();
-        auto& controllables = registry.get_components<Controllable>();
-        auto& accelerations = registry.get_components<Acceleration>();
-
+    void update(Registry& registry, SparseArray<Velocity>& velocities,
+                SparseArray<Controllable>& controllables, SparseArray<Acceleration>& accelerations,
+                float deltaTime) {
         for (std::size_t i = 0; i < controllables.size(); ++i) {
             if (controllables[i] && velocities[i] && accelerations[i]) {
                 bool keyPressed = false;
