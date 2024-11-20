@@ -22,10 +22,22 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 ## Prerequisites 📋
 
-- Docker
-- vcpkg
-- CMake
-- Windows vm
+On Ubuntu:
+```bash
+sudo apt install cmake
+sudo apt install autoconf
+sudo apt install automake
+sudo apt install libtool
+```
+
+On Windows:
+```bash
+For simpler use install chocolatey
+choco install cmake
+choco install autoconf
+choco install automake
+choco install libtool
+```
 
 ## Install the dependencies
 
