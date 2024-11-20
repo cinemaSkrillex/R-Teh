@@ -14,13 +14,23 @@ Sprite::~Sprite() {}
 
 void Sprite::loadImage(sf::Image image) {
     _texture.loadFromImage(image);
-    _texture.setSmooth(true);
     _sprite.setTexture(_texture);
 }
 
 void Sprite::draw(sf::RenderWindow& window) { window.draw(_sprite); }
 
 void Sprite::disappear() { _sprite.setColor(sf::Color::Transparent); }
+
+void Sprite::setOpacity(float opacity) {
+    if (opacity > 255) {
+        opacity = 255;
+    } else if (opacity < 0) {
+        opacity = 0;
+    }
+    sf::Color color = _sprite.getColor();
+    color.a         = opacity;
+    _sprite.setColor(color);
+}
 
 void Sprite::setPosition(float x, float y) { _sprite.setPosition(x, y); }
 
@@ -76,14 +86,10 @@ void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
 }
 
 void Sprite::scaleFromSize(const float width, const float height) {
-    // Get the original size of the texture
     sf::Vector2u textureSize = _texture.getSize();
 
-    // Calculate scale factors to stretch the sprite to the fixed size
     float scaleX = width / static_cast<float>(textureSize.x);
     float scaleY = height / static_cast<float>(textureSize.y);
-
-    // Apply the scale to the sprite
     _sprite.setScale(scaleX, scaleY);
 }
 } // namespace RealEngine
