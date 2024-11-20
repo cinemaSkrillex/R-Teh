@@ -1,4 +1,4 @@
-#include "View.hpp"
+#include "../include/Core/View.hpp"
 
 namespace RealEngine {
 View::View(const sf::Vector2f center, const sf::Vector2f size) {

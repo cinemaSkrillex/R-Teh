@@ -7,11 +7,11 @@
 
 #pragma once
 #include <SFML/Window.hpp>
-#include "Registry.hpp"
-#include "Velocity.hpp"
-#include "Controllable.hpp"
-#include "Acceleration.hpp"
-#include "ActionEnum.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
+#include "../include/ECS/Components/Velocity.hpp"
+#include "../include/ECS/Components/Controllable.hpp"
+#include "../include/ECS/Components/Acceleration.hpp"
+#include "../include/ECS/Enum/ActionEnum.hpp"
 
 class ControlSystem {
   public:

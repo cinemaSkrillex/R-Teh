@@ -5,7 +5,7 @@
 ** DrawSystem.cpp
 */
 
-#include "DrawSystem.hpp"
+#include "../include/ECS/Systems/DrawSystem.hpp"
 
 DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 

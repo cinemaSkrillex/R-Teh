@@ -5,7 +5,7 @@
 ** Registry.cpp
 */
 
-#include "Registry.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
 
 void Registry::remove_entity(Entity const& entity) {
     if (!_entity_manager.is_valid(entity)) {

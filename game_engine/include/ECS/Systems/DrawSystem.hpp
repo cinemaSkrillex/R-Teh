@@ -7,9 +7,9 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Registry.hpp"
-#include "Position.hpp"
-#include "Drawable.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
+#include "../include/ECS/Components/Position.hpp"
+#include "../include/ECS/Components/Drawable.hpp"
 
 class DrawSystem {
   public:

@@ -5,7 +5,7 @@
 ** ControlSystem.cpp
 */
 
-#include "ControlSystem.hpp"
+#include "../include/ECS/Systems/ControlSystem.hpp"
 
 ControlSystem::ControlSystem() {
     // Default key bindings (can be changed with bindKey)

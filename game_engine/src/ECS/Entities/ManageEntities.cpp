@@ -5,7 +5,7 @@
 ** ManageEntities.cpp
 */
 
-#include "ManageEntities.hpp"
+#include "../include/ECS/Entities/ManageEntities.hpp"
 
 Entity ManageEntities::spawn_entity() {
     if (!_dead_entities.empty()) {

@@ -6,9 +6,9 @@
 */
 
 #pragma once
-#include "Registry.hpp"
-#include "Position.hpp"
-#include "Velocity.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
+#include "../include/ECS/Components/Position.hpp"
+#include "../include/ECS/Components/Velocity.hpp"
 
 class MovementSystem {
   public:

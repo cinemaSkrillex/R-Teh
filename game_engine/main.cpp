@@ -1,13 +1,13 @@
 #include <SFML/Graphics.hpp>
-#include "Registry.hpp"
-#include "Position.hpp"
-#include "Drawable.hpp"
-#include "Controllable.hpp"
-#include "Velocity.hpp"
-#include "DrawSystem.hpp"
-#include "ControlSystem.hpp"
-#include "Acceleration.hpp"
-#include "MovementSystem.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
+#include "../include/ECS/Components/Position.hpp"
+#include "../include/ECS/Components/Velocity.hpp"
+#include "../include/ECS/Components/Drawable.hpp"
+#include "../include/ECS/Components/Controllable.hpp"
+#include "../include/ECS/Systems/DrawSystem.hpp"
+#include "../include/ECS/Systems/ControlSystem.hpp"
+#include "../include/ECS/Components/Acceleration.hpp"
+#include "../include/ECS/Systems/MovementSystem.hpp"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");

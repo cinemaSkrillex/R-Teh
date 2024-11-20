@@ -1,4 +1,4 @@
-#include "Sprite.hpp"
+#include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 

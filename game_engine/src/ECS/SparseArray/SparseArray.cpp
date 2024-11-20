@@ -5,7 +5,7 @@
 ** SparseArray.cpp
 */
 
-#include "SparseArray.hpp"
+#include "../include/ECS/SparseArray/SparseArray.hpp"
 
 template <typename Component>
 typename SparseArray<Component>::reference_type

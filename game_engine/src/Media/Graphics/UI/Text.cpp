@@ -1,6 +1,6 @@
-#include "Text.hpp"
+#include "../include/Media/Graphics/UI/Text.hpp"
 
-namespace engine {
+namespace RealEngine {
 
 Text::Text(const std::string text, const std::string fontPath) {
     loadFile(fontPath);
@@ -52,4 +52,4 @@ void Text::setString(const std::string text) {
 }
 
 void Text::setCharacterSize(int size) { _text.setCharacterSize(size); }
-} // namespace engine
+} // namespace RealEngine

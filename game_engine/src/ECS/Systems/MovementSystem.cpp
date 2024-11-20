@@ -5,7 +5,7 @@
 ** MovementSystem.cpp
 */
 
-#include "MovementSystem.hpp"
+#include "../include/ECS/Systems/MovementSystem.hpp"
 
 void MovementSystem::update(Registry& registry, SparseArray<Position>& positions,
                             SparseArray<Velocity>& velocities, float deltaTime) {

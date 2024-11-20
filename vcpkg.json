@@ -4,6 +4,7 @@
     "dependencies": [
       "sfml",
       "asio",
-      "sol2"
+      "sol2",
+      "lua"
     ]
   }

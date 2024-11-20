@@ -1,4 +1,4 @@
-#include "Sound.hpp"
+#include "../include/Media/Audio/Sound.hpp"
 
 namespace RealEngine {
 Sound::Sound(const std::string filePath) { loadFile(filePath); }

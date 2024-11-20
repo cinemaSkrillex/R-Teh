@@ -1,4 +1,4 @@
-#include "Background.hpp"
+#include "../include/Media/Graphics/Rendering/Background.hpp"
 
 namespace RealEngine {
 SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {

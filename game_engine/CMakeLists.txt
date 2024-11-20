@@ -1,0 +1,41 @@
+# Network project
+project(GameEngine)
+
+# Include directories
+include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
+include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include/lua)
+
+# Find Lua
+find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+find_package(Lua REQUIRED)
+
+# Source files
+file(GLOB_RECURSE NETWORK_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+)
+
+# if you want a  library target
+add_executable(rtype_engine ${NETWORK_SOURCES})
+
+# Include directories
+target_include_directories(rtype_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Link pthread for Linux
+if(UNIX)
+    target_link_libraries(rtype_engine
+        pthread
+        sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-network
+        sfml-audio
+        ${LUA_LIBRARIES}
+    )
+endif()
+
+# Link ws2_32 for Windows
+if(WIN32)
+    target_link_libraries(rtype_engine ws2_32)
+endif()

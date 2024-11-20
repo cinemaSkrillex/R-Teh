@@ -14,9 +14,9 @@
 #include <iostream>
 #include <functional>
 #include <stdexcept>
-#include "SparseArray.hpp"
-#include "ManageEntities.hpp"
-#include "Entity.hpp"
+#include "../SparseArray/SparseArray.hpp"
+#include "../Entities/ManageEntities.hpp"
+#include "../Entities/Entity.hpp"
 
 class Registry {
   public:

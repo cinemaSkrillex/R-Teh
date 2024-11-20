@@ -2,7 +2,7 @@
 
 #include "../Render.hpp"
 
-namespace engine {
+namespace RealEngine {
 class Text : public IRender {
   public:
     Text(const std::string text, const std::string fontPath);
@@ -26,4 +26,4 @@ class Text : public IRender {
     sf::Text _text;
     sf::Font _font;
 };
-} // namespace engine
+} // namespace RealEngine
