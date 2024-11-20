@@ -25,18 +25,19 @@ class ControlSystem {
     void bindKey(sf::Keyboard::Key key, Action action);
 
   private:
-    std::unordered_map<sf::Keyboard::Key, Action>                             keyBindings;
-    std::unordered_map<Action, std::function<void(Velocity&, Acceleration&)>> actionHandlers;
-    std::unordered_map<Action, std::function<void(Velocity&, Acceleration&)>> actionReleaseHandlers;
+    std::unordered_map<sf::Keyboard::Key, Action>                                    keyBindings;
+    std::unordered_map<Action, std::function<void(Velocity&, Acceleration&, float)>> actionHandlers;
+    std::unordered_map<Action, std::function<void(Velocity&, Acceleration&, float)>>
+        actionReleaseHandlers;
 
-    void handleMoveUp(Velocity& velocity, Acceleration& acceleration);
-    void handleMoveDown(Velocity& velocity, Acceleration& acceleration);
-    void handleMoveLeft(Velocity& velocity, Acceleration& acceleration);
-    void handleMoveRight(Velocity& velocity, Acceleration& acceleration);
+    void handleMoveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void handleMoveDown(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void handleMoveLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void handleMoveRight(Velocity& velocity, Acceleration& acceleration, float deltaTime);
 
-    void applyDeceleration(Velocity& velocity, Acceleration& acceleration);
-    void applyUpDeceleration(Velocity& velocity, Acceleration& acceleration);
-    void applyDownDeceleration(Velocity& velocity, Acceleration& acceleration);
-    void applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration);
-    void applyRightDeceleration(Velocity& velocity, Acceleration& acceleration);
+    void applyDeceleration(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void applyUpDeceleration(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void applyDownDeceleration(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void applyRightDeceleration(Velocity& velocity, Acceleration& acceleration, float deltaTime);
 };

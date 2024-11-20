@@ -15,30 +15,38 @@ ControlSystem::ControlSystem() {
     keyBindings[sf::Keyboard::D] = Action::Right;
 
     // Initialize action handlers
-    actionHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration) {
-        handleMoveUp(velocity, acceleration);
+    actionHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration,
+                                        float deltaTime) {
+        handleMoveUp(velocity, acceleration, deltaTime);
     };
-    actionHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration) {
-        handleMoveDown(velocity, acceleration);
+    actionHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration,
+                                          float deltaTime) {
+        handleMoveDown(velocity, acceleration, deltaTime);
     };
-    actionHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration) {
-        handleMoveLeft(velocity, acceleration);
+    actionHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration,
+                                          float deltaTime) {
+        handleMoveLeft(velocity, acceleration, deltaTime);
     };
-    actionHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration) {
-        handleMoveRight(velocity, acceleration);
+    actionHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration,
+                                           float deltaTime) {
+        handleMoveRight(velocity, acceleration, deltaTime);
     };
 
-    actionReleaseHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration) {
-        applyUpDeceleration(velocity, acceleration);
+    actionReleaseHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration,
+                                               float deltaTime) {
+        applyUpDeceleration(velocity, acceleration, deltaTime);
     };
-    actionReleaseHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration) {
-        applyDownDeceleration(velocity, acceleration);
+    actionReleaseHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration,
+                                                 float deltaTime) {
+        applyDownDeceleration(velocity, acceleration, deltaTime);
     };
-    actionReleaseHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration) {
-        applyLeftDeceleration(velocity, acceleration);
+    actionReleaseHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration,
+                                                 float deltaTime) {
+        applyLeftDeceleration(velocity, acceleration, deltaTime);
     };
-    actionReleaseHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration) {
-        applyRightDeceleration(velocity, acceleration);
+    actionReleaseHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration,
+                                                  float deltaTime) {
+        applyRightDeceleration(velocity, acceleration, deltaTime);
     };
 }
 
@@ -63,10 +71,11 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
         bool keyPressed = false;
         for (const auto& [key, Action] : keyBindings) {
             if (sf::Keyboard::isKeyPressed(key)) {
-                actionHandlers[Action](*velocities[i], *accelerations[i]);
+                actionHandlers[Action](*velocities[i], *accelerations[i], deltaTime * 100.0);
             } else {
                 if (accelerations[i]->air_friction == true) {
-                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i]);
+                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i],
+                                                  deltaTime * 100.0);
                 } else {
                     velocities[i]->vx = 0;
                     velocities[i]->vy = 0;
@@ -78,65 +87,72 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
 
 void ControlSystem::bindKey(sf::Keyboard::Key key, Action action) { keyBindings[key] = action; }
 
-void ControlSystem::handleMoveUp(Velocity& velocity, Acceleration& acceleration) {
-    if (velocity.vy > 0)
-        velocity.vy = 0;
-    velocity.vy -= acceleration.ay * 3;
+void ControlSystem::handleMoveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+    if (velocity.vy > 50)
+        velocity.vy = 50;
+    velocity.vy -= acceleration.ay * 3 * deltaTime;
     if (velocity.vy < -400)
         velocity.vy = -400;
 }
 
-void ControlSystem::handleMoveDown(Velocity& velocity, Acceleration& acceleration) {
-    if (velocity.vy < 0)
-        velocity.vy = 0;
-    velocity.vy += acceleration.ay * 3;
+void ControlSystem::handleMoveDown(Velocity& velocity, Acceleration& acceleration,
+                                   float deltaTime) {
+    if (velocity.vy < -50)
+        velocity.vy = -50;
+    velocity.vy += acceleration.ay * 3 * deltaTime;
     if (velocity.vy > 400)
         velocity.vy = 400;
 }
 
-void ControlSystem::handleMoveLeft(Velocity& velocity, Acceleration& acceleration) {
-    if (velocity.vx > 0)
-        velocity.vx = 0;
-    velocity.vx -= acceleration.ax * 3;
+void ControlSystem::handleMoveLeft(Velocity& velocity, Acceleration& acceleration,
+                                   float deltaTime) {
+    if (velocity.vx > 50)
+        velocity.vx = 50;
+    velocity.vx -= acceleration.ax * 3 * deltaTime;
     if (velocity.vx < -400)
         velocity.vx = -400;
 }
 
-void ControlSystem::handleMoveRight(Velocity& velocity, Acceleration& acceleration) {
-    if (velocity.vx < 0)
-        velocity.vx = 0;
-    velocity.vx += acceleration.ax * 3;
+void ControlSystem::handleMoveRight(Velocity& velocity, Acceleration& acceleration,
+                                    float deltaTime) {
+    if (velocity.vx < -50)
+        velocity.vx = -50;
+    velocity.vx += acceleration.ax * 3 * deltaTime;
     if (velocity.vx > 400)
         velocity.vx = 400;
 }
 
-void ControlSystem::applyUpDeceleration(Velocity& velocity, Acceleration& acceleration) {
+void ControlSystem::applyUpDeceleration(Velocity& velocity, Acceleration& acceleration,
+                                        float deltaTime) {
     if (velocity.vy < 0) {
-        velocity.vy += acceleration.ay * 4;
+        velocity.vy += acceleration.ay * 3 * deltaTime;
         if (velocity.vy > 0)
             velocity.vy = 0;
     }
 }
 
-void ControlSystem::applyDownDeceleration(Velocity& velocity, Acceleration& acceleration) {
+void ControlSystem::applyDownDeceleration(Velocity& velocity, Acceleration& acceleration,
+                                          float deltaTime) {
     if (velocity.vy > 0) {
-        velocity.vy -= acceleration.ay * 4;
+        velocity.vy -= acceleration.ay * 3 * deltaTime;
         if (velocity.vy < 0)
             velocity.vy = 0;
     }
 }
 
-void ControlSystem::applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration) {
+void ControlSystem::applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration,
+                                          float deltaTime) {
     if (velocity.vx < 0) {
-        velocity.vx += acceleration.ax * 4;
+        velocity.vx += acceleration.ax * 3 * deltaTime;
         if (velocity.vx > 0)
             velocity.vx = 0;
     }
 }
 
-void ControlSystem::applyRightDeceleration(Velocity& velocity, Acceleration& acceleration) {
+void ControlSystem::applyRightDeceleration(Velocity& velocity, Acceleration& acceleration,
+                                           float deltaTime) {
     if (velocity.vx > 0) {
-        velocity.vx -= acceleration.ax * 4;
+        velocity.vx -= acceleration.ax * 3 * deltaTime;
         if (velocity.vx < 0)
             velocity.vx = 0;
     }
