@@ -8,11 +8,12 @@
 #ifndef UDPSERVER_HPP
 #define UDPSERVER_HPP
 
+#include "../Export.hpp"
 #include <asio.hpp>
 #include <iostream>
 #include <array>
 
-class UDPServer {
+class SERVER_API UDPServer {
   public:
     UDPServer(asio::io_context& io_context, unsigned short port);
 
