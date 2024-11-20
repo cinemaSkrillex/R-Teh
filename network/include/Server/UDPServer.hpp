@@ -13,6 +13,9 @@
 #include <iostream>
 #include <array>
 
+// SERVER_API is a macro for the visibility of the class UDPServer,
+// its for the shared library
+
 class SERVER_API UDPServer {
   public:
     UDPServer(asio::io_context& io_context, unsigned short port);

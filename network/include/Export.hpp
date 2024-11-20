@@ -5,6 +5,9 @@
 ** Export.hpp
 */
 
+// SERVER_API is a macro for the visibility of the class UDPServer,
+// its for the shared library
+
 #ifndef EXPORT_HPP
 #define EXPORT_HPP
 
