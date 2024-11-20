@@ -9,7 +9,7 @@ template <typename T> Sprite::Sprite(const T& source) {
         _image = source;
         loadImage(_image);
     } else {
-        static_assert(always_false<T>::value, "Unsupported type for Sprite constructor");
+        std::cerr << "Invalid source type for Sprite" << std::endl;
         return;
     }
     _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
@@ -66,7 +66,7 @@ void Sprite::loadFile(const std::string filePath) {
     loadImage(_image);
 }
 
-void colorize(sf::Color colorToReplace, sf::Color newColor) {
+void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
     for (unsigned int x = 0; x < _image.getSize().x; x++) {
         for (unsigned int y = 0; y < _image.getSize().y; y++) {
             if (_image.getPixel(x, y) == colorToReplace) {

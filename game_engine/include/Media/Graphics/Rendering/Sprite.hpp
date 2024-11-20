@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../Render.hpp"
+#include <iostream>
 
 namespace engine {
 class Sprite : public IRender {
   public:
-    Sprite(sf::Image image);
+    template <typename T> Sprite(const T& source);
     ~Sprite();
     void       draw(sf::RenderWindow& window);
     void       loadImage(sf::Image image);
@@ -20,8 +21,8 @@ class Sprite : public IRender {
     void       setSmooth(bool smooth);
     void       setColor(sf::Color color);
     void       flip(bool invert);
-    sf::Sprite getSprite() { return _sprite; }
-    sf::Image  getImage() { return _image; }
+    sf::Sprite getSprite() const { return _sprite; }
+    sf::Image  getImage() const { return _image; }
     void       loadFile(const std::string filePath);
     void       colorize(sf::Color colorToReplace, sf::Color newColor);
 
