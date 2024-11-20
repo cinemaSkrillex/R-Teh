@@ -28,7 +28,7 @@ int main() {
     registry.register_component<Acceleration>();
 
     // Sprites
-    RealEngine::Sprite spaceship(std::string("../assets/spaceship.png"));
+    RealEngine::Sprite spaceship("../assets/spaceship.png");
 
     // Create entities
     Entity entity1 = registry.spawn_entity();
