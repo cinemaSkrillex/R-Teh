@@ -24,8 +24,8 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
             sprites[i]->sprite.setPosition(positions[i]->x, positions[i]->y);
             sprites[i]->sprite.draw(_window);
         } else if (spritesheets[i]) {
-            auto currentSpriteSheet = spritesheets[i];
-            auto sprite = currentSpriteSheet->sprites.at(currentSpriteSheet->spriteIndex);
+            auto& currentSpriteSheet = spritesheets[i];
+            auto& sprite = currentSpriteSheet->sprites.at(currentSpriteSheet->spriteIndex);
 
             // Frame treshold has been hit, move the texture rect.
             // TODO: verify if we are at the max frame, ignore if loop is false else reset frame index.
