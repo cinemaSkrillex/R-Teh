@@ -7,7 +7,6 @@ class Text : public IRender {
   public:
     Text(const std::string text, const std::string fontPath);
     ~Text();
-    void update() override;
     void draw(sf::RenderWindow& window);
     void loadFile(const std::string filePath);
     void disappear() override;
