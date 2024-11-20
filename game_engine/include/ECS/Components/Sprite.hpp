@@ -9,4 +9,5 @@
 
 struct Sprite {
     std::string filePath;
+    float width, height;
 };
