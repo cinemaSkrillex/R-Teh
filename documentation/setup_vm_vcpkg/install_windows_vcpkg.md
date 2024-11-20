@@ -50,6 +50,11 @@ LINUX vcpkg:
 git clone https://github.com/microsoft/vcpkg.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
+pwd
+/home/user/vcpkg
+export PATH="$(pwd):$PATH"
+check if installed
+vcpkg --version
 ```
 
 WINDOWS vcpkg :
