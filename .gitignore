@@ -7,3 +7,4 @@ bootstrap/a.out
 *.o
 a.out
 vcpkg_installed/
+build/
