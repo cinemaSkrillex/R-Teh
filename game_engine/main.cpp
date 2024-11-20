@@ -28,9 +28,13 @@ int main() {
     registry.register_component<Acceleration>();
 
     // Sprites
-    RealEngine::Sprite spaceship("../assets/spaceship.png");
-    RealEngine::Sprite spaceship2("../assets/spaceship.png", {0, 0, 32, 15});
+    RealEngine::Sprite idleSpaceship("../assets/spaceship.png", {33 * 2, 0, 32, 15});
+    RealEngine::Sprite upSpaceship("../assets/spaceship.png", {33 * 3, 0, 32 * 2, 15});
+    RealEngine::Sprite downSpaceship("../assets/spaceship.png", {0, 0, 33 * 2, 15});
 
+    idleSpaceship.setScale(3, 3);
+    upSpaceship.setScale(3, 3);
+    downSpaceship.setScale(3, 3);
 
     // Create entities
     Entity entity1 = registry.spawn_entity();
@@ -39,7 +43,7 @@ int main() {
     // There is 2 ways to add components to entities
     // 1. Add all components at once
     registry.add_components(entity1, Position{100.f, 100.f}, Drawable{});
-    registry.add_component(entity1, SpriteSheet{Sprite{spaceship}});
+    registry.add_component(entity1, Sprite{idleSpaceship});
 
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
@@ -47,7 +51,7 @@ int main() {
     registry.add_component(entity2, Acceleration{0.1f, 0.1f, 0.f, true});
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
-    registry.add_component(entity2, Sprite{spaceship2});
+    registry.add_component(entity2, Sprite{downSpaceship});
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
@@ -59,11 +63,11 @@ int main() {
             movementSystem.update(registry, positions, velocities, deltaTime);
         });
 
-    registry.add_system<Position, Drawable, Sprite>([&drawSystem](Registry& registry,
-                                                                  float deltaTime, auto& positions,
-                                                                  auto& drawables, auto& sprites) {
-        drawSystem.update(registry, deltaTime, positions, drawables, sprites);
-    });
+    registry.add_system<Position, Drawable, Sprite, SpriteSheet>(
+        [&drawSystem](Registry& registry, float deltaTime, auto& positions, auto& drawables,
+                      auto& sprites, auto& spritesheets) {
+            drawSystem.update(registry, deltaTime, positions, drawables, sprites, spritesheets);
+        });
 
     registry.add_system<Velocity, Controllable, Acceleration>(
         [&controlSystem](Registry& registry, float deltaTime, auto& velocities, auto& controllables,

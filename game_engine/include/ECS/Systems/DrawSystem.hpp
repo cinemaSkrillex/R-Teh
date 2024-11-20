@@ -10,13 +10,14 @@
 #include "../include/ECS/Registry/Registry.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Drawable.hpp"
-#include "../include/ECS/Components/Sprite.hpp"
+#include "../include/ECS/Components/SpriteSheet.hpp"
 
 class DrawSystem {
   public:
     DrawSystem(sf::RenderWindow& window);
     void update(Registry& registry, float deltaTime, SparseArray<Position>& positions,
-                SparseArray<Drawable>& drawables, SparseArray<Sprite>& sprites);
+                SparseArray<Drawable>& drawables, SparseArray<Sprite>& sprites,
+                SparseArray<SpriteSheet>& spritesheets);
 
   private:
     sf::RenderWindow& _window;
