@@ -8,3 +8,4 @@ bootstrap/a.out
 a.out
 vcpkg_installed/
 build/
+my_logs.txt
