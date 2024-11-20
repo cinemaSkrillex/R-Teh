@@ -25,6 +25,7 @@ class Sprite : public IRender {
     sf::Image  getImage() const { return _image; }
     void       loadFile(const std::string filePath);
     void       colorize(sf::Color colorToReplace, sf::Color newColor);
+    void       scaleFromSize(const float width, const float height);
 
   private:
     sf::Sprite  _sprite;

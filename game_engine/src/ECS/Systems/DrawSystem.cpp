@@ -21,6 +21,7 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
 
         if (sprites[i]) {
             RealEngine::Sprite sprite(sprites[i]->filePath);
+            sprite.scaleFromSize(sprites[i]->width, sprites[i]->height);
 
             sprite.setPosition(positions[i]->x, positions[i]->y);
 

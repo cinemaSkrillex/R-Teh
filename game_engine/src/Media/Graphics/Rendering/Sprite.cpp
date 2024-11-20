@@ -86,4 +86,16 @@ void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
     _texture.loadFromImage(_image);
     _sprite.setTexture(_texture);
 }
+
+void Sprite::scaleFromSize(const float width, const float height) {
+    // Get the original size of the texture
+    sf::Vector2u textureSize = _texture.getSize();
+
+    // Calculate scale factors to stretch the sprite to the fixed size
+    float scaleX = width / static_cast<float>(textureSize.x);
+    float scaleY = height / static_cast<float>(textureSize.y);
+
+    // Apply the scale to the sprite
+    _sprite.setScale(scaleX, scaleY);
+}
 } // namespace RealEngine

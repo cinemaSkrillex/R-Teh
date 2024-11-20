@@ -39,7 +39,7 @@ int main() {
     registry.add_component(entity2, Position{200.f, 200.f});
     registry.add_component(entity2, Drawable{});
     registry.add_component(entity2, Controllable{});
-    registry.add_component(entity2, Sprite{"", 40.f, 40.f});
+    registry.add_component(entity2, Sprite{"", 50.f, 50.f});
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
