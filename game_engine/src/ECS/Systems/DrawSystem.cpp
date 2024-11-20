@@ -19,10 +19,21 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
             continue;
 
         if (sprites[i]) {
-            sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
-            shape.setPosition(positions[i]->x, positions[i]->y);
-            shape.setFillColor(sf::Color::Green);
-            _window.draw(shape);
+            sf::Texture texture;
+            sf::Sprite sprite;
+
+            // load texture
+            if (!texture.loadFromFile(sprites[i]->filePath)) {
+                std::cerr << "Drawable: Failed to load texture: " << sprites[i]->filePath << std::endl;
+                texture.loadFromFile("../assets/missing_texture.png");
+            }
+
+            // load sprite
+            sprite.setTexture(texture);
+            sprite.setPosition(positions[i]->x, positions[i]->y);
+
+            // render sprite
+            _window.draw(sprite);
         } else {
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
             shape.setPosition(positions[i]->x, positions[i]->y);
