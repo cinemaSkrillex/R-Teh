@@ -6,7 +6,7 @@
 namespace RealEngine {
 class Sprite : public IRender {
   public:
-    template <typename T> Sprite(const T& source);
+    Sprite(const std::string filePath);
     ~Sprite();
     void       draw(sf::RenderWindow& window);
     void       loadImage(sf::Image image);

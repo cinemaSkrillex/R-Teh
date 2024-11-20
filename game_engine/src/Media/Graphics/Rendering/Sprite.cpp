@@ -2,19 +2,8 @@
 
 namespace RealEngine {
 
-template Sprite::Sprite(const std::string&);
-template Sprite::Sprite(const sf::Image&);
-
-template <typename T> Sprite::Sprite(const T& source) {
-    if constexpr (std::is_same_v<T, std::string>) {
-        loadFile(source);
-    } else if constexpr (std::is_same_v<T, sf::Image>) {
-        _image = source;
-        loadImage(_image);
-    } else {
-        std::cerr << "Invalid source type for Sprite" << std::endl;
-        return;
-    }
+Sprite::Sprite(const std::string filepath) {
+    loadFile(filepath);
     _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
     setPosition(0, 0);
     setColor(sf::Color::White);
