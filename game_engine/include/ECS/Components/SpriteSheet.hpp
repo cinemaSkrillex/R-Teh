@@ -17,4 +17,5 @@ struct SpriteSheet {
     bool         pause;
     bool         loop;
     float        animTime; // Time in milliseconds before updating the frame.
+    sf::Clock    animClock;
 };

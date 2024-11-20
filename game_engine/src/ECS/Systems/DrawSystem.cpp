@@ -26,6 +26,15 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
         } else if (spritesheets[i]) {
             auto currentSpriteSheet = spritesheets[i];
             auto sprite = currentSpriteSheet->sprites.at(currentSpriteSheet->spriteIndex);
+
+            // Frame treshold has been hit, move the texture rect.
+            // TODO: verify if we are at the max frame, ignore if loop is false else reset frame index.
+            if (!currentSpriteSheet->pause &&
+                currentSpriteSheet->animClock.getElapsedTime().asMilliseconds() >=
+                    currentSpriteSheet->animTime) {
+                currentSpriteSheet->frameIndex++;
+                currentSpriteSheet->animClock.restart();
+            }
             sprite.setTextureRect(currentSpriteSheet->frameSize.x * currentSpriteSheet->frameIndex,
                                   0, currentSpriteSheet->frameSize.x,
                                   currentSpriteSheet->frameSize.y);
@@ -33,6 +42,7 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
             sprite.draw(_window);
         } else {
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
+
             shape.setPosition(positions[i]->x, positions[i]->y);
             shape.setFillColor(sf::Color::Blue);
             _window.draw(shape);

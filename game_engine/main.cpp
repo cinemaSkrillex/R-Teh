@@ -57,7 +57,7 @@ int main() {
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
     registry.add_component(
-        entity2, SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 1000 / 2});
+        entity2, SpriteSheet{spaceshipSheet, "up", 0, {32, 15}, false, false, 1000 / 2});
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
