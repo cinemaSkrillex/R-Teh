@@ -1,6 +1,6 @@
 #include "View.hpp"
 
-namespace engine {
+namespace RealEngine {
 View::View(const sf::Vector2f center, const sf::Vector2f size) {
     _view.setCenter(center);
     _view.setSize(size);
@@ -22,4 +22,4 @@ void View::rotate(float angle) { _view.rotate(angle); }
 
 void View::zoom(float factor) { _view.zoom(factor); }
 
-} // namespace engine
+} // namespace RealEngine

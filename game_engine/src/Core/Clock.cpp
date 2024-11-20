@@ -1,10 +1,10 @@
 #include "Clock.hpp"
 
-namespace engine {
+namespace RealEngine {
 Clock::Clock() {}
 
 Clock::~Clock() {}
 
 void Clock::restart() { _clock.restart(); }
 
-} // namespace engine
+} // namespace RealEngine

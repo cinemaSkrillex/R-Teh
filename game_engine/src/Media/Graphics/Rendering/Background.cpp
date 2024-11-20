@@ -1,6 +1,6 @@
 #include "Background.hpp"
 
-namespace engine {
+namespace RealEngine {
 SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {
     setPosition(0, 0);
     setSize(800, 600);
@@ -178,4 +178,4 @@ void ParallaxBackground::setSpeed(int layer, float speed) {
 
 void ParallaxBackground::setDirection(float angle) { _angle = angle; }
 
-} // namespace engine
+} // namespace RealEngine

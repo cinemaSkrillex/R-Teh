@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-namespace engine {
+namespace RealEngine {
 
 Window::Window(const std::string title, const sf::Vector2u size) : _title(title), _size(size) {
     _window.create(sf::VideoMode(_size.x, _size.y), _title);
@@ -87,4 +87,4 @@ void Window::setSize(const sf::Vector2u size) {
 
 bool Window::isOpen() { return _window.isOpen(); }
 
-}; // namespace engine
+}; // namespace RealEngine
