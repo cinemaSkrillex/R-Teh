@@ -6,6 +6,7 @@
 */
 
 #include "../include/ECS/Systems/DrawSystem.hpp"
+#include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
 DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 
@@ -19,21 +20,12 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
             continue;
 
         if (sprites[i]) {
-            sf::Texture texture;
-            sf::Sprite sprite;
+            RealEngine::Sprite sprite(sprites[i]->filePath);
 
-            // load texture
-            if (!texture.loadFromFile(sprites[i]->filePath)) {
-                std::cerr << "Drawable: Failed to load texture: " << sprites[i]->filePath << std::endl;
-                texture.loadFromFile("../assets/missing_texture.png");
-            }
-
-            // load sprite
-            sprite.setTexture(texture);
             sprite.setPosition(positions[i]->x, positions[i]->y);
 
             // render sprite
-            _window.draw(sprite);
+            _window.draw(sprite.getSprite());
         } else {
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
             shape.setPosition(positions[i]->x, positions[i]->y);

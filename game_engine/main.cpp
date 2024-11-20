@@ -11,8 +11,10 @@
 #include "../include/ECS/Components/Acceleration.hpp"
 #include "../include/ECS/Systems/MovementSystem.hpp"
 
+#include "../include/Core/Window.hpp"
+
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
+    RealEngine::Window window("SKRILLEX", sf::Vector2u(800, 600));
 
     Registry registry;
 
@@ -39,7 +41,7 @@ int main() {
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Sprite{});
 
-    DrawSystem     drawSystem(window);
+    DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
     MovementSystem movementSystem;
 
@@ -64,12 +66,7 @@ int main() {
     sf::Clock clock;
 
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
+        window.update();
         deltaTime = clock.restart().asSeconds();
 
         // drawSystem.update(registry);
