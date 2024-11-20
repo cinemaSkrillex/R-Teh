@@ -20,13 +20,9 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
             continue;
 
         if (sprites[i]) {
-            RealEngine::Sprite sprite(sprites[i]->filePath);
-            sprite.scaleFromSize(sprites[i]->width, sprites[i]->height);
-
-            sprite.setPosition(positions[i]->x, positions[i]->y);
-
+            sprites[i]->sprite.setPosition(positions[i]->x, positions[i]->y);
             // render sprite
-            _window.draw(sprite.getSprite());
+            sprites[i]->sprite.draw(_window);
         } else {
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
             shape.setPosition(positions[i]->x, positions[i]->y);

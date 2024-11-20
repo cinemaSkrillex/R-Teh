@@ -66,7 +66,6 @@ void Sprite::flip(bool left) {
 
 void Sprite::loadFile(const std::string filePath) {
     if (!_texture.loadFromFile(filePath)) {
-        std::cerr << "Drawable: Failed to load texture: " << filePath << std::endl;
         _texture.loadFromFile("../assets/missing_texture.png");
         _texture.setRepeated(true);
         // get the sprite hibox to be the size of the texture
