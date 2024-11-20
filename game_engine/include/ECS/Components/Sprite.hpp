@@ -7,4 +7,6 @@
 
 #pragma once
 
-struct Sprite {};
+struct Sprite {
+    std::string filePath;
+};

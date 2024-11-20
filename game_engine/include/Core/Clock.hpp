@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace engine {
+namespace RealEngine {
 class Clock {
   public:
     Clock();
@@ -17,4 +17,4 @@ class Clock {
   private:
     sf::Clock _clock;
 };
-} // namespace engine
+} // namespace RealEngine

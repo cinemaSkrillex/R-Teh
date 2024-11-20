@@ -1,6 +1,6 @@
 #include "Music.hpp"
 
-namespace engine {
+namespace RealEngine {
 Music::Music(const std::string filePath) {
     loadFile(filePath);
     _replayPoint = sf::seconds(0);
@@ -67,4 +67,4 @@ void Music::setVolume(float volume) {
 void Music::setPitch(float pitch) { _music.setPitch(pitch); }
 
 void Music::setLoop(bool loop) { _music.setLoop(loop); }
-} // namespace engine
+} // namespace RealEngine

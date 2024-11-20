@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 
-namespace engine {
+namespace RealEngine {
 class IRender {
   public:
     IRender()                                  = default;
@@ -14,4 +14,4 @@ class IRender {
     virtual void setScale(float x, float y)    = 0;
     virtual void setRotation(float angle)      = 0;
 };
-} // namespace engine
+} // namespace RealEngine

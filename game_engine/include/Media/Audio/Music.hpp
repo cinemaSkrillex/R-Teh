@@ -2,7 +2,7 @@
 
 #include "Audio.hpp"
 
-namespace engine {
+namespace RealEngine {
 class Music : public IAudio {
   public:
     Music(const std::string filePath);
@@ -28,4 +28,4 @@ class Music : public IAudio {
     bool      _stopped;
     bool      _isPlaying;
 };
-} // namespace engine
+} // namespace RealEngine

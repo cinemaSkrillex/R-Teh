@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace engine {
+namespace RealEngine {
 class View {
   public:
     View(const sf::Vector2f center, const sf::Vector2f size);
@@ -26,4 +26,4 @@ class View {
   private:
     sf::View _view;
 };
-} // namespace engine
+} // namespace RealEngine

@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <string>
 
-namespace engine {
+namespace RealEngine {
 class IAudio {
   public:
     IAudio()                                          = default;
@@ -14,4 +14,4 @@ class IAudio {
     virtual void setVolume(float volume)              = 0;
     virtual void setPitch(float pitch)                = 0;
 };
-} // namespace engine
+} // namespace RealEngine

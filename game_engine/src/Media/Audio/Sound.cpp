@@ -1,6 +1,6 @@
 #include "Sound.hpp"
 
-namespace engine {
+namespace RealEngine {
 Sound::Sound(const std::string filePath) { loadFile(filePath); }
 
 Sound::~Sound() {}
@@ -20,4 +20,4 @@ void Sound::setVolume(float volume) {
 }
 
 void Sound::setPitch(float pitch) { _sound.setPitch(pitch); }
-} // namespace engine
+} // namespace RealEngine

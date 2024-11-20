@@ -1,6 +1,6 @@
 #include "Sprite.hpp"
 
-namespace engine {
+namespace RealEngine {
 
 template <typename T> Sprite::Sprite(const T& source) {
     if constexpr (std::is_same_v<T, std::string>) {
@@ -77,4 +77,4 @@ void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
     _texture.loadFromImage(_image);
     _sprite.setTexture(_texture);
 }
-} // namespace engine
+} // namespace RealEngine

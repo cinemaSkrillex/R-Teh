@@ -3,7 +3,7 @@
 #include "../Render.hpp"
 #include <iostream>
 
-namespace engine {
+namespace RealEngine {
 class Sprite : public IRender {
   public:
     template <typename T> Sprite(const T& source);
@@ -33,4 +33,4 @@ class Sprite : public IRender {
     bool        _flipped;
 };
 
-} // namespace engine
+} // namespace RealEngine

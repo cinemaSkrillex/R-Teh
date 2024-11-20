@@ -3,7 +3,7 @@
 #include "../Render.hpp"
 #include "Sprite.hpp"
 
-namespace engine {
+namespace RealEngine {
 class ABackground : public IRender {
   public:
     ABackground()                               = default;
@@ -75,6 +75,7 @@ class ImageBackground : public ABackground {
     sf::IntRect _rect;
 };
 
+// Not correctly implemented
 class ParallaxBackground : public ABackground {
   public:
     ParallaxBackground(sf::Image image, int layers);
@@ -94,4 +95,4 @@ class ParallaxBackground : public ABackground {
     sf::Vector2f        _position;
     float               _angle;
 };
-} // namespace engine
+} // namespace RealEngine

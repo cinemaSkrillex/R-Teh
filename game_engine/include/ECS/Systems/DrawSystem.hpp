@@ -10,12 +10,13 @@
 #include "Registry.hpp"
 #include "Position.hpp"
 #include "Drawable.hpp"
+#include "Sprite.hpp"
 
 class DrawSystem {
   public:
     DrawSystem(sf::RenderWindow& window);
-    void update(Registry& registry, SparseArray<Position>& positions,
-                SparseArray<Drawable>& drawables, float deltaTime);
+    void update(Registry& registry, float deltaTime, SparseArray<Position>& positions,
+                SparseArray<Drawable>& drawables, SparseArray<Sprite>& sprites);
 
   private:
     sf::RenderWindow& _window;

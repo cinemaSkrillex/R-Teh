@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace engine {
+namespace RealEngine {
 class Window {
   public:
     Window(const std::string title, const sf::Vector2u size);
@@ -22,4 +22,4 @@ class Window {
     sf::Vector2u     _size;
     std::string      _title;
 };
-} // namespace engine
+} // namespace RealEngine
