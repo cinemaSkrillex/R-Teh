@@ -37,5 +37,13 @@ endif()
 
 # Link ws2_32 for Windows
 if(WIN32)
-    target_link_libraries(rtype_engine ws2_32)
+    target_link_libraries(rtype_engine
+    ws2_32
+    sfml-system
+    sfml-window
+    sfml-graphics
+    sfml-network
+    sfml-audio
+    ${LUA_LIBRARIES}
+    )
 endif()
