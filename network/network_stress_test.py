@@ -2,7 +2,7 @@ import socket
 import time
 import sys
 import signal
-
+# ping : echo -n "ping" | nc -u 127.0.0.1 3500
 if len(sys.argv) != 4:
     print("Usage: {} <host> <port> <interval_ms>".format(sys.argv[0]))
     sys.exit(1)

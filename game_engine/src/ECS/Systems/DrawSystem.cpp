@@ -22,7 +22,6 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
 
         if (sprites[i]) {
             sprites[i]->sprite.setPosition(positions[i]->x, positions[i]->y);
-            // render sprite
             sprites[i]->sprite.draw(_window);
         } else if (spritesheets[i]) {
             std::cout << "spritesheet detected" << std::endl;

@@ -36,3 +36,8 @@ void UDPServer::handle_receive(std::size_t bytes_recvd) {
         start_receive();
     }
 }
+
+extern "C" SERVER_API UDPServer* create_udp_server(asio::io_context& io_context,
+                                                   unsigned short    port) {
+    return new UDPServer(io_context, port);
+}

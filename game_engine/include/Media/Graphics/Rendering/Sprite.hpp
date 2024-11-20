@@ -15,6 +15,7 @@ class Sprite : public IRender {
     void       loadImage(sf::Image image);
     void       reloadSprite();
     void       disappear() override;
+    void       setOpacity(float opacity);
     void       setPosition(float x, float y) override;
     void       move(float x, float y);
     void       setScale(float x, float y) override;

@@ -47,8 +47,8 @@ int main() {
 
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
-    registry.add_component(entity2, Velocity{0.f, 0.f});
-    registry.add_component(entity2, Acceleration{0.1f, 0.1f, 0.f, true});
+    registry.add_component(entity2, Velocity{0.0f, 0.0f});
+    registry.add_component(entity2, Acceleration{1.8f, 1.8f, 1.8f, true});
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
     registry.add_component(entity2, Sprite{downSpaceship});
