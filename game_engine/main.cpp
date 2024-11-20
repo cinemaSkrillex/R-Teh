@@ -27,6 +27,11 @@ int main() {
     registry.register_component<Controllable>();
     registry.register_component<Acceleration>();
 
+    // Sprites
+    RealEngine::Sprite spaceship("../assets/spaceship.png");
+    RealEngine::Sprite spaceship2("../assets/spaceship.png", {0, 0, 32, 15});
+
+
     // Create entities
     Entity entity1 = registry.spawn_entity();
     Entity entity2 = registry.spawn_entity();
@@ -34,6 +39,7 @@ int main() {
     // There is 2 ways to add components to entities
     // 1. Add all components at once
     registry.add_components(entity1, Position{100.f, 100.f}, Drawable{});
+    registry.add_component(entity1, SpriteSheet{Sprite{spaceship}});
 
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
@@ -41,7 +47,7 @@ int main() {
     registry.add_component(entity2, Acceleration{0.1f, 0.1f, 0.f, true});
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
-    registry.add_component(entity2, Sprite{"", 50.f, 50.f});
+    registry.add_component(entity2, Sprite{spaceship2});
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;

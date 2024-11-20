@@ -7,7 +7,8 @@
 
 #pragma once
 
+#include "Media/Graphics/Rendering/Sprite.hpp"
+
 struct Sprite {
-    std::string filePath;
-    float width, height;
+    RealEngine::Sprite sprite;
 };

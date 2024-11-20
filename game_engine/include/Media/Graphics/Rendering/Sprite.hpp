@@ -6,9 +6,12 @@
 namespace RealEngine {
 class Sprite : public IRender {
   public:
-    template <typename T> Sprite(const T& source);
+    Sprite(const std::string filePath);
+    Sprite(const std::string filePath, sf::IntRect textureRect);
     ~Sprite();
     void       draw(sf::RenderWindow& window);
+    void       loadFile(const std::string filePath);
+    void       loadFile(const std::string filePath, const sf::IntRect textureRect);
     void       loadImage(sf::Image image);
     void       reloadSprite();
     void       disappear() override;
@@ -23,7 +26,6 @@ class Sprite : public IRender {
     void       flip(bool invert);
     sf::Sprite getSprite() const { return _sprite; }
     sf::Image  getImage() const { return _image; }
-    void       loadFile(const std::string filePath);
     void       colorize(sf::Color colorToReplace, sf::Color newColor);
     void       scaleFromSize(const float width, const float height);
 

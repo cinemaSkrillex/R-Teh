@@ -2,19 +2,16 @@
 
 namespace RealEngine {
 
-template Sprite::Sprite(const std::string&);
-template Sprite::Sprite(const sf::Image&);
+Sprite::Sprite(const std::string filepath) {
+    loadFile(filepath);
+    _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
+    setPosition(0, 0);
+    setColor(sf::Color::White);
+    _flipped = false;
+}
 
-template <typename T> Sprite::Sprite(const T& source) {
-    if constexpr (std::is_same_v<T, std::string>) {
-        loadFile(source);
-    } else if constexpr (std::is_same_v<T, sf::Image>) {
-        _image = source;
-        loadImage(_image);
-    } else {
-        std::cerr << "Invalid source type for Sprite" << std::endl;
-        return;
-    }
+Sprite::Sprite(const std::string filepath, sf::IntRect textureRect) {
+    loadFile(filepath, textureRect);
     _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
     setPosition(0, 0);
     setColor(sf::Color::White);
@@ -22,6 +19,24 @@ template <typename T> Sprite::Sprite(const T& source) {
 }
 
 Sprite::~Sprite() {}
+
+void Sprite::loadFile(const std::string filePath) {
+    if (!_texture.loadFromFile(filePath)) {
+        _texture.loadFromFile("../assets/missing_texture.png");
+        _texture.setRepeated(true);
+        // get the sprite hibox to be the size of the texture
+        _sprite.setTextureRect(sf::IntRect(0, 0, _texture.getSize().x, _texture.getSize().y));
+    }
+    _sprite.setTexture(_texture);
+}
+
+void Sprite::loadFile(const std::string filePath, const sf::IntRect textureRect) {
+    if (!_texture.loadFromFile(filePath, textureRect)) {
+        _texture.loadFromFile("../assets/missing_texture.png");
+        _texture.setRepeated(true);
+    }
+    _sprite.setTexture(_texture);
+}
 
 void Sprite::loadImage(sf::Image image) {
     _texture.loadFromImage(image);
@@ -62,17 +77,6 @@ void Sprite::flip(bool left) {
         _flipped   = true;
     }
     _sprite.setTextureRect(rect);
-}
-
-void Sprite::loadFile(const std::string filePath) {
-    if (!_texture.loadFromFile(filePath)) {
-        std::cerr << "Drawable: Failed to load texture: " << filePath << std::endl;
-        _texture.loadFromFile("../assets/missing_texture.png");
-        _texture.setRepeated(true);
-        // get the sprite hibox to be the size of the texture
-        _sprite.setTextureRect(sf::IntRect(0, 0, _texture.getSize().x, _texture.getSize().y));
-    }
-    _sprite.setTexture(_texture);
 }
 
 void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
