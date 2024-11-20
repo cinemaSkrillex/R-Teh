@@ -13,9 +13,8 @@ void Window::clear() { _window.clear(); }
 void Window::display() { _window.display(); }
 
 void Window::update() {
-    sf::Event event;
-    while (_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+    while (_window.pollEvent(_event)) {
+        if (_event.type == sf::Event::Closed) {
             _window.close();
         }
     }

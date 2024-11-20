@@ -2,6 +2,9 @@
 
 namespace RealEngine {
 
+template Sprite::Sprite(const std::string&);
+template Sprite::Sprite(const sf::Image&);
+
 template <typename T> Sprite::Sprite(const T& source) {
     if constexpr (std::is_same_v<T, std::string>) {
         loadFile(source);
@@ -62,8 +65,14 @@ void Sprite::flip(bool left) {
 }
 
 void Sprite::loadFile(const std::string filePath) {
-    _image.loadFromFile(filePath);
-    loadImage(_image);
+    if (!_texture.loadFromFile(filePath)) {
+        std::cerr << "Drawable: Failed to load texture: " << filePath << std::endl;
+        _texture.loadFromFile("../assets/missing_texture.png");
+        _texture.setRepeated(true);
+        // get the sprite hibox to be the size of the texture
+        _sprite.setTextureRect(sf::IntRect(0, 0, _texture.getSize().x, _texture.getSize().y));
+    }
+    _sprite.setTexture(_texture);
 }
 
 void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
