@@ -14,6 +14,7 @@
 #include "../include/ECS/Enum/ActionEnum.hpp"
 
 class ControlSystem {
+
   public:
     ControlSystem();
 
@@ -26,13 +27,16 @@ class ControlSystem {
   private:
     std::unordered_map<sf::Keyboard::Key, Action>                             keyBindings;
     std::unordered_map<Action, std::function<void(Velocity&, Acceleration&)>> actionHandlers;
+    std::unordered_map<Action, std::function<void(Velocity&, Acceleration&)>> actionReleaseHandlers;
 
     void handleMoveUp(Velocity& velocity, Acceleration& acceleration);
-
     void handleMoveDown(Velocity& velocity, Acceleration& acceleration);
     void handleMoveLeft(Velocity& velocity, Acceleration& acceleration);
-
     void handleMoveRight(Velocity& velocity, Acceleration& acceleration);
 
     void applyDeceleration(Velocity& velocity, Acceleration& acceleration);
+    void applyUpDeceleration(Velocity& velocity, Acceleration& acceleration);
+    void applyDownDeceleration(Velocity& velocity, Acceleration& acceleration);
+    void applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration);
+    void applyRightDeceleration(Velocity& velocity, Acceleration& acceleration);
 };

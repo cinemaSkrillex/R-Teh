@@ -21,7 +21,6 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
 
         if (sprites[i]) {
             sprites[i]->sprite.setPosition(positions[i]->x, positions[i]->y);
-            // render sprite
             sprites[i]->sprite.draw(_window);
         } else {
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));

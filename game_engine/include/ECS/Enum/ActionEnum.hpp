@@ -7,4 +7,4 @@
 
 #pragma once
 
-enum class Action { MoveUp, MoveDown, MoveLeft, MoveRight };
+enum class Action { Up, Down, Left, Right };
