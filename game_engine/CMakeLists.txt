@@ -1,5 +1,5 @@
 # Network project
-project(GameEngine)
+project(game_engine)
 
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
