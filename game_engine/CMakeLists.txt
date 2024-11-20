@@ -2,8 +2,12 @@
 project(game_engine)
 
 # Include directories
-include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
-include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include/lua)
+if (UNIX)
+    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
+endif()
+if (WIN32)
+    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
+endif()
 
 # Find Lua
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
