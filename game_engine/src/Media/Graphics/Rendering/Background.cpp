@@ -3,7 +3,7 @@
 namespace engine {
 SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {
     setPosition(0, 0);
-    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    setSize(800, 600);
     _shape.setFillColor(sf::Color(r, g, b, a));
 }
 
@@ -24,11 +24,11 @@ void SolidColorBackground::setColor(float r, float g, float b, float a) {
 }
 
 ScrollingBackground::ScrollingBackground(sf::Image image) {
-    _defaultPos = {-WINDOW_WIDTH / 2, -WINDOW_HEIGHT / 2};
+    _defaultPos = {-800 / 2, -600 / 2};
     _texture.loadFromImage(image);
     _texture.setSmooth(true);
     _texture.setRepeated(true);
-    setSpriteRect(0, 0, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
+    setSpriteRect(0, 0, 800 * 2, 600 * 2);
     _sprite.setTexture(_texture);
     _textureSize = {static_cast<float>(_texture.getSize().x),
                     static_cast<float>(_texture.getSize().y)};
@@ -39,8 +39,8 @@ ScrollingBackground::ScrollingBackground(sf::Image image) {
 void ScrollingBackground::update(float deltaTime) {
     _sprite.move(_speed * cos(_angle), _speed * sin(_angle));
     sf::Vector2f position = _sprite.getPosition();
-    position.x += WINDOW_WIDTH / 2;
-    position.y += WINDOW_HEIGHT / 2;
+    position.x += 800 / 2;
+    position.y += 600 / 2;
 
     if (position.x <= -_textureSize.x || position.x >= _textureSize.x)
         reinitPosition(true, false);
@@ -61,7 +61,7 @@ void ScrollingBackground::setSize(float x, float y) {
 void ScrollingBackground::setScale(float x, float y) {
     if (x == 0 || y == 0)
         return;
-    setSpriteRect(0, 0, WINDOW_WIDTH * 2 * 1 / x, WINDOW_HEIGHT * 2 * 1 / y);
+    setSpriteRect(0, 0, 800 * 2 * 1 / x, 600 * 2 * 1 / y);
     _sprite.setTexture(_texture);
     _textureSize.x = _texture.getSize().x * x;
     _textureSize.y = _texture.getSize().y * y;
@@ -143,7 +143,7 @@ void ParallaxBackground::update(float deltaTime) {}
 
 void ParallaxBackground::draw(sf::RenderWindow& window) {
     for (const auto& sprite : _sprites) {
-        window.draw(sprite);
+        window.draw(sprite.getSprite());
     }
 }
 
