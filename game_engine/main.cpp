@@ -36,6 +36,11 @@ int main() {
     upSpaceship.setScale(3, 3);
     downSpaceship.setScale(3, 3);
 
+    std::unordered_map<std::string, RealEngine::Sprite> spaceshipSheet;
+    spaceshipSheet.emplace("idle", idleSpaceship);
+    spaceshipSheet.emplace("up", upSpaceship);
+    spaceshipSheet.emplace("down", downSpaceship);
+
     // Create entities
     Entity entity1 = registry.spawn_entity();
     Entity entity2 = registry.spawn_entity();
@@ -51,7 +56,8 @@ int main() {
     registry.add_component(entity2, Acceleration{1.8f, 1.8f, 1.8f, true});
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
-    registry.add_component(entity2, Sprite{downSpaceship});
+    registry.add_component(
+        entity2, SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 1000 / 2});
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
