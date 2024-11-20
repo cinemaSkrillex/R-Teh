@@ -33,20 +33,30 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
                            SparseArray<Controllable>& controllables,
                            SparseArray<Acceleration>& accelerations, float deltaTime) {
     for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (controllables[i] && velocities[i] && accelerations[i]) {
-            bool keyPressed = false;
-            for (const auto& [key, action] : keyBindings) {
-                if (sf::Keyboard::isKeyPressed(key)) {
-                    keyPressed = true;
-                    actionHandlers[action](*velocities[i], *accelerations[i]);
-                }
+        if (!controllables[i])
+            continue;
+
+        if (!velocities[i]) {
+            std::cerr << "ControlSystem: Velocity Component missing on entity(" << i << ")." << std::endl;
+            continue;
+        }
+
+        if (!accelerations[i]) {
+            std::cerr << "ControlSystem: Acceleration Component missing on entity(" << i << ")." << std::endl;
+        }
+
+        bool keyPressed = false;
+        for (const auto& [key, action] : keyBindings) {
+            if (sf::Keyboard::isKeyPressed(key)) {
+                keyPressed = true;
+                actionHandlers[action](*velocities[i], *accelerations[i]);
             }
-            if (!keyPressed && accelerations[i]->air_friction == true) {
-                applyDeceleration(*velocities[i], *accelerations[i]);
-            } else if (!keyPressed && accelerations[i]->air_friction == false) {
-                velocities[i]->vx = 0;
-                velocities[i]->vy = 0;
-            }
+        }
+        if (!keyPressed && accelerations[i]->air_friction == true) {
+            applyDeceleration(*velocities[i], *accelerations[i]);
+        } else if (!keyPressed && accelerations[i]->air_friction == false) {
+            velocities[i]->vx = 0;
+            velocities[i]->vy = 0;
         }
     }
 }

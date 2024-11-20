@@ -33,12 +33,14 @@ int main() {
 
     // There is 2 ways to add components to entities
     // 1. Add all components at once
-    registry.add_components(entity1, Position{100.f, 100.f}, Velocity{0.f, 0.f}, Drawable{},
-                            Controllable{}, Acceleration{0.1f, 0.1f, 0.f, true});
+    registry.add_components(entity1, Position{100.f, 100.f}, Drawable{});
+
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
-    registry.add_component(entity2, Drawable{});
+    registry.add_component(entity2, Velocity{0.f, 0.f});
+    registry.add_component(entity2, Acceleration{0.1f, 0.1f, 0.f, true});
     registry.add_component(entity2, Controllable{});
+    registry.add_component(entity2, Drawable{});
     registry.add_component(entity2, Sprite{"", 50.f, 50.f});
 
     DrawSystem     drawSystem(window.getRenderWindow());
