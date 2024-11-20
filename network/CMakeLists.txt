@@ -5,7 +5,10 @@ project(Network)
 include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
 
 # Source files
-file(GLOB_RECURSE NETWORK_SOURCES src/*.cpp include/*.hpp)
+file(GLOB_RECURSE NETWORK_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+)
 
 # if you want a  library target
 # add_library(rtype_server ${NETWORK_SOURCES})

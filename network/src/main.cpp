@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <asio.hpp>
-#include "UDPServer.hpp"
+#include "../include/Server/UDPServer.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
