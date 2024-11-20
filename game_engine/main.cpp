@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "../include/ECS/Registry/Registry.hpp"
 #include "../include/ECS/Components/Position.hpp"
+#include "../include/ECS/Components/Sprite.hpp"
+#include "../include/ECS/Components/SpriteSheet.hpp"
 #include "../include/ECS/Components/Velocity.hpp"
 #include "../include/ECS/Components/Drawable.hpp"
 #include "../include/ECS/Components/Controllable.hpp"
@@ -17,6 +19,8 @@ int main() {
     // Register components
     registry.register_component<Position>();
     registry.register_component<Velocity>();
+    registry.register_component<Sprite>();
+    registry.register_component<SpriteSheet>();
     registry.register_component<Drawable>();
     registry.register_component<Controllable>();
     registry.register_component<Acceleration>();
@@ -33,6 +37,7 @@ int main() {
     registry.add_component(entity2, Position{200.0f, 200.0f});
     registry.add_component(entity2, Drawable{});
     registry.add_component(entity2, Controllable{});
+    registry.add_component(entity2, Sprite{});
 
     DrawSystem     drawSystem(window);
     ControlSystem  controlSystem;
@@ -44,10 +49,11 @@ int main() {
             movementSystem.update(registry, positions, velocities, deltaTime);
         });
 
-    registry.add_system<Position, Drawable>(
-        [&drawSystem](Registry& registry, float deltaTime, auto& positions, auto& drawables) {
-            drawSystem.update(registry, positions, drawables, deltaTime);
-        });
+    registry.add_system<Position, Drawable, Sprite>([&drawSystem](Registry& registry,
+                                                                  float deltaTime, auto& positions,
+                                                                  auto& drawables, auto& sprites) {
+        drawSystem.update(registry, deltaTime, positions, drawables, sprites);
+    });
 
     registry.add_system<Velocity, Controllable, Acceleration>(
         [&controlSystem](Registry& registry, float deltaTime, auto& velocities, auto& controllables,
