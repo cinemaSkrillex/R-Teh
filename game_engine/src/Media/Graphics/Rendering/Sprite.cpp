@@ -2,8 +2,16 @@
 
 namespace engine {
 
-Sprite::Sprite(sf::Image image) {
-    loadImage(image);
+template <typename T> Sprite::Sprite(const T& source) {
+    if constexpr (std::is_same_v<T, std::string>) {
+        loadFile(source);
+    } else if constexpr (std::is_same_v<T, sf::Image>) {
+        _image = source;
+        loadImage(_image);
+    } else {
+        static_assert(always_false<T>::value, "Unsupported type for Sprite constructor");
+        return;
+    }
     _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
     setPosition(0, 0);
     setColor(sf::Color::White);
@@ -51,5 +59,22 @@ void Sprite::flip(bool left) {
         _flipped   = true;
     }
     _sprite.setTextureRect(rect);
+}
+
+void Sprite::loadFile(const std::string filePath) {
+    _image.loadFromFile(filePath);
+    loadImage(_image);
+}
+
+void colorize(sf::Color colorToReplace, sf::Color newColor) {
+    for (unsigned int x = 0; x < _image.getSize().x; x++) {
+        for (unsigned int y = 0; y < _image.getSize().y; y++) {
+            if (_image.getPixel(x, y) == colorToReplace) {
+                _image.setPixel(x, y, newColor);
+            }
+        }
+    }
+    _texture.loadFromImage(_image);
+    _sprite.setTexture(_texture);
 }
 } // namespace engine
