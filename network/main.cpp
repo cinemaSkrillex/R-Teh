@@ -5,9 +5,14 @@
 ** main.cpp
 */
 #include <iostream>
-#include <dlfcn.h>
 #include <asio.hpp>
 #include "include/DynamicLibrary/DynamicLIbrary.hpp"
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
 
 typedef void (*UDPServerConstructor)(asio::io_context&, unsigned short);
 
