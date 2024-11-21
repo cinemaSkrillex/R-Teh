@@ -81,3 +81,12 @@ if (WIN32)
     # Add the directory containing the DLLs to the PATH
     set(PATH "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin;$ENV{PATH}")
 endif()
+
+if (WIN32)
+    # Copy all DLLs from the bin directory to the output directory
+    add_custom_command(TARGET rtype_engine POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin"
+            $<TARGET_FILE_DIR:rtype_engine>
+    )
+endif()
