@@ -104,7 +104,7 @@ class Registry {
 
     template <class... Components, typename Function> void add_system(Function const& f) {
         _systems.push_back(
-            [this, &f](float deltaTime) { f(*this, get_components<Components>()...); });
+            [this, &f](float deltaTime) { f(*this, get_components_helper<Components>()...); });
     }
     // Run all systems
     void run_systems(float deltaTime);
