@@ -78,22 +78,6 @@ if(WIN32)
 endif()
 
 if (WIN32)
-    # Copy the DLLs to the output directory
-    add_custom_command(TARGET rtype_engine POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin/sfml-audio-2.dll"
-            $<TARGET_FILE_DIR:rtype_engine>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin/sfml-graphics-2.dll"
-            $<TARGET_FILE_DIR:rtype_engine>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin/sfml-system-2.dll"
-            $<TARGET_FILE_DIR:rtype_engine>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin/sfml-window-2.dll"
-            $<TARGET_FILE_DIR:rtype_engine>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin/lua54.dll"
-            $<TARGET_FILE_DIR:rtype_engine>
-    )
+    # Add the directory containing the DLLs to the PATH
+    set(PATH "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin;$ENV{PATH}")
 endif()
