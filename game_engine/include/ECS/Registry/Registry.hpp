@@ -98,13 +98,13 @@ class Registry {
     // Add a system to the registry
     template <class... Components, typename Function> void add_system(Function&& f) {
         _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
-            f(*this, deltaTime, get_components_helper<Components>()...);
+            f(*this, deltaTime, get_components_helper<Components>(*this)...);
         });
     }
 
     template <class... Components, typename Function> void add_system(Function const& f) {
         _systems.push_back(
-            [this, &f](float deltaTime) { f(*this, get_components_helper<Components>()...); });
+            [this, &f](float deltaTime) { f(*this, get_components_helper<Components>(*this)...); });
     }
     // Run all systems
     void run_systems(float deltaTime);
@@ -115,11 +115,13 @@ class Registry {
     std::vector<std::function<void(Registry&, Entity const&)>> _erase_functions;
     ManageEntities                                             _entity_manager;
 
-    template <typename Component> SparseArray<Component>& get_components_helper() {
-        return get_components<Component>();
+    template <typename Component>
+    static SparseArray<Component>& get_components_helper(Registry& registry) {
+        return registry.get_components<Component>();
     }
 
-    template <typename Component> const SparseArray<Component>& get_components_helper() const {
-        return get_components<Component>();
+    template <typename Component>
+    static const SparseArray<Component>& get_components_helper(const Registry& registry) {
+        return registry.get_components<Component>();
     }
 };
