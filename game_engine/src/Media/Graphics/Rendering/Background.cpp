@@ -1,4 +1,15 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** Background.cpp
+*/
+
 #include "../include/Media/Graphics/Rendering/Background.hpp"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 namespace RealEngine {
 SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {
