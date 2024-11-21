@@ -98,7 +98,7 @@ class Registry {
     // Add a system to the registry
     template <class... Components, typename Function> void add_system(Function&& f) {
         _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
-            f(*this, deltaTime, get_components<Components>()...);
+            f(*this, deltaTime, get_components_helper<Components>()...);
         });
     }
 
@@ -114,4 +114,12 @@ class Registry {
     std::vector<std::function<void(float)>>                    _systems;
     std::vector<std::function<void(Registry&, Entity const&)>> _erase_functions;
     ManageEntities                                             _entity_manager;
+
+    template <typename Component> SparseArray<Component>& get_components_helper() {
+        return get_components<Component>();
+    }
+
+    template <typename Component> const SparseArray<Component>& get_components_helper() const {
+        return get_components<Component>();
+    }
 };
