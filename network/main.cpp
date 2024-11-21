@@ -9,6 +9,10 @@
 #include "include/DynamicLibrary/DynamicLIbrary.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
+#define _WIN32_WINNT 0x0A00
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #else
 #include <dlfcn.h>

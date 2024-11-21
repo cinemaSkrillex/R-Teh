@@ -8,6 +8,10 @@
 #ifndef UDPSERVER_HPP
 #define UDPSERVER_HPP
 
+#if defined(_WIN32) || defined(_WIN64)
+#define _WIN32_WINNT 0x0A00
+#endif
+
 #include "../Export.hpp"
 #include <asio.hpp>
 #include <iostream>
