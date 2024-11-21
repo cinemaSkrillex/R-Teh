@@ -1,6 +1,13 @@
 # Network project
 project(game_engine)
 
+
+if(DEFINED ENV{VCPKG_ROOT})
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+else()
+    message(FATAL_ERROR "VCPKG_ROOT environment variable is not set")
+endif()
+
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
