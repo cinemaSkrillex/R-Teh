@@ -18,6 +18,7 @@ endif()
 
 if (WIN32)
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/sfml)
+    set(LUA_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/lua)
 endif()
 
 
