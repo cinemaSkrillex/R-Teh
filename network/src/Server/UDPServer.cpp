@@ -24,14 +24,17 @@ void UDPServer::start_receive() {
 }
 
 void UDPServer::handle_receive(std::size_t bytes_recvd) {
-    std::string message(recv_buffer_.data(), bytes_recvd);
-    std::cout << "Received: " << message << std::endl;
+    // Create a persistent std::shared_ptr for the message
+    auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
+    std::cout << "Received: " << *message << std::endl;
 
-    if (message == "ping") {
-        std::string response = "pong";
-        socket_.async_send_to(
-            asio::buffer(response), remote_endpoint_,
-            [this](std::error_code /*ec*/, std::size_t /*bytes_sent*/) { start_receive(); });
+    if (*message == "ping") {
+        // Create a persistent std::shared_ptr for the response
+        auto response = std::make_shared<std::string>("pong");
+        socket_.async_send_to(asio::buffer(*response), remote_endpoint_,
+                              [this, response](std::error_code /*ec*/, std::size_t /*bytes_sent*/) {
+                                  start_receive();
+                              });
     } else {
         start_receive();
     }
