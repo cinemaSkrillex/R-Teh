@@ -24,7 +24,7 @@ file(GLOB_RECURSE NETWORK_SOURCES
 if(WIN32)
     add_library(rtype_server SHARED ${NETWORK_SOURCES})
     set_target_properties(rtype_server PROPERTIES
-        OUTPUT_NAME "rtype_server"
+        OUTPUT_NAME "librtype_server"
         SUFFIX ".dll"
     )
 else()
