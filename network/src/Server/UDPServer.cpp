@@ -28,25 +28,36 @@ void UDPServer::handle_receive(std::size_t bytes_recvd) {
     // Create a persistent std::shared_ptr for the message
     auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
     std::cout << "Received: " << *message << std::endl;
+    handle_new_client(remote_endpoint_);
+    handle_unreliable_packet(*message);
 
-    if (message->substr(0, 3) == "ack") {
-        handle_ack(*message);
-    } else if (*message == "ping") {
-        // Create a persistent std::shared_ptr for the response
-        auto response = std::make_shared<std::string>("pong");
-        socket_.async_send_to(asio::buffer(*response), remote_endpoint_,
-                              [this, response](std::error_code /*ec*/, std::size_t /*bytes_sent*/) {
-                                  start_receive();
-                              });
-    } else {
-        start_receive();
-    }
+    start_receive();
 }
 
-void UDPServer::handle_ack(const std::string& ack_message) {
-    std::uint32_t ack_sequence_number = std::stoul(ack_message.substr(3));
-    unacknowledged_packets_.erase(ack_sequence_number);
+void UDPServer::handle_reliable_packet(const std::string& message, std::size_t colon_pos) {
+    std::uint32_t sequence_number = std::stoul(message.substr(0, colon_pos));
+    // Send ACK back to the client
+    std::cout << "received UDPServer::handle_reliable_packet" << sequence_number
+              << "remote: " << remote_endpoint_ << std::endl;
+    // Process the message content
+    std::cout << "Processing reliable message: " << message.substr(colon_pos + 1) << std::endl;
     start_receive(); // Continue receiving incoming packets
+}
+
+void UDPServer::handle_unreliable_packet(const std::string& message) {
+    // Process the message content
+    std::cout << "Processing unreliable message: " << message << std::endl;
+}
+
+void UDPServer::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
+    if (known_clients_.find(client_endpoint) == known_clients_.end()) {
+        known_clients_.insert(client_endpoint);
+        std::cout << "New client connected: " << client_endpoint << std::endl;
+
+        // Send test packets to the new client
+        send_unreliable_packet("Unreliable packet", client_endpoint);
+        send_reliable_packet("Reliable packet", client_endpoint);
+    }
 }
 
 /**
@@ -79,26 +90,7 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
  */
 void UDPServer::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
-    // std::uint6_t to avoid overflow
-    std::uint32_t current_sequence_number = sequence_number_++;
-    std::string   packet                  = std::to_string(current_sequence_number) + ":" + message;
-    unacknowledged_packets_[current_sequence_number] = packet;
-
-    auto send_packet = [this, packet, endpoint, current_sequence_number]() {
-        auto packet_ptr = std::make_shared<std::string>(packet);
-        socket_.async_send_to(asio::buffer(*packet_ptr), endpoint,
-                              [this, packet_ptr, current_sequence_number,
-                               endpoint](std::error_code /*ec*/, std::size_t /*bytes_sent*/) {
-                                  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                                  if (unacknowledged_packets_.find(current_sequence_number) !=
-                                      unacknowledged_packets_.end()) {
-                                      send_reliable_packet(
-                                          packet_ptr->substr(packet_ptr->find(":") + 1), endpoint);
-                                  }
-                              });
-    };
-
-    send_packet();
+    // TO DO: Implement reliable packet sending
 }
 
 extern "C" SERVER_API UDPServer* create_udp_server(asio::io_context& io_context,
