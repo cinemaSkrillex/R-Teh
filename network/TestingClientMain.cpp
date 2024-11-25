@@ -6,7 +6,7 @@
 */
 #include <iostream>
 #include <asio.hpp>
-#include "include/DynamicLibrary/DynamicLIbrary.hpp"
+#include "include/DynamicLibrary/DynamicLibrary.hpp"
 #include "include/Client/UDPClient.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -52,7 +52,9 @@ class TestClient {
     void send_test_packets() {
         // Send an unreliable packet to the server
         client_->send_unreliable_packet("Unreliable packet", server_endpoint_);
-
+        client_->send_unreliable_packet("Unreliable packet again", server_endpoint_);
+        // std::uint32_t sequence_number = 0;
+        // client_->send_ack(sequence_number);
         // Send a reliable packet to the server
         // client_->send_reliable_packet("Reliable packet", server_endpoint_);
     }

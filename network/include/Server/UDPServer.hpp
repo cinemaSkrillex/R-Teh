@@ -12,6 +12,9 @@
 #define _WIN32_WINNT 0x0A00
 #endif
 
+#define BUFFER_SIZE 500
+#define WINDOW_SIZE 5
+
 #include "../Export.hpp"
 #include <asio.hpp>
 #include <iostream>
@@ -34,16 +37,26 @@ struct EndpointEqual {
     }
 };
 
+struct packet {
+    int               sequence_no;
+    int               packet_size;
+    std::vector<char> data;
+};
+
 // SERVER_API is a macro for the visibility of the class UDPServer,
 // its for the shared library
 
 class SERVER_API UDPServer {
   public:
     UDPServer(asio::io_context& io_context, unsigned short port);
+    ~UDPServer();
 
     void send_unreliable_packet(const std::string&             message,
                                 const asio::ip::udp::endpoint& endpoint);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
+    const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>&
+         get_known_clients() const;
+    void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
 
   private:
     void start_receive();
@@ -51,15 +64,22 @@ class SERVER_API UDPServer {
     void handle_reliable_packet(const std::string& message, std::size_t colon_pos);
     void handle_unreliable_packet(const std::string& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
+    void handle_ack(const std::string& ack_message);
+
+    void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
+    void retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
 
     asio::ip::udp::socket   socket_;
     asio::ip::udp::endpoint remote_endpoint_;
     std::array<char, 1024>  recv_buffer_;
 
     // Reliable packet handling via sequence numbers
-    std::unordered_map<std::uint32_t, std::string> unacknowledged_packets_;
-    std::uint32_t                                  sequence_number_ = 0;
+    std::unordered_map<int, packet> unacknowledged_packets_;
+    std::uint32_t                   sequence_number_ = 0;
+    // retransmission timer
+    asio::steady_timer retransmission_timer_;
     // Track known clients
+
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> known_clients_;
 };
 
