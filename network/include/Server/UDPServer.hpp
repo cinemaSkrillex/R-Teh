@@ -55,11 +55,10 @@ class SERVER_API UDPServer {
   private:
     void start_receive();
     void handle_receive(std::size_t bytes_recvd);
-    void handle_reliable_packet(const std::string& message, std::size_t colon_pos);
+    void handle_reliable_packet(const std::string& message, int sequence_number);
     void handle_unreliable_packet(const std::string& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
     void handle_ack(const std::string& ack_message);
-    void send_client_ack(std::uint32_t sequence_number);
 
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
     void retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
