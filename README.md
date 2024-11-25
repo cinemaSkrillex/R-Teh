@@ -24,10 +24,16 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 On Ubuntu:
 ```bash
+# vcpkg dependencies
 sudo apt install cmake
 sudo apt install autoconf
 sudo apt install automake
 sudo apt install libtool
+sudo apt install pkg-config
+sudo apt install libfreetype-dev
+sudo apt-get install libopenal-dev
+sudo apt install liblua5.4-dev
+sudo apt-get install libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev # sfml required libraries by vcpkg
 ```
 
 On Windows:

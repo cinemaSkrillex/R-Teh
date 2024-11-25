@@ -32,11 +32,18 @@ if (WIN32)
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/lua)
 endif()
 
+if (UNIX)
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/sfml)
+    set(LUA_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/lua)
+    # set(FREETYPE_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/freetype)
+endif()
+
 
 
 # Find Lua
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(Lua REQUIRED)
+# find_package(Freetype REQUIRED)
 
 # Source files
 file(GLOB_RECURSE NETWORK_SOURCES 
