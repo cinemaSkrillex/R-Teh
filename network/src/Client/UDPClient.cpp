@@ -9,7 +9,8 @@
 
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), server_endpoint_(),
-      recv_buffer_(), sequence_number_(0), retransmission_timer_(io_context) {
+      recv_buffer_(), sequence_number_(0), retransmission_timer_(io_context),
+      packet_sender_(io_context, socket_) {
     start_receive();
 }
 
@@ -25,13 +26,14 @@ void UDPClient::start_receive() {
 
 void UDPClient::handle_ack(const std::string& ack_message) {
     // CLIENT_ACK:
-    std::uint32_t sequence_number = std::stoul(ack_message.substr(11));
-    if (sequence_number < 0) {
-        std::cerr << "Invalid sequence number: " << sequence_number << std::endl;
-        return;
-    }
-    std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
-    unacknowledged_packets_.erase(sequence_number);
+    // std::uint32_t sequence_number = std::stoul(ack_message.substr(11));
+    // if (sequence_number < 0) {
+    //     std::cerr << "Invalid sequence number: " << sequence_number << std::endl;
+    //     return;
+    // }
+    // std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
+    // unacknowledged_packets_.erase(sequence_number);
+    packet_sender_.handle_ack(ack_message);
 }
 
 void UDPClient::handle_receive(std::size_t bytes_recvd) {

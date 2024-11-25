@@ -44,6 +44,8 @@ class CLIENT_API UDPClient {
     std::uint32_t                   sequence_number_ = 0;
     // retransmission timer
     asio::steady_timer retransmission_timer_;
+
+    PacketSender packet_sender_;
 };
 
 #endif // UDPCLIENT_HPP
