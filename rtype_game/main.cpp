@@ -11,6 +11,7 @@
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
 #include "Core/Window.hpp"
+#include "Controls.hpp"
 
 int main() {
     RealEngine::Window window("SKRILLEX", sf::Vector2u(800, 600));
@@ -58,8 +59,22 @@ int main() {
     registry.add_component(entity2,
                            SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
 
-    DrawSystem     drawSystem(window.getRenderWindow());
-    ControlSystem  controlSystem;
+    DrawSystem      drawSystem(window.getRenderWindow());
+    ControlSystem   controlSystem;
+    rtype::Controls controls;
+    controlSystem.bindKey(sf::Keyboard::Z, Action::Up);
+    controlSystem.bindKey(sf::Keyboard::S, Action::Down);
+    controlSystem.bindKey(sf::Keyboard::Q, Action::Left);
+    controlSystem.bindKey(sf::Keyboard::D, Action::Right);
+    controlSystem.setActionHandler(Action::Up, rtype::Controls::moveUp);
+    controlSystem.setActionHandler(Action::Down, rtype::Controls::moveDown);
+    controlSystem.setActionHandler(Action::Left, rtype::Controls::moveLeft);
+    controlSystem.setActionHandler(Action::Right, rtype::Controls::moveRight);
+    controlSystem.setActionReleaseHandler(Action::Up, rtype::Controls::decelerateUp);
+    controlSystem.setActionReleaseHandler(Action::Down, rtype::Controls::decelerateDown);
+    controlSystem.setActionReleaseHandler(Action::Left, rtype::Controls::decelerateLeft);
+    controlSystem.setActionReleaseHandler(Action::Right, rtype::Controls::decelerateRight);
+
     MovementSystem movementSystem;
 
     float deltaTime = 0.f;

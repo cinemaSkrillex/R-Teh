@@ -8,46 +8,10 @@
 #include "../include/ECS/Systems/ControlSystem.hpp"
 
 ControlSystem::ControlSystem() {
-    // Default key bindings (can be changed with bindKey)
     keyBindings[sf::Keyboard::Z] = Action::Up;
     keyBindings[sf::Keyboard::S] = Action::Down;
     keyBindings[sf::Keyboard::Q] = Action::Left;
     keyBindings[sf::Keyboard::D] = Action::Right;
-
-    // Initialize action handlers
-    actionHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration,
-                                        float deltaTime) {
-        handleMoveUp(velocity, acceleration, deltaTime);
-    };
-    actionHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration,
-                                          float deltaTime) {
-        handleMoveDown(velocity, acceleration, deltaTime);
-    };
-    actionHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration,
-                                          float deltaTime) {
-        handleMoveLeft(velocity, acceleration, deltaTime);
-    };
-    actionHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration,
-                                           float deltaTime) {
-        handleMoveRight(velocity, acceleration, deltaTime);
-    };
-
-    actionReleaseHandlers[Action::Up] = [this](Velocity& velocity, Acceleration& acceleration,
-                                               float deltaTime) {
-        applyUpDeceleration(velocity, acceleration, deltaTime);
-    };
-    actionReleaseHandlers[Action::Down] = [this](Velocity& velocity, Acceleration& acceleration,
-                                                 float deltaTime) {
-        applyDownDeceleration(velocity, acceleration, deltaTime);
-    };
-    actionReleaseHandlers[Action::Left] = [this](Velocity& velocity, Acceleration& acceleration,
-                                                 float deltaTime) {
-        applyLeftDeceleration(velocity, acceleration, deltaTime);
-    };
-    actionReleaseHandlers[Action::Right] = [this](Velocity& velocity, Acceleration& acceleration,
-                                                  float deltaTime) {
-        applyRightDeceleration(velocity, acceleration, deltaTime);
-    };
 }
 
 void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities,
@@ -86,73 +50,10 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
 
 void ControlSystem::bindKey(sf::Keyboard::Key key, Action action) { keyBindings[key] = action; }
 
-void ControlSystem::handleMoveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
-    if (velocity.vy > 50)
-        velocity.vy = 50;
-    velocity.vy -= acceleration.ay * 3 * deltaTime;
-    if (velocity.vy < -400)
-        velocity.vy = -400;
+void ControlSystem::setActionHandler(Action action, ActionHandler handler) {
+    actionHandlers[action] = handler;
 }
 
-void ControlSystem::handleMoveDown(Velocity& velocity, Acceleration& acceleration,
-                                   float deltaTime) {
-    if (velocity.vy < -50)
-        velocity.vy = -50;
-    velocity.vy += acceleration.ay * 3 * deltaTime;
-    if (velocity.vy > 400)
-        velocity.vy = 400;
-}
-
-void ControlSystem::handleMoveLeft(Velocity& velocity, Acceleration& acceleration,
-                                   float deltaTime) {
-    if (velocity.vx > 50)
-        velocity.vx = 50;
-    velocity.vx -= acceleration.ax * 3 * deltaTime;
-    if (velocity.vx < -400)
-        velocity.vx = -400;
-}
-
-void ControlSystem::handleMoveRight(Velocity& velocity, Acceleration& acceleration,
-                                    float deltaTime) {
-    if (velocity.vx < -50)
-        velocity.vx = -50;
-    velocity.vx += acceleration.ax * 3 * deltaTime;
-    if (velocity.vx > 400)
-        velocity.vx = 400;
-}
-
-void ControlSystem::applyUpDeceleration(Velocity& velocity, Acceleration& acceleration,
-                                        float deltaTime) {
-    if (velocity.vy < 0) {
-        velocity.vy += acceleration.ay * 3 * deltaTime;
-        if (velocity.vy > 0)
-            velocity.vy = 0;
-    }
-}
-
-void ControlSystem::applyDownDeceleration(Velocity& velocity, Acceleration& acceleration,
-                                          float deltaTime) {
-    if (velocity.vy > 0) {
-        velocity.vy -= acceleration.ay * 3 * deltaTime;
-        if (velocity.vy < 0)
-            velocity.vy = 0;
-    }
-}
-
-void ControlSystem::applyLeftDeceleration(Velocity& velocity, Acceleration& acceleration,
-                                          float deltaTime) {
-    if (velocity.vx < 0) {
-        velocity.vx += acceleration.ax * 3 * deltaTime;
-        if (velocity.vx > 0)
-            velocity.vx = 0;
-    }
-}
-
-void ControlSystem::applyRightDeceleration(Velocity& velocity, Acceleration& acceleration,
-                                           float deltaTime) {
-    if (velocity.vx > 0) {
-        velocity.vx -= acceleration.ax * 3 * deltaTime;
-        if (velocity.vx < 0)
-            velocity.vx = 0;
-    }
+void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler) {
+    actionReleaseHandlers[action] = handler;
 }

@@ -10,7 +10,6 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
 )
-set(SOURCES main.cpp)
 
 # Create the binary
 add_executable(r_type ${SOURCES})
