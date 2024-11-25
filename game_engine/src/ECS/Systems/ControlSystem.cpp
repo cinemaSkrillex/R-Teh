@@ -68,7 +68,6 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
                       << std::endl;
         }
 
-        bool keyPressed = false;
         for (const auto& [key, Action] : keyBindings) {
             if (sf::Keyboard::isKeyPressed(key)) {
                 actionHandlers[Action](*velocities[i], *accelerations[i], deltaTime * 100.0);
