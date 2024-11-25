@@ -12,7 +12,7 @@
 #include <iostream>
 #include <array>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <queue>
 #include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
@@ -21,6 +21,7 @@
 class CLIENT_API UDPClient {
   public:
     UDPClient(asio::io_context& io_context, unsigned short port);
+    ~UDPClient();
 
     void send_unreliable_packet(const std::string&             message,
                                 const asio::ip::udp::endpoint& server_endpoint);
@@ -51,9 +52,9 @@ class CLIENT_API UDPClient {
     PacketManager packet_manager_;
 
     // Store received packets
-    std::unordered_map<int, packet> received_packets_;
-    int                             start_sequence_no_ = -1;
-    int                             end_sequence_no    = -1;
+    std::map<int, packet> received_packets_;
+    int                   start_sequence_no_ = -1;
+    int                   end_sequence_no    = -1;
 
     // Packet processing
     std::queue<packet>      packet_queue_;

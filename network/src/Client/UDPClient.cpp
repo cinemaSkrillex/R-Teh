@@ -16,6 +16,16 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
     processing_thread_ = std::thread(&UDPClient::process_packets, this);
 }
 
+UDPClient::~UDPClient() {
+    {
+        std::lock_guard<std::mutex> lock(queue_mutex_);
+        stop_processing_ = true;
+    }
+    queue_cv_.notify_all();
+    processing_thread_.join();
+    std::cout << "deleting UDPClient" << std::endl;
+}
+
 void UDPClient::start_receive() {
     socket_.async_receive_from(asio::buffer(recv_buffer_), server_endpoint_,
                                [this](std::error_code ec, std::size_t bytes_recvd) {
@@ -27,14 +37,6 @@ void UDPClient::start_receive() {
 }
 
 void UDPClient::handle_ack(const std::string& ack_message) {
-    // CLIENT_ACK:
-    // std::uint32_t sequence_number = std::stoul(ack_message.substr(11));
-    // if (sequence_number < 0) {
-    //     std::cerr << "Invalid sequence number: " << sequence_number << std::endl;
-    //     return;
-    // }
-    // std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
-    // unacknowledged_packets_.erase(sequence_number);
     packet_manager_.handle_ack(ack_message);
 }
 
