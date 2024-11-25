@@ -13,6 +13,7 @@
 #include <array>
 #include <string>
 #include "../ClientExport.hpp"
+#include "../shared/PacketUtils.hpp"
 
 class CLIENT_API UDPClient {
   public:
@@ -24,18 +25,20 @@ class CLIENT_API UDPClient {
                               const asio::ip::udp::endpoint& server_endpoint);
 
     void start_receive();
+    void send_ack(std::uint32_t sequence_number);
 
   private:
-    void handle_reliable_packet(const std::string& message, std::size_t colon_pos);
+    void handle_reliable_packet(const packet& pkt);
     void handle_unreliable_packet(const std::string& message);
     void handle_ack(std::uint32_t sequence_number);
+    void handle_receive(std::size_t bytes_recvd);
 
     asio::ip::udp::socket   socket_;
     asio::ip::udp::endpoint server_endpoint_;
     std::array<char, 1024>  recv_buffer_;
 
-    std::unordered_map<std::uint32_t, std::string> unacknowledged_packets_;
-    std::uint32_t                                  sequence_number_ = 0;
+    std::unordered_map<std::uint32_t, packet> unacknowledged_packets_;
+    std::uint32_t                             sequence_number_ = 0;
 };
 
 #endif // UDPCLIENT_HPP

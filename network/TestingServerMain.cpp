@@ -6,7 +6,7 @@
 */
 #include <iostream>
 #include <asio.hpp>
-#include "include/DynamicLibrary/DynamicLIbrary.hpp"
+#include "include/DynamicLibrary/DynamicLibrary.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -40,19 +40,14 @@ class TestServer {
         server_ = create_server(io_context_, port);
     }
 
-    ~TestServer() { delete server_; }
+    ~TestServer() {
+        std::cout << "deleting server";
+        delete server_;
+    }
 
     void start() {
         // Start the server
         io_context_.run();
-    }
-
-    void send_test_packets(const asio::ip::udp::endpoint& client_endpoint) {
-        // Send an unreliable packet
-        server_->send_unreliable_packet("Unreliable packet", client_endpoint);
-
-        // Send a reliable packet
-        // server_->send_reliable_packet("Enemy killed at (10, 20)", client_endpoint);
     }
 
   private:
@@ -70,13 +65,9 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        TestServer       test_server(io_context, port);
+        auto             test_server = std::make_shared<TestServer>(io_context, port);
 
-        // Simulate a client connection
-        asio::ip::udp::endpoint client_endpoint(asio::ip::address::from_string("127.0.0.1"), 12345);
-        test_server.send_test_packets(client_endpoint);
-
-        test_server.start();
+        test_server->start();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

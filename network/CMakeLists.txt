@@ -5,6 +5,10 @@ project(Network)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Add debug flags for Valgrind
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
+
+
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)

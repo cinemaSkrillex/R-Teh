@@ -5,8 +5,8 @@
 ** DynamicLibrary.hpp
 */
 
-#ifndef DYNAMICLIBRARY_HPP
-#define DYNAMICLIBRARY_HPP
+#ifndef DynamicLibrary_HPP
+#define DynamicLibrary_HPP
 
 #include <iostream>
 #include <stdexcept>
@@ -65,4 +65,4 @@ class DynamicLibrary {
     void* handle_;
 };
 
-#endif // DYNAMICLIBRARY_HPP
+#endif // DynamicLibrary_HPP
