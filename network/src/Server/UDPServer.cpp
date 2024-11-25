@@ -29,19 +29,6 @@ void UDPServer::start_receive() {
                                });
 }
 
-void UDPServer::send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
-    const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-
-    socket_.async_send_to(asio::buffer(*buffer), endpoint,
-                          [this, pkt, endpoint](std::error_code ec, std::size_t /*bytes_sent*/) {
-                              if (!ec) {
-                                  std::cout
-                                      << "Sent packet with sequence number: " << pkt.sequence_no
-                                      << std::endl;
-                              }
-                          });
-}
-
 void UDPServer::handle_ack(const std::string& ack_message) {
     packet_manager_.handle_ack(ack_message);
 }

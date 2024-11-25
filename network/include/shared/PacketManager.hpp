@@ -26,6 +26,10 @@ class PacketManager {
     void handle_ack(const std::string& ack_message) {
         std::uint32_t sequence_number = 0;
         std::cout << "ack_message: " << ack_message << std::endl;
+        if (ack_message.size() < 4) {
+            std::cerr << "Invalid ACK message: " << ack_message << std::endl;
+            return;
+        }
         if (ack_message.substr(0, 11) == "CLIENT_ACK:") {
             sequence_number = std::stoul(ack_message.substr(11));
         } else if (ack_message.substr(0, 4) == "ACK:") {

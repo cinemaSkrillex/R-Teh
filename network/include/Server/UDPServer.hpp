@@ -49,8 +49,7 @@ class SERVER_API UDPServer {
                                 const asio::ip::udp::endpoint& endpoint);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
     const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>&
-         get_known_clients() const;
-    void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
+    get_known_clients() const;
 
   private:
     void start_receive();
@@ -59,9 +58,6 @@ class SERVER_API UDPServer {
     void handle_unreliable_packet(const std::string& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
     void handle_ack(const std::string& ack_message);
-
-    void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
-    void retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
 
     asio::ip::udp::socket   socket_;
     asio::ip::udp::endpoint remote_endpoint_;
