@@ -22,7 +22,7 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
 
         // Check if texture is out of bounds before advancing the frame
         if (sprite.isTextureOfBounds()) {
-            if (!spritesheet.loop)
+            if (spritesheet.loop)
                 spritesheet.frameIndex = 0; // Reset frame index to 0
             else
                 spritesheet.pause = true; // Paute animation;
