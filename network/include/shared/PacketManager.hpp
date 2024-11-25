@@ -75,6 +75,39 @@ class PacketManager {
                               });
     }
 
+    void send_ack(std::uint32_t sequence_number, const asio::ip::udp::endpoint& endpoint_) {
+        std::string ack_message;
+        if (role_ == Role::SERVER) {
+            ack_message = "CLIENT_ACK:" + std::to_string(sequence_number);
+        }
+        if (role_ == Role::CLIENT) {
+            ack_message = "ACK:" + std::to_string(sequence_number);
+        }
+        packet pkt;
+        pkt.sequence_no = sequence_number;
+        pkt.packet_size = ack_message.size();
+        pkt.flag        = ACK;
+        pkt.data.assign(ack_message.begin(), ack_message.end());
+
+        // Serialize the packet using the serialize_packet method
+        const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
+        std::cout << "Sending ACK for sequence number: " << sequence_number << " to " << endpoint_
+                  << std::endl;
+
+        if (endpoint_.address().is_unspecified()) {
+            std::cerr << "Server endpoint is unspecified" << std::endl;
+            return;
+        }
+
+        socket_.async_send_to(asio::buffer(*buffer), endpoint_,
+                              [this, buffer](std::error_code ec, std::size_t bytes_sent) {
+                                  if (ec) {
+                                      std::cerr << "Send ACK error: " << ec.message()
+                                                << " size: " << bytes_sent << std::endl;
+                                  }
+                              });
+    }
+
   private:
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
         // Serialize the packet using the serialize_packet method

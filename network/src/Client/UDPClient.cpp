@@ -62,9 +62,7 @@ void UDPClient::handle_reliable_packet(const packet& pkt) {
     std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
 
     // Send ACK back to the server
-    send_ack(pkt.sequence_no);
-    // send_unreliable_packet("ACK:" + std::to_string(pkt.sequence_no), server_endpoint_);
-    // send_ack(pkt.sequence_no);
+    packet_manager_.send_ack(pkt.sequence_no, server_endpoint_);
 }
 
 void UDPClient::send_ack(std::uint32_t sequence_number) {
