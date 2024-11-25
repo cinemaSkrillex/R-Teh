@@ -18,7 +18,6 @@ UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
 UDPServer::~UDPServer() { std::cout << "deleting UDPServer"; }
 
 void UDPServer::start_receive() {
-    std::cout << "start_receive" << std::endl;
     socket_.async_receive_from(asio::buffer(recv_buffer_), remote_endpoint_,
                                [this](std::error_code ec, std::size_t bytes_recvd) {
                                    if (!ec && bytes_recvd > 0) {
@@ -28,23 +27,11 @@ void UDPServer::start_receive() {
                                        start_receive();
                                    }
                                });
-    std::cout << "start_receive end" << std::endl;
 }
-
-// void UDPServer::handle_receive(std::size_t bytes_recvd) {
-//     // Create a persistent std::shared_ptr for the message
-//     auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
-//     std::cout << "Received: " << *message << std::endl;
-//     handle_new_client(remote_endpoint_);
-//     handle_unreliable_packet(*message);
-
-//     start_receive();
-// }
 
 void UDPServer::handle_ack(const std::string& ack_message) {
     std::uint32_t sequence_number = std::stoul(ack_message.substr(4));
     std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
-    // Remove the acknowledged packet from the unacknowledged_packets_ map
     unacknowledged_packets_.erase(sequence_number);
 }
 
@@ -61,13 +48,7 @@ void UDPServer::handle_receive(std::size_t bytes_recvd) {
 }
 
 void UDPServer::send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
-    auto buffer = std::make_shared<std::vector<char>>(sizeof(pkt.sequence_no) +
-                                                      sizeof(pkt.packet_size) + pkt.data.size());
-    std::memcpy(buffer->data(), &pkt.sequence_no, sizeof(pkt.sequence_no));
-    std::memcpy(buffer->data() + sizeof(pkt.sequence_no), &pkt.packet_size,
-                sizeof(pkt.packet_size));
-    std::memcpy(buffer->data() + sizeof(pkt.sequence_no) + sizeof(pkt.packet_size), pkt.data.data(),
-                pkt.data.size());
+    const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
 
     socket_.async_send_to(asio::buffer(*buffer), endpoint,
                           [this, pkt, endpoint](std::error_code ec, std::size_t /*bytes_sent*/) {
@@ -82,6 +63,7 @@ void UDPServer::send_packet(const packet& pkt, const asio::ip::udp::endpoint& en
 
 void UDPServer::retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint) {
     for (const auto& pair : unacknowledged_packets_) {
+        std::cout << "Retransmitting packet with sequence number: " << pair.first << std::endl;
         send_packet(pair.second, endpoint);
     }
 }
@@ -208,46 +190,23 @@ void UDPServer::send_reliable_packet(const std::string&             message,
         std::cout << "pkt.data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
         unacknowledged_packets_[pkt.sequence_no] = pkt;
         send_packet(pkt, endpoint);
-
-        packets_sent++;
-        // if (packets_sent == WINDOW_SIZE) {
-        //     std::this_thread::sleep_for(std::chrono::milliseconds(30));
-        //     retransmit_unacknowledged_packets(endpoint);
-        //     std::cout << "Retransmitting unacknowledged packets" << std::endl;
-        //     packets_sent = 0;
-        // }
     }
-
-    // Ensure all remaining packets are acknowledged
-    // while (!unacknowledged_packets_.empty()) {
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(300));
-    //     retransmit_unacknowledged_packets(endpoint);
-    //     std::cout << "Retransmitting unacknowledged packets: " << unacknowledged_packets_.size()
-    //               << std::endl;
-    //     for (const auto& pair : unacknowledged_packets_) {
-    //         std::cout << "Unacknowledged packet: " << pair.first << std::endl;
-    //     }
-    //     start_receive();
-    // }
     schedule_retransmissions(endpoint);
 }
 
 void UDPServer::schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
-    // retransmission_timer_.expires_after(std::chrono::milliseconds(300));
-    // retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
-    //     if (!ec) {
-    //         retransmit_unacknowledged_packets(endpoint);
-    //         std::cout << "Retransmitting unacknowledged packets: " <<
-    //         unacknowledged_packets_.size()
-    //                   << std::endl;
-    //         for (const auto& pair : unacknowledged_packets_) {
-    //             std::cout << "Unacknowledged packet: " << pair.first << std::endl;
-    //         }
-    //         if (!unacknowledged_packets_.empty()) {
-    //             schedule_retransmissions(endpoint);
-    //         }
-    //     }
-    // });
+    retransmission_timer_.expires_after(std::chrono::milliseconds(300));
+    retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
+        if (!ec) {
+            retransmit_unacknowledged_packets(endpoint);
+            for (const auto& pair : unacknowledged_packets_) {
+                std::cout << "Unacknowledged packet: " << pair.first << std::endl;
+            }
+            if (!unacknowledged_packets_.empty()) {
+                schedule_retransmissions(endpoint);
+            }
+        }
+    });
 }
 
 const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>&

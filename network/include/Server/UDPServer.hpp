@@ -12,10 +12,8 @@
 #define _WIN32_WINNT 0x0A00
 #endif
 
-#define BUFFER_SIZE 500
-#define WINDOW_SIZE 5
-
 #include "../Export.hpp"
+#include "../shared/PacketUtils.hpp"
 #include <asio.hpp>
 #include <iostream>
 #include <array>
@@ -35,12 +33,6 @@ struct EndpointEqual {
     bool operator()(const asio::ip::udp::endpoint& lhs, const asio::ip::udp::endpoint& rhs) const {
         return lhs.address() == rhs.address() && lhs.port() == rhs.port();
     }
-};
-
-struct packet {
-    int               sequence_no;
-    int               packet_size;
-    std::vector<char> data;
 };
 
 // SERVER_API is a macro for the visibility of the class UDPServer,

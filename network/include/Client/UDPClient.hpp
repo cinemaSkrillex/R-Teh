@@ -13,14 +13,7 @@
 #include <array>
 #include <string>
 #include "../ClientExport.hpp"
-
-#define BUFFER_SIZE 500
-
-struct packet {
-    int  sequence_no;
-    int  packet_size;
-    char data[BUFFER_SIZE];
-};
+#include "../shared/PacketUtils.hpp"
 
 class CLIENT_API UDPClient {
   public:
@@ -38,6 +31,7 @@ class CLIENT_API UDPClient {
     void handle_reliable_packet(const packet& pkt);
     void handle_unreliable_packet(const std::string& message);
     void handle_ack(std::uint32_t sequence_number);
+    void handle_receive(std::size_t bytes_recvd);
 
     asio::ip::udp::socket   socket_;
     asio::ip::udp::endpoint server_endpoint_;
