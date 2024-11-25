@@ -11,5 +11,7 @@
 
 struct Collision {
     sf::FloatRect bounds;
+    std::string id;
     bool isColliding;
+    // sf::Vector2f size; for later.
 };

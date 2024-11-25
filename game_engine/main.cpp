@@ -10,6 +10,7 @@
 #include "../include/ECS/Systems/ControlSystem.hpp"
 #include "../include/ECS/Components/Acceleration.hpp"
 #include "../include/ECS/Systems/MovementSystem.hpp"
+#include "../include/ECS/Systems/CollisionSystem.hpp"
 
 #include "../include/Core/Window.hpp"
 
@@ -26,6 +27,7 @@ int main() {
     registry.register_component<Drawable>();
     registry.register_component<Controllable>();
     registry.register_component<Acceleration>();
+    registry.register_component<Collision>();
 
     // Sprites
     RealEngine::Sprite upSpaceship("../assets/spaceship.png", {0, 0, 32 * 2, 15});
@@ -49,6 +51,7 @@ int main() {
     // 1. Add all components at once
     registry.add_components(entity1, Position{100.f, 100.f}, Drawable{});
     registry.add_component(entity1, Sprite{idleSpaceship});
+    registry.add_component(entity1, Collision{{0.f, 0.f, 100.f, 100.f}, "player", false});
 
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
@@ -57,11 +60,14 @@ int main() {
     registry.add_component(entity2, Controllable{});
     registry.add_component(entity2, Drawable{});
     registry.add_component(
-        entity2, SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+        entity2, SpriteSheet{spaceshipSheet, "up", 0, {32, 15}, false, true, 100});
+    registry.add_component(entity2, Collision{{200.f, 200.f, 100.f, 100.f}, "ennemy", false});
+
 
     DrawSystem     drawSystem(window.getRenderWindow());
     ControlSystem  controlSystem;
     MovementSystem movementSystem;
+    CollisionSystem collisionSystem;
 
     float deltaTime = 0.f;
     registry.add_system<Position, Velocity>(
@@ -79,6 +85,11 @@ int main() {
         [&controlSystem](Registry& registry, float deltaTime, auto& velocities, auto& controllables,
                          auto& accelerations) {
             controlSystem.update(registry, velocities, controllables, accelerations, deltaTime);
+        });
+
+    registry.add_system<Collision, Sprite, SpriteSheet>(
+        [&collisionSystem](Registry& registry, float deltaTime, auto& collisions, auto& sprites, auto& spritesheets) {
+            collisionSystem.update(registry, collisions, sprites, spritesheets, deltaTime);
         });
 
     sf::Clock clock;
