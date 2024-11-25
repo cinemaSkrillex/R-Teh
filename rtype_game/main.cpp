@@ -1,17 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include "ECS/Registry/Registry.hpp"
-#include "../include/ECS/Components/Position.hpp"
-#include "../include/ECS/Components/Sprite.hpp"
-#include "../include/ECS/Components/SpriteSheet.hpp"
-#include "../include/ECS/Components/Velocity.hpp"
-#include "../include/ECS/Components/Drawable.hpp"
-#include "../include/ECS/Components/Controllable.hpp"
-#include "../include/ECS/Systems/DrawSystem.hpp"
-#include "../include/ECS/Systems/ControlSystem.hpp"
-#include "../include/ECS/Components/Acceleration.hpp"
-#include "../include/ECS/Systems/MovementSystem.hpp"
-
-#include "../include/Core/Window.hpp"
+#include "ECS/Components/Position.hpp"
+#include "ECS/Components/Sprite.hpp"
+#include "ECS/Components/SpriteSheet.hpp"
+#include "ECS/Components/Velocity.hpp"
+#include "ECS/Components/Drawable.hpp"
+#include "ECS/Components/Controllable.hpp"
+#include "ECS/Systems/DrawSystem.hpp"
+#include "ECS/Systems/ControlSystem.hpp"
+#include "ECS/Components/Acceleration.hpp"
+#include "ECS/Systems/MovementSystem.hpp"
+#include "Core/Window.hpp"
 
 int main() {
     RealEngine::Window window("SKRILLEX", sf::Vector2u(800, 600));
