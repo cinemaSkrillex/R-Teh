@@ -48,7 +48,6 @@ find_package(OpenAL REQUIRED)
 
 # Source files
 file(GLOB_RECURSE NETWORK_SOURCES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
 )

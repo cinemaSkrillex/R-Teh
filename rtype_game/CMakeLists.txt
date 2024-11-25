@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtype_game)
 
-# Ajouter les chemins d'inclusion
-include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include)
+#add includes files
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Ajouter les fichiers sources
+# Add sources files
+file(GLOB_RECURSE SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+)
 set(SOURCES main.cpp)
 
-# Créer l'exécutable
+# Create the binary
 add_executable(r_type ${SOURCES})
 
-# Lier l'exécutable avec la bibliothèque statique
+# Link lib to binary
 target_link_libraries(r_type rtype_engine)
