@@ -8,7 +8,8 @@
 #include "../../include/Client/UDPClient.hpp"
 
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
-    : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)) {
+    : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), server_endpoint_(),
+      recv_buffer_(), sequence_number_(0), retransmission_timer_(io_context) {
     start_receive();
 }
 
@@ -22,6 +23,17 @@ void UDPClient::start_receive() {
                                });
 }
 
+void UDPClient::handle_ack(const std::string& ack_message) {
+    // CLIENT_ACK:
+    std::uint32_t sequence_number = std::stoul(ack_message.substr(11));
+    if (sequence_number < 0) {
+        std::cerr << "Invalid sequence number: " << sequence_number << std::endl;
+        return;
+    }
+    std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
+    unacknowledged_packets_.erase(sequence_number);
+}
+
 void UDPClient::handle_receive(std::size_t bytes_recvd) {
     std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
     packet            pkt = deserialize_packet(buffer);
@@ -31,6 +43,9 @@ void UDPClient::handle_receive(std::size_t bytes_recvd) {
         break;
     case UNRELIABLE:
         handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    case ACK:
+        handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
         break;
     default:
         std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
@@ -79,6 +94,9 @@ void UDPClient::send_unreliable_packet(const std::string&             message,
                               }
                           });
 }
+
+void UDPClient::send_reliable_packet(const std::string&             message,
+                                     const asio::ip::udp::endpoint& endpoint) {}
 
 void UDPClient::handle_unreliable_packet(const std::string& message) {
     // Process the message content

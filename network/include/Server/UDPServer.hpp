@@ -14,6 +14,8 @@
 
 #include "../Export.hpp"
 #include "../shared/PacketUtils.hpp"
+#include "../shared/SendPackets.hpp"
+
 #include <asio.hpp>
 #include <iostream>
 #include <array>
@@ -57,6 +59,7 @@ class SERVER_API UDPServer {
     void handle_unreliable_packet(const std::string& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
     void handle_ack(const std::string& ack_message);
+    void send_client_ack(std::uint32_t sequence_number);
 
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
     void retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
@@ -71,8 +74,8 @@ class SERVER_API UDPServer {
     // retransmission timer
     asio::steady_timer retransmission_timer_;
     // Track known clients
-
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> known_clients_;
+    PacketSender                                                             packet_sender_;
 };
 
 #endif // UDPSERVER_HPP

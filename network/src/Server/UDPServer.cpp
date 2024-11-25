@@ -11,7 +11,7 @@
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-      retransmission_timer_(io_context) {
+      retransmission_timer_(io_context), packet_sender_(io_context, socket_) {
     start_receive();
 }
 
@@ -43,9 +43,10 @@ void UDPServer::send_packet(const packet& pkt, const asio::ip::udp::endpoint& en
 }
 
 void UDPServer::handle_ack(const std::string& ack_message) {
-    std::uint32_t sequence_number = std::stoul(ack_message.substr(4));
-    std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
-    unacknowledged_packets_.erase(sequence_number);
+    packet_sender_.handle_ack(ack_message);
+    // std::uint32_t sequence_number = std::stoul(ack_message.substr(4));
+    // std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
+    // unacknowledged_packets_.erase(sequence_number);
 }
 
 void UDPServer::handle_receive(std::size_t bytes_recvd) {
@@ -70,6 +71,23 @@ void UDPServer::handle_reliable_packet(const std::string& message, std::size_t c
 
 void UDPServer::handle_unreliable_packet(const std::string& message) {
     std::cout << "Processing unreliable message: " << message << std::endl;
+}
+
+void UDPServer::send_client_ack(std::uint32_t sequence_number) {
+    std::string ack_message = "CLIENT_ACK:" + std::to_string(sequence_number);
+    std::cout << "Sending ACK: " << ack_message << " to " << remote_endpoint_ << std::endl;
+    auto buffer = std::make_shared<std::string>(ack_message);
+    if (remote_endpoint_.address().is_unspecified()) {
+        std::cerr << "Remote endpoint is unspecified" << std::endl;
+        return;
+    }
+    socket_.async_send_to(asio::buffer(*buffer), remote_endpoint_,
+                          [this, buffer](std::error_code ec, std::size_t bytes_sent) {
+                              if (ec) {
+                                  std::cerr << "Send ACK error: " << ec.message()
+                                            << " size: " << bytes_sent << std::endl;
+                              }
+                          });
 }
 
 void UDPServer::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
@@ -174,45 +192,46 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
  */
 void UDPServer::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
-    int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
-    int packets_sent  = 0;
-    std::cout << "Sending " << total_packets << " packets" << "size: " << message.size()
-              << std::endl;
+    packet_sender_.send_reliable_packet(message, endpoint);
+    // int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
+    // int packets_sent  = 0;
+    // std::cout << "Sending " << total_packets << " packets" << "size: " << message.size()
+    //           << std::endl;
 
-    for (int i = 0; i < total_packets; ++i) {
-        packet pkt;
-        pkt.sequence_no = sequence_number_++;
-        pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size() - i * BUFFER_SIZE));
-        pkt.flag        = RELIABLE;
-        pkt.data.assign(message.begin() + i * BUFFER_SIZE,
-                        message.begin() + i * BUFFER_SIZE + pkt.packet_size);
-        unacknowledged_packets_[pkt.sequence_no] = pkt;
-        send_packet(pkt, endpoint);
-    }
-    schedule_retransmissions(endpoint);
+    // for (int i = 0; i < total_packets; ++i) {
+    //     packet pkt;
+    //     pkt.sequence_no = sequence_number_++;
+    //     pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size() - i *
+    //     BUFFER_SIZE)); pkt.flag        = RELIABLE; pkt.data.assign(message.begin() + i *
+    //     BUFFER_SIZE,
+    //                     message.begin() + i * BUFFER_SIZE + pkt.packet_size);
+    //     unacknowledged_packets_[pkt.sequence_no] = pkt;
+    //     send_packet(pkt, endpoint);
+    // }
+    // schedule_retransmissions(endpoint);
 }
 
-void UDPServer::retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint) {
-    for (const auto& pair : unacknowledged_packets_) {
-        std::cout << "Retransmitting packet with sequence number: " << pair.first << std::endl;
-        send_packet(pair.second, endpoint);
-    }
-}
+// void UDPServer::retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint) {
+//     for (const auto& pair : unacknowledged_packets_) {
+//         std::cout << "Retransmitting packet with sequence number: " << pair.first << std::endl;
+//         send_packet(pair.second, endpoint);
+//     }
+// }
 
-void UDPServer::schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
-    retransmission_timer_.expires_after(std::chrono::milliseconds(300));
-    retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
-        if (!ec) {
-            retransmit_unacknowledged_packets(endpoint);
-            for (const auto& pair : unacknowledged_packets_) {
-                std::cout << "Unacknowledged packet: " << pair.first << std::endl;
-            }
-            if (!unacknowledged_packets_.empty()) {
-                schedule_retransmissions(endpoint);
-            }
-        }
-    });
-}
+// void UDPServer::schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
+//     retransmission_timer_.expires_after(std::chrono::milliseconds(300));
+//     retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
+//         if (!ec) {
+//             retransmit_unacknowledged_packets(endpoint);
+//             for (const auto& pair : unacknowledged_packets_) {
+//                 std::cout << "Unacknowledged packet: " << pair.first << std::endl;
+//             }
+//             if (!unacknowledged_packets_.empty()) {
+//                 schedule_retransmissions(endpoint);
+//             }
+//         }
+//     });
+// }
 
 const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>&
 UDPServer::get_known_clients() const {
