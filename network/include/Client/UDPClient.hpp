@@ -14,7 +14,7 @@
 #include <string>
 #include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
-#include "../shared/SendPackets.hpp"
+#include "../shared/PacketManager.hpp"
 
 class CLIENT_API UDPClient {
   public:
@@ -45,7 +45,7 @@ class CLIENT_API UDPClient {
     // retransmission timer
     asio::steady_timer retransmission_timer_;
 
-    PacketSender packet_sender_;
+    PacketManager packet_manager_;
 };
 
 #endif // UDPCLIENT_HPP

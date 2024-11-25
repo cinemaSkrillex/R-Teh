@@ -14,7 +14,7 @@
 
 #include "../Export.hpp"
 #include "../shared/PacketUtils.hpp"
-#include "../shared/SendPackets.hpp"
+#include "../shared/PacketManager.hpp"
 
 #include <asio.hpp>
 #include <iostream>
@@ -75,7 +75,7 @@ class SERVER_API UDPServer {
     asio::steady_timer retransmission_timer_;
     // Track known clients
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> known_clients_;
-    PacketSender                                                             packet_sender_;
+    PacketManager                                                            packet_manager_;
 };
 
 #endif // UDPSERVER_HPP

@@ -16,13 +16,16 @@
 #include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
 
-class PacketSender {
+enum class Role { SERVER, CLIENT };
+
+class PacketManager {
   public:
-    PacketSender(asio::io_context& io_context, asio::ip::udp::socket& socket)
-        : sequence_number_(0), retransmission_timer_(io_context), socket_(socket) {}
+    PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
+        : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role) {}
 
     void handle_ack(const std::string& ack_message) {
         std::uint32_t sequence_number = 0;
+        std::cout << "ack_message: " << ack_message << std::endl;
         if (ack_message.substr(0, 11) == "CLIENT_ACK:") {
             sequence_number = std::stoul(ack_message.substr(11));
         } else if (ack_message.substr(0, 4) == "ACK:") {
@@ -51,6 +54,25 @@ class PacketSender {
             send_packet(pkt, endpoint);
         }
         schedule_retransmissions(endpoint);
+    }
+
+    void send_unreliable_packet(const std::string&             message,
+                                const asio::ip::udp::endpoint& endpoint) {
+        packet pkt;
+        pkt.sequence_no = 0; // no validation for unreliable packets
+        pkt.packet_size = message.size();
+        pkt.flag        = UNRELIABLE;
+        pkt.data.assign(message.begin(), message.end());
+
+        // Serialize the packet using the serialize_packet method
+        const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
+        socket_.async_send_to(asio::buffer(*buffer), endpoint,
+                              [this, buffer](std::error_code ec, std::size_t bytes_sent) {
+                                  if (ec) {
+                                      std::cerr << "Send error: " << ec.message()
+                                                << " size: " << bytes_sent << std::endl;
+                                  }
+                              });
     }
 
   private:
@@ -92,6 +114,7 @@ class PacketSender {
     std::unordered_map<std::uint32_t, packet> unacknowledged_packets_;
     asio::steady_timer                        retransmission_timer_;
     asio::ip::udp::socket&                    socket_;
+    Role                                      role_;
 };
 
 #endif // SENDPACKETS_HPP

@@ -11,7 +11,7 @@
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-      retransmission_timer_(io_context), packet_sender_(io_context, socket_) {
+      retransmission_timer_(io_context), packet_manager_(io_context, socket_, Role::SERVER) {
     start_receive();
 }
 
@@ -43,20 +43,42 @@ void UDPServer::send_packet(const packet& pkt, const asio::ip::udp::endpoint& en
 }
 
 void UDPServer::handle_ack(const std::string& ack_message) {
-    packet_sender_.handle_ack(ack_message);
+    packet_manager_.handle_ack(ack_message);
     // std::uint32_t sequence_number = std::stoul(ack_message.substr(4));
     // std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
     // unacknowledged_packets_.erase(sequence_number);
 }
 
+// void UDPServer::handle_receive(std::size_t bytes_recvd) {
+//     auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
+//     std::cout << "Received: " << *message << "bytes_recvd" << bytes_recvd << std::endl;
+//     if (message->substr(0, 4) == "ACK:") {
+//         handle_ack(*message);
+//     } else {
+//         handle_new_client(remote_endpoint_);
+//     }
+//     start_receive();
+// }
+
 void UDPServer::handle_receive(std::size_t bytes_recvd) {
-    auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
-    std::cout << "Received: " << *message << "bytes_recvd" << bytes_recvd << std::endl;
-    if (message->substr(0, 4) == "ACK:") {
-        handle_ack(*message);
-    } else {
-        handle_new_client(remote_endpoint_);
+    std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
+    packet            pkt = deserialize_packet(buffer);
+    std::cout << "Received packet with sequence number: " << pkt.sequence_no << std::endl;
+    switch (pkt.flag) {
+    case ACK:
+        handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    case RELIABLE:
+        handle_reliable_packet(std::string(pkt.data.begin(), pkt.data.end()), pkt.packet_size);
+        break;
+    case UNRELIABLE:
+        handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    default:
+        std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
+        break;
     }
+    handle_new_client(remote_endpoint_);
     start_receive();
 }
 
@@ -164,21 +186,7 @@ void UDPServer::handle_new_client(const asio::ip::udp::endpoint& client_endpoint
  */
 void UDPServer::send_unreliable_packet(const std::string&             message,
                                        const asio::ip::udp::endpoint& endpoint) {
-    packet pkt;
-    pkt.sequence_no = 0; // no validation for unreliable packets
-    pkt.packet_size = message.size();
-    pkt.flag        = UNRELIABLE;
-    pkt.data.assign(message.begin(), message.end());
-
-    // Serialize the packet using the serialize_packet method
-    const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-    socket_.async_send_to(asio::buffer(*buffer), endpoint,
-                          [this, buffer](std::error_code ec, std::size_t bytes_sent) {
-                              if (ec) {
-                                  std::cerr << "Send error: " << ec.message()
-                                            << " size: " << bytes_sent << std::endl;
-                              }
-                          });
+    packet_manager_.send_unreliable_packet(message, endpoint);
 }
 /**
  * @brief Sends a reliable packet over UDP.
@@ -192,7 +200,7 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
  */
 void UDPServer::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
-    packet_sender_.send_reliable_packet(message, endpoint);
+    packet_manager_.send_reliable_packet(message, endpoint);
     // int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
     // int packets_sent  = 0;
     // std::cout << "Sending " << total_packets << " packets" << "size: " << message.size()
