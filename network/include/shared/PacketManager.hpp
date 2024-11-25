@@ -18,6 +18,7 @@
 
 enum class Role { SERVER, CLIENT };
 
+// WARNING: can reduce performance because ONLY HEADER
 class PacketManager {
   public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
@@ -46,9 +47,14 @@ class PacketManager {
         std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
                   << std::endl;
 
+        int start_sequence_no = sequence_number_;
+        int end_sequence_no   = sequence_number_ + total_packets - 1;
+
         for (int i = 0; i < total_packets; ++i) {
             packet pkt;
-            pkt.sequence_no = sequence_number_++;
+            pkt.sequence_no       = sequence_number_++;
+            pkt.start_sequence_no = start_sequence_no;
+            pkt.end_sequence_no   = end_sequence_no;
             pkt.packet_size =
                 std::min(BUFFER_SIZE, static_cast<int>(message.size() - i * BUFFER_SIZE));
             pkt.flag = RELIABLE;
@@ -147,6 +153,7 @@ class PacketManager {
         });
     }
 
+    // TODO change to a MACRO for changing the sequence number max allocated size
     std::uint32_t                             sequence_number_;
     std::unordered_map<std::uint32_t, packet> unacknowledged_packets_;
     asio::steady_timer                        retransmission_timer_;

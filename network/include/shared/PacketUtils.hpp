@@ -12,6 +12,8 @@ enum Flags { UNRELIABLE = 0, RELIABLE = 1, ACK = 2, CONTROL = 3, HEARTBEAT = 4, 
 // structure for the binary protocol
 struct packet {
     int               sequence_no;
+    int               start_sequence_no;
+    int               end_sequence_no;
     int               packet_size;
     Flags             flag;
     std::vector<char> data;
@@ -19,8 +21,9 @@ struct packet {
 
 // inline improves performance by avoiding the overhead of function calls
 inline std::vector<char> serialize_packet(const packet& pkt) {
-    std::size_t total_size =
-        sizeof(pkt.sequence_no) + sizeof(pkt.packet_size) + sizeof(pkt.flag) + pkt.data.size();
+    std::size_t total_size = sizeof(pkt.sequence_no) + sizeof(pkt.start_sequence_no) +
+                             sizeof(pkt.end_sequence_no) + sizeof(pkt.packet_size) +
+                             sizeof(pkt.flag) + pkt.data.size();
     std::vector<char> buffer(total_size);
     auto              it = buffer.begin();
 
@@ -28,6 +31,18 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
     std::copy(reinterpret_cast<const char*>(&pkt.sequence_no),
               reinterpret_cast<const char*>(&pkt.sequence_no) + sizeof(pkt.sequence_no), it);
     it += sizeof(pkt.sequence_no);
+
+    // Copy start_sequence_no to the buffer
+    std::copy(reinterpret_cast<const char*>(&pkt.start_sequence_no),
+              reinterpret_cast<const char*>(&pkt.start_sequence_no) + sizeof(pkt.start_sequence_no),
+              it);
+    it += sizeof(pkt.start_sequence_no);
+
+    // Copy max_sequence_no to the buffer
+    std::copy(reinterpret_cast<const char*>(&pkt.end_sequence_no),
+              reinterpret_cast<const char*>(&pkt.end_sequence_no) + sizeof(pkt.end_sequence_no),
+              it);
+    it += sizeof(pkt.end_sequence_no);
 
     // Copy packet_size to the buffer
     std::copy(reinterpret_cast<const char*>(&pkt.packet_size),
@@ -54,6 +69,15 @@ inline packet deserialize_packet(const std::vector<char>& buffer) {
     // Extract sequence_no from the buffer
     std::copy(it, it + sizeof(pkt.sequence_no), reinterpret_cast<char*>(&pkt.sequence_no));
     it += sizeof(pkt.sequence_no);
+
+    // Extract start_sequence_no from the buffer
+    std::copy(it, it + sizeof(pkt.start_sequence_no),
+              reinterpret_cast<char*>(&pkt.start_sequence_no));
+    it += sizeof(pkt.start_sequence_no);
+
+    // Extract max_sequence_no from the buffer
+    std::copy(it, it + sizeof(pkt.end_sequence_no), reinterpret_cast<char*>(&pkt.end_sequence_no));
+    it += sizeof(pkt.end_sequence_no);
 
     // Extract packet_size from the buffer
     std::copy(it, it + sizeof(pkt.packet_size), reinterpret_cast<char*>(&pkt.packet_size));

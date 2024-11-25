@@ -1,15 +1,24 @@
+#!/bin/bash
+
+# Determine the shell configuration file
+if [[ $SHELL == *"zsh"* ]]; then
+    SHELL_CONFIG_FILE="$HOME/.zshrc"
+else
+    SHELL_CONFIG_FILE="$HOME/.bashrc"
+fi
+
 # Clone the vcpkg repository
 git clone https://github.com/microsoft/vcpkg.git
 
-# Navigate to the vcpkg directory
 cd vcpkg
 
 # Bootstrap vcpkg
 ./bootstrap-vcpkg.sh
 
-# Set the VCPKG_ROOT environment variable
-# export VCPKG_ROOT=$(pwd) >> ~/.bashrc
-# echo "VCPKG_ROOT is set to $VCPKG_ROOT"
-echo "export VCPKG_ROOT=$(pwd)" >> ~/.bashrc
-echo "export PATH=\"$(pwd):$PATH\"" >> ~/.bashrc
+# Update the shell configuration file
+echo "export VCPKG_ROOT=$(pwd)" >> $SHELL_CONFIG_FILE
+echo "export PATH=\"$(pwd):\$PATH\"" >> $SHELL_CONFIG_FILE
+
+source $SHELL_CONFIG_FILE
+
 echo $VCPKG_ROOT && echo $PATH

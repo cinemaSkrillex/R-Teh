@@ -71,59 +71,28 @@ void UDPServer::handle_new_client(const asio::ip::udp::endpoint& client_endpoint
         known_clients_.insert(client_endpoint);
         std::cout << "New client connected: " << client_endpoint << std::endl;
 
+        std::string boat_info =
+            "Boats are watercraft of various sizes designed to float, plane, work, or travel on "
+            "water. "
+            "They are typically smaller than ships, which are generally distinguished by their "
+            "larger size, "
+            "shape, cargo or passenger capacity, or their ability to carry boats. "
+            "Boats have been used since prehistoric times and have been essential for fishing, "
+            "transportation, "
+            "trade, and warfare. Modern boats are usually powered by engines, but many still use "
+            "sails or oars. "
+            "There are many types of boats, including sailboats, motorboats, fishing boats, and "
+            "rowboats. ";
+
+        // Repeat the boat_info string to exceed 10,000 bytes
+        std::string long_boat_info;
+        while (long_boat_info.size() <= 100000) {
+            long_boat_info += boat_info;
+        }
         // Send test packets to the new client
         // send_unreliable_packet("Unreliable packet from server", client_endpoint);
         // send_reliable_packet("Reliable packet from server", client_endpoint);
-        send_reliable_packet(
-            "Reliable packet "
-            "vgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjer"
-            "ngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkge"
-            "rkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkg"
-            "nerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgkner"
-            "gknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjer"
-            "njgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergn"
-            "jergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezb"
-            "jhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvg"
-            "zefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerng"
-            "nkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerk"
-            "ngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgne"
-            "rkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergk"
-            "nergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernj"
-            "gerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnje"
-            "rgnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjh"
-            "gnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgze"
-            "fgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnk"
-            "rengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkng"
-            "ernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerk"
-            "ngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergkne"
-            "rgknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjge"
-            "rkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjerg"
-            "nkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgn"
-            "rgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefg"
-            "vzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkre"
-            "ngrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerknger"
-            "nkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkng"
-            "ernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknerg"
-            "knerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerk"
-            "jgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnk"
-            "ergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrg"
-            "knergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvz"
-            "ebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkreng"
-            "rekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernk"
-            "gjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerknger"
-            "nkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergkn"
-            "erkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjg"
-            "knergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnker"
-            "gjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgkn"
-            "ergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzeb"
-            "hezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengre"
-            "kjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernkgerkngernkgj"
-            "erngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergknerkgnerkngernk"
-            "gerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgknergknergkner"
-            "kgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergjernjgerkjgkn"
-            "ergknergknerkgnerkngernkgerkngernkgjerngnkrengrekjvgzefgvzebhezbjhgnrgknergnjergnkergj"
-            "ernjgerkjgknergknergknerkgnerkngernkgerkngernkgjerngnkrengrekj",
-            client_endpoint);
+        send_reliable_packet(long_boat_info, client_endpoint);
     }
 }
 

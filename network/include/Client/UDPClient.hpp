@@ -12,6 +12,8 @@
 #include <iostream>
 #include <array>
 #include <string>
+#include <unordered_map>
+#include <queue>
 #include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
 #include "../shared/PacketManager.hpp"
@@ -25,6 +27,7 @@ class CLIENT_API UDPClient {
     void send_reliable_packet(const std::string&             message,
                               const asio::ip::udp::endpoint& server_endpoint);
     void start_receive();
+    void process_packets();
 
   private:
     void send_ack(std::uint32_t sequence_number);
@@ -46,6 +49,18 @@ class CLIENT_API UDPClient {
     asio::steady_timer retransmission_timer_;
 
     PacketManager packet_manager_;
+
+    // Store received packets
+    std::unordered_map<int, packet> received_packets_;
+    int                             start_sequence_no_ = -1;
+    int                             end_sequence_no    = -1;
+
+    // Packet processing
+    std::queue<packet>      packet_queue_;
+    std::thread             processing_thread_;
+    std::mutex              queue_mutex_;
+    std::condition_variable queue_cv_;
+    bool                    stop_processing_ = false;
 };
 
 #endif // UDPCLIENT_HPP
