@@ -23,20 +23,18 @@ void UDPClient::start_receive() {
 }
 
 void UDPClient::handle_receive(std::size_t bytes_recvd) {
-    if (bytes_recvd >=
-        sizeof(int) * 2) { // Check if the message is large enough to be a reliable packet
-        std::cout << "Received " << bytes_recvd << " bytes" << std::endl;
-
-        std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
-        packet            pkt = deserialize_packet(buffer);
-
-        if (bytes_recvd >= sizeof(pkt.sequence_no) + sizeof(pkt.packet_size) + pkt.packet_size) {
-            handle_reliable_packet(pkt);
-        } else {
-            std::cerr << "Received malformed packet" << std::endl;
-        }
-    } else {
-        std::cerr << "Received malformed packet" << std::endl;
+    std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
+    packet            pkt = deserialize_packet(buffer);
+    switch (pkt.flag) {
+    case RELIABLE:
+        handle_reliable_packet(pkt);
+        break;
+    case UNRELIABLE:
+        handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    default:
+        std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
+        break;
     }
 }
 
@@ -60,9 +58,10 @@ void UDPClient::send_ack(std::uint32_t sequence_number) {
         return;
     }
     socket_.async_send_to(asio::buffer(*buffer), server_endpoint_,
-                          [this, buffer](std::error_code ec, std::size_t /*bytes_sent*/) {
+                          [this, buffer](std::error_code ec, std::size_t bytes_sent) {
                               if (ec) {
-                                  std::cerr << "Send ACK error: " << ec.message() << std::endl;
+                                  std::cerr << "Send ACK error: " << ec.message()
+                                            << " size: " << bytes_sent << std::endl;
                               }
                           });
 }
