@@ -5,6 +5,7 @@
       "sfml",
       "asio",
       "sol2",
-      "lua"
+      "lua",
+      "openal-soft"
     ]
   }

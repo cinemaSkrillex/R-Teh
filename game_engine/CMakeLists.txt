@@ -43,6 +43,7 @@ endif()
 # Find Lua
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(Lua REQUIRED)
+find_package(OpenAL REQUIRED)
 # find_package(Freetype REQUIRED)
 
 # Source files
@@ -53,7 +54,7 @@ file(GLOB_RECURSE NETWORK_SOURCES
 )
 
 # if you want a  library target
-add_executable(rtype_engine ${NETWORK_SOURCES})
+add_library(rtype_engine STATIC ${NETWORK_SOURCES})
 
 # Include directories
 target_include_directories(rtype_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -68,6 +69,7 @@ if(UNIX)
         sfml-network
         sfml-audio
         ${LUA_LIBRARIES}
+        ${OPENAL_LIBRARY}
     )
 endif()
 
