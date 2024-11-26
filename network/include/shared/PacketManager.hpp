@@ -15,6 +15,7 @@
 #include <map>
 #include <thread>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include "PacketUtils.hpp"
 #include "ThreadPool.hpp"
@@ -74,6 +75,13 @@ class PacketManager {
     void send_ack(std::uint32_t sequence_number, const asio::ip::udp::endpoint& endpoint_);
     std::queue<packet> get_received_packets();
 
+    std::string get_last_unreliable_packet() {
+        std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+        std::string                 message = _unprocessed_unreliable_messages.top();
+        _unprocessed_unreliable_messages.pop();
+        return message;
+    }
+
   private:
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
 
@@ -114,6 +122,9 @@ class PacketManager {
     // std::thread                                            retransmission_thread_;
     PacketQueueManager send_queue_;
     PacketQueueManager retransmission_queue_;
+
+    std::stack<std::string> _unprocessed_unreliable_messages;
+    std::mutex              _unprocessed_unreliable_messages_mutex;
 
     // work guard
     asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
