@@ -70,36 +70,43 @@ int main() {
     controlSystem.bindKey(sf::Keyboard::Space, Action::Action1);
     controlSystem.setActionHandler(
         Action::Up, std::bind(&rtype::Controls::moveUp, &controls, std::placeholders::_1,
-                              std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionHandler(
-        Action::Down, std::bind(&rtype::Controls::moveDown, &controls, std::placeholders::_1,
-                                std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionHandler(
-        Action::Left, std::bind(&rtype::Controls::moveLeft, &controls, std::placeholders::_1,
-                                std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionHandler(
-        Action::Right, std::bind(&rtype::Controls::moveRight, &controls, std::placeholders::_1,
-                                 std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionHandler(
-        Action::Action1, std::bind(&rtype::Controls::shoot, &controls, std::placeholders::_1,
-                                   std::placeholders::_2, std::placeholders::_3));
+                              std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionHandler(Action::Down,
+                                   std::bind(&rtype::Controls::moveDown, &controls,
+                                             std::placeholders::_1, std::placeholders::_2,
+                                             std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionHandler(Action::Left,
+                                   std::bind(&rtype::Controls::moveLeft, &controls,
+                                             std::placeholders::_1, std::placeholders::_2,
+                                             std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionHandler(Action::Right,
+                                   std::bind(&rtype::Controls::moveRight, &controls,
+                                             std::placeholders::_1, std::placeholders::_2,
+                                             std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionHandler(Action::Action1,
+                                   std::bind(&rtype::Controls::shoot, &controls,
+                                             std::placeholders::_1, std::placeholders::_2,
+                                             std::placeholders::_3, std::placeholders::_4));
 
     controlSystem.setActionReleaseHandler(
         Action::Up, std::bind(&rtype::Controls::decelerateUp, &controls, std::placeholders::_1,
-                              std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionReleaseHandler(
-        Action::Down, std::bind(&rtype::Controls::decelerateDown, &controls, std::placeholders::_1,
-                                std::placeholders::_2, std::placeholders::_3));
-    controlSystem.setActionReleaseHandler(
-        Action::Left, std::bind(&rtype::Controls::decelerateLeft, &controls, std::placeholders::_1,
-                                std::placeholders::_2, std::placeholders::_3));
+                              std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionReleaseHandler(Action::Down,
+                                          std::bind(&rtype::Controls::decelerateDown, &controls,
+                                                    std::placeholders::_1, std::placeholders::_2,
+                                                    std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionReleaseHandler(Action::Left,
+                                          std::bind(&rtype::Controls::decelerateLeft, &controls,
+                                                    std::placeholders::_1, std::placeholders::_2,
+                                                    std::placeholders::_3, std::placeholders::_4));
     controlSystem.setActionReleaseHandler(Action::Right,
                                           std::bind(&rtype::Controls::decelerateRight, &controls,
                                                     std::placeholders::_1, std::placeholders::_2,
-                                                    std::placeholders::_3));
-    controlSystem.setActionReleaseHandler(
-        Action::Action1, std::bind(&rtype::Controls::voidAction, &controls, std::placeholders::_1,
-                                   std::placeholders::_2, std::placeholders::_3));
+                                                    std::placeholders::_3, std::placeholders::_4));
+    controlSystem.setActionReleaseHandler(Action::Action1,
+                                          std::bind(&rtype::Controls::voidAction, &controls,
+                                                    std::placeholders::_1, std::placeholders::_2,
+                                                    std::placeholders::_3, std::placeholders::_4));
 
     MovementSystem movementSystem;
 
@@ -115,10 +122,11 @@ int main() {
             drawSystem.update(registry, deltaTime, positions, drawables, sprites, spritesheets);
         });
 
-    registry.add_system<Velocity, Controllable, Acceleration>(
+    registry.add_system<Velocity, Controllable, Acceleration, Position>(
         [&controlSystem](Registry& registry, float deltaTime, auto& velocities, auto& controllables,
-                         auto& accelerations) {
-            controlSystem.update(registry, velocities, controllables, accelerations, deltaTime);
+                         auto& accelerations, auto& positions) {
+            controlSystem.update(registry, velocities, controllables, accelerations, positions,
+                                 deltaTime);
         });
 
     sf::Clock clock;

@@ -10,7 +10,8 @@ Controls::~Controls() {
     _sprites.clear();
 }
 
-void Controls::moveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::moveUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                      float deltaTime) {
     if (velocity.vy > 50)
         velocity.vy = 50;
     velocity.vy -= acceleration.ay * 3 * deltaTime;
@@ -18,7 +19,8 @@ void Controls::moveUp(Velocity& velocity, Acceleration& acceleration, float delt
         velocity.vy = -400;
 }
 
-void Controls::moveDown(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::moveDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime) {
     if (velocity.vy < -50)
         velocity.vy = -50;
     velocity.vy += acceleration.ay * 3 * deltaTime;
@@ -26,7 +28,8 @@ void Controls::moveDown(Velocity& velocity, Acceleration& acceleration, float de
         velocity.vy = 400;
 }
 
-void Controls::moveLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::moveLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime) {
     if (velocity.vx > 50)
         velocity.vx = 50;
     velocity.vx -= acceleration.ax * 3 * deltaTime;
@@ -34,7 +37,8 @@ void Controls::moveLeft(Velocity& velocity, Acceleration& acceleration, float de
         velocity.vx = -400;
 }
 
-void Controls::moveRight(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::moveRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                         float deltaTime) {
     if (velocity.vx < -50)
         velocity.vx = -50;
     velocity.vx += acceleration.ax * 3 * deltaTime;
@@ -42,7 +46,8 @@ void Controls::moveRight(Velocity& velocity, Acceleration& acceleration, float d
         velocity.vx = 400;
 }
 
-void Controls::decelerateUp(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::decelerateUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                            float deltaTime) {
     if (velocity.vy < 0) {
         velocity.vy += acceleration.ay * 3 * deltaTime;
         if (velocity.vy > 0)
@@ -50,7 +55,8 @@ void Controls::decelerateUp(Velocity& velocity, Acceleration& acceleration, floa
     }
 }
 
-void Controls::decelerateDown(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::decelerateDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                              float deltaTime) {
     if (velocity.vy > 0) {
         velocity.vy -= acceleration.ay * 3 * deltaTime;
         if (velocity.vy < 0)
@@ -58,7 +64,8 @@ void Controls::decelerateDown(Velocity& velocity, Acceleration& acceleration, fl
     }
 }
 
-void Controls::decelerateLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::decelerateLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                              float deltaTime) {
     if (velocity.vx < 0) {
         velocity.vx += acceleration.ax * 3 * deltaTime;
         if (velocity.vx > 0)
@@ -66,7 +73,8 @@ void Controls::decelerateLeft(Velocity& velocity, Acceleration& acceleration, fl
     }
 }
 
-void Controls::decelerateRight(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::decelerateRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                               float deltaTime) {
     if (velocity.vx > 0) {
         velocity.vx -= acceleration.ax * 3 * deltaTime;
         if (velocity.vx < 0)
@@ -74,9 +82,10 @@ void Controls::decelerateRight(Velocity& velocity, Acceleration& acceleration, f
     }
 }
 
-void Controls::shoot(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::shoot(Velocity& velocity, Acceleration& acceleration, Position& position,
+                     float deltaTime) {
     Entity laserEntity = _registry.spawn_entity();
-    _registry.add_component(laserEntity, Position{100.f, 100.f});
+    _registry.add_component(laserEntity, Position{position.x + 32 * 3, position.y});
     _registry.add_component(laserEntity, Velocity{200.0f, 0.0f});
     _registry.add_component(laserEntity, Drawable{});
     _sprites.push_back(new RealEngine::Sprite("../assets/sprites/whanos.png", {0, 0, 524, 267}));
@@ -85,9 +94,11 @@ void Controls::shoot(Velocity& velocity, Acceleration& acceleration, float delta
     _entities.push_back(new Entity(laserEntity));
 }
 
-void Controls::voidAction(Velocity& velocity, Acceleration& acceleration, float deltaTime) {
+void Controls::voidAction(Velocity& velocity, Acceleration& acceleration, Position& position,
+                          float deltaTime) {
     (void)velocity;
     (void)acceleration;
+    (void)position;
     (void)deltaTime;
 }
 } // namespace rtype

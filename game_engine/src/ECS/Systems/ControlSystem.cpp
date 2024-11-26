@@ -16,11 +16,9 @@ ControlSystem::ControlSystem() {
 
 void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities,
                            SparseArray<Controllable>& controllables,
-                           SparseArray<Acceleration>& accelerations, float deltaTime) {
+                           SparseArray<Acceleration>& accelerations,
+                           SparseArray<Position>& positions, float deltaTime) {
     for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (!controllables[i])
-            continue;
-
         if (!velocities[i]) {
             std::cerr << "ControlSystem: Velocity Component missing on entity(" << i << ")."
                       << std::endl;
@@ -32,12 +30,18 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
                       << std::endl;
         }
 
+        if (!positions[i]) {
+            std::cerr << "ControlSystem: Position Component missing on entity(" << i << ")."
+                      << std::endl;
+        }
+
         for (const auto& [key, Action] : keyBindings) {
             if (sf::Keyboard::isKeyPressed(key)) {
-                actionHandlers[Action](*velocities[i], *accelerations[i], deltaTime * 100.0);
+                actionHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
+                                       deltaTime * 100.0);
             } else {
                 if (accelerations[i]->air_friction == true) {
-                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i],
+                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
                                                   deltaTime * 100.0);
                 } else {
                     velocities[i]->vx = 0;

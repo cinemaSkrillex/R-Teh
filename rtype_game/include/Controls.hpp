@@ -15,16 +15,25 @@ class Controls {
   public:
     Controls(Registry& registry);
     ~Controls();
-    void moveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void moveDown(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void moveLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void moveRight(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void decelerateUp(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void decelerateDown(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void decelerateLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void decelerateRight(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void shoot(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    void voidAction(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    void moveUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                float deltaTime);
+    void moveDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                  float deltaTime);
+    void moveLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                  float deltaTime);
+    void moveRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                   float deltaTime);
+    void decelerateUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                      float deltaTime);
+    void decelerateDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime);
+    void decelerateLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime);
+    void decelerateRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                         float deltaTime);
+    void shoot(Velocity& velocity, Acceleration& acceleration, Position& position, float deltaTime);
+    void voidAction(Velocity& velocity, Acceleration& acceleration, Position& position,
+                    float deltaTime);
 
   private:
     Registry&                        _registry;
