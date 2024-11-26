@@ -13,6 +13,7 @@ UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
       retransmission_timer_(io_context), packet_manager_(io_context, socket_, Role::SERVER) {
     // start_receive();
+    packet_manager_.start();
 }
 
 UDPServer::~UDPServer() { std::cout << "deleting UDPServer"; }

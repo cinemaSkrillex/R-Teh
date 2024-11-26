@@ -43,12 +43,13 @@ class PacketManager {
   public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
         : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role),
-          stop_processing_(false) {
+          stop_processing_(false) {}
+
+    void start() {
         receive_packet_thread_ = std::thread(&PacketManager::start_receive, this);
         process_packet_thread_ = std::thread(&PacketManager::process_packets, this);
         send_packet_thread_    = std::thread(&PacketManager::send_packets, this);
     }
-
     ~PacketManager() {
         stop_processing_ = true;
         queue_cv_.notify_all();
@@ -95,7 +96,7 @@ class PacketManager {
                     break;
                 case RELIABLE:
                     // Process the reliable packet
-                    handle_reliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+                    handle_reliable_packet(pkt);
                     break;
                 case UNRELIABLE:
                     // Process the unreliable packet
@@ -135,7 +136,7 @@ class PacketManager {
 
             // Repeat the boat_info string to exceed 10,000 bytes
             std::string long_boat_info;
-            while (long_boat_info.size() <= 100000) {
+            while (long_boat_info.size() <= 10000000) {
                 long_boat_info += boat_info;
             }
             // Send test packets to the new client
@@ -145,10 +146,43 @@ class PacketManager {
         }
     }
 
-    void handle_reliable_packet(const std::string& message) {
+    void handle_reliable_packet(const packet& pkt) {
         // Process the message content
-        std::cout << "Processing reliable message: " << message << std::endl;
-        send_ack(sequence_number_, remote_endpoint_);
+        // Print the received packet details
+        std::cout << "Received packet with sequence number: " << pkt.sequence_no << std::endl;
+        std::cout << "Packet size: " << pkt.packet_size << std::endl;
+        std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
+
+        // Store the packet
+        received_packets_[pkt.sequence_no] = pkt;
+
+        // Set start and max sequence numbers
+        if (start_sequence_no_ == -1) {
+            start_sequence_no_ = pkt.start_sequence_no;
+            end_sequence_no    = pkt.end_sequence_no;
+        }
+
+        // Check if all packets have been received
+        if (received_packets_.size() == (end_sequence_no - start_sequence_no_ + 1)) {
+            // All packets received, reassemble the message
+            std::vector<char> complete_data;
+            for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
+                const auto& pkt = received_packets_[i];
+                complete_data.insert(complete_data.end(), pkt.data.begin(), pkt.data.end());
+            }
+
+            std::string complete_message(complete_data.begin(), complete_data.end());
+            std::cout << "Complete message: " << complete_message << std::endl;
+            std::cout << "Total size received: " << complete_data.size() << " bytes" << std::endl;
+
+            // Clear the received packets map for the next message
+            received_packets_.clear();
+            start_sequence_no_ = -1;
+            end_sequence_no    = -1;
+        }
+
+        // Send ACK back to the server
+        send_ack(pkt.sequence_no, remote_endpoint_);
     }
 
     void handle_unreliable_packet(const std::string& message) {
@@ -181,6 +215,7 @@ class PacketManager {
         std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
         unacknowledged_packets_.erase(sequence_number);
     }
+
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint) {
         int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
         std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
@@ -277,7 +312,8 @@ class PacketManager {
 
     void retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint) {
         for (const auto& pair : unacknowledged_packets_) {
-            std::cout << "Retransmitting packet with sequence number: " << pair.first << std::endl;
+            std::cout << "unacknowledged packet.size(): " << unacknowledged_packets_.size()
+                      << std::endl;
             send_packet(pair.second, endpoint);
         }
     }
@@ -315,6 +351,11 @@ class PacketManager {
     bool                    stop_processing_;
     std::array<char, 1024>  recv_buffer_;
     asio::ip::udp::endpoint remote_endpoint_;
+
+    // Store received packets
+    std::map<int, packet> received_packets_;
+    int                   start_sequence_no_ = -1;
+    int                   end_sequence_no    = -1;
 };
 
 #endif // SENDPACKETS_HPP

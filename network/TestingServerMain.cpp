@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
         auto             test_server = std::make_shared<TestServer>(io_context, port);
 
         test_server->start();
+        io_context.run();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;
