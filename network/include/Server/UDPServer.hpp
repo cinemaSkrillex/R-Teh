@@ -20,22 +20,6 @@
 #include <array>
 #include <unordered_set>
 
-// Custom hash and equality for asio::ip::udp::endpoint
-// we need it in order to know if we have already seen a client (kind of a select in C)
-struct EndpointHash {
-    std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
-        std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());
-        std::size_t h2 = std::hash<unsigned short>()(endpoint.port());
-        return h1 ^ (h2 << 1); // Combine the hashes
-    }
-};
-
-struct EndpointEqual {
-    bool operator()(const asio::ip::udp::endpoint& lhs, const asio::ip::udp::endpoint& rhs) const {
-        return lhs.address() == rhs.address() && lhs.port() == rhs.port();
-    }
-};
-
 // SERVER_API is a macro for the visibility of the class UDPServer,
 // its for the shared library
 

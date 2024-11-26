@@ -45,9 +45,14 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        auto             test_server = std::make_shared<TestServer>(io_context, port);
+        // auto             test_server = std::make_shared<TestServer>(io_context, port);
 
-        test_server->start();
+        // test_server->start();
+        // io_context.run();
+        auto server = std::make_shared<UDPServer>(io_context, port);
+
+        // Run the io_context to handle asynchronous operations
+        io_context.run();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

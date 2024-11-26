@@ -12,7 +12,8 @@
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
       retransmission_timer_(io_context), packet_manager_(io_context, socket_, Role::SERVER) {
-    start_receive();
+    // start_receive();
+    packet_manager_.start();
 }
 
 UDPServer::~UDPServer() { std::cout << "deleting UDPServer"; }
@@ -56,10 +57,10 @@ void UDPServer::handle_receive(std::size_t bytes_recvd) {
 }
 
 void UDPServer::handle_reliable_packet(const std::string& message, int sequence_number) {
-    std::cout << "received UDPServer::handle_reliable_packet" << sequence_number
-              << "remote: " << remote_endpoint_ << std::endl;
-    // Process the message content
-    packet_manager_.send_ack(sequence_number, remote_endpoint_);
+    // std::cout << "received UDPServer::handle_reliable_packet" << sequence_number
+    //           << "remote: " << remote_endpoint_ << std::endl;
+    // // Process the message content
+    // packet_manager_.send_ack(sequence_number, remote_endpoint_);
 }
 
 void UDPServer::handle_unreliable_packet(const std::string& message) {
