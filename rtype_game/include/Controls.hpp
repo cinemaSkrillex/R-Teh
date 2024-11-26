@@ -3,18 +3,42 @@
 #include "ECS/Systems/ControlSystem.hpp"
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Components/Acceleration.hpp"
+#include "ECS/Registry/Registry.hpp"
+#include "ECS/Components/Position.hpp"
+#include "ECS/Components/Drawable.hpp"
+#include "ECS/Components/Controllable.hpp"
+#include "ECS/Components/Sprite.hpp"
+#include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace rtype {
 class Controls {
   public:
-    static void moveUp(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void moveDown(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void moveLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void moveRight(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void decelerateUp(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void decelerateDown(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void decelerateLeft(Velocity& velocity, Acceleration& acceleration, float deltaTime);
-    static void decelerateRight(Velocity& velocity, Acceleration& acceleration, float deltaTime);
+    Controls(Registry& registry);
+    ~Controls();
+    void moveUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                float deltaTime);
+    void moveDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                  float deltaTime);
+    void moveLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                  float deltaTime);
+    void moveRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                   float deltaTime);
+    void decelerateUp(Velocity& velocity, Acceleration& acceleration, Position& position,
+                      float deltaTime);
+    void decelerateDown(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime);
+    void decelerateLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
+                        float deltaTime);
+    void decelerateRight(Velocity& velocity, Acceleration& acceleration, Position& position,
+                         float deltaTime);
+    void shoot(Velocity& velocity, Acceleration& acceleration, Position& position, float deltaTime);
+    void voidAction(Velocity& velocity, Acceleration& acceleration, Position& position,
+                    float deltaTime);
+
+  private:
+    Registry&                        _registry;
+    std::vector<Entity*>             _entities;
+    std::vector<RealEngine::Sprite*> _sprites;
 };
 
 } // namespace rtype
