@@ -3,8 +3,7 @@
 namespace RealEngine {
 LuaManager::LuaManager() {
     _luaState = sol::state();
-    // _luaState.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string,
-    // sol::lib::package);
+    _luaState.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::package);
 }
 
 LuaManager::~LuaManager() { _luaState.collect_garbage(); }
