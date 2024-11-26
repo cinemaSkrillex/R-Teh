@@ -6,7 +6,15 @@
 
 #define BUFFER_SIZE 1000
 
-enum Flags { UNRELIABLE = 0, RELIABLE = 1, ACK = 2, CONTROL = 3, HEARTBEAT = 4, DATA = 5 };
+enum Flags {
+    UNRELIABLE    = 0,
+    RELIABLE      = 1,
+    ACK           = 2,
+    CONTROL       = 3,
+    HEARTBEAT     = 4,
+    DATA          = 5,
+    RETRANSMITTED = 6
+};
 
 // structure for the binary protocol
 struct packet {

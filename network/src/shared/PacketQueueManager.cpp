@@ -11,7 +11,8 @@
 void PacketQueueManager::enqueue(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        queue_.emplace(pkt, endpoint);
+        // check if the queue already has the packet
+        queue_.emplace_back(pkt, endpoint);
     }
     cv_.notify_one();
 }
@@ -20,7 +21,7 @@ std::pair<packet, asio::ip::udp::endpoint> PacketQueueManager::dequeue() {
     std::unique_lock<std::mutex> lock(mutex_);
     cv_.wait(lock, [this] { return !queue_.empty(); });
     auto item = queue_.front();
-    queue_.pop();
+    queue_.pop_front();
     return item;
 }
 
