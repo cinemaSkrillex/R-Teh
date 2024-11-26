@@ -41,28 +41,9 @@ enum class Role { SERVER, CLIENT };
 // WARNING: can reduce performance because ONLY HEADER
 class PacketManager {
   public:
-    PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
-        : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role),
-          stop_processing_(false), work_guard_(asio::make_work_guard(io_context)) {}
-
-    void start() {
-        receive_packet_thread_ = std::thread(&PacketManager::start_receive, this);
-        process_packet_thread_ = std::thread(&PacketManager::process_packets, this);
-        send_packet_thread_    = std::thread(&PacketManager::send_packets, this);
-        retransmission_thread_ = std::thread(&PacketManager::handle_retransmissions, this);
-    }
-    ~PacketManager() {
-        stop_processing_ = true;
-        queue_cv_.notify_all();
-        if (receive_packet_thread_.joinable())
-            receive_packet_thread_.join();
-        if (process_packet_thread_.joinable())
-            process_packet_thread_.join();
-        if (send_packet_thread_.joinable())
-            send_packet_thread_.join();
-        if (retransmission_thread_.joinable())
-            retransmission_thread_.join();
-    }
+    PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role);
+    void start();
+    ~PacketManager();
 
     void start_receive() {
         socket_.async_receive_from(asio::buffer(recv_buffer_), remote_endpoint_,

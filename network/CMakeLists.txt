@@ -21,12 +21,14 @@ endif()
 file(GLOB_RECURSE NETWORK_SERVER_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Server/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/Server/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/shared/*.cpp"
 )
 
 # Client Source files
 file(GLOB_RECURSE NETWORK_CLIENT_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Client/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/Client/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/shared/*.cpp"
 )
 
 # Build the shared library (DLL on Windows, .so on Linux)
