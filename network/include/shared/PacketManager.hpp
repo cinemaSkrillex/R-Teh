@@ -12,9 +12,29 @@
 #include <iostream>
 #include <array>
 #include <string>
+#include <map>
+#include <thread>
+#include <queue>
 #include <unordered_map>
-#include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
+
+#include <unordered_set>
+
+// Custom hash and equality for asio::ip::udp::endpoint
+// we need it in order to know if we have already seen a client (kind of a select in C)
+struct EndpointHash {
+    std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
+        std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());
+        std::size_t h2 = std::hash<unsigned short>()(endpoint.port());
+        return h1 ^ (h2 << 1); // Combine the hashes
+    }
+};
+
+struct EndpointEqual {
+    bool operator()(const asio::ip::udp::endpoint& lhs, const asio::ip::udp::endpoint& rhs) const {
+        return lhs.address() == rhs.address() && lhs.port() == rhs.port();
+    }
+};
 
 enum class Role { SERVER, CLIENT };
 
@@ -22,7 +42,126 @@ enum class Role { SERVER, CLIENT };
 class PacketManager {
   public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
-        : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role) {}
+        : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role),
+          stop_processing_(false) {
+        receive_packet_thread_ = std::thread(&PacketManager::start_receive, this);
+        process_packet_thread_ = std::thread(&PacketManager::process_packets, this);
+        send_packet_thread_    = std::thread(&PacketManager::send_packets, this);
+    }
+
+    ~PacketManager() {
+        stop_processing_ = true;
+        queue_cv_.notify_all();
+        if (receive_packet_thread_.joinable())
+            receive_packet_thread_.join();
+        if (process_packet_thread_.joinable())
+            process_packet_thread_.join();
+        if (send_packet_thread_.joinable())
+            send_packet_thread_.join();
+    }
+
+    void start_receive() {
+        socket_.async_receive_from(asio::buffer(recv_buffer_), remote_endpoint_,
+                                   [this](std::error_code ec, std::size_t bytes_recvd) {
+                                       if (!ec && bytes_recvd > 0) {
+                                           handle_receive(bytes_recvd);
+                                       }
+                                       start_receive();
+                                   });
+    }
+
+    void handle_receive(std::size_t bytes_recvd) {
+        auto   message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
+        packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
+
+        {
+            std::lock_guard<std::mutex> lock(queue_mutex_);
+            packet_queue_.push(pkt);
+        }
+        queue_cv_.notify_one();
+    }
+
+    void process_packets() {
+        while (!stop_processing_) {
+            std::unique_lock<std::mutex> lock(queue_mutex_);
+            queue_cv_.wait(lock, [this] { return !packet_queue_.empty() || stop_processing_; });
+
+            while (!packet_queue_.empty()) {
+                packet pkt = packet_queue_.front();
+                packet_queue_.pop();
+                switch (pkt.flag) {
+                case ACK:
+                    handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
+                    break;
+                case RELIABLE:
+                    // Process the reliable packet
+                    handle_reliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+                    break;
+                case UNRELIABLE:
+                    // Process the unreliable packet
+                    handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+                    break;
+                default:
+                    std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
+                    break;
+                }
+                if (Role::SERVER == role_) {
+                    handle_new_client(remote_endpoint_);
+                }
+            }
+        }
+    }
+
+    void handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
+        if (known_clients_.find(client_endpoint) == known_clients_.end()) {
+            known_clients_.insert(client_endpoint);
+            std::cout << "New client connected: " << client_endpoint << std::endl;
+
+            std::string boat_info =
+                "Boats are watercraft of various sizes designed to float, plane, work, or travel "
+                "on "
+                "water. "
+                "They are typically smaller than ships, which are generally distinguished by their "
+                "larger size, "
+                "shape, cargo or passenger capacity, or their ability to carry boats. "
+                "Boats have been used since prehistoric times and have been essential for fishing, "
+                "transportation, "
+                "trade, and warfare. Modern boats are usually powered by engines, but many still "
+                "use "
+                "sails or oars. "
+                "There are many types of boats, including sailboats, motorboats, fishing boats, "
+                "and "
+                "rowboats. ";
+
+            // Repeat the boat_info string to exceed 10,000 bytes
+            std::string long_boat_info;
+            while (long_boat_info.size() <= 100000) {
+                long_boat_info += boat_info;
+            }
+            // Send test packets to the new client
+            // send_unreliable_packet("Unreliable packet from server", client_endpoint);
+            // send_reliable_packet("Reliable packet from server", client_endpoint);
+            send_reliable_packet(long_boat_info, client_endpoint);
+        }
+    }
+
+    void handle_reliable_packet(const std::string& message) {
+        // Process the message content
+        std::cout << "Processing reliable message: " << message << std::endl;
+        send_ack(sequence_number_, remote_endpoint_);
+    }
+
+    void handle_unreliable_packet(const std::string& message) {
+        // Process the message content
+        std::cout << "Processing unreliable message: " << message << std::endl;
+    }
+
+    void send_packets() {
+        while (!stop_processing_) {
+            // Implement the logic to send packets if needed
+            // This could involve checking a queue of packets to be sent
+        }
+    }
 
     void handle_ack(const std::string& ack_message) {
         std::uint32_t sequence_number = 0;
@@ -118,6 +257,11 @@ class PacketManager {
                               });
     }
 
+    std::queue<packet> get_received_packets() {
+        std::lock_guard<std::mutex> lock(queue_mutex_);
+        return packet_queue_;
+    }
+
   private:
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
         // Serialize the packet using the serialize_packet method
@@ -159,6 +303,18 @@ class PacketManager {
     asio::steady_timer                        retransmission_timer_;
     asio::ip::udp::socket&                    socket_;
     Role                                      role_;
+
+    std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> known_clients_;
+
+    std::queue<packet>      packet_queue_;
+    std::mutex              queue_mutex_;
+    std::condition_variable queue_cv_;
+    std::thread             receive_packet_thread_;
+    std::thread             process_packet_thread_;
+    std::thread             send_packet_thread_;
+    bool                    stop_processing_;
+    std::array<char, 1024>  recv_buffer_;
+    asio::ip::udp::endpoint remote_endpoint_;
 };
 
 #endif // SENDPACKETS_HPP

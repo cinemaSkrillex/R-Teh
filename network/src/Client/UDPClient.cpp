@@ -12,7 +12,7 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
     : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), server_endpoint_(),
       recv_buffer_(), sequence_number_(0), retransmission_timer_(io_context),
       packet_manager_(io_context, socket_, Role::CLIENT) {
-    start_receive();
+    // start_receive();
 }
 
 UDPClient::~UDPClient() { std::cout << "deleting UDPClient" << std::endl; }
