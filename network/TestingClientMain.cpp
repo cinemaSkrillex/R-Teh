@@ -37,6 +37,8 @@ class TestClient {
         // Send an unreliable packet to the server
         client_->send_unreliable_packet("Unreliable packet", server_endpoint_);
         client_->send_unreliable_packet("Unreliable packet again", server_endpoint_);
+
+        // client_->get_last_reliable_packet();
         // std::uint32_t sequence_number = 0;
         // client_->send_ack(sequence_number);
         // Send a reliable packet to the server

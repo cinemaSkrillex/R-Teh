@@ -21,10 +21,11 @@ class UDPClient {
     UDPClient(asio::io_context& io_context, unsigned short port);
     ~UDPClient();
 
-    void send_unreliable_packet(const std::string&             message,
-                                const asio::ip::udp::endpoint& server_endpoint);
-    void send_reliable_packet(const std::string&             message,
-                              const asio::ip::udp::endpoint& server_endpoint);
+    void        send_unreliable_packet(const std::string&             message,
+                                       const asio::ip::udp::endpoint& server_endpoint);
+    void        send_reliable_packet(const std::string&             message,
+                                     const asio::ip::udp::endpoint& server_endpoint);
+    std::string get_last_reliable_packet();
 
   private:
     asio::ip::udp::socket   socket_;
