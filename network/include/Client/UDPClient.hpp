@@ -57,11 +57,6 @@ class CLIENT_API UDPClient {
     int                   end_sequence_no    = -1;
 
     // Packet processing
-    std::queue<packet>      packet_queue_;
-    std::thread             processing_thread_;
-    std::mutex              queue_mutex_;
-    std::condition_variable queue_cv_;
-    bool                    stop_processing_ = false;
 };
 
 #endif // UDPCLIENT_HPP

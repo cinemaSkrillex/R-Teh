@@ -13,18 +13,9 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
       recv_buffer_(), sequence_number_(0), retransmission_timer_(io_context),
       packet_manager_(io_context, socket_, Role::CLIENT) {
     start_receive();
-    processing_thread_ = std::thread(&UDPClient::process_packets, this);
 }
 
-UDPClient::~UDPClient() {
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-        stop_processing_ = true;
-    }
-    queue_cv_.notify_all();
-    processing_thread_.join();
-    std::cout << "deleting UDPClient" << std::endl;
-}
+UDPClient::~UDPClient() { std::cout << "deleting UDPClient" << std::endl; }
 
 void UDPClient::start_receive() {
     socket_.async_receive_from(asio::buffer(recv_buffer_), server_endpoint_,
@@ -40,71 +31,24 @@ void UDPClient::handle_ack(const std::string& ack_message) {
     packet_manager_.handle_ack(ack_message);
 }
 
-// void UDPClient::handle_receive(std::size_t bytes_recvd) {
-//     std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
-//     packet            pkt = deserialize_packet(buffer);
-//     switch (pkt.flag) {
-//     case ACK:
-//         handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
-//         break;
-//     case RELIABLE:
-//         handle_reliable_packet(pkt);
-//         break;
-//     case UNRELIABLE:
-//         handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
-//         break;
-//     default:
-//         std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
-//         break;
-//     }
-// }
-
 void UDPClient::handle_receive(std::size_t bytes_recvd) {
-    auto   message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
-    packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
-
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-        packet_queue_.push(pkt);
-    }
-    queue_cv_.notify_one();
-
-    start_receive();
-}
-
-void UDPClient::process_packets() {
-    while (true) {
-        std::unique_lock<std::mutex> lock(queue_mutex_);
-        queue_cv_.wait(lock, [this] { return !packet_queue_.empty() || stop_processing_; });
-
-        if (stop_processing_ && packet_queue_.empty()) {
-            break;
-        }
-
-        packet pkt = packet_queue_.front();
-        packet_queue_.pop();
-        lock.unlock();
-
-        switch (pkt.flag) {
-        case RELIABLE:
-            handle_reliable_packet(pkt);
-            break;
-        default:
-            std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
-            break;
-        }
+    std::vector<char> buffer(recv_buffer_.data(), recv_buffer_.data() + bytes_recvd);
+    packet            pkt = deserialize_packet(buffer);
+    switch (pkt.flag) {
+    case ACK:
+        handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    case RELIABLE:
+        handle_reliable_packet(pkt);
+        break;
+    case UNRELIABLE:
+        handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+        break;
+    default:
+        std::cerr << "Received unknown packet type: " << pkt.flag << std::endl;
+        break;
     }
 }
-
-// void UDPClient::handle_reliable_packet(const packet& pkt) {
-//     // Print the received packet details
-//     std::cout << "Received packet with sequence number: " << pkt.sequence_no << std::endl;
-//     std::cout << "Packet size: " << pkt.packet_size << std::endl;
-//     std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
-
-//     // Send ACK back to the server
-//     packet_manager_.send_ack(pkt.sequence_no, server_endpoint_);
-// }
 
 void UDPClient::handle_reliable_packet(const packet& pkt) {
     // Print the received packet details
