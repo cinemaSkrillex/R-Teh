@@ -15,6 +15,7 @@
 #include <map>
 #include <thread>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include "PacketUtils.hpp"
 
@@ -178,6 +179,8 @@ class PacketManager {
     void handle_unreliable_packet(const std::string& message) {
         // Process the message content
         std::cout << "Processing unreliable message: " << message << std::endl;
+        std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+        _unprocessed_unreliable_messages.push(message);
     }
 
     void send_packets() {
@@ -357,6 +360,13 @@ class PacketManager {
         return packet_queue_;
     }
 
+    std::string get_last_unreliable_packet() {
+        std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+        std::string                 message = _unprocessed_unreliable_messages.top();
+        _unprocessed_unreliable_messages.pop();
+        return message;
+    }
+
   private:
     void send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
         // Serialize the packet using the serialize_packet method
@@ -430,6 +440,9 @@ class PacketManager {
     std::mutex                                             retransmission_queue_mutex_;
     std::condition_variable                                retransmission_queue_cv_;
     std::thread                                            retransmission_thread_;
+
+    std::stack<std::string> _unprocessed_unreliable_messages;
+    std::mutex              _unprocessed_unreliable_messages_mutex;
 
     // work guard
     asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
