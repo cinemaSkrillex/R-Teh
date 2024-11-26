@@ -59,21 +59,47 @@ int main() {
     registry.add_component(entity2,
                            SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
 
-    DrawSystem      drawSystem(window.getRenderWindow());
+    DrawSystem drawSystem(window.getRenderWindow());
+
     ControlSystem   controlSystem;
-    rtype::Controls controls;
+    rtype::Controls controls(registry);
     controlSystem.bindKey(sf::Keyboard::Z, Action::Up);
     controlSystem.bindKey(sf::Keyboard::S, Action::Down);
     controlSystem.bindKey(sf::Keyboard::Q, Action::Left);
     controlSystem.bindKey(sf::Keyboard::D, Action::Right);
-    controlSystem.setActionHandler(Action::Up, rtype::Controls::moveUp);
-    controlSystem.setActionHandler(Action::Down, rtype::Controls::moveDown);
-    controlSystem.setActionHandler(Action::Left, rtype::Controls::moveLeft);
-    controlSystem.setActionHandler(Action::Right, rtype::Controls::moveRight);
-    controlSystem.setActionReleaseHandler(Action::Up, rtype::Controls::decelerateUp);
-    controlSystem.setActionReleaseHandler(Action::Down, rtype::Controls::decelerateDown);
-    controlSystem.setActionReleaseHandler(Action::Left, rtype::Controls::decelerateLeft);
-    controlSystem.setActionReleaseHandler(Action::Right, rtype::Controls::decelerateRight);
+    controlSystem.bindKey(sf::Keyboard::Space, Action::Action1);
+    controlSystem.setActionHandler(
+        Action::Up, std::bind(&rtype::Controls::moveUp, &controls, std::placeholders::_1,
+                              std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionHandler(
+        Action::Down, std::bind(&rtype::Controls::moveDown, &controls, std::placeholders::_1,
+                                std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionHandler(
+        Action::Left, std::bind(&rtype::Controls::moveLeft, &controls, std::placeholders::_1,
+                                std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionHandler(
+        Action::Right, std::bind(&rtype::Controls::moveRight, &controls, std::placeholders::_1,
+                                 std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionHandler(
+        Action::Action1, std::bind(&rtype::Controls::shoot, &controls, std::placeholders::_1,
+                                   std::placeholders::_2, std::placeholders::_3));
+
+    controlSystem.setActionReleaseHandler(
+        Action::Up, std::bind(&rtype::Controls::decelerateUp, &controls, std::placeholders::_1,
+                              std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionReleaseHandler(
+        Action::Down, std::bind(&rtype::Controls::decelerateDown, &controls, std::placeholders::_1,
+                                std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionReleaseHandler(
+        Action::Left, std::bind(&rtype::Controls::decelerateLeft, &controls, std::placeholders::_1,
+                                std::placeholders::_2, std::placeholders::_3));
+    controlSystem.setActionReleaseHandler(Action::Right,
+                                          std::bind(&rtype::Controls::decelerateRight, &controls,
+                                                    std::placeholders::_1, std::placeholders::_2,
+                                                    std::placeholders::_3));
+    controlSystem.setActionReleaseHandler(
+        Action::Action1, std::bind(&rtype::Controls::voidAction, &controls, std::placeholders::_1,
+                                   std::placeholders::_2, std::placeholders::_3));
 
     MovementSystem movementSystem;
 
