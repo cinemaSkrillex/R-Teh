@@ -16,7 +16,7 @@
 #include <thread>
 #include <queue>
 #include <unordered_map>
-#include "../shared/PacketUtils.hpp"
+#include "PacketUtils.hpp"
 
 #include <unordered_set>
 
