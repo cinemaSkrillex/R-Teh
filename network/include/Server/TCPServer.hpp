@@ -12,7 +12,6 @@
 #define _WIN32_WINNT 0x0A00
 #endif
 
-#include "../Export.hpp"
 #include <asio.hpp>
 #include <iostream>
 #include <array>
@@ -21,7 +20,7 @@
 // SERVER_API is a macro for the visibility of the class UDPServer,
 // its for the shared library
 
-class SERVER_API TCPServer {
+class TCPServer {
   public:
     TCPServer(asio::io_context& io_context, unsigned short port);
 

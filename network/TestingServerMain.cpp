@@ -18,32 +18,12 @@
 #else
 #include <dlfcn.h>
 #endif
-
-typedef UDPServer* (*UDPServerConstructor)(asio::io_context&, unsigned short);
-
 class TestServer {
   public:
     TestServer(asio::io_context& io_context, unsigned short port)
-        : io_context_(io_context), server_(nullptr) {
-        std::string library_extension;
-#if defined(_WIN32) || defined(_WIN64)
-        library_extension = ".dll";
-#else
-        library_extension = ".so";
-#endif
+        : io_context_(io_context), server_(std::make_unique<UDPServer>(io_context, port)) {}
 
-        // Construct the library file name
-        std::string    library_name = "librtype_server" + library_extension;
-        DynamicLibrary lib(library_name);
-        auto           create_server = lib.get_symbol<UDPServerConstructor>("create_udp_server");
-
-        server_ = create_server(io_context_, port);
-    }
-
-    ~TestServer() {
-        std::cout << "deleting server";
-        delete server_;
-    }
+    ~TestServer() { std::cout << "deleting server"; }
 
     void start() {
         // Start the server
@@ -51,8 +31,8 @@ class TestServer {
     }
 
   private:
-    asio::io_context& io_context_;
-    UDPServer*        server_;
+    asio::io_context&          io_context_;
+    std::unique_ptr<UDPServer> server_;
 };
 
 int main(int argc, char* argv[]) {

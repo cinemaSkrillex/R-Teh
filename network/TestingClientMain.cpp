@@ -19,30 +19,14 @@
 #include <dlfcn.h>
 #endif
 
-typedef UDPClient* (*UDPClientConstructor)(asio::io_context&, unsigned short);
-
 class TestClient {
   public:
     TestClient(asio::io_context& io_context, const std::string& server_ip,
                unsigned short server_port, unsigned short client_port)
-        : io_context_(io_context), client_(nullptr),
-          server_endpoint_(asio::ip::address::from_string(server_ip), server_port) {
-        std::string library_extension;
-#if defined(_WIN32) || defined(_WIN64)
-        library_extension = ".dll";
-#else
-        library_extension = ".so";
-#endif
+        : io_context_(io_context), client_(std::make_unique<UDPClient>(io_context_, client_port)),
+          server_endpoint_(asio::ip::address::from_string(server_ip), server_port) {}
 
-        // Construct the library file name
-        std::string    library_name = "librtype_client" + library_extension;
-        DynamicLibrary lib(library_name);
-        auto           create_client = lib.get_symbol<UDPClientConstructor>("create_udp_client");
-
-        client_ = create_client(io_context_, client_port);
-    }
-
-    ~TestClient() { delete client_; }
+    ~TestClient() {}
 
     void start() {
         // Start the client
@@ -60,9 +44,9 @@ class TestClient {
     }
 
   private:
-    asio::io_context&       io_context_;
-    UDPClient*              client_;
-    asio::ip::udp::endpoint server_endpoint_;
+    asio::io_context&          io_context_;
+    std::unique_ptr<UDPClient> client_;
+    asio::ip::udp::endpoint    server_endpoint_;
 };
 
 int main(int argc, char* argv[]) {

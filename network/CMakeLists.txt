@@ -30,33 +30,8 @@ file(GLOB_RECURSE NETWORK_CLIENT_SOURCES
 )
 
 # Build the shared library (DLL on Windows, .so on Linux)
-if(WIN32)
-    add_library(rtype_server SHARED ${NETWORK_SERVER_SOURCES})
-    set_target_properties(rtype_server PROPERTIES
-        OUTPUT_NAME "librtype_server"
-        SUFFIX ".dll"
-    )
-    add_library(rtype_client SHARED ${NETWORK_CLIENT_SOURCES})
-    set_target_properties(rtype_client PROPERTIES
-        OUTPUT_NAME "librtype_client"
-        SUFFIX ".dll"
-    )
-else()
-    add_library(rtype_server SHARED ${NETWORK_SERVER_SOURCES})
-    set_target_properties(rtype_server PROPERTIES
-        OUTPUT_NAME "rtype_server"
-        SUFFIX ".so"
-    )
-    add_library(rtype_client SHARED ${NETWORK_CLIENT_SOURCES})
-    set_target_properties(rtype_client PROPERTIES
-        OUTPUT_NAME "rtype_client"
-        SUFFIX ".so"
-    )
-endif()
-
-
-# Define SERVER_LIBRARY_EXPORTS for symbol export
-target_compile_definitions(rtype_server PRIVATE SERVER_LIBRARY_EXPORTS CLIENT_LIBRARY_EXPORTS)
+add_library(rtype_server STATIC ${NETWORK_SERVER_SOURCES})
+add_library(rtype_client STATIC ${NETWORK_CLIENT_SOURCES})
 
 # Include directories
 target_include_directories(rtype_server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -76,7 +51,7 @@ endif()
 # Build the executable and link with the shared library
 add_executable(testing_rtype_server TestingServerMain.cpp)
 if (UNIX)
-    target_link_libraries(testing_rtype_server rtype_server dl)  # Link with rtype_server and dl for dynamic loading on Linux   
+    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server and dl for dynamic loading on Linux   
 endif()
 if (WIN32)
     target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server on Windows
@@ -84,7 +59,7 @@ endif()
 
 add_executable(testing_rtype_client TestingClientMain.cpp)
 if (UNIX)
-    target_link_libraries(testing_rtype_client rtype_client dl)  # Link with rtype_client and dl for dynamic loading on Linux
+    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client and dl for dynamic loading on Linux
 endif()
 if (WIN32)
     target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client on Windows

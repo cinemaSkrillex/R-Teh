@@ -130,8 +130,3 @@ const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>&
 UDPServer::get_known_clients() const {
     return known_clients_;
 }
-
-extern "C" SERVER_API UDPServer* create_udp_server(asio::io_context& io_context,
-                                                   unsigned short    port) {
-    return new UDPServer(io_context, port);
-}

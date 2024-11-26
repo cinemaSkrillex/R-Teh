@@ -129,8 +129,3 @@ void UDPClient::handle_unreliable_packet(const std::string& message) {
     // Process the message content
     std::cout << "Processing unreliable message: " << message << std::endl;
 }
-
-extern "C" CLIENT_API UDPClient* create_udp_client(asio::io_context& io_context,
-                                                   unsigned short    port) {
-    return new UDPClient(io_context, port);
-}
