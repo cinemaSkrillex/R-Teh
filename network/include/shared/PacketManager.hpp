@@ -43,12 +43,13 @@ class PacketManager {
   public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
         : sequence_number_(0), retransmission_timer_(io_context), socket_(socket), role_(role),
-          stop_processing_(false) {}
+          stop_processing_(false), work_guard_(asio::make_work_guard(io_context)) {}
 
     void start() {
         receive_packet_thread_ = std::thread(&PacketManager::start_receive, this);
         process_packet_thread_ = std::thread(&PacketManager::process_packets, this);
         send_packet_thread_    = std::thread(&PacketManager::send_packets, this);
+        retransmission_thread_ = std::thread(&PacketManager::handle_retransmissions, this);
     }
     ~PacketManager() {
         stop_processing_ = true;
@@ -59,6 +60,8 @@ class PacketManager {
             process_packet_thread_.join();
         if (send_packet_thread_.joinable())
             send_packet_thread_.join();
+        if (retransmission_thread_.joinable())
+            retransmission_thread_.join();
     }
 
     void start_receive() {
@@ -147,11 +150,12 @@ class PacketManager {
     }
 
     void handle_reliable_packet(const packet& pkt) {
+        std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
         // Process the message content
         // Print the received packet details
-        std::cout << "Received packet with sequence number: " << pkt.sequence_no << std::endl;
-        std::cout << "Packet size: " << pkt.packet_size << std::endl;
-        std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
+        // std::cout << "Received packet with sequence number: " << pkt.sequence_no <<
+        // std::endl; std::cout << "Packet size: " << pkt.packet_size << std::endl; std::cout <<
+        // "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
 
         // Store the packet
         received_packets_[pkt.sequence_no] = pkt;
@@ -163,7 +167,12 @@ class PacketManager {
         }
 
         // Check if all packets have been received
-        if (received_packets_.size() == (end_sequence_no - start_sequence_no_ + 1)) {
+        int final_size    = end_sequence_no - start_sequence_no_ + 1;
+        int received_size = received_packets_.size();
+        std::cout << "Received packets: " << received_size << " out of " << final_size << " packets"
+                  << std::endl;
+        if (received_size == final_size) {
+            std::cout << "Reassembling message" << std::endl;
             // All packets received, reassemble the message
             std::vector<char> complete_data;
             for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
@@ -192,14 +201,68 @@ class PacketManager {
 
     void send_packets() {
         while (!stop_processing_) {
-            // Implement the logic to send packets if needed
-            // This could involve checking a queue of packets to be sent
+            std::unique_lock<std::mutex> lock(send_queue_mutex_);
+            send_queue_cv_.wait(lock, [this] { return !send_queue_.empty() || stop_processing_; });
+
+            while (!send_queue_.empty()) {
+                auto [pkt, endpoint] = send_queue_.front();
+                send_queue_.pop();
+                lock.unlock(); // Unlock the mutex while sending the packet
+
+                send_packet(pkt, endpoint);
+
+                lock.lock(); // Lock the mutex again before checking the queue
+            }
         }
+    }
+
+    void handle_retransmissions() {
+        while (!stop_processing_) {
+            std::unique_lock<std::mutex> lock(retransmission_queue_mutex_);
+            retransmission_queue_cv_.wait(
+                lock, [this] { return !retransmission_queue_.empty() || stop_processing_; });
+
+            while (!retransmission_queue_.empty()) {
+                auto [pkt, endpoint] = retransmission_queue_.front();
+                retransmission_queue_.pop();
+                lock.unlock(); // Unlock the mutex while sending the packet
+
+                send_packet(pkt, endpoint);
+                std::cout << "retransmissionqueue.size(): " << retransmission_queue_.size()
+                          << std::endl;
+
+                lock.lock(); // Lock the mutex again before checking the queue
+            }
+        }
+    }
+
+    void queue_packet_for_retransmission(const packet&                  pkt,
+                                         const asio::ip::udp::endpoint& endpoint) {
+        {
+            std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
+            retransmission_queue_.emplace(pkt, endpoint);
+        }
+        retransmission_queue_cv_.notify_one();
+    }
+
+    void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
+        retransmission_timer_.expires_after(std::chrono::milliseconds(300));
+        retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
+            if (!ec) {
+                std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+                for (const auto& pair : unacknowledged_packets_) {
+                    queue_packet_for_retransmission(pair.second, endpoint);
+                }
+                if (!unacknowledged_packets_.empty()) {
+                    schedule_retransmissions(endpoint);
+                }
+            }
+        });
     }
 
     void handle_ack(const std::string& ack_message) {
         std::uint32_t sequence_number = 0;
-        std::cout << "ack_message: " << ack_message << std::endl;
+        // std::cout << "ack_message: " << ack_message << std::endl;
         if (ack_message.size() < 4) {
             std::cerr << "Invalid ACK message: " << ack_message << std::endl;
             return;
@@ -212,8 +275,12 @@ class PacketManager {
             std::cerr << "Invalid ACK message: " << ack_message << std::endl;
             return;
         }
-        std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
-        unacknowledged_packets_.erase(sequence_number);
+        // std::cout << "Received ACK for sequence number: " << sequence_number << std::endl;
+        // unacknowledged_packets_.erase(sequence_number);
+        {
+            std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+            unacknowledged_packets_.erase(sequence_number);
+        }
     }
 
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint) {
@@ -235,9 +302,18 @@ class PacketManager {
             pkt.data.assign(message.begin() + i * BUFFER_SIZE,
                             message.begin() + i * BUFFER_SIZE + pkt.packet_size);
             unacknowledged_packets_[pkt.sequence_no] = pkt;
-            send_packet(pkt, endpoint);
+            // send_packet(pkt, endpoint);
+            queue_packet_for_sending(pkt, endpoint);
         }
         schedule_retransmissions(endpoint);
+    }
+
+    void queue_packet_for_sending(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
+        {
+            std::lock_guard<std::mutex> lock(send_queue_mutex_);
+            send_queue_.emplace(pkt, endpoint);
+        }
+        send_queue_cv_.notify_one();
     }
 
     void send_unreliable_packet(const std::string&             message,
@@ -249,14 +325,15 @@ class PacketManager {
         pkt.data.assign(message.begin(), message.end());
 
         // Serialize the packet using the serialize_packet method
-        const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-        socket_.async_send_to(asio::buffer(*buffer), endpoint,
-                              [this, buffer](std::error_code ec, std::size_t bytes_sent) {
-                                  if (ec) {
-                                      std::cerr << "Send error: " << ec.message()
-                                                << " size: " << bytes_sent << std::endl;
-                                  }
-                              });
+        queue_packet_for_sending(pkt, endpoint);
+        // const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
+        // socket_.async_send_to(asio::buffer(*buffer), endpoint,
+        //                       [this, buffer](std::error_code ec, std::size_t bytes_sent) {
+        //                           if (ec) {
+        //                               std::cerr << "Send error: " << ec.message()
+        //                                         << " size: " << bytes_sent << std::endl;
+        //                           }
+        //                       });
     }
 
     void send_ack(std::uint32_t sequence_number, const asio::ip::udp::endpoint& endpoint_) {
@@ -273,23 +350,25 @@ class PacketManager {
         pkt.flag        = ACK;
         pkt.data.assign(ack_message.begin(), ack_message.end());
 
+        queue_packet_for_sending(pkt, endpoint_);
         // Serialize the packet using the serialize_packet method
-        const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-        std::cout << "Sending ACK for sequence number: " << sequence_number << " to " << endpoint_
-                  << std::endl;
+        // const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
+        // std::cout << "Sending ACK for sequence number: " << sequence_number << " to " <<
+        // endpoint_
+        //           << std::endl;
 
         if (endpoint_.address().is_unspecified()) {
             std::cerr << "Server endpoint is unspecified" << std::endl;
             return;
         }
 
-        socket_.async_send_to(asio::buffer(*buffer), endpoint_,
-                              [this, buffer](std::error_code ec, std::size_t bytes_sent) {
-                                  if (ec) {
-                                      std::cerr << "Send ACK error: " << ec.message()
-                                                << " size: " << bytes_sent << std::endl;
-                                  }
-                              });
+        // socket_.async_send_to(asio::buffer(*buffer), endpoint_,
+        //                       [this, buffer](std::error_code ec, std::size_t bytes_sent) {
+        //                           if (ec) {
+        //                               std::cerr << "Send ACK error: " << ec.message()
+        //                                         << " size: " << bytes_sent << std::endl;
+        //                           }
+        //                       });
     }
 
     std::queue<packet> get_received_packets() {
@@ -314,24 +393,25 @@ class PacketManager {
         for (const auto& pair : unacknowledged_packets_) {
             std::cout << "unacknowledged packet.size(): " << unacknowledged_packets_.size()
                       << std::endl;
-            send_packet(pair.second, endpoint);
+
+            // (pair.second, endpoint);
         }
     }
 
-    void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
-        retransmission_timer_.expires_after(std::chrono::milliseconds(300));
-        retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
-            if (!ec) {
-                retransmit_unacknowledged_packets(endpoint);
-                for (const auto& pair : unacknowledged_packets_) {
-                    std::cout << "Unacknowledged packet: " << pair.first << std::endl;
-                }
-                if (!unacknowledged_packets_.empty()) {
-                    schedule_retransmissions(endpoint);
-                }
-            }
-        });
-    }
+    // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
+    //     retransmission_timer_.expires_after(std::chrono::milliseconds(300));
+    //     retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
+    //         if (!ec) {
+    //             retransmit_unacknowledged_packets(endpoint);
+    //             for (const auto& pair : unacknowledged_packets_) {
+    //                 std::cout << "Unacknowledged packet: " << pair.first << std::endl;
+    //             }
+    //             if (!unacknowledged_packets_.empty()) {
+    //                 schedule_retransmissions(endpoint);
+    //             }
+    //         }
+    //     });
+    // }
 
     // TODO change to a MACRO for changing the sequence number max allocated size
     std::uint32_t                             sequence_number_;
@@ -356,6 +436,22 @@ class PacketManager {
     std::map<int, packet> received_packets_;
     int                   start_sequence_no_ = -1;
     int                   end_sequence_no    = -1;
+
+    std::vector<std::thread> thread_pool_;
+    std::size_t              thread_pool_size_;
+
+    std::queue<std::pair<packet, asio::ip::udp::endpoint>> send_queue_;
+    std::mutex                                             send_queue_mutex_;
+    std::condition_variable                                send_queue_cv_;
+    std::mutex                                             unacknowledged_packets_mutex_;
+
+    std::queue<std::pair<packet, asio::ip::udp::endpoint>> retransmission_queue_;
+    std::mutex                                             retransmission_queue_mutex_;
+    std::condition_variable                                retransmission_queue_cv_;
+    std::thread                                            retransmission_thread_;
+
+    // work guard
+    asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
 };
 
 #endif // SENDPACKETS_HPP
