@@ -6,8 +6,19 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add debug flags for Valgrind
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
+    endif()
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    endif()
+endif()
 
 # Include directories
 if (UNIX)
@@ -42,27 +53,17 @@ target_include_directories(rtype_server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 # Link pthread for Linux
 if(UNIX)
     target_link_libraries(rtype_server pthread)
+    add_executable(testing_rtype_server TestingServerMain.cpp)
+    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server and dl for dynamic loading on Linux   
+    add_executable(testing_rtype_client TestingClientMain.cpp)
+    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client and dl for dynamic loading on Linux
 endif()
 
 # Link ws2_32 for Windows
 if(WIN32)
     target_link_libraries(rtype_server ws2_32)
-endif()
-
-# Use main and the shared library to build the executable of testing : server and client
-# Build the executable and link with the shared library
-add_executable(testing_rtype_server TestingServerMain.cpp)
-if (UNIX)
-    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server and dl for dynamic loading on Linux   
-endif()
-if (WIN32)
+    add_executable(testing_rtype_server TestingServerMain.cpp)
     target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server on Windows
-endif()
-
-add_executable(testing_rtype_client TestingClientMain.cpp)
-if (UNIX)
-    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client and dl for dynamic loading on Linux
-endif()
-if (WIN32)
+    add_executable(testing_rtype_client TestingClientMain.cpp)
     target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client on Windows
 endif()

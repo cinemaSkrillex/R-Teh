@@ -63,8 +63,16 @@ vcpkg install --triplet x64-linux
  
 ```bash
 cd build
+
+# Build debug mode (g3 flag)
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+# Build release mode (O3 flag)
+cmake -DCMAKE_BUILD_TYPE=Release ..
+
+# Alternative way to build
 cmake ..
 cmake --build .
+
 ```
 
 ## How to run the project 🚀
