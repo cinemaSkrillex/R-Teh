@@ -14,11 +14,10 @@
 #include <string>
 #include <map>
 #include <queue>
-#include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
 #include "../shared/PacketManager.hpp"
 
-class CLIENT_API UDPClient {
+class UDPClient {
   public:
     UDPClient(asio::io_context& io_context, unsigned short port);
     ~UDPClient();

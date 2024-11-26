@@ -13,7 +13,6 @@
 #include <array>
 #include <string>
 #include <unordered_map>
-#include "../ClientExport.hpp"
 #include "../shared/PacketUtils.hpp"
 
 enum class Role { SERVER, CLIENT };
