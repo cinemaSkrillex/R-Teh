@@ -187,7 +187,6 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
     std::cout << "Processing unreliable message: " << message << std::endl;
-    std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     _unprocessed_unreliable_messages.push(message);
 }
 
@@ -430,6 +429,8 @@ std::queue<packet> PacketManager::get_received_packets() {
 
 std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+    if (_unprocessed_unreliable_messages.empty())
+        return "";
     std::string                 message = _unprocessed_unreliable_messages.top();
     _unprocessed_unreliable_messages.pop();
     return message;
