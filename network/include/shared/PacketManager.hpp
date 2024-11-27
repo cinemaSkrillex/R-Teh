@@ -73,12 +73,13 @@ class PacketManager {
     std::queue<packet> get_received_packets();
     std::string        get_last_unreliable_packet();
     void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
+    void               print_packet(const packet& pkt);
 
   private:
     // TODO change to a MACRO for changing the sequence number max allocated size
-    std::uint32_t                             sequence_number_;
-    std::unordered_map<std::uint32_t, packet> unacknowledged_packets_;
-    std::unordered_set<std::uint32_t>         unacknowledged_packets_set_;
+    std::uint32_t sequence_number_;
+    // std::unordered_map<std::uint32_t, packet> unacknowledged_packets_;
+    // std::unordered_set<std::uint32_t>         unacknowledged_packets_set_;
 
     asio::steady_timer     retransmission_timer_;
     asio::ip::udp::socket& socket_;

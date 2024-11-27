@@ -36,6 +36,13 @@ void PacketManager::start_receive() {
                                [this](std::error_code ec, std::size_t bytes_recvd) {
                                    if (!ec && bytes_recvd > 0) {
                                        handle_receive(bytes_recvd);
+                                   } else {
+                                       if (ec) {
+                                           std::cerr << "Receive error: " << ec.message()
+                                                     << std::endl;
+                                       } else {
+                                           std::cerr << "Received 0 bytes" << std::endl;
+                                       }
                                    }
                                    start_receive();
                                });
@@ -55,6 +62,7 @@ void PacketManager::handle_receive(std::size_t bytes_recvd) {
 void PacketManager::process_packets() {
     while (!stop_processing_) {
         std::unique_lock<std::mutex> lock(queue_mutex_);
+        // std::cout << "packet_queue_.size(): " << packet_queue_.size() << std::endl;
         queue_cv_.wait(lock, [this] { return !packet_queue_.empty() || stop_processing_; });
 
         while (!packet_queue_.empty()) {
@@ -65,11 +73,9 @@ void PacketManager::process_packets() {
                 handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
                 break;
             case RELIABLE:
-                // Process the reliable packet
                 handle_reliable_packet(pkt);
                 break;
             case UNRELIABLE:
-                // Process the unreliable packet
                 handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
                 break;
             default:
@@ -124,41 +130,52 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         std::cerr << "Invalid sequence number: " << pkt.sequence_no << std::endl;
         return;
     }
-    // Store the packet
-    std::unique_lock<std::mutex> lock(unacknowledged_packets_mutex_);
-    received_packets_[pkt.sequence_no] = pkt;
-    unacknowledged_packets_set_.insert(pkt.sequence_no);
 
-    if (start_sequence_no_ == -1) {
-        start_sequence_no_ = pkt.start_sequence_no;
-        end_sequence_no    = pkt.end_sequence_no;
+    bool all_packets_received = false;
+    {
+        std::lock_guard<std::mutex> lock(received_packets_mutex_);
+        received_packets_[pkt.sequence_no] = pkt;
+
+        if (start_sequence_no_ == -1) {
+            start_sequence_no_ = pkt.start_sequence_no;
+            end_sequence_no    = pkt.end_sequence_no;
+        }
+
+        // Check if all packets have been received
+        int final_size    = end_sequence_no - start_sequence_no_ + 1;
+        int received_size = received_packets_.size();
+        std::cout << "Received packets: " << received_size << " out of " << final_size << " packets"
+                  << std::endl;
+
+        if (received_size == final_size) {
+            all_packets_received = true;
+        }
     }
 
-    // Check if all packets have been received
-    int final_size = end_sequence_no - start_sequence_no_ + 1;
-    // int received_size = received_packets_.size();
-    int received_size = received_packets_.size();
-    std::cout << "Received packets: " << received_size << " out of " << final_size << " packets"
-              << std::endl;
-    if (received_size == final_size) {
+    if (all_packets_received) {
         std::cout << "Reassembling message" << std::endl;
         // All packets received, reassemble the message
         std::vector<char> complete_data;
-        for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
-            const auto& pkt = received_packets_[i];
-            complete_data.insert(complete_data.end(), pkt.data.begin(), pkt.data.end());
+        {
+            std::lock_guard<std::mutex> lock(received_packets_mutex_);
+            for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
+                const auto& pkt = received_packets_[i];
+                complete_data.insert(complete_data.end(), pkt.data.begin(), pkt.data.end());
+            }
+            std::cout << "Complete message: "
+                      << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            std::cout << "Total size received: " << complete_data.size() << " bytes" << std::endl;
         }
-        std::cout << "Complete data size: " << complete_data.size() << std::endl;
-        std::cout << "Complete message: " << complete_message_buffer_ << std::endl;
-        std::cout << "Total size received: " << complete_data.size() << " bytes" << std::endl;
 
         // Clear the received packets map for the next message
-
-        received_packets_.clear();
-        unacknowledged_packets_.clear();
-        start_sequence_no_ = -1;
-        end_sequence_no    = -1;
+        {
+            std::lock_guard<std::mutex> lock(received_packets_mutex_);
+            received_packets_.clear();
+            start_sequence_no_ = -1;
+            end_sequence_no    = -1;
+        }
     }
+
     // Send ACK back to the server
     send_ack(pkt.sequence_no, remote_endpoint_);
 }
@@ -173,6 +190,7 @@ void PacketManager::handle_unreliable_packet(const std::string& message) {
 void PacketManager::send_packets() {
     while (!stop_processing_) {
         std::unique_lock<std::mutex> lock(send_queue_mutex_);
+        std::cout << "send_queue_.size(): " << send_queue_.size() << std::endl;
         send_queue_cv_.wait(lock, [this] { return !send_queue_.empty() || stop_processing_; });
         while (!send_queue_.empty()) {
             auto [pkt, endpoint] = send_queue_.front();
@@ -203,6 +221,7 @@ void PacketManager::send_packets() {
 void PacketManager::handle_retransmissions() {
     while (!stop_processing_) {
         std::unique_lock<std::mutex> lock(retransmission_queue_mutex_);
+        std::cout << "retransmission_queue_.size(): " << retransmission_queue_.size() << std::endl;
         retransmission_queue_cv_.wait(
             lock, [this] { return !retransmission_queue_.empty() || stop_processing_; });
 
@@ -227,6 +246,7 @@ void PacketManager::handle_retransmissions() {
             lock.unlock(); // Unlock the mutex while sending the packet
 
             send_packet(pkt, endpoint);
+
             std::cout << "retransmissionqueue.size(): " << retransmission_queue_.size()
                       << std::endl;
             if (!retransmission_queue_.empty()) {
@@ -257,17 +277,15 @@ void PacketManager::schedule_retransmissions(const asio::ip::udp::endpoint& endp
     retransmission_timer_.expires_after(std::chrono::milliseconds(300));
     retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
         if (!ec) {
-            std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
-            for (const auto& pair : unacknowledged_packets_) {
-                if (unacknowledged_packets_set_.find(pair.first) !=
-                        unacknowledged_packets_set_.end() &&
-                    received_packets_.find(pair.first) == received_packets_.end()) {
-                    std::cout << "Retransmitting unacknowledged packet: " << pair.first
+            std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
+            for (const auto& pair : retransmission_queue_) {
+                if (received_packets_.find(pair.first.sequence_no) == received_packets_.end()) {
+                    std::cout << "Retransmitting unacknowledged packet: " << pair.first.sequence_no
                               << std::endl;
-                    queue_packet_for_retransmission(pair.second, endpoint);
+                    queue_packet_for_retransmission(pair.first, endpoint);
                 }
             }
-            if (!unacknowledged_packets_.empty()) {
+            if (!retransmission_queue_.empty()) {
                 schedule_retransmissions(endpoint);
             }
         }
@@ -290,9 +308,15 @@ void PacketManager::handle_ack(const std::string& ack_message) {
         return;
     }
     {
-        std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
-        unacknowledged_packets_.erase(sequence_number);
-        unacknowledged_packets_set_.erase(sequence_number);
+        std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
+        retransmission_queue_set_.erase(sequence_number);
+        // Remove the packet from the retransmission queue
+        auto it = std::remove_if(retransmission_queue_.begin(), retransmission_queue_.end(),
+                                 [sequence_number](const auto& pair) {
+                                     return pair.first.sequence_no == sequence_number;
+                                 });
+        retransmission_queue_.erase(it, retransmission_queue_.end());
+        // std::cout << "ACK received for packet: " << sequence_number << std::endl;
     }
 }
 
@@ -339,24 +363,13 @@ void PacketManager::send_reliable_packet(const std::string&             message,
             }
             continue;
         }
-        {
-            std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
-            unacknowledged_packets_[pkt.sequence_no] = pkt;
-            unacknowledged_packets_set_.insert(pkt.sequence_no);
-        }
         queue_packet_for_sending(pkt, endpoint);
+        queue_packet_for_retransmission(pkt, endpoint);
     }
-    schedule_retransmissions(endpoint);
-    // queue_packet_for_retransmission(pkt, endpoint);
 }
 
 void PacketManager::queue_packet_for_sending(const packet&                  pkt,
                                              const asio::ip::udp::endpoint& endpoint) {
-    // {
-    //     std::lock_guard<std::mutex> lock(send_queue_mutex_);
-    //     send_queue_.emplace(pkt, endpoint);
-    // }
-    // send_queue_cv_.notify_one();
     {
         std::lock_guard<std::mutex> lock(send_queue_mutex_);
         // Check if the current packet is not already in the send queue
@@ -398,11 +411,12 @@ void PacketManager::send_ack(std::uint32_t                  sequence_number,
     pkt.flag        = ACK;
     pkt.data.assign(ack_message.begin(), ack_message.end());
 
-    queue_packet_for_sending(pkt, endpoint_);
+    // std::cout << "Sending ACK: " << ack_message << std::endl;
     if (endpoint_.address().is_unspecified()) {
         std::cerr << "Server endpoint is unspecified" << std::endl;
         return;
     }
+    queue_packet_for_sending(pkt, endpoint_);
 }
 
 std::queue<packet> PacketManager::get_received_packets() {
@@ -420,6 +434,9 @@ std::string PacketManager::get_last_unreliable_packet() {
 void PacketManager::send_packet(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
     // Serialize the packet using the serialize_packet method
     const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
+    // print_packet(pkt);
+    // sleep for 30ms when sleeping it works better.
+    std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
     socket_.async_send_to(asio::buffer(*buffer), endpoint,
                           [this, buffer](std::error_code ec, std::size_t bytes_sent) {
                               if (ec) {
@@ -429,11 +446,12 @@ void PacketManager::send_packet(const packet& pkt, const asio::ip::udp::endpoint
                           });
 }
 
-void PacketManager::retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint) {
-    for (const auto& pair : unacknowledged_packets_) {
-        std::cout << "unacknowledged packet.size(): " << unacknowledged_packets_.size()
-                  << std::endl;
-
-        // (pair.second, endpoint);
-    }
+void PacketManager::print_packet(const packet& pkt) {
+    std::cout << "Packet: " << std::endl;
+    std::cout << "Sequence number: " << pkt.sequence_no << std::endl;
+    std::cout << "Start sequence number: " << pkt.start_sequence_no << std::endl;
+    std::cout << "End sequence number: " << pkt.end_sequence_no << std::endl;
+    std::cout << "Packet size: " << pkt.packet_size << std::endl;
+    std::cout << "Flag: " << pkt.flag << std::endl;
+    std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
 }
