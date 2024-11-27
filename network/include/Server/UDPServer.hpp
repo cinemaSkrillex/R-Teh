@@ -37,8 +37,6 @@ class UDPServer {
     asio::ip::udp::socket   socket_;
     asio::ip::udp::endpoint client_endpoint_;
 
-    // retransmission timer
-    // Track known clients
     PacketManager packet_manager_;
 };
 

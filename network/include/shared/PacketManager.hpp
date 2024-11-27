@@ -143,7 +143,6 @@ class PacketManager {
             std::cerr << "Invalid sequence number: " << pkt.sequence_no << std::endl;
             return;
         }
-        std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
         // Process the message content
         // Print the received packet details
         // std::cout << "Received packet with sequence number: " << pkt.sequence_no <<
@@ -151,39 +150,79 @@ class PacketManager {
         // "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
 
         // Store the packet
+        std::unique_lock<std::mutex> lock(unacknowledged_packets_mutex_);
+        // std::lock_guard<std::mutex> lock(received_packets_mutex_);
         received_packets_[pkt.sequence_no] = pkt;
 
+        // {
+        //     std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+        //     if (received_packets_.find(pkt.sequence_no) != received_packets_.end()) {
+        //         std::cerr << "Packet already received: " << pkt.sequence_no << std::endl;
+        //         return;
+        //     }
+        //     received_packets_[pkt.sequence_no] = pkt;
+        // }
         // Set start and max sequence numbers
         if (start_sequence_no_ == -1) {
             start_sequence_no_ = pkt.start_sequence_no;
             end_sequence_no    = pkt.end_sequence_no;
+            // Reset the message complete flag when starting a new message
+            // {
+            //     std::lock_guard<std::mutex> lock(message_complete_mutex_);
+            //     message_complete_ = false;
+            // }
         }
 
         // Check if all packets have been received
-        int final_size    = end_sequence_no - start_sequence_no_ + 1;
+        int final_size = end_sequence_no - start_sequence_no_ + 1;
+        // int received_size = received_packets_.size();
         int received_size = received_packets_.size();
+        // int received_size;
+        // {
+        //     std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+        //     received_size = received_packets_.size();
+        // }
         std::cout << "Received packets: " << received_size << " out of " << final_size << " packets"
                   << std::endl;
         if (received_size == final_size) {
             std::cout << "Reassembling message" << std::endl;
             // All packets received, reassemble the message
             std::vector<char> complete_data;
+            // {
+            // std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
             for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
                 const auto& pkt = received_packets_[i];
                 complete_data.insert(complete_data.end(), pkt.data.begin(), pkt.data.end());
             }
+            std::cout << "Complete data size: " << complete_data.size() << std::endl;
+            // }
 
-            std::string complete_message(complete_data.begin(), complete_data.end());
-            std::cout << "Complete message: " << complete_message << std::endl;
+            // {
+            //     std::lock_guard<std::mutex> lock(complete_message_mutex_);
+            //     complete_message_buffer_.assign(complete_data.begin(), complete_data.end());
+            // }
+            std::cout << "Complete message: " << complete_message_buffer_ << std::endl;
             std::cout << "Total size received: " << complete_data.size() << " bytes" << std::endl;
 
             // Clear the received packets map for the next message
+
             received_packets_.clear();
+            // {
+            //     std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+            //     received_packets_.clear();
+            // }
             unacknowledged_packets_.clear();
+            // {
+            //     std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+            //     unacknowledged_packets_.clear();
+            // }
             start_sequence_no_ = -1;
             end_sequence_no    = -1;
+            // {
+            //     std::lock_guard<std::mutex> lock(message_complete_mutex_);
+            //     message_complete_ = true;
+            // }
         }
-
         // Send ACK back to the server
         send_ack(pkt.sequence_no, remote_endpoint_);
     }
@@ -199,14 +238,28 @@ class PacketManager {
         while (!stop_processing_) {
             std::unique_lock<std::mutex> lock(send_queue_mutex_);
             send_queue_cv_.wait(lock, [this] { return !send_queue_.empty() || stop_processing_; });
-
             while (!send_queue_.empty()) {
                 auto [pkt, endpoint] = send_queue_.front();
                 send_queue_.pop();
+                send_queue_set_.erase(pkt.sequence_no);
+                if (pkt.sequence_no < 0 || (pkt.sequence_no > pkt.end_sequence_no ||
+                                            pkt.sequence_no < pkt.start_sequence_no) &&
+                                               pkt.flag == RELIABLE) {
+                    if (pkt.sequence_no < 0) {
+                        std::cerr << "send Invalid sequence number: " << pkt.sequence_no
+                                  << std::endl;
+                    } else {
+                        std::cerr << "send Invalid sequence number: " << pkt.sequence_no
+                                  << " start_sequence_no: " << pkt.start_sequence_no
+                                  << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                    }
+                    lock.unlock();
+                    continue;
+                }
                 lock.unlock(); // Unlock the mutex while sending the packet
-
                 send_packet(pkt, endpoint);
 
+                // std::this_thread::sleep_for(std::chrono::milliseconds(30));
                 lock.lock(); // Lock the mutex again before checking the queue
             }
         }
@@ -222,14 +275,29 @@ class PacketManager {
                 auto [pkt, endpoint] = retransmission_queue_.front();
                 retransmission_queue_.pop_front();
                 retransmission_queue_set_.erase(pkt.sequence_no);
+                if (pkt.sequence_no < 0 || pkt.sequence_no > pkt.end_sequence_no ||
+                    pkt.sequence_no < pkt.start_sequence_no) {
+                    if (pkt.sequence_no < 0) {
+                        std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_no
+                                  << std::endl;
+                    } else {
+                        std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_no
+                                  << " start_sequence_no: " << pkt.start_sequence_no
+                                  << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                    }
+                    lock.unlock();
+                    continue;
+                }
 
                 lock.unlock(); // Unlock the mutex while sending the packet
 
                 send_packet(pkt, endpoint);
                 std::cout << "retransmissionqueue.size(): " << retransmission_queue_.size()
                           << std::endl;
-                std::cout << "retransmissionqueue.front().first.sequence_no: "
-                          << retransmission_queue_.front().first.sequence_no << std::endl;
+                if (!retransmission_queue_.empty()) {
+                    std::cout << "retransmissionqueue.front().first.sequence_no: "
+                              << retransmission_queue_.front().first.sequence_no << std::endl;
+                }
                 lock.lock(); // Lock the mutex again before checking the queue
             }
         }
@@ -260,9 +328,13 @@ class PacketManager {
         retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
             if (!ec) {
                 std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+                // std::unique_lock<std::mutex> receive_lock(received_packets_mutex_);
                 for (const auto& pair : unacknowledged_packets_) {
-                    // if the unacknowledged packet is not inside received_packets_
+                    // if (unacknowledged_packets_.find(pair.first) ==
+                    // unacknowledged_packets_.end()) {
                     if (received_packets_.find(pair.first) == received_packets_.end()) {
+                        std::cout << "Retransmitting unacknowledged packet: " << pair.first
+                                  << std::endl;
                         queue_packet_for_retransmission(pair.second, endpoint);
                     }
                 }
@@ -301,12 +373,21 @@ class PacketManager {
         std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
                   << std::endl;
 
-        int start_sequence_no = sequence_number_;
-        int end_sequence_no   = sequence_number_ + total_packets - 1;
+        int start_sequence_no;
+        int end_sequence_no;
+
+        {
+            std::lock_guard<std::mutex> lock(sequence_number_mutex_);
+            start_sequence_no = sequence_number_;
+            end_sequence_no   = sequence_number_ + total_packets - 1;
+        }
 
         for (int i = 0; i < total_packets; ++i) {
             packet pkt;
-            pkt.sequence_no       = sequence_number_++;
+            {
+                std::lock_guard<std::mutex> lock(sequence_number_mutex_);
+                pkt.sequence_no = sequence_number_++;
+            }
             pkt.start_sequence_no = start_sequence_no;
             pkt.end_sequence_no   = end_sequence_no;
             pkt.packet_size =
@@ -314,7 +395,33 @@ class PacketManager {
             pkt.flag = RELIABLE;
             pkt.data.assign(message.begin() + i * BUFFER_SIZE,
                             message.begin() + i * BUFFER_SIZE + pkt.packet_size);
-            unacknowledged_packets_[pkt.sequence_no] = pkt;
+            if (endpoint.address().is_unspecified()) {
+                std::cerr << "Server endpoint is unspecified" << std::endl;
+                return;
+            }
+            if (pkt.sequence_no < 0 || pkt.sequence_no > pkt.end_sequence_no ||
+                pkt.sequence_no < pkt.start_sequence_no) {
+                if (pkt.sequence_no < 0) {
+                    std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_no
+                              << std::endl;
+                } else {
+                    std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_no
+                              << " start_sequence_no: " << pkt.start_sequence_no
+                              << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                }
+                continue;
+            }
+            {
+                std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
+                // if (acknowledged_packets_.find(pkt.sequence_no) !=
+                // acknowledged_packets_.end()) {
+                //     std::cout << "Packet already acknowledged, not sending: " <<
+                //     pkt.sequence_no
+                //               << std::endl;
+                //     continue;
+                // }
+                unacknowledged_packets_[pkt.sequence_no] = pkt;
+            }
             // send_packet(pkt, endpoint);
             queue_packet_for_sending(pkt, endpoint);
         }
@@ -322,9 +429,21 @@ class PacketManager {
     }
 
     void queue_packet_for_sending(const packet& pkt, const asio::ip::udp::endpoint& endpoint) {
+        // {
+        //     std::lock_guard<std::mutex> lock(send_queue_mutex_);
+        //     send_queue_.emplace(pkt, endpoint);
+        // }
+        // send_queue_cv_.notify_one();
         {
             std::lock_guard<std::mutex> lock(send_queue_mutex_);
-            send_queue_.emplace(pkt, endpoint);
+            // Check if the current packet is not already in the send queue
+            if (send_queue_set_.find(pkt.sequence_no) == send_queue_set_.end()) {
+                send_queue_.emplace(pkt, endpoint);
+                send_queue_set_.insert(pkt.sequence_no);
+                std::cout << "Queued packet for sending: " << pkt.sequence_no << std::endl;
+            } else {
+                std::cout << "Packet already in send queue: " << pkt.sequence_no << std::endl;
+            }
         }
         send_queue_cv_.notify_one();
     }
@@ -364,24 +483,10 @@ class PacketManager {
         pkt.data.assign(ack_message.begin(), ack_message.end());
 
         queue_packet_for_sending(pkt, endpoint_);
-        // Serialize the packet using the serialize_packet method
-        // const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-        // std::cout << "Sending ACK for sequence number: " << sequence_number << " to " <<
-        // endpoint_
-        //           << std::endl;
-
         if (endpoint_.address().is_unspecified()) {
             std::cerr << "Server endpoint is unspecified" << std::endl;
             return;
         }
-
-        // socket_.async_send_to(asio::buffer(*buffer), endpoint_,
-        //                       [this, buffer](std::error_code ec, std::size_t bytes_sent) {
-        //                           if (ec) {
-        //                               std::cerr << "Send ACK error: " << ec.message()
-        //                                         << " size: " << bytes_sent << std::endl;
-        //                           }
-        //                       });
     }
 
     std::queue<packet> get_received_packets() {
@@ -454,6 +559,7 @@ class PacketManager {
 
     // Store received packets
     std::map<int, packet> received_packets_;
+    std::mutex            received_packets_mutex_;
     int                   start_sequence_no_ = -1;
     int                   end_sequence_no    = -1;
 
@@ -464,6 +570,7 @@ class PacketManager {
     std::mutex                                             send_queue_mutex_;
     std::condition_variable                                send_queue_cv_;
     std::mutex                                             unacknowledged_packets_mutex_;
+    std::unordered_set<std::uint32_t>                      send_queue_set_;
 
     std::deque<std::pair<packet, asio::ip::udp::endpoint>> retransmission_queue_;
     std::mutex                                             retransmission_queue_mutex_;
@@ -471,8 +578,19 @@ class PacketManager {
     std::thread                                            retransmission_thread_;
     std::unordered_set<std::uint32_t>                      retransmission_queue_set_;
 
+    std::mutex sequence_number_mutex_;
+
     std::stack<std::string> _unprocessed_unreliable_messages;
     std::mutex              _unprocessed_unreliable_messages_mutex;
+
+    std::unordered_map<std::uint32_t, int> packet_occurrences_;
+    std::mutex                             packet_occurrences_mutex_;
+
+    std::mutex message_complete_mutex_;
+    bool       message_complete_ = false;
+
+    std::string complete_message_buffer_;
+    std::mutex  complete_message_mutex_;
 
     // work guard
     asio::executor_work_guard<asio::io_context::executor_type> work_guard_;

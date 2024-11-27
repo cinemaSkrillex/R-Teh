@@ -26,3 +26,10 @@ void UDPClient::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
     packet_manager_.send_reliable_packet(message, endpoint);
 }
+
+std::string UDPClient::get_last_reliable_packet() {
+    // std::string complete_message = packet_manager_.get_complete_message();
+    // std::cout << "Received complete message: " << complete_message << std::endl;
+    // return complete_message;
+    return "";
+}
