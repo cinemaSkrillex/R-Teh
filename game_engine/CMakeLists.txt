@@ -60,7 +60,7 @@ if(UNIX)
         sfml-graphics
         sfml-network
         sfml-audio
-        OpenAL::OpenAL
+        ${OPENAL_LIBRARY}
         ${LUA_LIBRARIES}
     )
 elseif(WIN32)
@@ -71,7 +71,7 @@ elseif(WIN32)
         sfml-graphics
         sfml-network
         sfml-audio
-        OpenAL::OpenAL
+        ${OPENAL_LIBRARY}
         ${LUA_LIBRARIES}
     )
 
