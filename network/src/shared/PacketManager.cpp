@@ -89,39 +89,43 @@ void PacketManager::process_packets() {
     }
 }
 
-void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
-    if (known_clients_.find(client_endpoint) == known_clients_.end()) {
-        known_clients_.insert(client_endpoint);
-        std::cout << "New client connected: " << client_endpoint << std::endl;
+static std::string testPacketManager() {
+    std::string boat_info =
+        "Boats are watercraft of various sizes designed to float, plane, work, or travel "
+        "on "
+        "water. "
+        "They are typically smaller than ships, which are generally distinguished by their "
+        "larger size, "
+        "shape, cargo or passenger capacity, or their ability to carry boats. "
+        "Boats have been used since prehistoric times and have been essential for fishing, "
+        "transportation, "
+        "trade, and warfare. Modern boats are usually powered by engines, but many still "
+        "use "
+        "sails or oars. "
+        "There are many types of boats, including sailboats, motorboats, fishing boats, "
+        "and "
+        "rowboats. ";
 
-        std::string boat_info =
-            "Boats are watercraft of various sizes designed to float, plane, work, or travel "
-            "on "
-            "water. "
-            "They are typically smaller than ships, which are generally distinguished by their "
-            "larger size, "
-            "shape, cargo or passenger capacity, or their ability to carry boats. "
-            "Boats have been used since prehistoric times and have been essential for fishing, "
-            "transportation, "
-            "trade, and warfare. Modern boats are usually powered by engines, but many still "
-            "use "
-            "sails or oars. "
-            "There are many types of boats, including sailboats, motorboats, fishing boats, "
-            "and "
-            "rowboats. ";
-
-        // Repeat the boat_info string to exceed x bytes
-        // 1000 byes = 1KB
-        // 1000000 bytes = 1MB
-        // 10000000 bytes = 10MB
-        // 100000000 bytes = 100MB
-        // 1000000000 bytes = 1GB No need to go further in UDP.
-        std::string long_boat_info;
-        while (long_boat_info.size() <= 10000000) {
-            long_boat_info += boat_info;
-        }
-        send_reliable_packet(long_boat_info, client_endpoint);
+    // Repeat the boat_info string to exceed x bytes
+    // 1000 byes = 1KB
+    // 1000000 bytes = 1MB
+    // 10000000 bytes = 10MB
+    // 100000000 bytes = 100MB
+    // 1000000000 bytes = 1GB No need to go further in UDP.
+    std::string long_boat_info;
+    while (long_boat_info.size() <= 10000000) {
+        long_boat_info += boat_info;
     }
+    return long_boat_info;
+}
+
+void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
+    if (known_clients_.find(client_endpoint) != known_clients_.end())
+        return;
+
+    known_clients_.insert(client_endpoint);
+    std::cout << "New client connected: " << client_endpoint << std::endl;
+    // send_reliable_packet(testPacketManager(), client_endpoint);
 }
 
 void PacketManager::handle_reliable_packet(const packet& pkt) {
