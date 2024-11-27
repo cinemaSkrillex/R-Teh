@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 
+#define SEQUENCE_TYPE std::uint32_t //TODO change int to SEQUENCE_TYPE
 #define BUFFER_SIZE 1000
 
 enum Flags {
@@ -13,7 +14,8 @@ enum Flags {
     CONTROL       = 3,
     HEARTBEAT     = 4,
     DATA          = 5,
-    RETRANSMITTED = 6
+    RETRANSMITTED = 6,
+    NEW_CLIENT    = 7
 };
 
 // structure for the binary protocol
@@ -25,7 +27,28 @@ struct packet {
     Flags             flag;
     asio::ip::udp::endpoint endpoint;
     std::vector<char> data;
+
+    bool operator==(const packet& other) const {
+        return sequence_nb == other.sequence_nb &&
+               start_sequence_nb == other.start_sequence_nb &&
+               end_sequence_nb == other.end_sequence_nb &&
+               packet_size == other.packet_size &&
+               flag == other.flag &&
+               data == other.data &&
+               endpoint == other.endpoint;
+    }
 };
+
+namespace std {
+    template <>
+    struct hash<packet> {
+        std::size_t operator()(const packet& pkt) const {
+            return ((std::hash<int>()(pkt.sequence_nb)
+                     ^ (std::hash<int>()(pkt.start_sequence_nb) << 1)) >> 1)
+                   ^ (std::hash<int>()(pkt.end_sequence_nb) << 1);
+        }
+    };
+}
 
 inline std::vector<char> serialize_packet(const packet& pkt) {
     std::string endpoint_address = pkt.endpoint.address().to_string();
