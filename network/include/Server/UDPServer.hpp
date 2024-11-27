@@ -29,7 +29,9 @@ class UDPServer {
 
     void send_unreliable_packet(const std::string&             message,
                                 const asio::ip::udp::endpoint& endpoint);
-    void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
+    void send_reliable_packet(const std::string&             message,
+                              const asio::ip::udp::endpoint& endpoint);
+
     void setEndpoint(const asio::ip::udp::endpoint& endpoint);
     const asio::ip::udp::endpoint& getEndpoint() const;
 

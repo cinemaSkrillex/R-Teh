@@ -2,10 +2,10 @@
 .vscode/c_cpp_properties.json
 bootstrap/main.cpp
 bootstrap/a.out
-.gitignore
-.gitignore
+# .gitignore
 *.o
 a.out
 vcpkg_installed/
 build/
 my_logs.txt
+documentation/setup_vm_vcpkg/

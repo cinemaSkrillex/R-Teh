@@ -4,6 +4,7 @@
 ** File description:
 ** main.cpp
 */
+
 #include <iostream>
 #include <asio.hpp>
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
@@ -18,22 +19,23 @@
 #else
 #include <dlfcn.h>
 #endif
-class TestServer {
-  public:
-    TestServer(asio::io_context& io_context, unsigned short port)
-        : io_context_(io_context), server_(std::make_unique<UDPServer>(io_context, port)) {}
 
-    ~TestServer() { std::cout << "deleting server"; }
+// class TestServer {
+//   public:
+//     TestServer(asio::io_context& io_context, unsigned short port)
+//         : io_context_(io_context), server_(std::make_unique<UDPServer>(io_context, port)) {}
 
-    void start() {
-        // Start the server
-        io_context_.run();
-    }
+//     ~TestServer() { std::cout << "deleting server"; }
 
-  private:
-    asio::io_context&          io_context_;
-    std::unique_ptr<UDPServer> server_;
-};
+//     void start() {
+//         // Start the server
+//         io_context_.run();
+//     }
+
+//   private:
+//     asio::io_context&          io_context_;
+//     std::unique_ptr<UDPServer> server_;
+// };
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
