@@ -12,6 +12,7 @@
 #include <optional>
 #include <memory>
 
+namespace RealEngine {
 template <typename Component>
 
 class SparseArray {
@@ -71,3 +72,4 @@ class SparseArray {
   private:
     container_t _data;
 };
+} // namespace RealEngine

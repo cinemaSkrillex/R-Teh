@@ -7,6 +7,8 @@
 
 #pragma once
 
+namespace RealEngine {
 struct Drawable {
     // This is a tag to identify drawable entities
 };
+} // namespace RealEngine

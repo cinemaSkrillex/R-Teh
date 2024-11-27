@@ -7,6 +7,7 @@
 
 #include "../include/ECS/SparseArray/SparseArray.hpp"
 
+namespace RealEngine {
 template <typename Component>
 typename SparseArray<Component>::reference_type
 SparseArray<Component>::insert_at(size_type pos, const Component& component) {
@@ -70,3 +71,4 @@ SparseArray<Component>::get_index(const value_type& component) const {
     }
     return static_cast<size_type>(-1); // Return an invalid index if not found
 }
+} // namespace RealEngine

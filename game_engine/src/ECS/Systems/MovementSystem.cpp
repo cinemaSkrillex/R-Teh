@@ -7,6 +7,8 @@
 
 #include "../include/ECS/Systems/MovementSystem.hpp"
 
+namespace RealEngine {
+
 void MovementSystem::update(Registry& registry, SparseArray<Position>& positions,
                             SparseArray<Velocity>& velocities, float deltaTime) {
     for (std::size_t i = 0; i < positions.size(); ++i) {
@@ -16,3 +18,4 @@ void MovementSystem::update(Registry& registry, SparseArray<Position>& positions
         }
     }
 }
+} // namespace RealEngine

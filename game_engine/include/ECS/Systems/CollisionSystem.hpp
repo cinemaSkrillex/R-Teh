@@ -11,14 +11,16 @@
 #include "../include/ECS/Components/Collision.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
 
+namespace RealEngine {
 class CollisionSystem {
 
   public:
     CollisionSystem();
 
     void update(Registry& registry, SparseArray<Collision>& collisions,
-                SparseArray<Sprite>& sprites, SparseArray<SpriteSheet>& spritesheets,
+                SparseArray<SpriteComponent>& sprites, SparseArray<SpriteSheet>& spritesheets,
                 float deltaTime);
 
   private:
 };
+} // namespace RealEngine

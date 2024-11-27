@@ -9,9 +9,11 @@
 
 #include <SFML/Graphics.hpp>
 
+namespace RealEngine {
 struct Collision {
     sf::FloatRect bounds;
-    std::string id;
-    bool isColliding;
+    std::string   id;
+    bool          isColliding;
     // sf::Vector2f size; for later.
 };
+} // namespace RealEngine

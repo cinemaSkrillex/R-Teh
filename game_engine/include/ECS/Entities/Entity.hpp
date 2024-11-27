@@ -9,6 +9,7 @@
 
 #include <cstddef>
 
+namespace RealEngine {
 class Registry;
 class ManageEntities;
 
@@ -25,3 +26,4 @@ class Entity {
     friend class Registry;
     friend class ManageEntities;
 };
+} // namespace RealEngine

@@ -7,6 +7,8 @@
 
 #include "../include/ECS/Systems/ControlSystem.hpp"
 
+namespace RealEngine {
+
 ControlSystem::ControlSystem() {
     keyBindings[sf::Keyboard::Z] = Action::Up;
     keyBindings[sf::Keyboard::S] = Action::Down;
@@ -49,3 +51,5 @@ void ControlSystem::setActionHandler(Action action, ActionHandler handler) {
 void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler) {
     actionReleaseHandlers[action] = handler;
 }
+
+} // namespace RealEngine

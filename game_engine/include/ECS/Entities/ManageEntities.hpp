@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "Entity.hpp"
 
+namespace RealEngine {
 class ManageEntities {
   public:
     Entity spawn_entity();
@@ -25,3 +26,4 @@ class ManageEntities {
     std::size_t         _next_entity = 0;
     std::vector<Entity> _dead_entities;
 };
+} // namespace RealEngine
