@@ -19,20 +19,8 @@ void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities
                            SparseArray<Acceleration>& accelerations,
                            SparseArray<Position>& positions, float deltaTime) {
     for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (!velocities[i]) {
-            std::cerr << "ControlSystem: Velocity Component missing on entity(" << i << ")."
-                      << std::endl;
+        if (!velocities[i] || !accelerations[i] || !positions[i]) {
             continue;
-        }
-
-        if (!accelerations[i]) {
-            std::cerr << "ControlSystem: Acceleration Component missing on entity(" << i << ")."
-                      << std::endl;
-        }
-
-        if (!positions[i]) {
-            std::cerr << "ControlSystem: Position Component missing on entity(" << i << ")."
-                      << std::endl;
         }
 
         for (const auto& [key, Action] : keyBindings) {
