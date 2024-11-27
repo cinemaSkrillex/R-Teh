@@ -129,24 +129,24 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
 }
 
 void PacketManager::handle_reliable_packet(const packet& pkt) {
-    if (pkt.sequence_no < 0 || pkt.sequence_no > pkt.end_sequence_no ||
-        pkt.sequence_no < pkt.start_sequence_no) {
-        std::cerr << "Invalid sequence number: " << pkt.sequence_no << std::endl;
+    if (pkt.sequence_nb < 0 || pkt.sequence_nb > pkt.end_sequence_nb ||
+        pkt.sequence_nb < pkt.start_sequence_nb) {
+        std::cerr << "Invalid sequence number: " << pkt.sequence_nb << std::endl;
         return;
     }
 
     bool all_packets_received = false;
     {
         std::lock_guard<std::mutex> lock(received_packets_mutex_);
-        received_packets_[pkt.sequence_no] = pkt;
+        received_packets_[pkt.sequence_nb] = pkt;
 
-        if (start_sequence_no_ == -1) {
-            start_sequence_no_ = pkt.start_sequence_no;
-            end_sequence_no    = pkt.end_sequence_no;
+        if (start_sequence_nb_ == -1) {
+            start_sequence_nb_ = pkt.start_sequence_nb;
+            end_sequence_nb    = pkt.end_sequence_nb;
         }
 
         // Check if all packets have been received
-        int final_size    = end_sequence_no - start_sequence_no_ + 1;
+        int final_size    = end_sequence_nb - start_sequence_nb_ + 1;
         int received_size = received_packets_.size();
         std::cout << "Received packets: " << received_size << " out of " << final_size << " packets"
                   << std::endl;
@@ -162,7 +162,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         std::vector<char> complete_data;
         {
             std::lock_guard<std::mutex> lock(received_packets_mutex_);
-            for (int i = start_sequence_no_; i <= end_sequence_no; ++i) {
+            for (int i = start_sequence_nb_; i <= end_sequence_nb; ++i) {
                 const auto& pkt = received_packets_[i];
                 complete_data.insert(complete_data.end(), pkt.data.begin(), pkt.data.end());
             }
@@ -175,13 +175,13 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         {
             std::lock_guard<std::mutex> lock(received_packets_mutex_);
             received_packets_.clear();
-            start_sequence_no_ = -1;
-            end_sequence_no    = -1;
+            start_sequence_nb_ = -1;
+            end_sequence_nb    = -1;
         }
     }
 
     // Send ACK back to the server
-    send_ack(pkt.sequence_no, remote_endpoint_);
+    send_ack(pkt.sequence_nb, remote_endpoint_);
 }
 
 void PacketManager::handle_unreliable_packet(const std::string& message) {
@@ -199,16 +199,16 @@ void PacketManager::send_packets() {
         while (!send_queue_.empty()) {
             auto [pkt, endpoint] = send_queue_.front();
             send_queue_.pop();
-            send_queue_set_.erase(pkt.sequence_no);
-            if (pkt.sequence_no < 0 || (pkt.sequence_no > pkt.end_sequence_no ||
-                                        pkt.sequence_no < pkt.start_sequence_no) &&
+            send_queue_set_.erase(pkt.sequence_nb);
+            if (pkt.sequence_nb < 0 || (pkt.sequence_nb > pkt.end_sequence_nb ||
+                                        pkt.sequence_nb < pkt.start_sequence_nb) &&
                                            pkt.flag == RELIABLE) {
-                if (pkt.sequence_no < 0) {
-                    std::cerr << "send Invalid sequence number: " << pkt.sequence_no << std::endl;
+                if (pkt.sequence_nb < 0) {
+                    std::cerr << "send Invalid sequence number: " << pkt.sequence_nb << std::endl;
                 } else {
-                    std::cerr << "send Invalid sequence number: " << pkt.sequence_no
-                              << " start_sequence_no: " << pkt.start_sequence_no
-                              << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                    std::cerr << "send Invalid sequence number: " << pkt.sequence_nb
+                              << " start_sequence_nb: " << pkt.start_sequence_nb
+                              << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
                 }
                 lock.unlock();
                 continue;
@@ -232,16 +232,16 @@ void PacketManager::handle_retransmissions() {
         while (!retransmission_queue_.empty()) {
             auto [pkt, endpoint] = retransmission_queue_.front();
             retransmission_queue_.pop_front();
-            retransmission_queue_set_.erase(pkt.sequence_no);
-            if (pkt.sequence_no < 0 || pkt.sequence_no > pkt.end_sequence_no ||
-                pkt.sequence_no < pkt.start_sequence_no) {
-                if (pkt.sequence_no < 0) {
-                    std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_no
+            retransmission_queue_set_.erase(pkt.sequence_nb);
+            if (pkt.sequence_nb < 0 || pkt.sequence_nb > pkt.end_sequence_nb ||
+                pkt.sequence_nb < pkt.start_sequence_nb) {
+                if (pkt.sequence_nb < 0) {
+                    std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_nb
                               << std::endl;
                 } else {
-                    std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_no
-                              << " start_sequence_no: " << pkt.start_sequence_no
-                              << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                    std::cerr << "retransmission Invalid sequence number: " << pkt.sequence_nb
+                              << " start_sequence_nb: " << pkt.start_sequence_nb
+                              << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
                 }
                 lock.unlock();
                 continue;
@@ -254,8 +254,8 @@ void PacketManager::handle_retransmissions() {
             std::cout << "retransmissionqueue.size(): " << retransmission_queue_.size()
                       << std::endl;
             if (!retransmission_queue_.empty()) {
-                std::cout << "retransmissionqueue.front().first.sequence_no: "
-                          << retransmission_queue_.front().first.sequence_no << std::endl;
+                std::cout << "retransmissionqueue.front().first.sequence_nb: "
+                          << retransmission_queue_.front().first.sequence_nb << std::endl;
             }
             lock.lock(); // Lock the mutex again before checking the queue
         }
@@ -266,12 +266,12 @@ void PacketManager::queue_packet_for_retransmission(const packet&               
                                                     const asio::ip::udp::endpoint& endpoint) {
     {
         std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
-        if (retransmission_queue_set_.find(pkt.sequence_no) == retransmission_queue_set_.end()) {
+        if (retransmission_queue_set_.find(pkt.sequence_nb) == retransmission_queue_set_.end()) {
             retransmission_queue_.emplace_back(pkt, endpoint);
-            retransmission_queue_set_.insert(pkt.sequence_no);
-            std::cout << "Queued packet for retransmission: " << pkt.sequence_no << std::endl;
+            retransmission_queue_set_.insert(pkt.sequence_nb);
+            std::cout << "Queued packet for retransmission: " << pkt.sequence_nb << std::endl;
         } else {
-            std::cout << "Packet already in retransmission queue: " << pkt.sequence_no << std::endl;
+            std::cout << "Packet already in retransmission queue: " << pkt.sequence_nb << std::endl;
         }
     }
     retransmission_queue_cv_.notify_one();
@@ -283,8 +283,8 @@ void PacketManager::schedule_retransmissions(const asio::ip::udp::endpoint& endp
         if (!ec) {
             std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
             for (const auto& pair : retransmission_queue_) {
-                if (received_packets_.find(pair.first.sequence_no) == received_packets_.end()) {
-                    std::cout << "Retransmitting unacknowledged packet: " << pair.first.sequence_no
+                if (received_packets_.find(pair.first.sequence_nb) == received_packets_.end()) {
+                    std::cout << "Retransmitting unacknowledged packet: " << pair.first.sequence_nb
                               << std::endl;
                     queue_packet_for_retransmission(pair.first, endpoint);
                 }
@@ -317,7 +317,7 @@ void PacketManager::handle_ack(const std::string& ack_message) {
         // Remove the packet from the retransmission queue
         auto it = std::remove_if(retransmission_queue_.begin(), retransmission_queue_.end(),
                                  [sequence_number](const auto& pair) {
-                                     return pair.first.sequence_no == sequence_number;
+                                     return pair.first.sequence_nb == sequence_number;
                                  });
         retransmission_queue_.erase(it, retransmission_queue_.end());
         // std::cout << "ACK received for packet: " << sequence_number << std::endl;
@@ -330,23 +330,23 @@ void PacketManager::send_reliable_packet(const std::string&             message,
     std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
               << std::endl;
 
-    int start_sequence_no;
-    int end_sequence_no;
+    int start_sequence_nb;
+    int end_sequence_nb;
 
     {
         std::lock_guard<std::mutex> lock(sequence_number_mutex_);
-        start_sequence_no = sequence_number_;
-        end_sequence_no   = sequence_number_ + total_packets - 1;
+        start_sequence_nb = sequence_number_;
+        end_sequence_nb   = sequence_number_ + total_packets - 1;
     }
 
     for (int i = 0; i < total_packets; ++i) {
         packet pkt;
         {
             std::lock_guard<std::mutex> lock(sequence_number_mutex_);
-            pkt.sequence_no = sequence_number_++;
+            pkt.sequence_nb = sequence_number_++;
         }
-        pkt.start_sequence_no = start_sequence_no;
-        pkt.end_sequence_no   = end_sequence_no;
+        pkt.start_sequence_nb = start_sequence_nb;
+        pkt.end_sequence_nb   = end_sequence_nb;
         pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size() - i * BUFFER_SIZE));
         pkt.flag        = RELIABLE;
         pkt.data.assign(message.begin() + i * BUFFER_SIZE,
@@ -355,15 +355,15 @@ void PacketManager::send_reliable_packet(const std::string&             message,
             std::cerr << "Server endpoint is unspecified" << std::endl;
             return;
         }
-        if (pkt.sequence_no < 0 || pkt.sequence_no > pkt.end_sequence_no ||
-            pkt.sequence_no < pkt.start_sequence_no) {
-            if (pkt.sequence_no < 0) {
-                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_no
+        if (pkt.sequence_nb < 0 || pkt.sequence_nb > pkt.end_sequence_nb ||
+            pkt.sequence_nb < pkt.start_sequence_nb) {
+            if (pkt.sequence_nb < 0) {
+                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
                           << std::endl;
             } else {
-                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_no
-                          << " start_sequence_no: " << pkt.start_sequence_no
-                          << " end_sequence_no: " << pkt.end_sequence_no << std::endl;
+                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
+                          << " start_sequence_nb: " << pkt.start_sequence_nb
+                          << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
             }
             continue;
         }
@@ -377,12 +377,12 @@ void PacketManager::queue_packet_for_sending(const packet&                  pkt,
     {
         std::lock_guard<std::mutex> lock(send_queue_mutex_);
         // Check if the current packet is not already in the send queue
-        if (send_queue_set_.find(pkt.sequence_no) == send_queue_set_.end()) {
+        if (send_queue_set_.find(pkt.sequence_nb) == send_queue_set_.end()) {
             send_queue_.emplace(pkt, endpoint);
-            send_queue_set_.insert(pkt.sequence_no);
-            std::cout << "Queued packet for sending: " << pkt.sequence_no << std::endl;
+            send_queue_set_.insert(pkt.sequence_nb);
+            std::cout << "Queued packet for sending: " << pkt.sequence_nb << std::endl;
         } else {
-            std::cout << "Packet already in send queue: " << pkt.sequence_no << std::endl;
+            std::cout << "Packet already in send queue: " << pkt.sequence_nb << std::endl;
         }
     }
     send_queue_cv_.notify_one();
@@ -391,7 +391,7 @@ void PacketManager::queue_packet_for_sending(const packet&                  pkt,
 void PacketManager::send_unreliable_packet(const std::string&             message,
                                            const asio::ip::udp::endpoint& endpoint) {
     packet pkt;
-    pkt.sequence_no = 0; // no validation for unreliable packets
+    pkt.sequence_nb = 0; // no validation for unreliable packets
     pkt.packet_size = message.size();
     pkt.flag        = UNRELIABLE;
     pkt.data.assign(message.begin(), message.end());
@@ -410,7 +410,7 @@ void PacketManager::send_ack(std::uint32_t                  sequence_number,
         ack_message = "ACK:" + std::to_string(sequence_number);
     }
     packet pkt;
-    pkt.sequence_no = sequence_number;
+    pkt.sequence_nb = sequence_number;
     pkt.packet_size = ack_message.size();
     pkt.flag        = ACK;
     pkt.data.assign(ack_message.begin(), ack_message.end());
@@ -452,9 +452,9 @@ void PacketManager::send_packet(const packet& pkt, const asio::ip::udp::endpoint
 
 void PacketManager::print_packet(const packet& pkt) {
     std::cout << "Packet: " << std::endl;
-    std::cout << "Sequence number: " << pkt.sequence_no << std::endl;
-    std::cout << "Start sequence number: " << pkt.start_sequence_no << std::endl;
-    std::cout << "End sequence number: " << pkt.end_sequence_no << std::endl;
+    std::cout << "Sequence number: " << pkt.sequence_nb << std::endl;
+    std::cout << "Start sequence number: " << pkt.start_sequence_nb << std::endl;
+    std::cout << "End sequence number: " << pkt.end_sequence_nb << std::endl;
     std::cout << "Packet size: " << pkt.packet_size << std::endl;
     std::cout << "Flag: " << pkt.flag << std::endl;
     std::cout << "Data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;

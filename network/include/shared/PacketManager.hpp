@@ -40,7 +40,6 @@ struct EndpointEqual {
 
 enum class Role { SERVER, CLIENT };
 
-// WARNING: can reduce performance because ONLY HEADER
 class PacketManager {
   public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role);
@@ -100,8 +99,8 @@ class PacketManager {
     // Store received packets
     std::map<int, packet> received_packets_;
     std::mutex            received_packets_mutex_;
-    int                   start_sequence_no_ = -1;
-    int                   end_sequence_no    = -1;
+    int                   start_sequence_nb_ = -1;
+    int                   end_sequence_nb    = -1;
 
     std::vector<std::thread> thread_pool_;
     std::size_t              thread_pool_size_;

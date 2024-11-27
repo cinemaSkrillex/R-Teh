@@ -19,9 +19,6 @@
 #include <array>
 #include <unordered_set>
 
-// SERVER_API is a macro for the visibility of the class UDPServer,
-// its for the shared library
-
 class UDPServer {
   public:
     UDPServer(asio::io_context& io_context, unsigned short port);
@@ -34,14 +31,15 @@ class UDPServer {
 
     void setEndpoint(const asio::ip::udp::endpoint& endpoint);
     const asio::ip::udp::endpoint& getEndpoint() const;
+
     const std::string              getLastUnreliablePacket();
     const std::string              getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
 
   private:
-    asio::ip::udp::socket   socket_;
-    asio::ip::udp::endpoint client_endpoint_;
+    asio::ip::udp::socket   _socket;
+    asio::ip::udp::endpoint _client_endpoint;
 
-    PacketManager packet_manager_;
+    PacketManager _packet_manager;
 };
 
 #endif // UDPSERVER_HPP
