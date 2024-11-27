@@ -20,7 +20,9 @@
 #include "ECS/Systems/ControlSystem.hpp"
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/CollisionSystem.hpp"
 #include "Controls.hpp"
+#include "CollisionHandler.hpp"
 
 namespace rtype {
 class Game {
@@ -31,7 +33,7 @@ class Game {
     void   setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void   init_registry();
     void   init_controls();
-    void   init_movement_system();
+    void   init_systems();
     Entity createEntity();
     void   add_component_to_entity(Entity entity, Position position);
 
@@ -45,13 +47,16 @@ class Game {
     DrawSystem             _drawSystem;
     ControlSystem          _controlSystem;
     MovementSystem         _movementSystem;
+    CollisionSystem        _collisionSystem;
     rtype::Controls        _controls;
 
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
+    RealEngine::Sprite                                  _groundSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     Entity                                              _entity1;
     Entity                                              _entity2;
+    Entity                                              _groundEntity;
 };
 } // namespace rtype

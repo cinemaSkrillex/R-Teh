@@ -5,32 +5,28 @@ namespace rtype {
 Game::Game()
     : _deltaTime(0.f), _window("SKRILLEX", sf::Vector2u(800, 600)), _clock(), _controls(_registry),
       _movementSystem(), _drawSystem(_window.getRenderWindow()), _controlSystem(),
-      _view({100, 100}, {800, 600}),
+      _collisionSystem(), _view({100, 100}, {800, 600}),
       _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
-      _entity1(_registry.spawn_entity()), _entity2(_registry.spawn_entity()) {
+      _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
+      _entity1(_registry.spawn_entity()), _entity2(_registry.spawn_entity()),
+      _groundEntity(_registry.spawn_entity()) {
     init_registry();
     init_controls();
-    init_movement_system();
+    init_systems();
     _idleSpaceship.setScale(3, 3);
     _upSpaceship.setScale(3, 3);
     _downSpaceship.setScale(3, 3);
+    _groundSprite.setScale(3, 3);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
 
-    // // Create entities
-    // _entity1(_registry.spawn_entity());
-    // _entity2(_registry.spawn_entity());
-
-    // There is 2 ways to add components to entities
-    // 1. Add all components at once
     _registry.add_components(_entity1, Position{100.f, 100.f}, Drawable{});
     _registry.add_component(_entity1, Sprite{_idleSpaceship});
 
-    // // 2. Add components one by one
     _registry.add_component(_entity2, Position{200.f, 200.f});
     _registry.add_component(_entity2, Velocity{0.0f, 0.0f});
     _registry.add_component(_entity2, Acceleration{10.0f, 10.0f, 10.0f, true});
@@ -38,6 +34,10 @@ Game::Game()
     _registry.add_component(_entity2, Drawable{});
     _registry.add_component(_entity2,
                             SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+
+    _registry.add_components(_groundEntity, Position{400.f, 300.f}, Drawable{});
+    _registry.add_component(_groundEntity, Sprite{_groundSprite});
+    // _registry.add_component(_groundEntity, Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
 }
 
 Game::~Game() {}
@@ -99,7 +99,7 @@ void Game::init_controls() {
                                                      std::placeholders::_3, std::placeholders::_4));
 }
 
-void Game::init_movement_system() {
+void Game::init_systems() {
     _registry.add_system<Position, Velocity>(
         [this](Registry& registry, float deltaTime, auto& positions, auto& velocities) {
             _movementSystem.update(registry, positions, velocities, deltaTime);
@@ -117,14 +117,24 @@ void Game::init_movement_system() {
             _controlSystem.update(registry, velocities, controllables, accelerations, positions,
                                   deltaTime);
         });
+    // _registry.add_system<Collision, Sprite, SpriteSheet>([this](Registry& registry, float
+    // deltaTime,
+    //                                                             auto& collisions, auto& sprites,
+    //                                                             auto& spritesheets) {
+    //     _collisionSystem.update(registry, collisions, sprites, spritesheets, deltaTime);
+    // });
 }
 
 void Game::run() {
+    // std::unordered_map<std::string, Entity> entities = {
+    // {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
+
     while (_window.isOpen()) {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
         _registry.run_systems(_deltaTime);
+        // handle_collision(_registry, entities);
         _window.display();
     }
 }

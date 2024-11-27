@@ -47,7 +47,7 @@ class Registry {
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
         } else {
-            throw std::runtime_error("Component not registered!"); // TODO: proper exception
+            throw std::runtime_error(""); // TODO: proper exception
         }
     }
 
