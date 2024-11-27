@@ -1,18 +1,36 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtype_game)
 
-#add includes files
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+#includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Add sources files
 file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
 )
 
 # Create the binary
 add_executable(r_type ${SOURCES})
 
+# Link pthread for Linux
+if(UNIX)
+    target_link_libraries(r_type
+        pthread
+    )
+endif()
+
+# Link ws2_32 for Windows
+if(WIN32)
+    target_link_libraries(r_type
+        ws2_32
+    )
+endif()
+
 # Link lib to binary
 target_link_libraries(r_type rtype_engine)
+target_link_libraries(r_type rtype_client)

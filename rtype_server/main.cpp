@@ -5,9 +5,10 @@
 ** main
 */
 
-#include <iostream>
 #include <asio.hpp>
-#include "include/DynamicLibrary/DynamicLibrary.hpp"
+#include <iostream>
+#include <thread>
+#include <SFML/System/Clock.hpp>
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -17,6 +18,8 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
+
+const sf::Int32 SERVER_TICK = 10;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -28,14 +31,25 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        // auto             test_server = std::make_shared<TestServer>(io_context, port);
+        auto             server = std::make_shared<UDPServer>(io_context, port);
 
-        // test_server->start();
-        // io_context.run();
-        auto server = std::make_shared<UDPServer>(io_context, port);
+        // Run io_context in a separate thread
+        std::thread io_thread([&io_context]() { io_context.run(); });
 
-        // Run the io_context to handle asynchronous operations
-        io_context.run();
+        sf::Clock tickClock;
+        while (true) {
+            if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
+                // reset the clock for next tick.
+                tickClock.restart();
+
+                // do server work.
+                const std::string message = server->getLastUnreliablePacket();
+                if (!message.empty())
+                    std::cout << "Server tick: " << message << std::endl;
+            }
+        }
+
+        io_thread.join(); // Wait for the io_thread to finish (if needed)
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

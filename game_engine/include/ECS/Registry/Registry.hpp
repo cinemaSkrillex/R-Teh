@@ -18,6 +18,7 @@
 #include "../Entities/ManageEntities.hpp"
 #include "../Entities/Entity.hpp"
 
+namespace RealEngine {
 class Registry {
   public:
     // Register a component type by adding a SparseArray to the registry
@@ -47,7 +48,7 @@ class Registry {
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
         } else {
-            throw std::runtime_error("Component not registered!"); // TODO: proper exception
+            throw std::runtime_error(""); // TODO: proper exception
         }
     }
 
@@ -125,3 +126,4 @@ class Registry {
         return registry.get_components<Component>();
     }
 };
+} // namespace RealEngine

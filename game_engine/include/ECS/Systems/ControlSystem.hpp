@@ -14,6 +14,7 @@
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Enum/ActionEnum.hpp"
 
+namespace RealEngine {
 class ControlSystem {
 
   public:
@@ -32,3 +33,4 @@ class ControlSystem {
     std::unordered_map<Action, ActionHandler>     actionHandlers;
     std::unordered_map<Action, ActionHandler>     actionReleaseHandlers;
 };
+} // namespace RealEngine

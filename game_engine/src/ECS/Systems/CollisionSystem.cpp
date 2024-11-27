@@ -7,6 +7,8 @@
 
 #include "../include/ECS/Systems/CollisionSystem.hpp"
 
+namespace RealEngine {
+
 CollisionSystem::CollisionSystem() {}
 
 bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Collision>& collisions) {
@@ -20,8 +22,8 @@ bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Colli
 }
 
 void CollisionSystem::update(Registry& registry, SparseArray<Collision>& collisions,
-                             SparseArray<Sprite>& sprites, SparseArray<SpriteSheet>& spritesheets,
-                             float deltaTime) {
+                             SparseArray<SpriteComponent>& sprites,
+                             SparseArray<SpriteSheet>& spritesheets, float deltaTime) {
     for (std::size_t i = 0; i < collisions.size(); ++i) {
         if (sprites[i])
             collisions[i]->bounds = sprites[i]->sprite.getBounds();
@@ -38,3 +40,4 @@ void CollisionSystem::update(Registry& registry, SparseArray<Collision>& collisi
         collision->isColliding = isCollidingWithOthers(collision, collisions);
     }
 }
+} // namespace RealEngine

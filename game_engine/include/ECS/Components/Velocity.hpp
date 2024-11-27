@@ -7,6 +7,8 @@
 
 #pragma once
 
+namespace RealEngine {
 struct Velocity {
     float vx, vy;
 };
+} // namespace RealEngine

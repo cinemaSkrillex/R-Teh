@@ -13,31 +13,32 @@
 namespace rtype {
 class Controls {
   public:
-    Controls(Registry& registry);
+    Controls(RealEngine::Registry& registry);
     ~Controls();
-    void moveUp(Velocity& velocity, Acceleration& acceleration, Position& position,
-                float deltaTime);
-    void moveDown(Velocity& velocity, Acceleration& acceleration, Position& position,
-                  float deltaTime);
-    void moveLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
-                  float deltaTime);
-    void moveRight(Velocity& velocity, Acceleration& acceleration, Position& position,
-                   float deltaTime);
-    void decelerateUp(Velocity& velocity, Acceleration& acceleration, Position& position,
-                      float deltaTime);
-    void decelerateDown(Velocity& velocity, Acceleration& acceleration, Position& position,
-                        float deltaTime);
-    void decelerateLeft(Velocity& velocity, Acceleration& acceleration, Position& position,
-                        float deltaTime);
-    void decelerateRight(Velocity& velocity, Acceleration& acceleration, Position& position,
-                         float deltaTime);
-    void shoot(Velocity& velocity, Acceleration& acceleration, Position& position, float deltaTime);
-    void voidAction(Velocity& velocity, Acceleration& acceleration, Position& position,
-                    float deltaTime);
+    void moveUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                RealEngine::Position& position, float deltaTime);
+    void moveDown(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                  RealEngine::Position& position, float deltaTime);
+    void moveLeft(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                  RealEngine::Position& position, float deltaTime);
+    void moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                   RealEngine::Position& position, float deltaTime);
+    void decelerateUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                      RealEngine::Position& position, float deltaTime);
+    void decelerateDown(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                        RealEngine::Position& position, float deltaTime);
+    void decelerateLeft(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                        RealEngine::Position& position, float deltaTime);
+    void decelerateRight(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                         RealEngine::Position& position, float deltaTime);
+    void shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+               RealEngine::Position& position, float deltaTime);
+    void voidAction(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                    RealEngine::Position& position, float deltaTime);
 
   private:
-    Registry&                        _registry;
-    std::vector<Entity*>             _entities;
+    RealEngine::Registry&            _registry;
+    std::vector<RealEngine::Entity*> _entities;
     std::vector<RealEngine::Sprite*> _sprites;
 };
 

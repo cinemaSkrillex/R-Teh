@@ -381,6 +381,8 @@ static std::string testPacketManager() {
 
 std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+    if (_unprocessed_unreliable_messages.empty())
+        return "";
     std::string                 message = _unprocessed_unreliable_messages.top();
     _unprocessed_unreliable_messages.pop();
     return message;

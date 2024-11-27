@@ -7,6 +7,8 @@
 
 #pragma once
 
+namespace RealEngine {
 struct Controllable {
     // This is a tag to identify controllable entities
 };
+} // namespace RealEngine

@@ -8,6 +8,8 @@
 #include "../include/ECS/Systems/DrawSystem.hpp"
 #include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
+namespace RealEngine {
+
 DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 
 void calculateTextureRect(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
@@ -40,7 +42,7 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
 }
 
 void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Position>& positions,
-                        SparseArray<Drawable>& drawables, SparseArray<Sprite>& sprites,
+                        SparseArray<Drawable>& drawables, SparseArray<SpriteComponent>& sprites,
                         SparseArray<SpriteSheet>& spritesheets) {
     for (std::size_t i = 0; i < drawables.size(); ++i) {
         if (!drawables[i] || !positions[i])
@@ -69,3 +71,4 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
         }
     }
 }
+} // namespace RealEngine

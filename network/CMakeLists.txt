@@ -42,7 +42,7 @@ file(GLOB_RECURSE NETWORK_CLIENT_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/shared/*.cpp"
 )
 
-# Build the shared library (DLL on Windows, .so on Linux)
+# Build the static library (DLL on Windows, .so on Linux)
 add_library(rtype_server STATIC ${NETWORK_SERVER_SOURCES})
 add_library(rtype_client STATIC ${NETWORK_CLIENT_SOURCES})
 
