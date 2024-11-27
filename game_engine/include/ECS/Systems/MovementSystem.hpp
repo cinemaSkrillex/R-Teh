@@ -10,8 +10,10 @@
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Velocity.hpp"
 
+namespace RealEngine {
 class MovementSystem {
   public:
     void update(Registry& registry, SparseArray<Position>& positions,
                 SparseArray<Velocity>& velocities, float deltaTime);
 };
+} // namespace RealEngine

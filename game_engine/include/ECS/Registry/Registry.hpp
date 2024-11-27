@@ -18,6 +18,7 @@
 #include "../Entities/ManageEntities.hpp"
 #include "../Entities/Entity.hpp"
 
+namespace RealEngine {
 class Registry {
   public:
     // Register a component type by adding a SparseArray to the registry
@@ -125,3 +126,4 @@ class Registry {
         return registry.get_components<Component>();
     }
 };
+} // namespace RealEngine

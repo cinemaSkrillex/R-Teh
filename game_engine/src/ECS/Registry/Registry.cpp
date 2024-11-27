@@ -7,6 +7,8 @@
 
 #include "../include/ECS/Registry/Registry.hpp"
 
+namespace RealEngine {
+
 void Registry::remove_entity(Entity const& entity) {
     if (!_entity_manager.is_valid(entity)) {
         throw std::invalid_argument("remove_entity: Invalid entity");
@@ -38,3 +40,4 @@ void Registry::run_systems(float deltaTime) {
         system(deltaTime);
     }
 }
+} // namespace RealEngine

@@ -7,6 +7,8 @@
 
 #include "../include/ECS/Entities/ManageEntities.hpp"
 
+namespace RealEngine {
+
 Entity ManageEntities::spawn_entity() {
     if (!_dead_entities.empty()) {
         Entity entity = _dead_entities.back();
@@ -29,3 +31,4 @@ bool ManageEntities::is_valid(Entity const& e) const {
 }
 
 std::size_t ManageEntities::size() const { return _next_entity; }
+} // namespace RealEngine

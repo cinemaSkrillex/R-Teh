@@ -9,6 +9,8 @@
 
 #include "Media/Graphics/Rendering/Sprite.hpp"
 
-struct Sprite {
+namespace RealEngine {
+struct SpriteComponent {
     RealEngine::Sprite sprite;
 };
+} // namespace RealEngine

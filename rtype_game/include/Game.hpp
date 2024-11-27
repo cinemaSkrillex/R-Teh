@@ -29,34 +29,34 @@ class Game {
   public:
     Game();
     ~Game();
-    void   run();
-    void   setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
-    void   init_registry();
-    void   init_controls();
-    void   init_systems();
-    Entity createEntity();
-    void   add_component_to_entity(Entity entity, Position position);
+    void               run();
+    void               setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
+    void               init_registry();
+    void               init_controls();
+    void               init_systems();
+    RealEngine::Entity createEntity();
+    void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
   private:
-    float                  _deltaTime = 0.f;
-    RealEngine::Window     _window;
-    RealEngine::View       _view;
-    sf::Clock              _clock;
-    RealEngine::LuaManager _luaManager;
-    Registry               _registry;
-    DrawSystem             _drawSystem;
-    ControlSystem          _controlSystem;
-    MovementSystem         _movementSystem;
-    CollisionSystem        _collisionSystem;
-    rtype::Controls        _controls;
+    float                       _deltaTime = 0.f;
+    RealEngine::Window          _window;
+    RealEngine::View            _view;
+    sf::Clock                   _clock;
+    RealEngine::LuaManager      _luaManager;
+    RealEngine::Registry        _registry;
+    RealEngine::DrawSystem      _drawSystem;
+    RealEngine::ControlSystem   _controlSystem;
+    RealEngine::MovementSystem  _movementSystem;
+    RealEngine::CollisionSystem _collisionSystem;
+    rtype::Controls             _controls;
 
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
     RealEngine::Sprite                                  _groundSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
-    Entity                                              _entity1;
-    Entity                                              _entity2;
-    Entity                                              _groundEntity;
+    RealEngine::Entity                                  _entity1;
+    RealEngine::Entity                                  _entity2;
+    RealEngine::Entity                                  _groundEntity;
 };
 } // namespace rtype
