@@ -71,7 +71,6 @@ int main(int argc, char* argv[]) {
 
         // Start the client
         test_client.start();
-        io_context.run();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

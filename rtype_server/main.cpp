@@ -43,7 +43,9 @@ int main(int argc, char* argv[]) {
                 tickClock.restart();
 
                 // do server work.
-                std::cout << "Server tick" << std::endl;
+                const std::string message = server->getLastUnreliablePacket();
+                if (!message.empty())
+                    std::cout << "Server tick: " << message << std::endl;
             }
         }
 
