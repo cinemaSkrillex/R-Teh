@@ -26,6 +26,10 @@ const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
     return client_endpoint_;
 }
 
+const std::string UDPServer::getLastUnreliablePacket() {
+    return packet_manager_.get_last_unreliable_packet();
+}
+
 /**
  * @brief Sends an unreliable packet to the specified endpoint.
  *

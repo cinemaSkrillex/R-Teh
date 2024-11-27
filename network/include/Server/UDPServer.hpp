@@ -34,6 +34,8 @@ class UDPServer {
 
     void setEndpoint(const asio::ip::udp::endpoint& endpoint);
     const asio::ip::udp::endpoint& getEndpoint() const;
+    const std::string              getLastUnreliablePacket();
+    const std::string              getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
 
   private:
     asio::ip::udp::socket   socket_;

@@ -10,8 +10,11 @@
 #include "ECS/Systems/ControlSystem.hpp"
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/CollisionSystem.hpp"
 #include "Core/Window.hpp"
 #include "Controls.hpp"
+#include "CollisionHandler.hpp"
+
 
 int main() {
     RealEngine::Window window("SKRILLEX", sf::Vector2u(800, 600));
@@ -26,6 +29,7 @@ int main() {
     registry.register_component<Drawable>();
     registry.register_component<Controllable>();
     registry.register_component<Acceleration>();
+    registry.register_component<Collision>();
 
     // Sprites
     RealEngine::Sprite upSpaceship("../assets/spaceship.png", {0, 0, 32 * 2, 15});
@@ -36,6 +40,9 @@ int main() {
     upSpaceship.setScale(3, 3);
     downSpaceship.setScale(3, 3);
 
+    RealEngine::Sprite Sol("../assets/r-type_front_line_base_obstacle_1.png");
+    Sol.setScale(3, 3);
+
     std::unordered_map<std::string, RealEngine::Sprite> spaceshipSheet;
     spaceshipSheet.emplace("up", upSpaceship);
     spaceshipSheet.emplace("idle", idleSpaceship);
@@ -44,11 +51,13 @@ int main() {
     // Create entities
     Entity entity1 = registry.spawn_entity();
     Entity entity2 = registry.spawn_entity();
+    Entity sol = registry.spawn_entity();
 
     // There is 2 ways to add components to entities
     // 1. Add all components at once
     registry.add_components(entity1, Position{100.f, 100.f}, Drawable{});
     registry.add_component(entity1, Sprite{idleSpaceship});
+    registry.add_component(entity1, Collision{{0.f, 0.f, 64.f, 30.f}, "spaceship1", false});
 
     // // 2. Add components one by one
     registry.add_component(entity2, Position{200.f, 200.f});
@@ -58,9 +67,16 @@ int main() {
     registry.add_component(entity2, Drawable{});
     registry.add_component(entity2,
                            SpriteSheet{spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+    registry.add_components(entity2, Collision{{0.f, 0.f, 64.f, 30.f}, "spaceship2", false});
+
+    registry.add_components(sol, Position{400.f, 300.f}, Drawable{});
+    registry.add_component(sol, Sprite{Sol});
+    registry.add_component(sol, Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
+
 
     DrawSystem drawSystem(window.getRenderWindow());
 
+    CollisionSystem collisionSystem;
     ControlSystem   controlSystem;
     rtype::Controls controls(registry);
     controlSystem.bindKey(sf::Keyboard::Z, Action::Up);
@@ -128,8 +144,22 @@ int main() {
             controlSystem.update(registry, velocities, controllables, accelerations, positions,
                                  deltaTime);
         });
+    
+    registry.add_system<Collision, Sprite, SpriteSheet>(
+        [&collisionSystem](Registry& registry, float deltaTime, auto& collisions, auto& sprites,
+                           auto& spritesheets) {
+            collisionSystem.update(registry, collisions, sprites, spritesheets, deltaTime);
+        });
 
     sf::Clock clock;
+
+
+    std::unordered_map<std::string, Entity> entities = {
+        {"spaceship1", entity1},
+        {"spaceship2", entity2},
+        {"ground", sol}
+    };
+
 
     while (window.isOpen()) {
         window.update();
@@ -138,7 +168,11 @@ int main() {
         // drawSystem.update(registry);
         // controlSystem.update(registry);
         window.clear();
+
         registry.run_systems(deltaTime);
+
+        handle_collision(registry, entities);
+
         // drawSystem.update(registry, deltaTime);
         window.display();
     }
