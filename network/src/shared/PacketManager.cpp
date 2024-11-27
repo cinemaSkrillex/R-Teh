@@ -259,7 +259,9 @@ void PacketManager::schedule_retransmissions(const asio::ip::udp::endpoint& endp
         if (!ec) {
             std::lock_guard<std::mutex> lock(unacknowledged_packets_mutex_);
             for (const auto& pair : unacknowledged_packets_) {
-                if (received_packets_.find(pair.first) == received_packets_.end()) {
+                if (unacknowledged_packets_set_.find(pair.first) !=
+                        unacknowledged_packets_set_.end() &&
+                    received_packets_.find(pair.first) == received_packets_.end()) {
                     std::cout << "Retransmitting unacknowledged packet: " << pair.first
                               << std::endl;
                     queue_packet_for_retransmission(pair.second, endpoint);
