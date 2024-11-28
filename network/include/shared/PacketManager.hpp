@@ -63,6 +63,7 @@ class PacketManager {
     void handle_reliable_packet(const packet& pkt);
     void handle_unreliable_packet(const std::string& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
+    void handle_test(const asio::ip::udp::endpoint& endpoint);
 
     //send functions
     void send_ack(
@@ -74,6 +75,8 @@ class PacketManager {
     void send_packet(const packet& pkt);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
     void send_unreliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
+    void send_new_client(const asio::ip::udp::endpoint& endpoint);
+    void send_test(const asio::ip::udp::endpoint& endpoint);
 
     // retry functions
     void queue_packet_for_retry(const packet& pkt);

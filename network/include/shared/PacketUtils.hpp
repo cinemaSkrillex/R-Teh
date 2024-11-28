@@ -15,7 +15,8 @@ enum Flags {
     HEARTBEAT     = 4,
     DATA          = 5,
     RETRANSMITTED = 6,
-    NEW_CLIENT    = 7
+    NEW_CLIENT    = 7,
+    TEST          = 8,
 };
 
 // structure for the binary protocol

@@ -27,6 +27,8 @@ class UDPClient {
 
     void        send_unreliable_packet(const std::string& message);
     void        send_reliable_packet(const std::string& message);
+    void        send_new_client();
+    void        send_test();
     std::string get_last_reliable_packet();
 
   private:
