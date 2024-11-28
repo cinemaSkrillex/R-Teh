@@ -6,12 +6,9 @@ project(game_engine)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Use vcpkg if the environment variable is defined
-# if(DEFINED ENV{VCPKG_ROOT})
-#     set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-# else()
-#     message(FATAL_ERROR "VCPKG_ROOT environment variable is not set")
-# endif()
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
+endif()
 
 # Include directories (platform-specific)
 if (UNIX)

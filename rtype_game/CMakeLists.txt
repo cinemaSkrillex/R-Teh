@@ -5,6 +5,11 @@ project(rtype_game)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# define _WIN32_WINNT for windows
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
+endif()
+
 #includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 

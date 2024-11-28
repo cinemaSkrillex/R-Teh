@@ -5,12 +5,22 @@ project(rtype_server)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# define _WIN32_WINNT for windows
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
+endif()
+
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
-endif()
-if (WIN32)
+    set(SFML_STATIC_LIBRARIES TRUE)
+    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/sfml)
+elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
+    set(SFML_STATIC_LIBRARIES TRUE)
+    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/sfml)
 endif()
 
 #add includes files
