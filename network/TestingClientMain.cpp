@@ -4,6 +4,7 @@
 ** File description:
 ** TestingClientMain.cpp
 */
+
 #include <iostream>
 #include <asio.hpp>
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
@@ -31,12 +32,21 @@ int main(int argc, char* argv[]) {
     unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
+        std::cout << "Starting client" << std::endl;
         asio::io_context io_context;
         auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
+        client->send_new_client();
+        client->send_test();
+        // client->send_unreliable_packet("Hello");
+        // client->send_unreliable_packet("World");
+        // client->send_reliable_packet("Hello1");
+        // client->send_unreliable_packet("Hello2");
+        // client->send_reliable_packet("Hello3");
+        // client->send_unreliable_packet("Hello4");
         io_context.run();
 
-        client->send_unreliable_packet("Hello");
-        client->send_unreliable_packet("World");
+        // client->send_unreliable_packet("Hello");
+        // client->send_unreliable_packet("World");
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

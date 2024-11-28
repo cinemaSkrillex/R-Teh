@@ -24,6 +24,16 @@ UDPClient::UDPClient(
 
 UDPClient::~UDPClient() { std::cout << "deleting UDPClient" << std::endl; }
 
+void UDPClient::send_new_client() {
+    std::cout << "Sending new client" << std::endl;
+    _packet_manager.send_new_client(_server_endpoint);
+}
+
+void UDPClient::send_test() {
+    std::cout << "Sending test flag" << std::endl;
+    _packet_manager.send_test(_server_endpoint);
+}
+
 void UDPClient::send_unreliable_packet(const std::string& message) {
     _packet_manager.send_unreliable_packet(message, _server_endpoint);
 }
