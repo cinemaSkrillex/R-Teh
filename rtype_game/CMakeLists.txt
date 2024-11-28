@@ -23,6 +23,11 @@ elseif (WIN32)
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/sfml)
 endif()
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Client)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
+
+
 # Add sources files
 file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"

@@ -1,4 +1,4 @@
-#include "../include/CollisionHandler.hpp"
+#include "CollisionHandler.hpp"
 
 void handle_collision(RealEngine::Registry&                                      registry,
                       const std::unordered_map<std::string, RealEngine::Entity>& entities) {

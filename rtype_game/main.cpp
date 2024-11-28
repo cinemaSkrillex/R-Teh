@@ -2,7 +2,7 @@
 #include <thread>
 
 #include "Game.hpp"
-#include "Client/UDPClient.hpp"
+#include "UDPClient.hpp"
 
 int main() {
     rtype::Game game;

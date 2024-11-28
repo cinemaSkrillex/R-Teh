@@ -5,7 +5,7 @@
 ** ThreadPool.cpp
 */
 
-#include "../../include/shared/ThreadPool.hpp"
+#include "ThreadPool.hpp"
 
 /**
  * @brief Worker thread function that executes tasks from the task queue.
@@ -54,8 +54,7 @@ ThreadPool::~ThreadPool() {
 
     _cv.notify_all();
 
-    for (std::thread& thread : _threads)
-        thread.join();
+    for (std::thread& thread : _threads) thread.join();
 }
 
 /**

@@ -33,6 +33,10 @@ if (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
 endif()
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Client)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
+
 # Server Source files
 file(GLOB_RECURSE NETWORK_SERVER_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Server/*.cpp"

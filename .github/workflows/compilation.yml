@@ -16,14 +16,11 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake make g++ curl zip unzip ninja-build automake libtool
+        sudo apt-get install -y cmake make g++ curl zip unzip ninja-build automake libtool build-essential
         git clone https://github.com/microsoft/vcpkg.git
-        cmake --preset linux
-        cd build
-        cmake .. && cmake --build .
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake --preset linux
 
     - name: Build
       run: cmake --build build

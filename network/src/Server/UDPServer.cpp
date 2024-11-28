@@ -5,7 +5,7 @@
 ** UDPServer.cpp
 */
 
-#include "../../include/Server/UDPServer.hpp"
+#include "UDPServer.hpp"
 #ifdef _WIN32
 #include <windows.h>
 #else

@@ -29,9 +29,21 @@ elseif (WIN32)
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/lua)
     set(LUA_LIBRARIES "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/lib/lua53.lib")
     set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include")
-    set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/openal)
-    set(OPENAL_LIBRARY "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/lib/OpenAL32.lib")
+
 endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Config)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Core)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Components)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Entities)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Enum)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Registry)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/SparseArray)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Media)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting)
 
 # Find dependencies
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
@@ -41,7 +53,6 @@ find_package(Lua REQUIRED)
 # Source files
 file(GLOB_RECURSE NETWORK_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
 )
 
 # Library target

@@ -5,7 +5,7 @@
 ** PacketManager.cpp
 */
 
-#include "../../include/shared/PacketManager.hpp"
+#include "PacketManager.hpp"
 
 PacketManager::PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
     : _message_id(0),
@@ -28,14 +28,9 @@ void PacketManager::start() {
     _retry_packet_thread   = std::thread(&PacketManager::retry, this);
 }
 
-packet PacketManager::build_packet(
-    int sequence_nb,
-    int start_sequence_nb,
-    int end_sequence_nb,
-    Flags flag,
-    const asio::ip::udp::endpoint& endpoint,
-    const std::string& message
-) {
+packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb,
+                                   Flags flag, const asio::ip::udp::endpoint& endpoint,
+                                   const std::string& message) {
     // packet pkt;
     // pkt.sequence_nb = sequence_nb;
     // pkt.start_sequence_nb = start_sequence_nb;
@@ -50,26 +45,28 @@ packet PacketManager::build_packet(
     // pkt.endpoint = endpoint;
     // return pkt;
     packet pkt;
-    pkt.sequence_nb = sequence_nb;
+    pkt.sequence_nb       = sequence_nb;
     pkt.start_sequence_nb = start_sequence_nb;
-    pkt.end_sequence_nb = end_sequence_nb;
-    pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
+    pkt.end_sequence_nb   = end_sequence_nb;
+    pkt.packet_size       = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
     // std::cout << "Packet size: " << pkt.packet_size << std::endl;
 
     size_t start_idx = sequence_nb * BUFFER_SIZE;
-    size_t end_idx = start_idx + pkt.packet_size;
+    size_t end_idx   = start_idx + pkt.packet_size;
 
     if (start_idx > message.size()) {
         std::cerr << "Error: Start index out of range!" << std::endl;
-        std::cerr << "Start index: " << start_idx << " Message size: " << message.size() << std::endl;
-        return {}; // Return an empty packet or handle the error
+        std::cerr << "Start index: " << start_idx << " Message size: " << message.size()
+                  << std::endl;
+        return {};  // Return an empty packet or handle the error
     }
-    pkt.data.assign(message.begin() + start_idx, message.begin() + std::min(end_idx, message.size()));
+    pkt.data.assign(message.begin() + start_idx,
+                    message.begin() + std::min(end_idx, message.size()));
 
     // std::cout << "Packet data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
     // std::cout << "Packet original data: " << message << std::endl;
 
-    pkt.flag = flag;
+    pkt.flag     = flag;
     pkt.endpoint = endpoint;
     return pkt;
 }
@@ -78,9 +75,7 @@ packet PacketManager::build_packet(
 
 void PacketManager::receive() {
     socket_.async_receive_from(
-        asio::buffer(recv_buffer_),
-        _endpoint,
-        [this](std::error_code ec, std::size_t bytes_recvd) {
+        asio::buffer(recv_buffer_), _endpoint, [this](std::error_code ec, std::size_t bytes_recvd) {
             if (!ec && bytes_recvd > 0) {
                 handle_receive(bytes_recvd);
             } else {
@@ -91,8 +86,7 @@ void PacketManager::receive() {
                 }
             }
             receive();
-        }
-    );
+        });
 }
 
 void PacketManager::send() {
@@ -123,7 +117,7 @@ void PacketManager::retry() {
     }
 }
 
-//receive functions
+// receive functions
 
 void PacketManager::handle_receive(std::size_t bytes_recvd) {
     auto   message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
@@ -162,10 +156,10 @@ void PacketManager::handle_ack(const std::string& ack_message) {
         return;
     }
     if (ack_message.substr(0, 11) == "CLIENT_ACK:") {
-        sequence_start = std::stoi(ack_message.substr(11, ack_message.find(',')));
+        sequence_start  = std::stoi(ack_message.substr(11, ack_message.find(',')));
         sequence_number = std::stoi(ack_message.substr(ack_message.find(',') + 1));
     } else if (ack_message.substr(0, 4) == "ACK:") {
-        sequence_start = std::stoi(ack_message.substr(4, ack_message.find(',')));
+        sequence_start  = std::stoi(ack_message.substr(4, ack_message.find(',')));
         sequence_number = std::stoi(ack_message.substr(ack_message.find(',') + 1));
     } else {
         std::cerr << "Invalid ACK message: " << ack_message << std::endl;
@@ -194,7 +188,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 
     {
         std::lock_guard<std::mutex> lock(_received_packets_mutex);
-        //check that the packet is not already in the map
+        // check that the packet is not already in the map
         std::vector<packet> temp_vector = _received_packets[pkt.start_sequence_nb];
         if (std::find(temp_vector.begin(), temp_vector.end(), pkt) != temp_vector.end()) {
             std::cout << "Packet already received: " << pkt.sequence_nb << std::endl;
@@ -202,10 +196,10 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
             _received_packets[pkt.start_sequence_nb].push_back(pkt);
         }
 
-        int final_size = pkt.end_sequence_nb - pkt.start_sequence_nb + 1;
+        int final_size    = pkt.end_sequence_nb - pkt.start_sequence_nb + 1;
         int received_size = _received_packets[pkt.start_sequence_nb].size();
         std::cout << "Got " << received_size << "/" << final_size << std::endl;
-        
+
         if (received_size == final_size) {
             all_packets_received = true;
         }
@@ -216,16 +210,18 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         std::vector<char> complete_data;
         {
             std::lock_guard<std::mutex> lock(_received_packets_mutex);
-            //WARNING: sort could make the program slower
-            std::sort(_received_packets[pkt.start_sequence_nb].begin(),
-                      _received_packets[pkt.start_sequence_nb].end(),
-                      [](const packet& a, const packet& b) { return a.sequence_nb < b.sequence_nb; });
+            // WARNING: sort could make the program slower
+            std::sort(
+                _received_packets[pkt.start_sequence_nb].begin(),
+                _received_packets[pkt.start_sequence_nb].end(),
+                [](const packet& a, const packet& b) { return a.sequence_nb < b.sequence_nb; });
 
             for (const auto& packet : _received_packets[pkt.start_sequence_nb]) {
                 complete_data.insert(complete_data.end(), packet.data.begin(), packet.data.end());
             }
             _received_packets.erase(pkt.start_sequence_nb);
-            std::cout << "Reassembled message: " << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            std::cout << "Reassembled message: "
+                      << std::string(complete_data.begin(), complete_data.end()) << std::endl;
             // TODO: handle data
         }
     }
@@ -233,7 +229,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
     send_ack(pkt.start_sequence_nb, pkt.sequence_nb, _endpoint);
 }
 
-//did not change for now
+// did not change for now
 void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
     std::cout << "Processing unreliable message: " << message << std::endl;
@@ -246,7 +242,7 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
 
     _known_clients.insert(client_endpoint);
     std::cout << "New client connected: " << client_endpoint << std::endl;
-    //here we used to send test message. TODO test flag to trigger the test
+    // here we used to send test message. TODO test flag to trigger the test
 }
 
 static std::string testPacketManager() {
@@ -280,29 +276,29 @@ static std::string testPacketManager() {
 }
 
 void PacketManager::handle_test(const asio::ip::udp::endpoint& endpoint) {
-    //send reliable packet to the client with message testPacketManager()
+    // send reliable packet to the client with message testPacketManager()
     std::cout << "Sending test message" << std::endl;
     send_reliable_packet(testPacketManager(), endpoint);
 }
 
-//send functions
+// send functions
 
-void PacketManager::send_ack(
-    SEQUENCE_TYPE start_sequence_number,
-    SEQUENCE_TYPE sequence_number,
-    const asio::ip::udp::endpoint& endpoint_
-) {
+void PacketManager::send_ack(SEQUENCE_TYPE start_sequence_number, SEQUENCE_TYPE sequence_number,
+                             const asio::ip::udp::endpoint& endpoint_) {
     std::string ack_message;
     if (role_ == Role::SERVER) {
-        ack_message = "CLIENT_ACK:" + std::to_string(start_sequence_number) + "," + std::to_string(sequence_number);
+        ack_message = "CLIENT_ACK:" + std::to_string(start_sequence_number) + "," +
+                      std::to_string(sequence_number);
     }
     if (role_ == Role::CLIENT) {
-        ack_message = "ACK:" + std::to_string(start_sequence_number) + "," + std::to_string(sequence_number);
+        ack_message =
+            "ACK:" + std::to_string(start_sequence_number) + "," + std::to_string(sequence_number);
     }
 
     // std::cout << "Sending ACK message: " << ack_message << std::endl;
     packet pkt = build_packet(0, 0, 0, ACK, endpoint_, ack_message);
-    // std::cout << "Sending ACK message: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
+    // std::cout << "Sending ACK message: " << std::string(pkt.data.begin(), pkt.data.end()) <<
+    // std::endl;
     queue_packet_for_sending(pkt);
 }
 
@@ -334,7 +330,7 @@ void PacketManager::send_packet(const packet& pkt) {
                           });
 }
 
-void PacketManager::send_reliable_packet(const std::string& message,
+void PacketManager::send_reliable_packet(const std::string&             message,
                                          const asio::ip::udp::endpoint& endpoint) {
     int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
     std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
@@ -354,7 +350,8 @@ void PacketManager::send_reliable_packet(const std::string& message,
 
         {
             std::lock_guard<std::mutex> lock(_message_id_mutex);
-            pkt = build_packet(_message_id - start_sequence_nb, start_sequence_nb, end_sequence_nb, RELIABLE, endpoint, message);
+            pkt = build_packet(_message_id - start_sequence_nb, start_sequence_nb, end_sequence_nb,
+                               RELIABLE, endpoint, message);
             _message_id++;
         }
 
@@ -378,7 +375,7 @@ void PacketManager::send_reliable_packet(const std::string& message,
     }
 }
 
-void PacketManager::send_unreliable_packet(const std::string& message,
+void PacketManager::send_unreliable_packet(const std::string&             message,
                                            const asio::ip::udp::endpoint& endpoint) {
     packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
     // pkt.sequence_nb = 0;  // no validation for unreliable packets
@@ -409,8 +406,7 @@ void PacketManager::queue_packet_for_retry(const packet& pkt) {
     }
 }
 
-
-//old did not touch:
+// old did not touch:
 
 // void PacketManager::schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
 //     retransmission_timer_.expires_after(std::chrono::milliseconds(300));
@@ -419,7 +415,8 @@ void PacketManager::queue_packet_for_retry(const packet& pkt) {
 //             std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
 //             for (const auto& pair : retransmission_queue_) {
 //                 if (received_packets_.find(pair.first.sequence_nb) == received_packets_.end()) {
-//                     std::cout << "Retransmitting unacknowledged packet: " << pair.first.sequence_nb
+//                     std::cout << "Retransmitting unacknowledged packet: " <<
+//                     pair.first.sequence_nb
 //                               << std::endl;
 //                     queue_packet_for_retransmission(pair.first, endpoint);
 //                 }
@@ -438,9 +435,8 @@ void PacketManager::queue_packet_for_retry(const packet& pkt) {
 
 std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
-    if (_unprocessed_unreliable_messages.empty())
-        return "";
-    std::string                 message = _unprocessed_unreliable_messages.top();
+    if (_unprocessed_unreliable_messages.empty()) return "";
+    std::string message = _unprocessed_unreliable_messages.top();
     _unprocessed_unreliable_messages.pop();
     return message;
 }

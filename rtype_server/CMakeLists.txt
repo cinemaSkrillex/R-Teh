@@ -25,6 +25,8 @@ endif()
 
 #add includes files
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
 
 # Add sources files
 file(GLOB_RECURSE SOURCES

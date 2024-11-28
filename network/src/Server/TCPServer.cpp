@@ -5,7 +5,7 @@
 ** TCPServer.cpp
 */
 
-#include "../../include/Server/TCPServer.hpp"
+#include "TCPServer.hpp"
 
 TCPServer::TCPServer(asio::io_context& io_context, unsigned short port)
     : acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
