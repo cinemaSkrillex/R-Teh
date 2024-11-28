@@ -10,5 +10,6 @@
 namespace RealEngine {
 struct Velocity {
     float vx, vy;
+    float airFrictionForce = 0.0f;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

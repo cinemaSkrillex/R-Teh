@@ -41,13 +41,8 @@ void ControlSystem::update(Registry& registry, float deltaTime) {
             if (sf::Keyboard::isKeyPressed(key)) {
                 actionHandlers[action](*velocity, *acceleration, *position, deltaTime * 100.0);
             } else {
-                if (acceleration->air_friction) {
-                    actionReleaseHandlers[action](*velocity, *acceleration, *position,
-                                                  deltaTime * 100.0);
-                } else {
-                    velocity->vx = 0;
-                    velocity->vy = 0;
-                }
+                actionReleaseHandlers[action](*velocity, *acceleration, *position,
+                                              deltaTime * 100.0);
             }
         }
     }
