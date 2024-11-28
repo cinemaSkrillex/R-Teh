@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../Render.hpp"
 #include <iostream>
+
+#include "../Render.hpp"
 
 namespace RealEngine {
 class Sprite : public IRender {
-  public:
+   public:
     Sprite(const std::string filePath);
     Sprite(const std::string filePath, sf::IntRect textureRect);
     ~Sprite();
@@ -25,6 +26,7 @@ class Sprite : public IRender {
     void          setSmooth(bool smooth);
     void          setColor(sf::Color color);
     void          flip(bool invert);
+    void          centerOrigin();
     sf::Sprite    getSprite() const { return _sprite; }
     sf::Image     getImage() const { return _image; }
     sf::Texture   getTexture() const { return _texture; }
@@ -33,11 +35,11 @@ class Sprite : public IRender {
     bool          isTextureOfBounds();
     sf::FloatRect getBounds() { return _sprite.getGlobalBounds(); }
 
-  private:
+   private:
     sf::Sprite  _sprite;
     sf::Texture _texture;
     sf::Image   _image;
     bool        _flipped;
 };
 
-} // namespace RealEngine
+}  // namespace RealEngine

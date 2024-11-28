@@ -4,7 +4,7 @@ namespace RealEngine {
 
 Sprite::Sprite(const std::string filepath) {
     loadFile(filepath);
-    _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
+    centerOrigin();
     setPosition(0, 0);
     setColor(sf::Color::White);
     _flipped = false;
@@ -89,6 +89,11 @@ void Sprite::flip(bool left) {
     _sprite.setTextureRect(rect);
 }
 
+void Sprite::centerOrigin() {
+    sf::FloatRect bounds = _sprite.getLocalBounds();
+    _sprite.setOrigin(bounds.width / 2, bounds.height / 2);
+}
+
 void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
     for (unsigned int x = 0; x < _image.getSize().x; x++) {
         for (unsigned int y = 0; y < _image.getSize().y; y++) {
@@ -126,4 +131,4 @@ bool Sprite::isTextureOfBounds() {
     return false;
 }
 
-} // namespace RealEngine
+}  // namespace RealEngine

@@ -14,19 +14,19 @@ DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 void calculateTextureRect(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     sprite.setTextureRect(spritesheet.frameSize.x * spritesheet.frameIndex, 0,
                           spritesheet.frameSize.x, spritesheet.frameSize.y);
+    sprite.centerOrigin();
 }
 
 void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     calculateTextureRect(spritesheet, sprite);
     if (!spritesheet.pause &&
         spritesheet.animClock.getElapsedTime().asMilliseconds() > spritesheet.animTime) {
-
         // Check if texture is out of bounds before advancing the frame
         if (sprite.isTextureOfBounds()) {
             if (spritesheet.loop)
-                spritesheet.frameIndex = 0; // Reset frame index to 0
+                spritesheet.frameIndex = 0;  // Reset frame index to 0
             else
-                spritesheet.pause = true; // Paute animation;
+                spritesheet.pause = true;  // Paute animation;
         } else {
             // Only increment frame if not out of bounds
             spritesheet.frameIndex++;
@@ -67,4 +67,4 @@ void DrawSystem::update(Registry& registry, float deltaTime) {
         }
     }
 }
-} // namespace RealEngine
+}  // namespace RealEngine
