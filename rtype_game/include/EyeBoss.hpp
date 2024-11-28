@@ -5,6 +5,7 @@
 
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Position.hpp"
+#include "ECS/Components/Radius.hpp"
 #include "ECS/Components/Rotation.hpp"
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
@@ -20,6 +21,7 @@ class EyeBoss {
    public:
     EyeBoss(RealEngine::Registry& registry);
     ~EyeBoss();
+    void               bossBehavior();
     void               shortRangeBehavior();
     void               midRangeBehavior();
     void               longRangeBehavior();

@@ -14,7 +14,6 @@ Game::Game()
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
-      //   _bossEye(_registry),
       _view({100, 100}, {800, 600}),
       _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
@@ -111,10 +110,6 @@ void Game::init_controls() {
         RealEngine::Action::Right,
         std::bind(&rtype::Controls::decelerateRight, &_controls, std::placeholders::_1,
                   std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    _controlSystem.setActionReleaseHandler(
-        RealEngine::Action::Action1,
-        std::bind(&rtype::Controls::voidAction, &_controls, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 void Game::init_systems() {
@@ -139,14 +134,13 @@ void Game::init_systems() {
         _rotationSystem.update(registry, deltaTime);
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _radiusSystem.update(registry, deltaTime);
+        _radiusSystem.update(registry);
     });
 }
 
 void Game::run() {
     // std::unordered_map<std::string, RealEngine::Entity> entities = {
     //     {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
-
     while (_window.isOpen()) {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
