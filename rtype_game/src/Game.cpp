@@ -48,8 +48,9 @@ Game::Game()
                              RealEngine::Drawable{});
     _registry.add_component(_groundEntity, RealEngine::SpriteComponent{_groundSprite});
     _bossEye = std::make_unique<EyeBoss>(_registry);
-    // _registry.add_component(_groundEntity,
-    //                         RealEngine::Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
+    _bossEye->setTarget(_entity2);
+    _registry.add_component(_groundEntity,
+                            RealEngine::Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
 }
 
 Game::~Game() {}
@@ -60,11 +61,13 @@ void Game::init_registry() {
     _registry.register_component<RealEngine::SpriteComponent>();
     _registry.register_component<RealEngine::SpriteSheet>();
     _registry.register_component<RealEngine::Drawable>();
+    _registry.register_component<RealEngine::Collision>();
     _registry.register_component<RealEngine::Controllable>();
     _registry.register_component<RealEngine::Acceleration>();
     _registry.register_component<RealEngine::AI>();
     _registry.register_component<RealEngine::Rotation>();
     _registry.register_component<RealEngine::Radius>();
+    _registry.register_component<RealEngine::Target>();
 }
 
 void Game::init_controls() {
@@ -124,9 +127,9 @@ void Game::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _controlSystem.update(registry, deltaTime);
     });
-    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-    //     _collisionSystem.update(registry, deltaTime);
-    // });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _collisionSystem.update(registry, deltaTime);
+    });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _aiSystem.update(registry, deltaTime);
     });
@@ -139,14 +142,14 @@ void Game::init_systems() {
 }
 
 void Game::run() {
-    // std::unordered_map<std::string, RealEngine::Entity> entities = {
-    //     {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
+    std::unordered_map<std::string, RealEngine::Entity> entities = {
+        {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
     while (_window.isOpen()) {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
         _registry.run_systems(_deltaTime);
-        // handle_collision(_registry, entities);
+        handle_collision(_registry, entities);
         _window.display();
     }
 }
