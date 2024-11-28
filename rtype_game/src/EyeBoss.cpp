@@ -16,6 +16,8 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _bossSheet.emplace("long", _longSprite);
     _registry.add_components(_entity, RealEngine::Position{200.f, 200.f}, RealEngine::Drawable{});
     setBossStatus(0);
+    _registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, 2.0f});
+    _registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
     _registry.add_component(_entity, RealEngine::Rotation{300.0f});
     _registry.add_component(
         _entity,
@@ -44,15 +46,15 @@ void EyeBoss::targetBossBehavior(RealEngine::Registry& registry, RealEngine::Ent
     float rotationSpeed  = 0.1f;
     switch (_state) {
         case EyeBossState::SHORT_RANGE:
-            shortRangeBehavior();
-            rotationSpeed = 5.0f;
+            shortRangeBehavior(registry, target, deltaTime);
+            rotationSpeed = 1.0f;
             break;
         case EyeBossState::MID_RANGE:
-            midRangeBehavior();
-            rotationSpeed = 4.2f;
+            midRangeBehavior(registry, target, deltaTime);
+            rotationSpeed = 0.6f;
             break;
         case EyeBossState::LONG_RANGE:
-            longRangeBehavior();
+            longRangeBehavior(registry, target, deltaTime);
             rotationSpeed = 2.2f;
             break;
         default:
@@ -88,20 +90,39 @@ void EyeBoss::PassiveBossBehavior(RealEngine::Registry& registry, float deltaTim
     auto* rotation = registry.get_component<RealEngine::Rotation>(_entity);
 
     if (rotation) {
-        rotation->angle += 0.1f;
+        rotation->angle += 2.5f;
     }
     // Do something
 }
 
-void EyeBoss::shortRangeBehavior() {
+void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                                 float deltaTime) {
+    auto* position       = registry.get_component<RealEngine::Position>(_entity);
+    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(_entity);
+    auto* targetPosition = registry.get_component<RealEngine::Position>(target);
+
+    if (position && targetPosition && acceleration) {
+        float dx       = targetPosition->x - position->x;
+        float dy       = targetPosition->y - position->y;
+        float distance = std::sqrt(dx * dx + dy * dy);
+
+        if (distance > 100.0f) {
+            acceleration->ax = dx / distance * 2.0f;
+            acceleration->ay = dy / distance * 2.0f;
+        } else {
+            acceleration->ax = 0.0f;
+            acceleration->ay = 0.0f;
+        }
+    }
+}
+
+void EyeBoss::midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                               float deltaTime) {
     // Do something
 }
 
-void EyeBoss::midRangeBehavior() {
-    // Do something
-}
-
-void EyeBoss::longRangeBehavior() {
+void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                                float deltaTime) {
     // Do something
 }
 

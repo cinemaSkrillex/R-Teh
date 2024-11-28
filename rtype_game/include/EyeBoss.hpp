@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "ECS/Components/AI.hpp"
+#include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
@@ -11,6 +12,7 @@
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "ECS/Components/Target.hpp"
+#include "ECS/Components/Velocity.hpp"
 #include "ECS/Entities/Entity.hpp"
 #include "ECS/Registry/Registry.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
@@ -27,9 +29,12 @@ class EyeBoss {
                                           float deltaTime);
     void               setTarget(RealEngine::Entity target);
     void               PassiveBossBehavior(RealEngine::Registry& registry, float deltaTime);
-    void               shortRangeBehavior();
-    void               midRangeBehavior();
-    void               longRangeBehavior();
+    void               shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                                          float deltaTime);
+    void               midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                                        float deltaTime);
+    void               longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                                         float deltaTime);
     void               setBossStatus(int state);
     RealEngine::Entity getEntity() { return _entity; }
 

@@ -37,8 +37,8 @@ Game::Game()
     _spaceshipSheet.emplace("down", _downSpaceship);
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f});
-    _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f, true});
+    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, 3.0f});
+    _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _registry.add_component(_entity2, RealEngine::Controllable{});
     _registry.add_component(_entity2, RealEngine::Drawable{});
     _registry.add_component(
@@ -96,23 +96,6 @@ void Game::init_controls() {
         RealEngine::Action::Action1,
         std::bind(&rtype::Controls::shoot, &_controls, std::placeholders::_1, std::placeholders::_2,
                   std::placeholders::_3, std::placeholders::_4));
-
-    _controlSystem.setActionReleaseHandler(
-        RealEngine::Action::Up,
-        std::bind(&rtype::Controls::decelerateUp, &_controls, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    _controlSystem.setActionReleaseHandler(
-        RealEngine::Action::Down,
-        std::bind(&rtype::Controls::decelerateDown, &_controls, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    _controlSystem.setActionReleaseHandler(
-        RealEngine::Action::Left,
-        std::bind(&rtype::Controls::decelerateLeft, &_controls, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    _controlSystem.setActionReleaseHandler(
-        RealEngine::Action::Right,
-        std::bind(&rtype::Controls::decelerateRight, &_controls, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 void Game::init_systems() {

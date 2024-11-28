@@ -19,6 +19,21 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
             position->x += velocity->vx * deltaTime;
             position->y += velocity->vy * deltaTime;
         }
+        if (velocity->airFrictionForce > 0.0f) {
+            applyFriction(*velocity, deltaTime);
+        }
     }
 }
-} // namespace RealEngine
+
+void MovementSystem::applyFriction(Velocity& velocity, float deltaTime) {
+    float speed = std::sqrt(velocity.vx * velocity.vx + velocity.vy * velocity.vy);
+
+    if (speed > 0.0f) {
+        float friction = velocity.airFrictionForce * speed * deltaTime;
+        velocity.vx -= friction * (velocity.vx / speed);
+        velocity.vy -= friction * (velocity.vy / speed);
+        if (std::abs(velocity.vx) < 0.01f) velocity.vx = 0.0f;
+        if (std::abs(velocity.vy) < 0.01f) velocity.vy = 0.0f;
+    }
+}
+}  // namespace RealEngine
