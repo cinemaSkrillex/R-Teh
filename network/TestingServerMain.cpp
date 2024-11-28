@@ -5,14 +5,11 @@
 ** main.cpp
 */
 
-#include <iostream>
 #include <asio.hpp>
+#include <iostream>
+
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
 #include "include/Server/UDPServer.hpp"
-
-#if defined(_WIN32) || defined(_WIN64)
-#define _WIN32_WINNT 0x0A00
-#endif
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -30,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        auto server = std::make_shared<UDPServer>(io_context, port);
+        auto             server = std::make_shared<UDPServer>(io_context, port);
 
         io_context.run();
     } catch (const std::exception& e) {

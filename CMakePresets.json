@@ -1,0 +1,46 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "vcpkg",
+            "displayName": "With vcpkg",
+            "description": "Default build with vcpkg toolchain",
+            "binaryDir": "${sourceDir}/build/default",
+            "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "windows-static",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Windows x64-windows-static",
+            "description": "Vcpkg windows build with triplet x64-windows-static",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+            }
+        },
+        {
+            "name": "linux",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Linux x64-linux",
+            "description": "Vcpkg Linux build with triplet x64-linux-static",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "x64-linux"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "vcpkg",
+            "configurePreset": "vcpkg"
+        }
+    ]
+}

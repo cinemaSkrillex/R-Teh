@@ -22,8 +22,8 @@ if (UNIX)
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/lua)
     set(LUA_LIBRARIES "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/lib/liblua.a")
     set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include")
-    set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/openal)
-    set(OPENAL_LIBRARY "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/lib/libopenal.a")
+    # set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/share/openal)
+    # set(OPENAL_LIBRARY "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/lib/libopenal.a")
 elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
     set(SFML_STATIC_LIBRARIES TRUE)
@@ -39,7 +39,7 @@ endif()
 # Find dependencies
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(Lua REQUIRED)
-find_package(OpenAL REQUIRED)
+# find_package(OpenAL REQUIRED)
 
 # Source files
 file(GLOB_RECURSE NETWORK_SOURCES
@@ -53,7 +53,7 @@ add_library(rtype_engine STATIC ${NETWORK_SOURCES})
 # Include directories
 target_include_directories(rtype_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-message(STATUS "OPENAL_LIBRARY: ${OPENAL_LIBRARY}")
+# message(STATUS "OPENAL_LIBRARY: ${OPENAL_LIBRARY}")
 
 # Link libraries
 if(UNIX)

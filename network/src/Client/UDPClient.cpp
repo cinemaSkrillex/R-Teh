@@ -6,18 +6,12 @@
 */
 
 #include "../../include/Client/UDPClient.hpp"
-#include <thread>
 
-UDPClient::UDPClient(
-    asio::io_context& io_context,
-    unsigned short port,
-    const std::string& server_ip,
-    unsigned short server_port
-):
-    _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-    _server_endpoint(asio::ip::address::from_string(server_ip), server_port),
-    _packet_manager(io_context, _socket, Role::CLIENT)
-{
+UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
+                     const std::string& server_ip, unsigned short server_port)
+    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
+      _server_endpoint(asio::ip::address::from_string(server_ip), server_port),
+      _packet_manager(io_context, _socket, Role::CLIENT) {
     _packet_manager.start();
     // start_receive();
 }

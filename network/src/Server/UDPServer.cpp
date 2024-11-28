@@ -6,11 +6,17 @@
 */
 
 #include "../../include/Server/UDPServer.hpp"
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <bits/this_thread_sleep.h>
+
 #include <system_error>
+#endif
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
-    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), _client_endpoint(),
+    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
+      _client_endpoint(),
       _packet_manager(io_context, _socket, Role::SERVER) {
     _packet_manager.start();
 }
