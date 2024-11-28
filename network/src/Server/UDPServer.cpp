@@ -10,24 +10,24 @@
 #include <system_error>
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
-    : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), client_endpoint_(),
-      packet_manager_(io_context, socket_, Role::SERVER) {
-    packet_manager_.start();
+    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), _client_endpoint(),
+      _packet_manager(io_context, _socket, Role::SERVER) {
+    _packet_manager.start();
 }
 
 UDPServer::~UDPServer() { std::cout << "deleting UDPServer"; }
 
 void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
-    client_endpoint_ = endpoint;
+    _client_endpoint = endpoint;
 }
 
 const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
-    std::cout << "Client endpoint: " << client_endpoint_ << std::endl;
-    return client_endpoint_;
+    std::cout << "Client endpoint: " << _client_endpoint << std::endl;
+    return _client_endpoint;
 }
 
 const std::string UDPServer::getLastUnreliablePacket() {
-    return packet_manager_.get_last_unreliable_packet();
+    return _packet_manager.get_last_unreliable_packet();
 }
 
 /**
@@ -43,7 +43,7 @@ const std::string UDPServer::getLastUnreliablePacket() {
  */
 void UDPServer::send_unreliable_packet(const std::string&             message,
                                        const asio::ip::udp::endpoint& endpoint) {
-    packet_manager_.send_unreliable_packet(message, endpoint);
+    _packet_manager.send_unreliable_packet(message, endpoint);
 }
 /**
  * @brief Sends a reliable packet over UDP.
@@ -57,5 +57,5 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
  */
 void UDPServer::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
-    packet_manager_.send_reliable_packet(message, endpoint);
+    _packet_manager.send_reliable_packet(message, endpoint);
 }

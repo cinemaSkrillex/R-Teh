@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add subdirectories
 add_subdirectory(network)
+
 # add_subdirectory(client)
 add_subdirectory(game_engine)
 add_subdirectory(rtype_game)

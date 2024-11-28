@@ -4,6 +4,7 @@
 ** File description:
 ** main.cpp
 */
+
 #include <iostream>
 #include <asio.hpp>
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
@@ -18,22 +19,6 @@
 #else
 #include <dlfcn.h>
 #endif
-class TestServer {
-  public:
-    TestServer(asio::io_context& io_context, unsigned short port)
-        : io_context_(io_context), server_(std::make_unique<UDPServer>(io_context, port)) {}
-
-    ~TestServer() { std::cout << "deleting server"; }
-
-    void start() {
-        // Start the server
-        io_context_.run();
-    }
-
-  private:
-    asio::io_context&          io_context_;
-    std::unique_ptr<UDPServer> server_;
-};
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -45,13 +30,8 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        // auto             test_server = std::make_shared<TestServer>(io_context, port);
-
-        // test_server->start();
-        // io_context.run();
         auto server = std::make_shared<UDPServer>(io_context, port);
 
-        // Run the io_context to handle asynchronous operations
         io_context.run();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;

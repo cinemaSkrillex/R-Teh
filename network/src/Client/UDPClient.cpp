@@ -8,27 +8,32 @@
 #include "../../include/Client/UDPClient.hpp"
 #include <thread>
 
-UDPClient::UDPClient(asio::io_context& io_context, unsigned short port)
-    : socket_(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), server_endpoint_(),
-      packet_manager_(io_context, socket_, Role::CLIENT) {
-    packet_manager_.start();
+UDPClient::UDPClient(
+    asio::io_context& io_context,
+    unsigned short port,
+    const std::string& server_ip,
+    unsigned short server_port
+):
+    _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
+    _server_endpoint(asio::ip::address::from_string(server_ip), server_port),
+    _packet_manager(io_context, _socket, Role::CLIENT)
+{
+    _packet_manager.start();
     // start_receive();
 }
 
 UDPClient::~UDPClient() { std::cout << "deleting UDPClient" << std::endl; }
 
-void UDPClient::send_unreliable_packet(const std::string&             message,
-                                       const asio::ip::udp::endpoint& server_endpoint) {
-    packet_manager_.send_unreliable_packet(message, server_endpoint);
+void UDPClient::send_unreliable_packet(const std::string& message) {
+    _packet_manager.send_unreliable_packet(message, _server_endpoint);
 }
 
-void UDPClient::send_reliable_packet(const std::string&             message,
-                                     const asio::ip::udp::endpoint& endpoint) {
-    packet_manager_.send_reliable_packet(message, endpoint);
+void UDPClient::send_reliable_packet(const std::string& message) {
+    _packet_manager.send_reliable_packet(message, _server_endpoint);
 }
 
 std::string UDPClient::get_last_reliable_packet() {
-    // std::string complete_message = packet_manager_.get_complete_message();
+    // std::string complete_message = _packet_manager.get_complete_message();
     // std::cout << "Received complete message: " << complete_message << std::endl;
     // return complete_message;
     return "";
