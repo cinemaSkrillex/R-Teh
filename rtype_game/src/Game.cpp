@@ -10,7 +10,7 @@ Game::Game()
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
       _controlSystem(),
-      _collisionSystem(),
+      //   _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
@@ -20,10 +20,10 @@ Game::Game()
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
       _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
+      _testSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 0, 55, 68}),
       _entity1(_registry.spawn_entity()),
       _entity2(_registry.spawn_entity()),
       _groundEntity(_registry.spawn_entity()) {
-    // _bossEye = std::make_unique<EyeBoss>(_registry);
     init_registry();
     init_controls();
     init_systems();
@@ -31,13 +31,11 @@ Game::Game()
     _upSpaceship.setScale(3, 3);
     _downSpaceship.setScale(3, 3);
     _groundSprite.setScale(3, 3);
+    _testSprite.setScale(3, 3);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
-
-    _registry.add_components(_entity1, RealEngine::Position{100.f, 100.f}, RealEngine::Drawable{});
-    _registry.add_component(_entity1, RealEngine::SpriteComponent{_idleSpaceship});
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f});
@@ -46,12 +44,13 @@ Game::Game()
     _registry.add_component(_entity2, RealEngine::Drawable{});
     _registry.add_component(
         _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
-    _registry.add_component(_entity2, RealEngine::Rotation{90.5f});
 
     _registry.add_components(_groundEntity, RealEngine::Position{400.f, 300.f},
                              RealEngine::Drawable{});
     _registry.add_component(_groundEntity, RealEngine::SpriteComponent{_groundSprite});
-    // _registry.add_component(_groundEntity, Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
+    _bossEye = std::make_unique<EyeBoss>(_registry);
+    // _registry.add_component(_groundEntity,
+    //                         RealEngine::Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
 }
 
 Game::~Game() {}
@@ -66,7 +65,7 @@ void Game::init_registry() {
     _registry.register_component<RealEngine::Acceleration>();
     _registry.register_component<RealEngine::AI>();
     _registry.register_component<RealEngine::Rotation>();
-    // _registry.register_component<RealEngine::Radius>();
+    _registry.register_component<RealEngine::Radius>();
 }
 
 void Game::init_controls() {
@@ -130,11 +129,8 @@ void Game::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _controlSystem.update(registry, deltaTime);
     });
-    // _registry.add_system<Collision, SpriteComponent, SpriteSheet>([this](Registry& registry,
-    // float deltaTime,
-    //                                                             auto& collisions, auto& sprites,
-    //                                                             auto& spritesheets) {
-    //     _collisionSystem.update(registry, collisions, sprites, spritesheets, deltaTime);
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _collisionSystem.update(registry, deltaTime);
     // });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _aiSystem.update(registry, deltaTime);
@@ -148,8 +144,8 @@ void Game::init_systems() {
 }
 
 void Game::run() {
-    // std::unordered_map<std::string, Entity> entities = {
-    // {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
+    // std::unordered_map<std::string, RealEngine::Entity> entities = {
+    //     {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
 
     while (_window.isOpen()) {
         _window.update();

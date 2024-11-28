@@ -61,10 +61,11 @@ class Game {
     RealEngine::RadiusSystem    _radiusSystem;
     rtype::Controls             _controls;
 
-    // std::unique_ptr<EyeBoss>                            _bossEye;
+    std::unique_ptr<EyeBoss>                            _bossEye;
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
+    RealEngine::Sprite                                  _testSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity1;
