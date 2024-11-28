@@ -10,8 +10,9 @@ Game::Game()
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
       _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
-      _entity1(_registry.spawn_entity()), _entity2(_registry.spawn_entity()),
-      _groundEntity(_registry.spawn_entity()) {
+      _ennemySprite("../assets/sprites/secret_boss.png"), _entity1(_registry.spawn_entity()),
+      _entity2(_registry.spawn_entity()), _groundEntity(_registry.spawn_entity()),
+      _ennemyEntity(_registry.spawn_entity()) {
     init_registry();
     init_controls();
     init_systems();
@@ -19,6 +20,7 @@ Game::Game()
     _upSpaceship.setScale(3, 3);
     _downSpaceship.setScale(3, 3);
     _groundSprite.setScale(3, 3);
+    _ennemySprite.setScale(3, 3);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
@@ -39,6 +41,13 @@ Game::Game()
                              RealEngine::Drawable{});
     _registry.add_component(_groundEntity, RealEngine::SpriteComponent{_groundSprite});
     // _registry.add_component(_groundEntity, Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
+
+    _registry.add_components(_ennemyEntity, RealEngine::Position{500.f, 300.f},
+                             RealEngine::Drawable{});
+    _registry.add_component(_ennemyEntity, RealEngine::SpriteComponent{_ennemySprite});
+    _registry.add_component(_ennemyEntity, RealEngine::Velocity{0.0f, 0.0f});
+    _registry.add_component(_ennemyEntity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f, true});
+    // _registry.add_component(_ennemyEntity, RealEngine::Rotation{0.0f});
 }
 
 Game::~Game() {}
@@ -51,6 +60,9 @@ void Game::init_registry() {
     _registry.register_component<RealEngine::Drawable>();
     _registry.register_component<RealEngine::Controllable>();
     _registry.register_component<RealEngine::Acceleration>();
+    // _registry.register_component<RealEngine::AI>();
+    // _registry.register_component<RealEngine::Rotation>();
+    // _registry.register_component<RealEngine::Radius>();
 }
 
 void Game::init_controls() {
@@ -103,31 +115,35 @@ void Game::init_controls() {
 }
 
 void Game::init_systems() {
-    _registry.add_system<RealEngine::Position, RealEngine::Velocity>(
-        [this](RealEngine::Registry& registry, float deltaTime, auto& positions, auto& velocities) {
-            _movementSystem.update(registry, positions, velocities, deltaTime);
-        });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _movementSystem.update(registry, deltaTime);
+    });
 
-    _registry.add_system<RealEngine::Position, RealEngine::Drawable, RealEngine::SpriteComponent,
-                         RealEngine::SpriteSheet>(
-        [this](RealEngine::Registry& registry, float deltaTime, auto& positions, auto& drawables,
-               auto& sprites, auto& spritesheets) {
-            _drawSystem.update(registry, deltaTime, positions, drawables, sprites, spritesheets);
-        });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _drawSystem.update(registry, deltaTime);
+    });
 
-    _registry.add_system<RealEngine::Velocity, RealEngine::Controllable, RealEngine::Acceleration,
-                         RealEngine::Position>(
-        [this](RealEngine::Registry& registry, float deltaTime, auto& velocities,
-               auto& controllables, auto& accelerations, auto& positions) {
-            _controlSystem.update(registry, velocities, controllables, accelerations, positions,
-                                  deltaTime);
-        });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _controlSystem.update(registry, deltaTime);
+    });
     // _registry.add_system<Collision, SpriteComponent, SpriteSheet>([this](Registry& registry,
     // float deltaTime,
     //                                                             auto& collisions, auto& sprites,
     //                                                             auto& spritesheets) {
     //     _collisionSystem.update(registry, collisions, sprites, spritesheets, deltaTime);
     // });
+    // _registry.add_system<RealEngine::AI>(
+    //     [this](RealEngine::Registry& registry, float deltaTime, auto& ais) {
+    //         _aiSystem.update(registry, deltaTime);
+    //     });
+    // _registry.add_system<RealEngine::Rotation>(
+    //     [this](RealEngine::Registry& registry, float deltaTime, auto& rotations) {
+    //         _rotationSystem.update(registry, deltaTime);
+    //     });
+    // _registry.add_system<RealEngine::Radius>(
+    //     [this](RealEngine::Registry& registry, float deltaTime, auto& radii) {
+    //         _radiusSystem.update(registry, deltaTime);
+    //     });
 }
 
 void Game::run() {

@@ -44,7 +44,6 @@ class SparseArray {
     }
     const_reference_type operator[](size_t idx) const { return _data[idx]; }
 
-    // Iterators
     iterator       begin() { return _data.begin(); }
     const_iterator begin() const { return _data.begin(); }
     const_iterator cbegin() const { return _data.cbegin(); }
@@ -53,21 +52,12 @@ class SparseArray {
     const_iterator end() const { return _data.end(); }
     const_iterator cend() const { return _data.cend(); }
 
-    // Size
-    size_type size() const { return _data.size(); }
-
-    // Insert at a specific index
-    reference_type insert_at(size_type pos, const Component& component);
-    reference_type insert_at(size_type pos, Component&& component);
-
-    // Emplace at a specific index (build component in-place)
+    size_type                                 size() const { return _data.size(); }
+    reference_type                            insert_at(size_type pos, const Component& component);
+    reference_type                            insert_at(size_type pos, Component&& component);
     template <class... Params> reference_type emplace_at(size_type pos, Params&&... params);
-
-    // Erase at a specific index
-    void erase(size_type pos);
-
-    // Get the index of a component
-    size_type get_index(const value_type& component) const;
+    void                                      erase(size_type pos);
+    size_type                                 get_index(const value_type& component) const;
 
   private:
     container_t _data;

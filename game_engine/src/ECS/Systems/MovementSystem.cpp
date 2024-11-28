@@ -9,12 +9,15 @@
 
 namespace RealEngine {
 
-void MovementSystem::update(Registry& registry, SparseArray<Position>& positions,
-                            SparseArray<Velocity>& velocities, float deltaTime) {
-    for (std::size_t i = 0; i < positions.size(); ++i) {
-        if (positions[i] && velocities[i]) {
-            positions[i]->x += velocities[i]->vx * deltaTime;
-            positions[i]->y += velocities[i]->vy * deltaTime;
+void MovementSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Position, Velocity>();
+
+    for (auto entity : entities) {
+        auto* position = registry.get_component<Position>(entity);
+        auto* velocity = registry.get_component<Velocity>(entity);
+        if (position && velocity) {
+            position->x += velocity->vx * deltaTime;
+            position->y += velocity->vy * deltaTime;
         }
     }
 }

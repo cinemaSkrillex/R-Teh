@@ -13,7 +13,6 @@
 namespace RealEngine {
 class MovementSystem {
   public:
-    void update(Registry& registry, SparseArray<Position>& positions,
-                SparseArray<Velocity>& velocities, float deltaTime);
+    void update(Registry& registry, float deltaTime);
 };
 } // namespace RealEngine

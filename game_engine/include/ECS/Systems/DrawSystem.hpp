@@ -11,14 +11,13 @@
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Drawable.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
+#include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 class DrawSystem {
   public:
     DrawSystem(sf::RenderWindow& window);
-    void update(Registry& registry, float deltaTime, SparseArray<Position>& positions,
-                SparseArray<Drawable>& drawables, SparseArray<SpriteComponent>& sprites,
-                SparseArray<SpriteSheet>& spritesheets);
+    void update(Registry& registry, float deltaTime);
 
   private:
     sf::RenderWindow& _window;

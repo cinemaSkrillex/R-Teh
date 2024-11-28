@@ -17,9 +17,7 @@ class CollisionSystem {
   public:
     CollisionSystem();
 
-    void update(Registry& registry, SparseArray<Collision>& collisions,
-                SparseArray<SpriteComponent>& sprites, SparseArray<SpriteSheet>& spritesheets,
-                float deltaTime);
+    void update(Registry& registry, float deltaTime);
 
   private:
 };

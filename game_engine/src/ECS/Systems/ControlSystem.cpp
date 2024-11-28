@@ -16,26 +16,24 @@ ControlSystem::ControlSystem() {
     keyBindings[sf::Keyboard::D] = Action::Right;
 }
 
-void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities,
-                           SparseArray<Controllable>& controllables,
-                           SparseArray<Acceleration>& accelerations,
-                           SparseArray<Position>& positions, float deltaTime) {
-    for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (!velocities[i] || !accelerations[i] || !positions[i]) {
-            continue;
-        }
+void ControlSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
 
-        for (const auto& [key, Action] : keyBindings) {
+    for (auto entity : entities) {
+        auto* velocity     = registry.get_component<Velocity>(entity);
+        auto* acceleration = registry.get_component<Acceleration>(entity);
+        auto* position     = registry.get_component<Position>(entity);
+
+        for (const auto& [key, action] : keyBindings) {
             if (sf::Keyboard::isKeyPressed(key)) {
-                actionHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
-                                       deltaTime * 100.0);
+                actionHandlers[action](*velocity, *acceleration, *position, deltaTime * 100.0);
             } else {
-                if (accelerations[i]->air_friction == true) {
-                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
+                if (acceleration->air_friction) {
+                    actionReleaseHandlers[action](*velocity, *acceleration, *position,
                                                   deltaTime * 100.0);
                 } else {
-                    velocities[i]->vx = 0;
-                    velocities[i]->vy = 0;
+                    velocity->vx = 0;
+                    velocity->vy = 0;
                 }
             }
         }
