@@ -6,14 +6,16 @@
 */
 
 #pragma once
-#include "../include/ECS/Registry/Registry.hpp"
+#include <cmath>
+
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Velocity.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
 
 namespace RealEngine {
 class MovementSystem {
-  public:
-    void update(Registry& registry, SparseArray<Position>& positions,
-                SparseArray<Velocity>& velocities, float deltaTime);
+   public:
+    void update(Registry& registry, float deltaTime);
+    void applyFriction(Velocity& velocity, float deltaTime);
 };
-} // namespace RealEngine
+}  // namespace RealEngine

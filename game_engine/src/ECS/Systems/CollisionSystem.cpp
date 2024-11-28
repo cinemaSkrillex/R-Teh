@@ -21,23 +21,19 @@ bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Colli
     return false;
 }
 
-void CollisionSystem::update(Registry& registry, SparseArray<Collision>& collisions,
-                             SparseArray<SpriteComponent>& sprites,
-                             SparseArray<SpriteSheet>& spritesheets, float deltaTime) {
-    for (std::size_t i = 0; i < collisions.size(); ++i) {
-        if (sprites[i])
-            collisions[i]->bounds = sprites[i]->sprite.getBounds();
+void CollisionSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Collision, SpriteComponent, SpriteSheet>();
 
-        if (spritesheets[i])
-            collisions[i]->bounds =
-                spritesheets[i]->sprites.at(spritesheets[i]->spriteIndex).getBounds();
-    }
-
-    for (auto collision : collisions) {
-        // std::cout << "pos: " << collision->bounds.left << " " << collision->bounds.top
-        //           << " | size: " << collision->bounds.width << " " << collision->bounds.height
-        //           << std::endl;
-        collision->isColliding = isCollidingWithOthers(collision, collisions);
+    for (auto entity : entities) {
+        auto* collision   = registry.get_component<Collision>(entity);
+        auto* sprite      = registry.get_component<SpriteComponent>(entity);
+        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
+        if (sprite)
+            collision->bounds = sprite->sprite.getBounds();
+        if (spritesheet)
+            collision->bounds = spritesheet->sprites.at(spritesheet->spriteIndex).getBounds();
+        collision->isColliding =
+            isCollidingWithOthers(*collision, registry.get_components<Collision>());
     }
 }
 } // namespace RealEngine

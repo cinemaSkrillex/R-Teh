@@ -108,7 +108,28 @@ class Registry {
             [this, &f](float deltaTime) { f(*this, get_components_helper<Components>(*this)...); });
     }
     // Run all systems
-    void run_systems(float deltaTime);
+    void                                     run_systems(float deltaTime);
+    template <typename Component> Component* get_component(Entity const& entity) {
+        auto&       sparseArray = get_components<Component>();
+        std::size_t index       = static_cast<std::size_t>(entity);
+
+        if (index >= sparseArray.size() || !sparseArray[index]) {
+            return nullptr;
+        }
+        return &(*sparseArray[index]);
+    }
+    // template <typename Component> SparseArray<Component>& get_sparse_array();
+    template <typename... Components> std::vector<Entity> view() {
+        std::vector<Entity> result;
+
+        for (std::size_t i = 0; i < _entity_manager.size(); ++i) {
+            Entity entity{i};
+            if ((get_component<Components>(entity) && ...)) {
+                result.push_back(entity);
+            }
+        }
+        return result;
+    }
 
   private:
     std::unordered_map<std::type_index, std::any>              _components_arrays;

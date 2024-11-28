@@ -6,7 +6,6 @@
 */
 
 #include "../include/ECS/Systems/DrawSystem.hpp"
-#include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 
@@ -15,19 +14,19 @@ DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 void calculateTextureRect(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     sprite.setTextureRect(spritesheet.frameSize.x * spritesheet.frameIndex, 0,
                           spritesheet.frameSize.x, spritesheet.frameSize.y);
+    sprite.centerOrigin();
 }
 
 void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     calculateTextureRect(spritesheet, sprite);
     if (!spritesheet.pause &&
         spritesheet.animClock.getElapsedTime().asMilliseconds() > spritesheet.animTime) {
-
         // Check if texture is out of bounds before advancing the frame
         if (sprite.isTextureOfBounds()) {
             if (spritesheet.loop)
-                spritesheet.frameIndex = 0; // Reset frame index to 0
+                spritesheet.frameIndex = 0;  // Reset frame index to 0
             else
-                spritesheet.pause = true; // Paute animation;
+                spritesheet.pause = true;  // Paute animation;
         } else {
             // Only increment frame if not out of bounds
             spritesheet.frameIndex++;
@@ -41,29 +40,26 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
     calculateTextureRect(spritesheet, sprite);
 }
 
-void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Position>& positions,
-                        SparseArray<Drawable>& drawables, SparseArray<SpriteComponent>& sprites,
-                        SparseArray<SpriteSheet>& spritesheets) {
-    for (std::size_t i = 0; i < drawables.size(); ++i) {
-        if (!drawables[i] || !positions[i])
-            continue;
+void DrawSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Drawable>();
 
-        const auto& position = positions[i];
+    for (auto entity : entities) {
+        auto* drawable    = registry.get_component<Drawable>(entity);
+        auto* position    = registry.get_component<Position>(entity);
+        auto* sprite      = registry.get_component<SpriteComponent>(entity);
+        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
 
-        if (sprites[i]) {
-            auto& sprite = sprites[i]->sprite;
-            sprite.setPosition(position->x, position->y);
-            sprite.draw(_window);
-        } else if (spritesheets[i]) {
-            auto& spritesheet = spritesheets[i];
-            auto& sprite      = spritesheet->sprites.at(spritesheet->spriteIndex);
+        if (sprite) {
+            sprite->sprite.setPosition(position->x, position->y);
+            sprite->sprite.draw(_window);
+        } else if (spritesheet) {
+            auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
 
             handleSpriteSheetAnimation(*spritesheet, sprite);
 
             sprite.setPosition(position->x, position->y);
             sprite.draw(_window);
         } else {
-            // Draw fallback rectangle
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
             shape.setPosition(position->x, position->y);
             shape.setFillColor(sf::Color::Blue);
@@ -71,4 +67,4 @@ void DrawSystem::update(Registry& registry, float deltaTime, SparseArray<Positio
         }
     }
 }
-} // namespace RealEngine
+}  // namespace RealEngine

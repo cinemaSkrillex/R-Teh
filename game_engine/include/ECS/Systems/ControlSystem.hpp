@@ -21,9 +21,7 @@ class ControlSystem {
     ControlSystem();
 
     using ActionHandler = std::function<void(Velocity&, Acceleration&, Position&, float)>;
-    void update(Registry& registry, SparseArray<Velocity>& velocities,
-                SparseArray<Controllable>& controllables, SparseArray<Acceleration>& accelerations,
-                SparseArray<Position>& positions, float deltaTime);
+    void update(Registry& registry, float deltaTime);
     void bindKey(sf::Keyboard::Key key, Action action);
     void setActionHandler(Action action, ActionHandler handler);
     void setActionReleaseHandler(Action action, ActionHandler handler);

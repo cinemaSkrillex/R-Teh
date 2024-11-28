@@ -12,6 +12,5 @@ struct Acceleration {
     float ax;
     float ay;
     float az;
-    bool  air_friction;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

@@ -10,33 +10,39 @@
 namespace RealEngine {
 
 ControlSystem::ControlSystem() {
-    keyBindings[sf::Keyboard::Z] = Action::Up;
-    keyBindings[sf::Keyboard::S] = Action::Down;
-    keyBindings[sf::Keyboard::Q] = Action::Left;
-    keyBindings[sf::Keyboard::D] = Action::Right;
+    actionHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Right]   = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action1] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action2] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action3] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action4] = [](Velocity&, Acceleration&, Position&, float) {};
+
+    actionReleaseHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Right]   = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Action1] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action2]        = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action3]        = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action4]        = [](Velocity&, Acceleration&, Position&, float) {};
 }
 
-void ControlSystem::update(Registry& registry, SparseArray<Velocity>& velocities,
-                           SparseArray<Controllable>& controllables,
-                           SparseArray<Acceleration>& accelerations,
-                           SparseArray<Position>& positions, float deltaTime) {
-    for (std::size_t i = 0; i < controllables.size(); ++i) {
-        if (!velocities[i] || !accelerations[i] || !positions[i]) {
-            continue;
-        }
+void ControlSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
 
-        for (const auto& [key, Action] : keyBindings) {
+    for (auto entity : entities) {
+        auto* velocity     = registry.get_component<Velocity>(entity);
+        auto* acceleration = registry.get_component<Acceleration>(entity);
+        auto* position     = registry.get_component<Position>(entity);
+
+        for (const auto& [key, action] : keyBindings) {
             if (sf::Keyboard::isKeyPressed(key)) {
-                actionHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
-                                       deltaTime * 100.0);
+                actionHandlers[action](*velocity, *acceleration, *position, deltaTime * 100.0);
             } else {
-                if (accelerations[i]->air_friction == true) {
-                    actionReleaseHandlers[Action](*velocities[i], *accelerations[i], *positions[i],
-                                                  deltaTime * 100.0);
-                } else {
-                    velocities[i]->vx = 0;
-                    velocities[i]->vy = 0;
-                }
+                actionReleaseHandlers[action](*velocity, *acceleration, *position,
+                                              deltaTime * 100.0);
             }
         }
     }
@@ -52,4 +58,4 @@ void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler
     actionReleaseHandlers[action] = handler;
 }
 
-} // namespace RealEngine
+}  // namespace RealEngine
