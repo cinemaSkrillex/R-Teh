@@ -41,9 +41,4 @@ void Registry::run_systems(float deltaTime) {
     }
 }
 
-// template <typename Component> SparseArray<Component>& Registry::get_sparse_array() {
-//     static_assert(std::is_base_of_v<ComponentBase, Component>, "Not a valid component type");
-//     return _component_manager.get_component_array<Component>();
-// }
-
 } // namespace RealEngine

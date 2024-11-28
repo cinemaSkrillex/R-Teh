@@ -60,38 +60,11 @@ void DrawSystem::update(Registry& registry, float deltaTime) {
             sprite.setPosition(position->x, position->y);
             sprite.draw(_window);
         } else {
-            // Draw fallback rectangle
             sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
             shape.setPosition(position->x, position->y);
             shape.setFillColor(sf::Color::Blue);
             _window.draw(shape);
         }
     }
-    // for (std::size_t i = 0; i < drawables.size(); ++i) {
-    //     if (!drawables[i] || !positions[i])
-    //         continue;
-
-    //     const auto& position = positions[i];
-
-    //     if (sprites[i]) {
-    //         auto& sprite = sprites[i]->sprite;
-    //         sprite.setPosition(position->x, position->y);
-    //         sprite.draw(_window);
-    //     } else if (spritesheets[i]) {
-    //         auto& spritesheet = spritesheets[i];
-    //         auto& sprite      = spritesheet->sprites.at(spritesheet->spriteIndex);
-
-    //         handleSpriteSheetAnimation(*spritesheet, sprite);
-
-    //         sprite.setPosition(position->x, position->y);
-    //         sprite.draw(_window);
-    //     } else {
-    //         // Draw fallback rectangle
-    //         sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
-    //         shape.setPosition(position->x, position->y);
-    //         shape.setFillColor(sf::Color::Blue);
-    //         _window.draw(shape);
-    //     }
-    // }
 }
 } // namespace RealEngine
