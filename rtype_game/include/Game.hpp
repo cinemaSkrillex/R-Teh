@@ -1,32 +1,40 @@
 
 
 #include <SFML/Graphics.hpp>
-#include "Core/Window.hpp"
-#include "Core/View.hpp"
+
+#include "CollisionHandler.hpp"
+#include "Controls.hpp"
 #include "Core/ClockEngine.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
-#include "Media/Graphics/Rendering/Background.hpp"
-#include "Media/Audio/Sound.hpp"
-#include "Media/Audio/Music.hpp"
-#include "Scripting/LuaManager.hpp"
-#include "ECS/Registry/Registry.hpp"
+#include "Core/View.hpp"
+#include "Core/Window.hpp"
+#include "ECS/Components/AI.hpp"
+#include "ECS/Components/Acceleration.hpp"
+#include "ECS/Components/Controllable.hpp"
+#include "ECS/Components/DetectionRadius.hpp"
+#include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Position.hpp"
+#include "ECS/Components/Rotation.hpp"
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "ECS/Components/Velocity.hpp"
-#include "ECS/Components/Drawable.hpp"
-#include "ECS/Components/Controllable.hpp"
-#include "ECS/Systems/DrawSystem.hpp"
-#include "ECS/Systems/ControlSystem.hpp"
-#include "ECS/Components/Acceleration.hpp"
-#include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Registry/Registry.hpp"
+#include "ECS/Systems/AISystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
-#include "Controls.hpp"
-#include "CollisionHandler.hpp"
+#include "ECS/Systems/ControlSystem.hpp"
+#include "ECS/Systems/DrawSystem.hpp"
+#include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/RadiusSystem.hpp"
+#include "ECS/Systems/RotationSystem.hpp"
+#include "EyeBoss.hpp"
+#include "Media/Audio/Music.hpp"
+#include "Media/Audio/Sound.hpp"
+#include "Media/Graphics/Rendering/Background.hpp"
+#include "Media/Graphics/Rendering/Sprite.hpp"
+#include "Scripting/LuaManager.hpp"
 
 namespace rtype {
 class Game {
-  public:
+   public:
     Game();
     ~Game();
     void               run();
@@ -37,7 +45,7 @@ class Game {
     RealEngine::Entity createEntity();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
-  private:
+   private:
     float                       _deltaTime = 0.f;
     RealEngine::Window          _window;
     RealEngine::View            _view;
@@ -48,15 +56,19 @@ class Game {
     RealEngine::ControlSystem   _controlSystem;
     RealEngine::MovementSystem  _movementSystem;
     RealEngine::CollisionSystem _collisionSystem;
+    RealEngine::AISystem        _aiSystem;
+    RealEngine::RotationSystem  _rotationSystem;
+    RealEngine::RadiusSystem    _radiusSystem;
     rtype::Controls             _controls;
 
+    // std::unique_ptr<EyeBoss>                            _bossEye;
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
-    RealEngine::Sprite                                  _groundSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
+    RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity1;
     RealEngine::Entity                                  _entity2;
     RealEngine::Entity                                  _groundEntity;
 };
-} // namespace rtype
+}  // namespace rtype
