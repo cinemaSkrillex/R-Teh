@@ -14,9 +14,12 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _bossSheet.emplace("short", _shortSprite);
     _bossSheet.emplace("mid", _midSprite);
     _bossSheet.emplace("long", _longSprite);
+
     _registry.add_components(_entity, RealEngine::Position{200.f, 200.f}, RealEngine::Drawable{});
-    setBossStatus(0);
-    _registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, 2.0f});
+    _registry.add_component(
+        _entity,
+        RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}});
+    _registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, 1.8f});
     _registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
     _registry.add_component(_entity, RealEngine::Rotation{300.0f});
     _registry.add_component(
@@ -99,6 +102,7 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
                                  float deltaTime) {
     auto* position       = registry.get_component<RealEngine::Position>(_entity);
     auto* acceleration   = registry.get_component<RealEngine::Acceleration>(_entity);
+    auto* velocity       = registry.get_component<RealEngine::Velocity>(_entity);
     auto* targetPosition = registry.get_component<RealEngine::Position>(target);
 
     if (position && targetPosition && acceleration) {
@@ -106,6 +110,7 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
         float dy       = targetPosition->y - position->y;
         float distance = std::sqrt(dx * dx + dy * dy);
 
+        std::cout << "Distance: " << distance << std::endl;
         if (distance > 100.0f) {
             acceleration->ax = dx / distance * 2.0f;
             acceleration->ay = dy / distance * 2.0f;
@@ -127,23 +132,32 @@ void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Enti
 }
 
 void EyeBoss::setBossStatus(int state) {
+    auto* spriteSheet = _registry.get_component<RealEngine::SpriteSheet>(_entity);
+
     switch (state) {
         case 0:
-            _state = EyeBossState::SHORT_RANGE;
-            _registry.add_component(
-                _entity,
-                RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120});
+            _state                   = EyeBossState::SHORT_RANGE;
+            spriteSheet->spriteIndex = "short";
+            spriteSheet->frameSize   = {73, 55};
+            // _registry.add_component(
+            //     _entity,
+            //     RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120});
             break;
         case 1:
-            _state = EyeBossState::MID_RANGE;
-            _registry.add_component(
-                _entity, RealEngine::SpriteSheet{_bossSheet, "mid", 0, {91, 55}, false, true, 120});
+            _state                   = EyeBossState::MID_RANGE;
+            spriteSheet->spriteIndex = "mid";
+            spriteSheet->frameSize   = {91, 55};
+            // _registry.add_component(
+            //     _entity, RealEngine::SpriteSheet{_bossSheet, "mid", 0, {91, 55}, false, true,
+            //     120});
             break;
         case 2:
-            _state = EyeBossState::LONG_RANGE;
-            _registry.add_component(
-                _entity,
-                RealEngine::SpriteSheet{_bossSheet, "long", 0, {81, 55}, false, true, 120});
+            _state                   = EyeBossState::LONG_RANGE;
+            spriteSheet->spriteIndex = "long";
+            spriteSheet->frameSize   = {81, 55};
+            // _registry.add_component(
+            //     _entity,
+            //     RealEngine::SpriteSheet{_bossSheet, "long", 0, {81, 55}, false, true, 120});
             break;
         default:
             break;
