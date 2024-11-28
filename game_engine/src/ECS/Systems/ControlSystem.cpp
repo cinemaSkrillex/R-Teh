@@ -10,10 +10,23 @@
 namespace RealEngine {
 
 ControlSystem::ControlSystem() {
-    keyBindings[sf::Keyboard::Z] = Action::Up;
-    keyBindings[sf::Keyboard::S] = Action::Down;
-    keyBindings[sf::Keyboard::Q] = Action::Left;
-    keyBindings[sf::Keyboard::D] = Action::Right;
+    actionHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Right]   = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action1] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action2] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action3] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action4] = [](Velocity&, Acceleration&, Position&, float) {};
+
+    actionReleaseHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Right]   = [](Velocity&, Acceleration&, Position&, float) {};
+    actionReleaseHandlers[Action::Action1] = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action2]        = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action3]        = [](Velocity&, Acceleration&, Position&, float) {};
+    actionHandlers[Action::Action4]        = [](Velocity&, Acceleration&, Position&, float) {};
 }
 
 void ControlSystem::update(Registry& registry, float deltaTime) {
@@ -50,4 +63,4 @@ void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler
     actionReleaseHandlers[action] = handler;
 }
 
-} // namespace RealEngine
+}  // namespace RealEngine
