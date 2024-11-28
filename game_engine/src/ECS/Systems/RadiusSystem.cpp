@@ -22,9 +22,6 @@ void RadiusSystem::update(Registry& registry) {
             auto* player_position = registry.get_component<Position>(player);
             float distance        = sqrt(pow(player_position->x - entity_position->x, 2) +
                                          pow(player_position->y - entity_position->y, 2));
-            std::cout << "Distance: " << distance << std::endl;
-            std::cout << "SizeMax: " << entity_radius->sizeMax << std::endl;
-            std::cout << "SizeMin: " << entity_radius->sizeMin << std::endl;
             if (distance < entity_radius->sizeMin) {
                 outer_min = true;
             } else if (distance < entity_radius->sizeMax) {
