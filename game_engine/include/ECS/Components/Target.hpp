@@ -4,6 +4,6 @@
 
 namespace RealEngine {
 struct Target {
-    Entity &target;
+    Entity target;
 };
 }  // namespace RealEngine
