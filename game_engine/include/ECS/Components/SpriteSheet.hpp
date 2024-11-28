@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <unordered_map>
+
 #include "Sprite.hpp"
 
 namespace RealEngine {
@@ -15,12 +17,12 @@ struct SpriteSheet {
     // allow more flexibility template for the std::unordered map cuz that bit** takes 10mins to
     // write down.
     std::unordered_map<std::string, RealEngine::Sprite> sprites;
-    std::string                                         spriteIndex; // current selected sprite.
-    int                                                 frameIndex;  // current rendered frame.
-    sf::Vector2i frameSize; // size of a single frame from the spriteSheet.
+    std::string                                         spriteIndex;  // current selected sprite.
+    int                                                 frameIndex;   // current rendered frame.
+    sf::Vector2i frameSize;  // size of a single frame from the spriteSheet.
     bool         pause;
     bool         loop;
-    float        animTime; // Time in milliseconds before updating the frame.
+    float        animTime;  // Time in milliseconds before updating the frame.
     sf::Clock    animClock;
 };
-} // namespace RealEngine
+}  // namespace RealEngine
