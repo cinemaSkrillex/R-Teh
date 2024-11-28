@@ -24,14 +24,14 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _registry.add_component(_entity, RealEngine::Rotation{300.0f});
     _registry.add_component(
         _entity,
-        RealEngine::Radius{800.0f, 200.0f, [this]() { setBossStatus(1); },
+        RealEngine::Radius{800.0f, 410.0f, [this]() { setBossStatus(1); },
                            [this]() { setBossStatus(2); }, [this]() { setBossStatus(0); }});
     _registry.add_component(
         _entity,
         RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,
                               float deltaTime) { targetBossBehavior(registry, target, deltaTime); },
                        [this](RealEngine::Registry& registry, float deltaTime) {
-                           PassiveBossBehavior(registry, deltaTime);
+                           noTargetBossBehavior(registry, deltaTime);
                        },
                        true});
 }
@@ -44,34 +44,40 @@ void EyeBoss::setTarget(RealEngine::Entity target) {
 
 void EyeBoss::targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
                                  float deltaTime) {
-    auto* position       = registry.get_component<RealEngine::Position>(_entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(target);
-    float rotationSpeed  = 0.1f;
+    float rotationSpeed = 0.1f;
     switch (_state) {
         case EyeBossState::SHORT_RANGE:
-            shortRangeBehavior(registry, target, deltaTime);
+            shortRangeBehavior(registry, target);
             rotationSpeed = 1.0f;
             break;
         case EyeBossState::MID_RANGE:
-            midRangeBehavior(registry, target, deltaTime);
+            midRangeBehavior(registry, target);
             rotationSpeed = 0.6f;
             break;
         case EyeBossState::LONG_RANGE:
-            longRangeBehavior(registry, target, deltaTime);
+            longRangeBehavior(registry, target);
             rotationSpeed = 2.2f;
             break;
         default:
             break;
     }
+    aimAtTarget(registry.get_component<RealEngine::Position>(target), rotationSpeed, deltaTime);
+}
+
+void EyeBoss::aimAtTarget(RealEngine::Position* targetPosition, float rotationSpeed,
+                          float deltaTime) {
+    auto* position = _registry.get_component<RealEngine::Position>(_entity);
+    auto* rotation = _registry.get_component<RealEngine::Rotation>(_entity);
 
     if (position && targetPosition) {
         float dx          = targetPosition->x - position->x;
         float dy          = targetPosition->y - position->y;
-        float targetAngle = std::atan2(dy, dx) * 180 / M_PI;
+        float targetAngle = std::atan2(dy, dx) * 180.0f / M_PI;
 
-        auto* rotation = registry.get_component<RealEngine::Rotation>(_entity);
         if (rotation) {
             float currentAngle    = rotation->angle;
+            targetAngle           = std::fmod(targetAngle + 360.0f, 360.0f);
+            currentAngle          = std::fmod(currentAngle + 360.0f, 360.0f);
             float angleDifference = targetAngle - currentAngle;
 
             if (angleDifference > 180.0f) {
@@ -79,17 +85,17 @@ void EyeBoss::targetBossBehavior(RealEngine::Registry& registry, RealEngine::Ent
             } else if (angleDifference < -180.0f) {
                 angleDifference += 360.0f;
             }
-
             if (angleDifference > 0.1f) {
-                rotation->angle += rotationSpeed * deltaTime * 100;
+                rotation->angle += rotationSpeed * deltaTime * 100.0f;
             } else if (angleDifference < -0.1f) {
-                rotation->angle -= rotationSpeed * deltaTime * 100;
+                rotation->angle -= rotationSpeed * deltaTime * 100.0f;
             }
+            rotation->angle = std::fmod(rotation->angle + 360.0f, 360.0f);
         }
     }
 }
 
-void EyeBoss::PassiveBossBehavior(RealEngine::Registry& registry, float deltaTime) {
+void EyeBoss::noTargetBossBehavior(RealEngine::Registry& registry, float deltaTime) {
     auto* rotation = registry.get_component<RealEngine::Rotation>(_entity);
 
     if (rotation) {
@@ -98,8 +104,7 @@ void EyeBoss::PassiveBossBehavior(RealEngine::Registry& registry, float deltaTim
     // Do something
 }
 
-void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                 float deltaTime) {
+void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target) {
     auto* position       = registry.get_component<RealEngine::Position>(_entity);
     auto* acceleration   = registry.get_component<RealEngine::Acceleration>(_entity);
     auto* velocity       = registry.get_component<RealEngine::Velocity>(_entity);
@@ -110,10 +115,11 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
         float dy       = targetPosition->y - position->y;
         float distance = std::sqrt(dx * dx + dy * dy);
 
-        std::cout << "Distance: " << distance << std::endl;
-        if (distance > 100.0f) {
-            acceleration->ax = dx / distance * 2.0f;
-            acceleration->ay = dy / distance * 2.0f;
+        if (distance > 10.0f) {
+            acceleration->ax = dx / distance * 1.2f;
+            velocity->vx += acceleration->ax;
+            acceleration->ay = dy / distance * 1.2f;
+            velocity->vy += acceleration->ay;
         } else {
             acceleration->ax = 0.0f;
             acceleration->ay = 0.0f;
@@ -121,14 +127,44 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
     }
 }
 
-void EyeBoss::midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                               float deltaTime) {
-    // Do something
+void EyeBoss::midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target) {
+    auto* position     = registry.get_component<RealEngine::Position>(_entity);
+    auto* acceleration = registry.get_component<RealEngine::Acceleration>(_entity);
+    auto* velocity     = registry.get_component<RealEngine::Velocity>(_entity);
+    auto* rotation     = registry.get_component<RealEngine::Rotation>(_entity);
+
+    if (abs(velocity->vx) < 25.0f && abs(velocity->vy) < 25.0f) {
+        if (position && acceleration && rotation) {
+            float angleRad   = rotation->angle * M_PI / 180.0f;
+            acceleration->ax = std::cos(angleRad) * 250.0f;
+            acceleration->ay = std::sin(angleRad) * 250.0f;
+            velocity->vx += acceleration->ax;
+            velocity->vy += acceleration->ay;
+        }
+    }
 }
 
-void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                float deltaTime) {
-    // Do something
+void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target) {
+    auto* position       = registry.get_component<RealEngine::Position>(_entity);
+    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(_entity);
+    auto* velocity       = registry.get_component<RealEngine::Velocity>(_entity);
+    auto* targetPosition = registry.get_component<RealEngine::Position>(target);
+
+    if (position && targetPosition && acceleration) {
+        float dx       = targetPosition->x - position->x;
+        float dy       = targetPosition->y - position->y;
+        float distance = std::sqrt(dx * dx + dy * dy);
+
+        if (distance > 10.0f) {
+            acceleration->ax = dx / distance * 2.0f;
+            velocity->vx += acceleration->ax;
+            acceleration->ay = dy / distance * 2.0f;
+            velocity->vy += acceleration->ay;
+        } else {
+            acceleration->ax = 0.0f;
+            acceleration->ay = 0.0f;
+        }
+    }
 }
 
 void EyeBoss::setBossStatus(int state) {
@@ -139,25 +175,16 @@ void EyeBoss::setBossStatus(int state) {
             _state                   = EyeBossState::SHORT_RANGE;
             spriteSheet->spriteIndex = "short";
             spriteSheet->frameSize   = {73, 55};
-            // _registry.add_component(
-            //     _entity,
-            //     RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120});
             break;
         case 1:
             _state                   = EyeBossState::MID_RANGE;
             spriteSheet->spriteIndex = "mid";
             spriteSheet->frameSize   = {91, 55};
-            // _registry.add_component(
-            //     _entity, RealEngine::SpriteSheet{_bossSheet, "mid", 0, {91, 55}, false, true,
-            //     120});
             break;
         case 2:
             _state                   = EyeBossState::LONG_RANGE;
             spriteSheet->spriteIndex = "long";
             spriteSheet->frameSize   = {81, 55};
-            // _registry.add_component(
-            //     _entity,
-            //     RealEngine::SpriteSheet{_bossSheet, "long", 0, {81, 55}, false, true, 120});
             break;
         default:
             break;

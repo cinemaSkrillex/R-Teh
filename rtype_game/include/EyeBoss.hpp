@@ -25,17 +25,15 @@ class EyeBoss {
    public:
     EyeBoss(RealEngine::Registry& registry);
     ~EyeBoss();
-    void               targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                          float deltaTime);
-    void               setTarget(RealEngine::Entity target);
-    void               PassiveBossBehavior(RealEngine::Registry& registry, float deltaTime);
-    void               shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                          float deltaTime);
-    void               midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                        float deltaTime);
-    void               longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                         float deltaTime);
-    void               setBossStatus(int state);
+    void targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                            float deltaTime);
+    void setTarget(RealEngine::Entity target);
+    void aimAtTarget(RealEngine::Position* targetPosition, float rotationSpeed, float deltaTime);
+    void noTargetBossBehavior(RealEngine::Registry& registry, float deltaTime);
+    void shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void setBossStatus(int state);
     RealEngine::Entity getEntity() { return _entity; }
 
    private:
