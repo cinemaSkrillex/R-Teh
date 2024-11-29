@@ -49,4 +49,4 @@ jobs:
       run: cmake --preset windows-static
 
     - name: Build
-      run: cmake --build build
+      run: cd build && cmake .. && cmake --build .
