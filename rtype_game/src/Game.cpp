@@ -2,8 +2,9 @@
 
 namespace rtype {
 
-Game::Game()
-    : _deltaTime(0.f),
+Game::Game(std::shared_ptr<UDPClient> clientUDP)
+    : _clientUDP(clientUDP),
+      _deltaTime(0.f),
       _window("SKRILLEX", sf::Vector2u(800, 600)),
       _clock(),
       _controls(_registry),

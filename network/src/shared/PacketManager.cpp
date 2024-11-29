@@ -236,7 +236,6 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 //did not change for now
 void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
-    std::cout << "Processing unreliable message: " << message << std::endl;
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     _unprocessed_unreliable_messages.push(message);
 }

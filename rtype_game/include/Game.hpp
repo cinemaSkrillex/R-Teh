@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Client/UDPClient.hpp"
 #include "CollisionHandler.hpp"
 #include "Controls.hpp"
 #include "Core/ClockEngine.hpp"
@@ -36,7 +37,7 @@
 namespace rtype {
 class Game {
    public:
-    Game();
+    Game(std::shared_ptr<UDPClient> clientUDP);
     ~Game();
     void               run();
     void               setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
@@ -45,6 +46,8 @@ class Game {
     void               init_systems();
     RealEngine::Entity createEntity();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
+
+    std::shared_ptr<UDPClient> _clientUDP;
 
    private:
     float                       _deltaTime = 0.f;

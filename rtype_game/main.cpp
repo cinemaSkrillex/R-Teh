@@ -1,8 +1,6 @@
-#include <SFML/Graphics.hpp>
 #include <atomic>
 #include <thread>
 
-#include "Client/UDPClient.hpp"
 #include "Game.hpp"
 
 int main(int argc, char* argv[]) {
@@ -35,7 +33,7 @@ int main(int argc, char* argv[]) {
         });
 
         // Launch the game on the main thread
-        rtype::Game game;
+        rtype::Game game(client);
 
         client->send_new_client();
 
