@@ -34,6 +34,12 @@ jobs:
     - name: Build
       run: cd build && cmake .. && cmake --build .
 
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-build-artifacts
+        path: build/
+
   build-windows:
     runs-on: windows-latest
 
@@ -52,3 +58,28 @@ jobs:
 
     - name: Build
       run: cd build && cmake .. && cmake --build .
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-build-artifacts
+        path: build/
+
+  download-artifacts:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Linux build artifacts
+      if: needs.build-linux.result == 'success'
+      uses: actions/download-artifact@v2
+      with:
+        name: linux-build-artifacts
+        path: linux-build/
+
+    - name: Download Windows build artifacts
+      if: needs.build-windows.result == 'success'
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-build-artifacts
+        path: windows-build/
