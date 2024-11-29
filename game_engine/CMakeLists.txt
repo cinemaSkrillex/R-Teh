@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0A00)
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 endif()
 
 # Include directories (platform-specific)
@@ -25,11 +26,22 @@ elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
     # set(SFML_STATIC_LIBRARIES TRUE)
     set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows)
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
+    # set(SFML_DIR "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml")
+    execute_process(COMMAND where sfml
+    OUTPUT_VARIABLE SFML_PATH
+    RESULT_VARIABLE SFML_RESULT
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (SFML_RESULT EQUAL 0)
+    message(STATUS "SFML found at: ${SFML_PATH}")
+    else()
+    message(WARNING "SFML not found in PATH")
+    endif() 
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/lua)
     set(LUA_LIBRARIES "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/lib/lua53.lib")
     set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include")
+    target_include_directories(rtype_engine PUBLIC ${SFML_INCLUDE_DIR})
 endif()
+
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Config)
@@ -44,7 +56,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Media)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting)
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${SFML_DIR}")
 
 # Find dependencies
 find_package(SFML 2.5 REQUIRED system window graphics network audio)
