@@ -17,10 +17,12 @@ if (UNIX)
     set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux")
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
 elseif (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
-    # set(SFML_STATIC_LIBRARIES TRUE)
-    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
+    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
+    set(SFML_STATIC_LIBRARIES TRUE)
+    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows")
+    set(SFML_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/sfml)
+    set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/share/openal)
+    set(OPENAL_LIBRARY "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/lib/OpenAL32.lib")
 endif()
 
 #add includes files
@@ -33,7 +35,7 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-find_package(SFML 2.5 REQUIRED system)
+find_package(SFML 2.5 REQUIRED COMPONENTS system)
 
 # Create the binary
 add_executable(r_type_server ${SOURCES})
