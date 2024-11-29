@@ -134,10 +134,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: linux-build/
+        asset_path: linux-build/linux-build-artifacts.zip
         asset_name: linux-build-artifacts.zip
         asset_content_type: application/zip
-
+  
     - name: Upload Windows build artifacts to release
       if: needs.build-windows.result == 'success'
       uses: actions/upload-release-asset@v1
@@ -145,6 +145,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: windows-build/
+        asset_path: windows-build/windows-build-artifacts.zip
         asset_name: windows-build-artifacts.zip
         asset_content_type: application/zip
