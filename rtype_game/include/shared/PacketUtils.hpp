@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 
+#define SEQUENCE_TYPE std::uint32_t //TODO change int to SEQUENCE_TYPE
 #define BUFFER_SIZE 1000
 
 enum Flags {
@@ -13,90 +14,148 @@ enum Flags {
     CONTROL       = 3,
     HEARTBEAT     = 4,
     DATA          = 5,
-    RETRANSMITTED = 6
+    RETRANSMITTED = 6,
+    NEW_CLIENT    = 7,
+    TEST          = 8,
 };
 
 // structure for the binary protocol
 struct packet {
-    int               sequence_no;
-    int               start_sequence_no;
-    int               end_sequence_no;
+    int               sequence_nb;
+    int               start_sequence_nb;
+    int               end_sequence_nb;
     int               packet_size;
     Flags             flag;
+    asio::ip::udp::endpoint endpoint;
     std::vector<char> data;
+
+    bool operator==(const packet& other) const {
+        return sequence_nb == other.sequence_nb &&
+               start_sequence_nb == other.start_sequence_nb &&
+               end_sequence_nb == other.end_sequence_nb &&
+               packet_size == other.packet_size &&
+               flag == other.flag &&
+               data == other.data &&
+               endpoint == other.endpoint;
+    }
 };
 
-// inline improves performance by avoiding the overhead of function calls
+namespace std {
+    template <>
+    struct hash<packet> {
+        std::size_t operator()(const packet& pkt) const {
+            return ((std::hash<int>()(pkt.sequence_nb)
+                     ^ (std::hash<int>()(pkt.start_sequence_nb) << 1)) >> 1)
+                   ^ (std::hash<int>()(pkt.end_sequence_nb) << 1);
+        }
+    };
+}
+
 inline std::vector<char> serialize_packet(const packet& pkt) {
-    std::size_t total_size = sizeof(pkt.sequence_no) + sizeof(pkt.start_sequence_no) +
-                             sizeof(pkt.end_sequence_no) + sizeof(pkt.packet_size) +
-                             sizeof(pkt.flag) + pkt.data.size();
+    std::string endpoint_address = pkt.endpoint.address().to_string();
+    uint16_t endpoint_port = pkt.endpoint.port();
+
+    std::size_t total_size = sizeof(pkt.sequence_nb) +
+                             sizeof(pkt.start_sequence_nb) +
+                             sizeof(pkt.end_sequence_nb) +
+                             sizeof(pkt.packet_size) +
+                             sizeof(pkt.flag) +
+                             sizeof(uint16_t) + // size of the port
+                             sizeof(std::size_t) + // size of the address length
+                             endpoint_address.size() + // actual address size
+                             pkt.data.size();
+
     std::vector<char> buffer(total_size);
-    auto              it = buffer.begin();
+    auto it = buffer.begin();
 
-    // Copy sequence_no to the buffer
-    std::copy(reinterpret_cast<const char*>(&pkt.sequence_no),
-              reinterpret_cast<const char*>(&pkt.sequence_no) + sizeof(pkt.sequence_no), it);
-    it += sizeof(pkt.sequence_no);
+    // Copy sequence_nb
+    std::copy(reinterpret_cast<const char*>(&pkt.sequence_nb),
+              reinterpret_cast<const char*>(&pkt.sequence_nb) + sizeof(pkt.sequence_nb), it);
+    it += sizeof(pkt.sequence_nb);
 
-    // Copy start_sequence_no to the buffer
-    std::copy(reinterpret_cast<const char*>(&pkt.start_sequence_no),
-              reinterpret_cast<const char*>(&pkt.start_sequence_no) + sizeof(pkt.start_sequence_no),
-              it);
-    it += sizeof(pkt.start_sequence_no);
+    // Copy start_sequence_nb
+    std::copy(reinterpret_cast<const char*>(&pkt.start_sequence_nb),
+              reinterpret_cast<const char*>(&pkt.start_sequence_nb) + sizeof(pkt.start_sequence_nb), it);
+    it += sizeof(pkt.start_sequence_nb);
 
-    // Copy max_sequence_no to the buffer
-    std::copy(reinterpret_cast<const char*>(&pkt.end_sequence_no),
-              reinterpret_cast<const char*>(&pkt.end_sequence_no) + sizeof(pkt.end_sequence_no),
-              it);
-    it += sizeof(pkt.end_sequence_no);
+    // Copy end_sequence_nb
+    std::copy(reinterpret_cast<const char*>(&pkt.end_sequence_nb),
+              reinterpret_cast<const char*>(&pkt.end_sequence_nb) + sizeof(pkt.end_sequence_nb), it);
+    it += sizeof(pkt.end_sequence_nb);
 
-    // Copy packet_size to the buffer
+    // Copy packet_size
     std::copy(reinterpret_cast<const char*>(&pkt.packet_size),
               reinterpret_cast<const char*>(&pkt.packet_size) + sizeof(pkt.packet_size), it);
     it += sizeof(pkt.packet_size);
 
-    // Copy flag to the buffer
+    // Copy flag
     int flag = static_cast<int>(pkt.flag);
     std::copy(reinterpret_cast<const char*>(&flag),
               reinterpret_cast<const char*>(&flag) + sizeof(flag), it);
-    it += sizeof(pkt.flag);
+    it += sizeof(flag);
 
-    // Copy data to the buffer
+    // Copy endpoint address length and address
+    std::size_t address_length = endpoint_address.size();
+    std::copy(reinterpret_cast<const char*>(&address_length),
+              reinterpret_cast<const char*>(&address_length) + sizeof(address_length), it);
+    it += sizeof(address_length);
+
+    std::copy(endpoint_address.begin(), endpoint_address.end(), it);
+    it += endpoint_address.size();
+
+    // Copy endpoint port
+    std::copy(reinterpret_cast<const char*>(&endpoint_port),
+              reinterpret_cast<const char*>(&endpoint_port) + sizeof(endpoint_port), it);
+    it += sizeof(endpoint_port);
+
+    // Copy data
     std::copy(pkt.data.begin(), pkt.data.end(), it);
 
     return buffer;
 }
 
-// inline improves performance by avoiding the overhead of function calls
 inline packet deserialize_packet(const std::vector<char>& buffer) {
     packet pkt;
-    auto   it = buffer.begin();
+    auto it = buffer.begin();
 
-    // Extract sequence_no from the buffer
-    std::copy(it, it + sizeof(pkt.sequence_no), reinterpret_cast<char*>(&pkt.sequence_no));
-    it += sizeof(pkt.sequence_no);
+    // Extract sequence_nb
+    std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));
+    it += sizeof(pkt.sequence_nb);
 
-    // Extract start_sequence_no from the buffer
-    std::copy(it, it + sizeof(pkt.start_sequence_no),
-              reinterpret_cast<char*>(&pkt.start_sequence_no));
-    it += sizeof(pkt.start_sequence_no);
+    // Extract start_sequence_nb
+    std::copy(it, it + sizeof(pkt.start_sequence_nb), reinterpret_cast<char*>(&pkt.start_sequence_nb));
+    it += sizeof(pkt.start_sequence_nb);
 
-    // Extract max_sequence_no from the buffer
-    std::copy(it, it + sizeof(pkt.end_sequence_no), reinterpret_cast<char*>(&pkt.end_sequence_no));
-    it += sizeof(pkt.end_sequence_no);
+    // Extract end_sequence_nb
+    std::copy(it, it + sizeof(pkt.end_sequence_nb), reinterpret_cast<char*>(&pkt.end_sequence_nb));
+    it += sizeof(pkt.end_sequence_nb);
 
-    // Extract packet_size from the buffer
+    // Extract packet_size
     std::copy(it, it + sizeof(pkt.packet_size), reinterpret_cast<char*>(&pkt.packet_size));
     it += sizeof(pkt.packet_size);
 
-    // Extract flag from the buffer
+    // Extract flag
     int flag;
     std::copy(it, it + sizeof(flag), reinterpret_cast<char*>(&flag));
     pkt.flag = static_cast<Flags>(flag);
     it += sizeof(flag);
 
-    // Extract data from the buffer
+    // Extract endpoint address length and address
+    std::size_t address_length;
+    std::copy(it, it + sizeof(address_length), reinterpret_cast<char*>(&address_length));
+    it += sizeof(address_length);
+
+    std::string endpoint_address(it, it + address_length);
+    it += address_length;
+
+    // Extract endpoint port
+    uint16_t endpoint_port;
+    std::copy(it, it + sizeof(endpoint_port), reinterpret_cast<char*>(&endpoint_port));
+    it += sizeof(endpoint_port);
+
+    pkt.endpoint = asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
+
+    // Extract data
     pkt.data.assign(it, buffer.end());
 
     return pkt;
