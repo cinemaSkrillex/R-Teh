@@ -34,11 +34,19 @@ jobs:
     - name: Build
       run: cd build && cmake .. && cmake --build .
 
+    - name: Archive Linux build artifacts
+      run: zip -r linux-build-artifacts.zip build/
+
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: linux-build-artifacts
-        path: build/
+        path: linux-build-artifacts.zip
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: linux-build-artifacts
+    #     path: build/
 
   build-windows:
     runs-on: windows-latest
@@ -61,11 +69,19 @@ jobs:
     - name: Build
       run: cd build && cmake .. && cmake --build .
     
+      - name: Archive Windows build artifacts
+      run: powershell Compress-Archive -Path build\* -DestinationPath windows-build-artifacts.zip
+
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: windows-build-artifacts
-        path: build/
+        path: windows-build-artifacts.zip 
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: windows-build-artifacts
+    #     path: build/
 
   download-artifacts:
     needs: [build-linux, build-windows]
