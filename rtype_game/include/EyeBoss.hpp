@@ -33,6 +33,8 @@ class EyeBoss {
     void shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
     void midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
     void longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void circularAttack(RealEngine::Registry& registry, RealEngine::Entity target, float deltaTime);
+    void shootLaser();
     void setBossStatus(int state);
     RealEngine::Entity getEntity() { return _entity; }
 
@@ -42,7 +44,13 @@ class EyeBoss {
     RealEngine::Sprite                                  _shortSprite;
     RealEngine::Sprite                                  _midSprite;
     RealEngine::Sprite                                  _longSprite;
+    RealEngine::Sprite                                  _laserSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _bossSheet;
     EyeBossState                                        _state;
+    float                                               _shootCooldown;
+    float                                               _shootPhaseTimer;
+    bool                                                _isInShootPhase;
+    std::vector<RealEngine::Entity>                     _laserEntities;
+    std::vector<RealEngine::Entity>                     _laserEntitiesToDelete;
 };
 }  // namespace rtype

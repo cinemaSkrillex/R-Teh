@@ -7,10 +7,15 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
       _entity(registry.spawn_entity()),
       _shortSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 0, 73 * 3, 55}),
       _midSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 55, 91 * 3, 55}),
-      _longSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 55 * 2, 81 * 3, 55}) {
+      _longSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 55 * 2, 81 * 3, 55}),
+      _laserSprite("../assets/sprites/the_eye/laser_shoot.png", sf::IntRect{0, 0, 30, 7}),
+      _shootCooldown(0.0f),
+      _shootPhaseTimer(0.0f),
+      _isInShootPhase(false) {
     _shortSprite.setScale(3, 3);
     _midSprite.setScale(3, 3);
     _longSprite.setScale(3, 3);
+    _laserSprite.setScale(3, 3);
     _bossSheet.emplace("short", _shortSprite);
     _bossSheet.emplace("mid", _midSprite);
     _bossSheet.emplace("long", _longSprite);
@@ -24,7 +29,7 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _registry.add_component(_entity, RealEngine::Rotation{300.0f});
     _registry.add_component(
         _entity,
-        RealEngine::Radius{800.0f, 410.0f, [this]() { setBossStatus(1); },
+        RealEngine::Radius{800.0f, 350.0f, [this]() { setBossStatus(1); },
                            [this]() { setBossStatus(2); }, [this]() { setBossStatus(0); }});
     _registry.add_component(
         _entity,
@@ -51,12 +56,22 @@ void EyeBoss::targetBossBehavior(RealEngine::Registry& registry, RealEngine::Ent
             rotationSpeed = 1.0f;
             break;
         case EyeBossState::MID_RANGE:
+            if (_shootPhaseTimer > 0.0f) {
+                _shootPhaseTimer -= 1.0f * deltaTime;
+            } else {
+                _shootPhaseTimer = 2.0f;
+                _isInShootPhase  = !_isInShootPhase;
+            }
+            if (_shootCooldown > 0.0f) {
+                _shootCooldown -= 1.0f * deltaTime;
+            }
             midRangeBehavior(registry, target);
             rotationSpeed = 0.6f;
             break;
         case EyeBossState::LONG_RANGE:
-            longRangeBehavior(registry, target);
-            rotationSpeed = 2.2f;
+            circularAttack(registry, target, deltaTime);
+            // longRangeBehavior(registry, target);
+            // rotationSpeed = 2.2f;
             break;
         default:
             break;
@@ -96,11 +111,6 @@ void EyeBoss::aimAtTarget(RealEngine::Position* targetPosition, float rotationSp
 }
 
 void EyeBoss::noTargetBossBehavior(RealEngine::Registry& registry, float deltaTime) {
-    auto* rotation = registry.get_component<RealEngine::Rotation>(_entity);
-
-    if (rotation) {
-        rotation->angle += 2.5f;
-    }
     // Do something
 }
 
@@ -142,6 +152,13 @@ void EyeBoss::midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entit
             velocity->vy += acceleration->ay;
         }
     }
+    if (_shootCooldown <= 0.0f) {
+        shootLaser();
+        _shootCooldown = 0.75f;
+    }
+    if (_isInShootPhase && _shootCooldown > 0.1f) {
+        _shootCooldown = 0.1f;
+    }
 }
 
 void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target) {
@@ -164,6 +181,38 @@ void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Enti
             acceleration->ax = 0.0f;
             acceleration->ay = 0.0f;
         }
+    }
+}
+
+void EyeBoss::shootLaser() {
+    RealEngine::Entity laser         = _registry.spawn_entity();
+    auto*              boss_position = _registry.get_component<RealEngine::Position>(_entity);
+    auto*              boss_rotation = _registry.get_component<RealEngine::Rotation>(_entity);
+    float              angleRad      = boss_rotation->angle * M_PI / 180.0f;
+
+    _registry.add_components(laser,
+                             RealEngine::Position{boss_position->x + (std::cos(angleRad) * 170),
+                                                  boss_position->y + (std::sin(angleRad) * 170)},
+                             RealEngine::Drawable{});
+    _registry.add_component(laser, RealEngine::SpriteComponent{_laserSprite});
+    _registry.add_component(laser, RealEngine::Velocity{std::cos(angleRad) * 500.0f,
+                                                        std::sin(angleRad) * 500.0f, 0.0f});
+    _registry.add_component(laser, RealEngine::Rotation{boss_rotation->angle});
+    _laserEntities.push_back(laser);
+}
+
+void EyeBoss::circularAttack(RealEngine::Registry& registry, RealEngine::Entity target,
+                             float deltaTime) {
+    auto* rotation = registry.get_component<RealEngine::Rotation>(_entity);
+
+    if (rotation) {
+        rotation->angle += 200.0f * deltaTime;
+    }
+    if (_shootCooldown > 0.0f) {
+        _shootCooldown -= 1.0f * deltaTime;
+    } else {
+        shootLaser();
+        _shootCooldown = 0.005f;
     }
 }
 
