@@ -47,7 +47,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting)
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${SFML_DIR}")
 
 # Find dependencies
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+find_package(SFML 2.5 REQUIRED system window graphics network audio)
 find_package(Lua REQUIRED)
 # find_package(OpenAL REQUIRED)
 
