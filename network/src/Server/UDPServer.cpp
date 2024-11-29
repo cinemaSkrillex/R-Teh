@@ -24,7 +24,7 @@ void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
     _client_endpoint = endpoint;
 }
 
-void UDPServer::setNewClientCallback(const std::function<void()>& callback) {
+void UDPServer::setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback) {
     _packet_manager._new_client_callback = callback;
 }
 

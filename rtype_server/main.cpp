@@ -22,11 +22,6 @@
 
 const sf::Int32 SERVER_TICK = 10;
 
-// Example callback function
-void on_new_client() {
-    std::cout << "callback client" << std::endl;
-}
-
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -42,7 +37,17 @@ int main(int argc, char* argv[]) {
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
-        server->setNewClientCallback(on_new_client);
+        server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
+            std::cout << "Callback: New client connected from " << new_client << std::endl;
+
+            // Notify all other clients about the new client
+            for (const auto& client : server->getClients()) {
+                if (client != new_client) {
+                    std::string message = "Event\nnew_client_\n" + std::to_string(new_client.port()) + "\r";
+                    server->send_unreliable_packet(message, client);
+                }
+            }
+        });
 
         sf::Clock tickClock;
         while (true) {
@@ -54,7 +59,7 @@ int main(int argc, char* argv[]) {
                 const std::string message = server->getLastUnreliablePacket();
                 if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
                 for (auto client : server->getClients()) {
-                    server->send_unreliable_packet("tick\n", client);
+                    // server->send_unreliable_packet("tick\n", client);
                 }
             }
         }

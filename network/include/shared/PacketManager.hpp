@@ -88,7 +88,7 @@ class PacketManager {
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
     void               print_packet(const packet& pkt);
 
-    std::function<void()> _new_client_callback;
+    std::function<void(const asio::ip::udp::endpoint& client_endpoint)> _new_client_callback;
 
    private:
     asio::steady_timer     retransmission_timer_;
