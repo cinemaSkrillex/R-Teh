@@ -13,7 +13,7 @@ endif()
 # Include directories (platform-specific)
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
-    set(SFML_STATIC_LIBRARIES TRUE)
+    # set(SFML_STATIC_LIBRARIES TRUE)
     set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux)
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/lua)
@@ -66,11 +66,11 @@ target_include_directories(rtype_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 if(UNIX)
     target_link_libraries(rtype_engine
         pthread
-        sfml-system-s
-        sfml-window-s
-        sfml-graphics-s
-        sfml-network-s
-        sfml-audio-s
+        sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-network
+        sfml-audio
         ${LUA_LIBRARIES}
     )
 elseif(WIN32)
@@ -87,7 +87,7 @@ elseif(WIN32)
     # Copy all DLLs from the bin directory to the output directory
     add_custom_command(TARGET rtype_engine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/bin"
+            "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/bin"
             $<TARGET_FILE_DIR:rtype_engine>
     )
 endif()
