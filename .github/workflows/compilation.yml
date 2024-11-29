@@ -69,7 +69,7 @@ jobs:
     - name: Build
       run: cd build && cmake .. && cmake --build .
     
-      - name: Archive Windows build artifacts
+    - name: Archive Windows build artifacts
       run: powershell Compress-Archive -Path build\* -DestinationPath windows-build-artifacts.zip
 
     - name: Upload build artifacts
