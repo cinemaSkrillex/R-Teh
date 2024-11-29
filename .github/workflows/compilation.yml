@@ -13,14 +13,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake make g++ curl zip unzip ninja-build automake libtool build-essential
-        git clone https://github.com/microsoft/vcpkg.git
+    - name: apt update
+      run: sudo apt-get update
+
+    - name: install dependencies
+      run: sudo apt-get install -y cmake make g++ curl zip unzip ninja-build automake libtool build-essential libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev
+
+    - name: Install vcpkg (clone)
+      run: git clone https://github.com/microsoft/vcpkg.git
+
+    - name: Add Ninja to PATH
+      run: echo "/usr/bin/ninja" >> $GITHUB_PATH
+
+    - name: Verify Ninja path
+      run: echo $PATH
 
     - name: Configure CMake
-      run: cmake --preset linux
+      run: cmake -G Ninja --preset linux
 
     - name: Build
       run: cmake --build build

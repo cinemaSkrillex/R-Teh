@@ -5,7 +5,6 @@
             "name": "vcpkg",
             "displayName": "With vcpkg",
             "description": "Default build with vcpkg toolchain",
-            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/default",
             "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         },
