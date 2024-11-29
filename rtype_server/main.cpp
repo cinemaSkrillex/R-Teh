@@ -43,7 +43,8 @@ int main(int argc, char* argv[]) {
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
-                    std::string message = "Event\nnew_client_\n" + std::to_string(new_client.port()) + "\r";
+                    std::string message =
+                        "Event\nnew_client_\n" + std::to_string(new_client.port()) + "\r";
                     server->send_unreliable_packet(message, client);
                 }
             }
