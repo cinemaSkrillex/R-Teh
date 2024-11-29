@@ -44,8 +44,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Media)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting)
 
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${SFML_DIR}")
+
 # Find dependencies
-find_package(SFML COMPONENTS system window graphics network audio REQUIRED)
+find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(Lua REQUIRED)
 # find_package(OpenAL REQUIRED)
 
