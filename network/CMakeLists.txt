@@ -27,10 +27,13 @@ endif()
 
 # Include directories
 if (UNIX)
-    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
 endif()
 if (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
+
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Client)
