@@ -22,6 +22,11 @@
 
 const sf::Int32 SERVER_TICK = 10;
 
+// Example callback function
+void on_new_client() {
+    std::cout << "callback client" << std::endl;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -37,6 +42,8 @@ int main(int argc, char* argv[]) {
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
+        server->setNewClientCallback(on_new_client);
+
         sf::Clock tickClock;
         while (true) {
             if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
@@ -47,7 +54,7 @@ int main(int argc, char* argv[]) {
                 const std::string message = server->getLastUnreliablePacket();
                 if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
                 for (auto client : server->getClients()) {
-                    server->send_unreliable_packet("Server tick.", client);
+                    server->send_unreliable_packet("tick\n", client);
                 }
             }
         }

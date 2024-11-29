@@ -28,9 +28,10 @@ class UDPServer {
                                 const asio::ip::udp::endpoint& endpoint);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
 
-    void                           setEndpoint(const asio::ip::udp::endpoint& endpoint);
-    const asio::ip::udp::endpoint& getEndpoint() const;
+    void setEndpoint(const asio::ip::udp::endpoint& endpoint);
+    void setNewClientCallback(const std::function<void()>& callback);
 
+    const asio::ip::udp::endpoint& getEndpoint() const;
     const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
     const std::string getLastUnreliablePacket();
     const std::string getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);

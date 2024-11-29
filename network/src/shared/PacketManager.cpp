@@ -241,7 +241,8 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
 
     _known_clients.insert(client_endpoint);
     std::cout << "New client connected: " << client_endpoint << std::endl;
-    // here we used to send test message. TODO test flag to trigger the test
+
+    if (_new_client_callback) _new_client_callback();
 }
 
 static std::string testPacketManager() {
