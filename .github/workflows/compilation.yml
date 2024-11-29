@@ -48,17 +48,16 @@ jobs:
 
     - name : install cmake
       run: |
-        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-        Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-        refreshenv
-
-    - name: install vcpkg
-      run: git clone https://github.com/microsoft/vcpkg.git
-    - name: run vcpkg bootstrap
-      run: .\vcpkg\bootstrap-vcpkg.bat
-
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && refreshenv
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+        .\vcpkg\vcpkg install
     - name: Configure CMake
-      run: cmake --preset windows-static
+      run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+
+
+    # - name: Configure CMake
+    #   run: cmake --preset windows-static
 
     - name: Build
       run: cd build && cmake .. && cmake --build .
