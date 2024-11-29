@@ -38,7 +38,7 @@ jobs:
       run: zip -r linux-build-artifacts.zip build/
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: linux-build-artifacts
         path: linux-build-artifacts.zip
@@ -73,7 +73,7 @@ jobs:
       run: powershell Compress-Archive -Path build\* -DestinationPath windows-build-artifacts.zip
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build-artifacts
         path: windows-build-artifacts.zip 
