@@ -4,12 +4,14 @@
 
 namespace rtype {
 
-Controls::Controls(RealEngine::Registry& registry) : _registry(registry) {}
-
-Controls::~Controls() {
-    _entities.clear();
-    _sprites.clear();
+Controls::Controls(RealEngine::Registry& registry)
+    : _registry(registry),
+      _shootCooldown(0.0f),
+      _bulletSprite("../assets/sprites/whanos.png", {0, 0, 524, 267}) {
+    _bulletSprite.setScale(0.2, 0.2);
 }
+
+Controls::~Controls() { _entities.clear(); }
 
 void Controls::moveUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                       RealEngine::Position& position, float deltaTime) {
@@ -41,21 +43,15 @@ void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleratio
 
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
-    RealEngine::Entity laserEntity = _registry.spawn_entity();
-    _registry.add_component(laserEntity, RealEngine::Position{position.x + 32 * 3, position.y});
-    _registry.add_component(laserEntity, RealEngine::Velocity{200.0f, 0.0f});
-    _registry.add_component(laserEntity, RealEngine::Drawable{});
-    _sprites.push_back(new RealEngine::Sprite("../assets/sprites/whanos.png", {0, 0, 524, 267}));
-    _sprites.back()->setScale(0.2, 0.2);
-    _registry.add_component(laserEntity, RealEngine::SpriteComponent{*_sprites.back()});
-    _entities.push_back(new RealEngine::Entity(laserEntity));
+    if (_shootCooldown > 0.0f) {
+        RealEngine::Entity laserEntity = _registry.spawn_entity();
+        _registry.add_component(laserEntity, RealEngine::Position{position.x + 32 * 3, position.y});
+        _registry.add_component(laserEntity, RealEngine::Velocity{200.0f, 0.0f});
+        _registry.add_component(laserEntity, RealEngine::Drawable{});
+        _registry.add_component(laserEntity, RealEngine::SpriteComponent{_bulletSprite});
+        _entities.push_back(new RealEngine::Entity(laserEntity));
+        _shootCooldown = 0.5f;
+    }
 }
 
-void Controls::voidAction(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-                          RealEngine::Position& position, float deltaTime) {
-    (void)velocity;
-    (void)acceleration;
-    (void)position;
-    (void)deltaTime;
-}
 }  // namespace rtype
