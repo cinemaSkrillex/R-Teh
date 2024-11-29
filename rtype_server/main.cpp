@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
                     std::string message =
-                        "Event\nnew_client_\n" + std::to_string(new_client.port()) + "\r";
+                        "Event\nnew_client\n" + std::to_string(new_client.port()) + "\r";
                     server->send_unreliable_packet(message, client);
                 }
             }
