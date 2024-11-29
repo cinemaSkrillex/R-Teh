@@ -12,7 +12,7 @@ chmod +x requirements.sh
 cd ..
 #On windows
 #You don't need to do anything, the dependencies are already included in the following command :
-$ cmake --preset windows-static
+$ cmake --preset windows
 ```
 
 This will add the necessary dependencies mostly for SFML, which on Linux, is not shipping the necessary libraries by default.
@@ -36,3 +36,7 @@ cmake .. && cmake --build .
 ```
 
 This will compile everything and create the executable in the build folder.
+
+## Alternative : Using the Release version for your OS
+
+If you don't want to compile the project, you can use the release version for your OS. You can find the release version in the release section of the repository.
