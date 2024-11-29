@@ -59,6 +59,7 @@ Game::~Game() {}
 void Game::init_registry() {
     _registry.register_component<RealEngine::Position>();
     _registry.register_component<RealEngine::Velocity>();
+    _registry.register_component<RealEngine::Health>();
     _registry.register_component<RealEngine::SpriteComponent>();
     _registry.register_component<RealEngine::SpriteSheet>();
     _registry.register_component<RealEngine::Drawable>();
@@ -133,8 +134,7 @@ void Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
         const std::string serverMessage = _clientUDP->get_last_unreliable_packet();
-        if (!serverMessage.empty())
-            std::cout << serverMessage << std::endl;
+        if (!serverMessage.empty()) std::cout << serverMessage << std::endl;
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         _window.display();

@@ -127,8 +127,8 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
 
         if (distance > 10.0f) {
             acceleration->ax = dx / distance * 1.2f;
-            velocity->vx += acceleration->ax;
             acceleration->ay = dy / distance * 1.2f;
+            velocity->vx += acceleration->ax;
             velocity->vy += acceleration->ay;
         } else {
             acceleration->ax = 0.0f;
