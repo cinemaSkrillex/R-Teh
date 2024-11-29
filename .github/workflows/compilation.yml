@@ -72,14 +72,14 @@ jobs:
     steps:
     - name: Download Linux build artifacts
       if: needs.build-linux.result == 'success'
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: linux-build-artifacts
         path: linux-build/
 
     - name: Download Windows build artifacts
       if: needs.build-windows.result == 'success'
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: windows-build-artifacts
         path: windows-build/
