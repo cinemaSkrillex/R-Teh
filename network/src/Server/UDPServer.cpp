@@ -6,11 +6,14 @@
 */
 
 #include "../../include/Server/UDPServer.hpp"
+
 #include <bits/this_thread_sleep.h>
+
 #include <system_error>
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
-    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)), _client_endpoint(),
+    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
+      _client_endpoint(),
       _packet_manager(io_context, _socket, Role::SERVER) {
     _packet_manager.start();
 }
@@ -24,6 +27,11 @@ void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
 const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
     std::cout << "Client endpoint: " << _client_endpoint << std::endl;
     return _client_endpoint;
+}
+
+const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>
+UDPServer::getClients() {
+    return _packet_manager.getKnownClients();
 }
 
 const std::string UDPServer::getLastUnreliablePacket() {

@@ -83,6 +83,7 @@ class PacketManager {
 
     // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
     // std::queue<packet> get_received_packets();
+    std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
     std::string        get_last_unreliable_packet();
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
     void               print_packet(const packet& pkt);

@@ -46,6 +46,9 @@ int main(int argc, char* argv[]) {
                 // do server work.
                 const std::string message = server->getLastUnreliablePacket();
                 if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
+                for (auto client : server->getClients()) {
+                    server->send_unreliable_packet("Server tick.", client);
+                }
             }
         }
 
