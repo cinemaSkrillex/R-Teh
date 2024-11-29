@@ -9,7 +9,7 @@
             "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         },
         {
-            "name": "windows-static",
+            "name": "windows",
             "inherits": "vcpkg",
             "displayName": "Vcpkg Windows x64-windows-static",
             "description": "Vcpkg windows build with triplet x64-windows-static",
@@ -19,7 +19,7 @@
                 "rhs": "Windows"
             },
             "cacheVariables": {
-                "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
             }
         },
         {
