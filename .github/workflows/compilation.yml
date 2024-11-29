@@ -44,6 +44,7 @@ jobs:
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && refreshenv
         git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
 
     - name: Configure CMake
       run: cmake --preset windows-static

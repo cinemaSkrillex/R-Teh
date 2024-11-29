@@ -33,6 +33,8 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
+find_package(SFML 2.5 REQUIRED system)
+
 # Create the binary
 add_executable(r_type_server ${SOURCES})
 
