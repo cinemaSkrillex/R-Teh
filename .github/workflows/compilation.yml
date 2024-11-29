@@ -35,7 +35,7 @@ jobs:
       run: cd build && cmake .. && cmake --build .
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: linux-build-artifacts
         path: build/
@@ -60,7 +60,7 @@ jobs:
       run: cd build && cmake .. && cmake --build .
     
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build-artifacts
         path: build/
