@@ -32,7 +32,7 @@ jobs:
       run: cmake -G Ninja --preset linux
 
     - name: Build
-      run: cmake --build build
+      run: cd build && cmake .. && cmake --build .
 
   build-windows:
     runs-on: windows-latest

@@ -25,11 +25,10 @@ elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
     set(SFML_STATIC_LIBRARIES TRUE)
     set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
+    # set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
     set(LUA_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/lua)
     set(LUA_LIBRARIES "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/lib/lua53.lib")
     set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include")
-
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -46,7 +45,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Media)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting)
 
 # Find dependencies
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+find_package(SFML COMPONENTS system window graphics network audio REQUIRED)
 find_package(Lua REQUIRED)
 # find_package(OpenAL REQUIRED)
 
