@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include <thread>
 #include <atomic>
+#include <thread>
 
 #include "Client/UDPClient.hpp"
 #include "Game.hpp"
@@ -8,7 +8,8 @@
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments
     if (argc != 4) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
+                  << std::endl;
         return 1;
     }
 
@@ -19,7 +20,7 @@ int main(int argc, char* argv[]) {
     try {
         // Initialize ASIO and the UDP client
         asio::io_context io_context;
-        UDPClient        client(io_context, client_port, server_ip, server_port);
+        auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
 
         std::atomic<bool> running(true);
 
@@ -29,12 +30,14 @@ int main(int argc, char* argv[]) {
                 io_context.run();
             } catch (const std::exception& e) {
                 std::cerr << "Network thread exception: " << e.what() << std::endl;
-                running.store(false); // Stop the game if an exception occurs
+                running.store(false);  // Stop the game if an exception occurs
             }
         });
 
         // Launch the game on the main thread
         rtype::Game game;
+
+        client->send_new_client();
 
         // Game loop
         game.run();
@@ -42,8 +45,7 @@ int main(int argc, char* argv[]) {
         running.store(false);
         io_context.stop();
 
-        if (network_thread.joinable())
-            network_thread.join();
+        if (network_thread.joinable()) network_thread.join();
 
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;

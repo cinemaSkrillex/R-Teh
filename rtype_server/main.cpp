@@ -5,10 +5,11 @@
 ** main
 */
 
+#include <SFML/System/Clock.hpp>
 #include <asio.hpp>
 #include <iostream>
 #include <thread>
-#include <SFML/System/Clock.hpp>
+
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -44,12 +45,11 @@ int main(int argc, char* argv[]) {
 
                 // do server work.
                 const std::string message = server->getLastUnreliablePacket();
-                if (!message.empty())
-                    std::cout << "Server tick: " << message << std::endl;
+                if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
             }
         }
 
-        io_thread.join(); // Wait for the io_thread to finish (if needed)
+        io_thread.join();  // Wait for the io_thread to finish (if needed)
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;
