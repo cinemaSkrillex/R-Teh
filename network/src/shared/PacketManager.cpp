@@ -220,9 +220,11 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
                 complete_data.insert(complete_data.end(), packet.data.begin(), packet.data.end());
             }
             _received_packets.erase(pkt.start_sequence_nb);
-            std::cout << "Reassembled message: "
-                      << std::string(complete_data.begin(), complete_data.end()) << std::endl;
-            // TODO: handle data
+            const std::string message = std::string(complete_data.begin(), complete_data.end());
+
+            // Process the message content
+            std::lock_guard<std::mutex> unprocessed_lock(_unprocessed_reliable_messages_mutex);
+            _unprocessed_reliable_messages.push(message);
         }
     }
 
@@ -438,7 +440,15 @@ PacketManager::getKnownClients() {
     return _known_clients;
 }
 
-std::string PacketManager::get_last_unreliable_packet() {
+const std::string PacketManager::get_last_reliable_packet() {
+    std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
+    if (_unprocessed_reliable_messages.empty()) return "";
+    std::string message = _unprocessed_reliable_messages.top();
+    _unprocessed_reliable_messages.pop();
+    return message;
+}
+
+const std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     if (_unprocessed_unreliable_messages.empty()) return "";
     std::string message = _unprocessed_unreliable_messages.top();

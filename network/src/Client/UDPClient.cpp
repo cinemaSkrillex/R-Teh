@@ -39,10 +39,7 @@ void UDPClient::send_reliable_packet(const std::string& message) {
 }
 
 const std::string UDPClient::get_last_reliable_packet() {
-    // std::string complete_message = _packet_manager.get_complete_message();
-    // std::cout << "Received complete message: " << complete_message << std::endl;
-    // return complete_message;
-    return "";
+    return _packet_manager.get_last_reliable_packet();
 }
 
 const std::string UDPClient::get_last_unreliable_packet() {

@@ -133,8 +133,8 @@ void Game::run() {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
-        const std::string serverMessage = _clientUDP->get_last_unreliable_packet();
-        if (!serverMessage.empty()) std::cout << serverMessage << std::endl;
+        const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
+        if (!serverEventsMessage.empty()) std::cout << serverEventsMessage << std::endl;
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         _window.display();

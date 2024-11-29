@@ -38,6 +38,10 @@ UDPServer::getClients() {
     return _packet_manager.getKnownClients();
 }
 
+const std::string UDPServer::getLastReliablePacket() {
+    return _packet_manager.get_last_reliable_packet();
+}
+
 const std::string UDPServer::getLastUnreliablePacket() {
     return _packet_manager.get_last_unreliable_packet();
 }

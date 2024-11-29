@@ -33,6 +33,7 @@ class UDPServer {
 
     const asio::ip::udp::endpoint& getEndpoint() const;
     const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
+    const std::string getLastReliablePacket();
     const std::string getLastUnreliablePacket();
     const std::string getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
 

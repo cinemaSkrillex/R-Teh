@@ -56,7 +56,7 @@ class PacketManager {
     void send();
     void retry();
 
-    //receive functions
+    // receive functions
     void handle_receive(std::size_t bytes_recvd);
     // handle messages
     void handle_ack(const std::string& ack_message);
@@ -65,16 +65,14 @@ class PacketManager {
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
     void handle_test(const asio::ip::udp::endpoint& endpoint);
 
-    //send functions
-    void send_ack(
-        SEQUENCE_TYPE sequence_start_number,
-        SEQUENCE_TYPE sequence_number,
-        const asio::ip::udp::endpoint& endpoint_
-    );
+    // send functions
+    void send_ack(SEQUENCE_TYPE sequence_start_number, SEQUENCE_TYPE sequence_number,
+                  const asio::ip::udp::endpoint& endpoint_);
     void queue_packet_for_sending(const packet& pkt);
     void send_packet(const packet& pkt);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
-    void send_unreliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
+    void send_unreliable_packet(const std::string&             message,
+                                const asio::ip::udp::endpoint& endpoint);
     void send_new_client(const asio::ip::udp::endpoint& endpoint);
     void send_test(const asio::ip::udp::endpoint& endpoint);
 
@@ -84,9 +82,11 @@ class PacketManager {
     // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
     // std::queue<packet> get_received_packets();
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
-    std::string        get_last_unreliable_packet();
-    // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint& endpoint);
-    void               print_packet(const packet& pkt);
+    const std::string get_last_reliable_packet();
+    const std::string get_last_unreliable_packet();
+    // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
+    // endpoint);
+    void print_packet(const packet& pkt);
 
     std::function<void(const asio::ip::udp::endpoint& client_endpoint)> _new_client_callback;
 
@@ -121,11 +121,14 @@ class PacketManager {
     std::unordered_set<packet> _send_queue_set;
 
     // retry packets variables
-    std::deque<packet>        _retry_queue;
-    std::mutex                _retry_queue_mutex;
+    std::deque<packet> _retry_queue;
+    std::mutex         _retry_queue_mutex;
 
     std::stack<std::string> _unprocessed_unreliable_messages;
     std::mutex              _unprocessed_unreliable_messages_mutex;
+
+    std::stack<std::string> _unprocessed_reliable_messages;
+    std::mutex              _unprocessed_reliable_messages_mutex;
 
     // std::mutex  _message_complete_mutex;
     // std::string _message_complete_buffer;
