@@ -86,3 +86,47 @@ jobs:
       with:
         name: windows-build-artifacts
         path: windows-build/
+    - name: Determine next version
+      id: get_version
+      run: |
+        git fetch --tags
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+        if [ -z "$latest_tag" ]; then
+          next_version="v1.0.0"
+        else
+          next_version=$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')
+        fi
+        echo "::set-output name=next_version::$next_version"
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.next_version }}
+        release_name: Release ${{ steps.get_version.outputs.next_version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Linux build artifacts to release
+      if: needs.build-linux.result == 'success'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux-build/
+        asset_name: linux-build-artifacts.zip
+        asset_content_type: application/zip
+
+    - name: Upload Windows build artifacts to release
+      if: needs.build-windows.result == 'success'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: windows-build/
+        asset_name: windows-build-artifacts.zip
+        asset_content_type: application/zip
