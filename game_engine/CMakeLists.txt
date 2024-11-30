@@ -64,8 +64,20 @@ file(GLOB_RECURSE NETWORK_SOURCES
 add_library(rtype_engine STATIC ${NETWORK_SOURCES})
 
 # Include directories
-target_include_directories(rtype_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+target_include_directories(rtype_engine PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Config
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Components
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Entities
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Enum
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Registry
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/SparseArray
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Media
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting
+)
 
 # Link libraries
 if(UNIX)
