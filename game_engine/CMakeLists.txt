@@ -101,10 +101,4 @@ elseif(WIN32)
         ${LUA_LIBRARIES}
     )
 
-    # Copy all DLLs from the bin directory to the output directory
-    add_custom_command(TARGET rtype_engine POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/bin"
-            $<TARGET_FILE_DIR:rtype_engine>
-    )
 endif()

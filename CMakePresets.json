@@ -9,16 +9,32 @@
             "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         },
         {
-            "name": "windows",
+            "name": "windows-release",
             "inherits": "vcpkg",
-            "displayName": "Vcpkg Windows x64-windows-static",
-            "description": "Vcpkg windows build with triplet x64-windows-static",
+            "displayName": "Vcpkg Windows Release",
+            "description": "Vcpkg windows build with Release configuration",
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
             },
             "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Windows Debug",
+            "description": "Vcpkg windows build with Debug configuration",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
                 "VCPKG_TARGET_TRIPLET": "x64-windows"
             }
         },
