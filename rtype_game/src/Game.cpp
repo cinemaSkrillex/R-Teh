@@ -2,8 +2,9 @@
 
 namespace rtype {
 
-Game::Game()
-    : _deltaTime(0.f),
+Game::Game(std::shared_ptr<UDPClient> clientUDP)
+    : _clientUDP(clientUDP),
+      _deltaTime(0.f),
       _window("SKRILLEX", sf::Vector2u(800, 600)),
       _clock(),
       _controls(_registry),
@@ -58,6 +59,7 @@ Game::~Game() {}
 void Game::init_registry() {
     _registry.register_component<RealEngine::Position>();
     _registry.register_component<RealEngine::Velocity>();
+    _registry.register_component<RealEngine::Health>();
     _registry.register_component<RealEngine::SpriteComponent>();
     _registry.register_component<RealEngine::SpriteSheet>();
     _registry.register_component<RealEngine::Drawable>();
@@ -131,6 +133,8 @@ void Game::run() {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
+        const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
+        if (!serverEventsMessage.empty()) std::cout << serverEventsMessage << std::endl;
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         _window.display();

@@ -11,6 +11,7 @@
 #include <thread>
 
 #include "UDPServer.hpp"
+#include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -37,6 +38,19 @@ int main(int argc, char* argv[]) {
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
+        server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
+            std::cout << "Callback: New client connected from " << new_client << std::endl;
+
+            // Notify all other clients about the new client
+            for (const auto& client : server->getClients()) {
+                if (client != new_client) {
+                    std::string message =
+                        "Event\nnew_client\n" + std::to_string(new_client.port()) + "\r";
+                    server->send_reliable_packet(message, client);
+                }
+            }
+        });
+
         sf::Clock tickClock;
         while (true) {
             if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
@@ -46,6 +60,9 @@ int main(int argc, char* argv[]) {
                 // do server work.
                 const std::string message = server->getLastUnreliablePacket();
                 if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
+                for (auto client : server->getClients()) {
+                    // server->send_unreliable_packet("tick\n", client);
+                }
             }
         }
 

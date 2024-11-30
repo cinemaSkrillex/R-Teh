@@ -14,7 +14,10 @@ DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
 void calculateTextureRect(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     sprite.setTextureRect(spritesheet.frameSize.x * spritesheet.frameIndex, 0,
                           spritesheet.frameSize.x, spritesheet.frameSize.y);
-    sprite.centerOrigin();
+    if (spritesheet.origin.x != -1 && spritesheet.origin.y != -1)
+        sprite.setOrigin(spritesheet.origin.x, spritesheet.origin.y);
+    else
+        sprite.centerOrigin();
 }
 
 void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {

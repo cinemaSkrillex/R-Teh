@@ -223,6 +223,11 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
             std::cout << "Reassembled message: "
                       << std::string(complete_data.begin(), complete_data.end()) << std::endl;
             // TODO: handle data
+            const std::string message = std::string(complete_data.begin(), complete_data.end());
+
+            // Process the message content
+            std::lock_guard<std::mutex> unprocessed_lock(_unprocessed_reliable_messages_mutex);
+            _unprocessed_reliable_messages.push(message);
         }
     }
 
@@ -232,7 +237,6 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 // did not change for now
 void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
-    std::cout << "Processing unreliable message: " << message << std::endl;
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     _unprocessed_unreliable_messages.push(message);
 }
@@ -243,6 +247,8 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
     _known_clients.insert(client_endpoint);
     std::cout << "New client connected: " << client_endpoint << std::endl;
     // here we used to send test message. TODO test flag to trigger the test
+
+    if (_new_client_callback) _new_client_callback(client_endpoint);
 }
 
 static std::string testPacketManager() {
@@ -433,7 +439,20 @@ void PacketManager::queue_packet_for_retry(const packet& pkt) {
 //     return packet_queue_;
 // }
 
-std::string PacketManager::get_last_unreliable_packet() {
+std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>
+PacketManager::getKnownClients() {
+    return _known_clients;
+}
+
+const std::string PacketManager::get_last_reliable_packet() {
+    std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
+    if (_unprocessed_reliable_messages.empty()) return "";
+    std::string message = _unprocessed_reliable_messages.top();
+    _unprocessed_reliable_messages.pop();
+    return message;
+}
+
+const std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     if (_unprocessed_unreliable_messages.empty()) return "";
     std::string message = _unprocessed_unreliable_messages.top();

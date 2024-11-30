@@ -94,6 +94,8 @@ void Sprite::centerOrigin() {
     _sprite.setOrigin(bounds.width / 2, bounds.height / 2);
 }
 
+void Sprite::setOrigin(float x, float y) { _sprite.setOrigin(x, y); }
+
 void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
     for (unsigned int x = 0; x < _image.getSize().x; x++) {
         for (unsigned int y = 0; y < _image.getSize().y; y++) {

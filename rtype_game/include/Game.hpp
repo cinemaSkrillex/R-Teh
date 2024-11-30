@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Client/UDPClient.hpp"
 #include "CollisionHandler.hpp"
 #include "Controls.hpp"
 #include "Core/ClockEngine.hpp"
@@ -11,6 +12,7 @@
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/Controllable.hpp"
 #include "ECS/Components/Drawable.hpp"
+#include "ECS/Components/Health.hpp"
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
 #include "ECS/Components/Rotation.hpp"
@@ -26,6 +28,7 @@
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
+#include "ECS/Systems/healthSystem.hpp"
 #include "EyeBoss.hpp"
 #include "Media/Audio/Music.hpp"
 #include "Media/Audio/Sound.hpp"
@@ -36,7 +39,7 @@
 namespace rtype {
 class Game {
    public:
-    Game();
+    Game(std::shared_ptr<UDPClient> clientUDP);
     ~Game();
     void               run();
     void               setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
@@ -45,6 +48,8 @@ class Game {
     void               init_systems();
     RealEngine::Entity createEntity();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
+
+    std::shared_ptr<UDPClient> _clientUDP;
 
    private:
     float                       _deltaTime = 0.f;

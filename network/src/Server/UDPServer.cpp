@@ -27,9 +27,23 @@ void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
     _client_endpoint = endpoint;
 }
 
+void UDPServer::setNewClientCallback(
+    const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback) {
+    _packet_manager._new_client_callback = callback;
+}
+
 const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
     std::cout << "Client endpoint: " << _client_endpoint << std::endl;
     return _client_endpoint;
+}
+
+const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>
+UDPServer::getClients() {
+    return _packet_manager.getKnownClients();
+}
+
+const std::string UDPServer::getLastReliablePacket() {
+    return _packet_manager.get_last_reliable_packet();
 }
 
 const std::string UDPServer::getLastUnreliablePacket() {

@@ -29,17 +29,17 @@ class EyeBoss {
    public:
     EyeBoss(RealEngine::Registry& registry);
     ~EyeBoss();
-    void               targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                          float deltaTime);
-    void               setTarget(RealEngine::Entity target);
-    void               PassiveBossBehavior(RealEngine::Registry& registry, float deltaTime);
-    void               shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                          float deltaTime);
-    void               midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                        float deltaTime);
-    void               longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
-                                         float deltaTime);
-    void               setBossStatus(int state);
+    void targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
+                            float deltaTime);
+    void setTarget(RealEngine::Entity target);
+    void aimAtTarget(RealEngine::Position* targetPosition, float rotationSpeed, float deltaTime);
+    void noTargetBossBehavior(RealEngine::Registry& registry, float deltaTime);
+    void shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void midRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void longRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
+    void circularAttack(RealEngine::Registry& registry, RealEngine::Entity target, float deltaTime);
+    void shootLaser();
+    void setBossStatus(int state);
     RealEngine::Entity getEntity() { return _entity; }
 
    private:
@@ -48,7 +48,13 @@ class EyeBoss {
     RealEngine::Sprite                                  _shortSprite;
     RealEngine::Sprite                                  _midSprite;
     RealEngine::Sprite                                  _longSprite;
+    RealEngine::Sprite                                  _laserSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _bossSheet;
     EyeBossState                                        _state;
+    float                                               _shootCooldown;
+    float                                               _shootPhaseTimer;
+    bool                                                _isInShootPhase;
+    std::vector<RealEngine::Entity>                     _laserEntities;
+    std::vector<RealEngine::Entity>                     _laserEntitiesToDelete;
 };
 }  // namespace rtype

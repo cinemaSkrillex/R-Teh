@@ -27,6 +27,7 @@ class Sprite : public IRender {
     void          setColor(sf::Color color);
     void          flip(bool invert);
     void          centerOrigin();
+    void          setOrigin(float x, float y);
     sf::Sprite    getSprite() const { return _sprite; }
     sf::Image     getImage() const { return _image; }
     sf::Texture   getTexture() const { return _texture; }

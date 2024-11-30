@@ -8,32 +8,35 @@
 #ifndef UDPCLIENT_HPP
 #define UDPCLIENT_HPP
 
+#include <array>
 #include <asio.hpp>
 #include <iostream>
-#include <array>
-#include <string>
 #include <map>
 #include <queue>
+#include <string>
+
 #include "../shared/PacketManager.hpp"
 
 class UDPClient {
-  public:
-    UDPClient(asio::io_context& io_context, unsigned short port);
+   public:
+    UDPClient(asio::io_context& io_context, unsigned short port, const std::string& server_ip,
+              unsigned short server_port);
     ~UDPClient();
 
-    void        send_unreliable_packet(const std::string&             message,
-                                       const asio::ip::udp::endpoint& server_endpoint);
-    void        send_reliable_packet(const std::string&             message,
-                                     const asio::ip::udp::endpoint& server_endpoint);
-    std::string get_last_reliable_packet();
+    void              send_unreliable_packet(const std::string& message);
+    void              send_reliable_packet(const std::string& message);
+    void              send_new_client();
+    void              send_test();
+    const std::string get_last_reliable_packet();
+    const std::string get_last_unreliable_packet();
 
-  private:
-    asio::ip::udp::socket   socket_;
-    asio::ip::udp::endpoint server_endpoint_;
+   private:
+    asio::ip::udp::socket   _socket;
+    asio::ip::udp::endpoint _server_endpoint;
 
     // Reliable packet handling via sequence numbers
-    PacketManager packet_manager_;
+    PacketManager _packet_manager;
     // Packet processing
 };
 
-#endif // UDPCLIENT_HPP
+#endif  // UDPCLIENT_HPP
