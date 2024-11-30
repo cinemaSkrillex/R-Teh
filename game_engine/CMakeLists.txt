@@ -10,6 +10,7 @@ if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0A00)
     if (MSVC)
         add_compile_options(/std:c++17)
+        add_compile_options(/permissive-)
     endif()
 endif()
 
