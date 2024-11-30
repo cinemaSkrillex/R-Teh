@@ -117,8 +117,13 @@ jobs:
           minor=${version_parts[1]}
           patch=${version_parts[2]}
           if [ "$patch" -ge 9 ]; then
-            minor=$((minor + 1))
             patch=0
+            if [ "$minor" -ge 9 ]; then
+              minor=0
+              major=$((major + 1))
+            else
+              minor=$((minor + 1))
+            fi
           else
             patch=$((patch + 1))
           fi
