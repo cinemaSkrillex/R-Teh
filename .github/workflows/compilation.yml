@@ -126,16 +126,6 @@ jobs:
         fi
         echo "::set-output name=next_version::$next_version"
 
-      # run: |
-      #   git fetch --tags
-      #   latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "")
-      #   if [ -z "$latest_tag" ]; then
-      #     next_version="v1.0.0"
-      #   else
-      #     next_version=$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')
-      #   fi
-      #   echo "::set-output name=next_version::$next_version"
-
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
