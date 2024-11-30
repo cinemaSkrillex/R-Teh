@@ -55,9 +55,9 @@ target_link_libraries(r_type rtype_client)
 
 if (WIN32)
 # Copy all DLLs from the bin directory to the output directory
-    add_custom_command(TARGET r_type_server POST_BUILD
+    add_custom_command(TARGET r_type POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "$<IF:$<CONFIG:Debug>,${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/debug/bin,${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/bin>"
-            $<TARGET_FILE_DIR:r_type_server>
+            $<TARGET_FILE_DIR:r_type>
     )
 endif()

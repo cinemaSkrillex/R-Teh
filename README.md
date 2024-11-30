@@ -80,7 +80,7 @@ Launch the server:
 ```bash
 ```
 
-## Commit tag
+## Commit tags
 
 - [ADD] : Add a new feature :sparkles:
 - [FIX] : Fix a bug :bug:
