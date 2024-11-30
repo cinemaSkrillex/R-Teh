@@ -13,7 +13,6 @@ endif()
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
-    # set(SFML_STATIC_LIBRARIES TRUE)
     set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux")
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
 elseif (WIN32)
