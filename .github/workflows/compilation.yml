@@ -112,9 +112,29 @@ jobs:
         if [ -z "$latest_tag" ]; then
           next_version="v1.0.0"
         else
-          next_version=$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')
+          IFS='.' read -r -a version_parts <<< "$latest_tag"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          if [ "$patch" -ge 9 ]; then
+            minor=$((minor + 1))
+            patch=0
+          else
+            patch=$((patch + 1))
+          fi
+          next_version="$major.$minor.$patch"
         fi
         echo "::set-output name=next_version::$next_version"
+
+      # run: |
+      #   git fetch --tags
+      #   latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "")
+      #   if [ -z "$latest_tag" ]; then
+      #     next_version="v1.0.0"
+      #   else
+      #     next_version=$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')
+      #   fi
+      #   echo "::set-output name=next_version::$next_version"
 
     - name: Create GitHub Release
       id: create_release
