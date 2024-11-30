@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../include/ECS/Components/Health.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
 
 namespace RealEngine {
 class HealthSystem {
