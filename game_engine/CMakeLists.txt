@@ -11,6 +11,7 @@ if (WIN32)
     if (MSVC)
         add_compile_options(/std:c++17)
         add_compile_options(/permissive-)
+        add_compile_options(/showIncludes)
     endif()
 endif()
 
