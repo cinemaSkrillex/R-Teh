@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0A00)
+    if (MSVC)
+        add_compile_options(/std:c++17)
+    endif()
 endif()
 
 # Include directories (platform-specific)
