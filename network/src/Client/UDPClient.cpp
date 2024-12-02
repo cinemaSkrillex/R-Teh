@@ -19,12 +19,10 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
 UDPClient::~UDPClient() { std::cout << "deleting UDPClient" << std::endl; }
 
 void UDPClient::send_new_client() {
-    std::cout << "Sending new client" << std::endl;
     _packet_manager.send_new_client(_server_endpoint);
 }
 
 void UDPClient::send_test() {
-    std::cout << "Sending test flag" << std::endl;
     _packet_manager.send_test(_server_endpoint);
 }
 

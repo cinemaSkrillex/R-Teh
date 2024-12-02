@@ -33,7 +33,6 @@ void UDPServer::setNewClientCallback(
 }
 
 const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
-    std::cout << "Client endpoint: " << _client_endpoint << std::endl;
     return _client_endpoint;
 }
 

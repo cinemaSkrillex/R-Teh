@@ -36,7 +36,6 @@ void TCPServer::handle_read(std::shared_ptr<asio::ip::tcp::socket>  socket,
                             const asio::error_code& error, std::size_t bytes_transferred) {
     if (!error) {
         std::string message(buffer->data(), bytes_transferred);
-        std::cout << "Received: " << message << std::endl;
 
         if (message == "ping") {
             auto response = std::make_shared<std::string>("pong");

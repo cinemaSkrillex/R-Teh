@@ -45,12 +45,12 @@ int main(int argc, char* argv[]) {
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
                     const std::string message =
-                        "Event\nnew_client\n" + std::to_string(new_client.port()) + "\r";
+                        "Event new_client " + std::to_string(new_client.port());
                     server->send_reliable_packet(message, client);
                 }
             }
 
-            const std::string message = "Event\nsynchronize\nUuid: " + new_client.port();
+            const std::string message = "Event synchronize Uuid: " + new_client.port();
             server->send_reliable_packet(message, new_client);
         });
 
