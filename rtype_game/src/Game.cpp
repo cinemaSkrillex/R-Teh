@@ -11,7 +11,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
       _controlSystem(),
-      //   _collisionSystem(),
+      _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
@@ -126,6 +126,29 @@ void Game::init_systems() {
     });
 }
 
+void Game::handleSignal(std::string signal) {
+    if (!signal.empty()) std::cout << "[" << signal << "]" << std::endl;
+
+    if (signal.find("Event") != std::string::npos) {
+        if (signal.find("new_client") != std::string::npos) {
+            spawn_player();
+        } else if (signal.find("synchronize") != std::string::npos) {
+            spawn_player();
+        }
+    }
+}
+
+void Game::spawn_player() {
+    RealEngine::Entity player = _registry.spawn_entity();
+    _registry.add_component(player, RealEngine::Position{0.f, 0.f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 3.0f});
+    _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(player, RealEngine::Controllable{});
+    _registry.add_component(player, RealEngine::Drawable{});
+    _registry.add_component(
+        player, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+}
+
 void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
         {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
@@ -134,7 +157,7 @@ void Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
-        if (!serverEventsMessage.empty()) std::cout << serverEventsMessage << std::endl;
+        handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         _window.display();

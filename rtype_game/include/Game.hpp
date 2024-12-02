@@ -46,6 +46,8 @@ class Game {
     void               init_controls();
     void               init_systems();
     RealEngine::Entity createEntity();
+    void               spawn_player();
+    void               handleSignal(std::string signal);
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;
