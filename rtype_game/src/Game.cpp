@@ -126,13 +126,64 @@ void Game::init_systems() {
     });
 }
 
-void Game::handleSignal(std::string signal) {
-    if (!signal.empty()) std::cout << "[" << signal << "]" << std::endl;
 
-    if (signal.find("Event") != std::string::npos) {
-        if (signal.find("new_client") != std::string::npos) {
+std::unordered_map<std::string, std::string> parseMessage(const std::string& message) {
+    std::unordered_map<std::string, std::string> parsedData;
+    std::istringstream stream(message);
+    std::string key, value;
+
+    while (stream) {
+        // Extract key
+        if (!std::getline(stream, key, ':')) break;
+
+        // Extract value (up to the next space or end of string)
+        if (!std::getline(stream, value, ' ')) break;
+
+        // Trim leading and trailing spaces from key and value
+        key.erase(0, key.find_first_not_of(" \t"));
+        key.erase(key.find_last_not_of(" \t") + 1);
+        value.erase(0, value.find_first_not_of(" \t"));
+        value.erase(value.find_last_not_of(" \t") + 1);
+
+        // Ensure both key and value are properly copied into the map
+        parsedData[key] = value;
+    }
+
+    return parsedData;
+}
+
+sf::Vector2i parsePosition(const std::string& positionStr) {
+    sf::Vector2i position(0, 0); // Default to (0, 0) in case of a parsing error
+
+    // Use a regular expression to extract the values inside "(x,y)"
+    std::regex positionRegex(R"(\((\d+),(\d+)\))");
+    std::smatch match;
+
+    if (std::regex_search(positionStr, match, positionRegex) && match.size() == 3) {
+        // Convert the extracted strings to integers
+        position.x = std::stoi(match[1].str());
+        position.y = std::stoi(match[2].str());
+    } else {
+        std::cerr << "Failed to parse position: " << positionStr << std::endl;
+    }
+
+    return position;
+}
+
+void Game::handleSignal(std::string signal) {
+    if (signal.empty())
+        return;
+
+    std::cout << "[" << signal << "]" << std::endl;
+    std::unordered_map<std::string, std::string> parsedPacket = parseMessage(signal);
+
+    if (parsedPacket.find("Event") != parsedPacket.end()) {
+        const std::string event = parsedPacket.at("Event");
+        if (event == "New_client") {
+            const sf::Vector2i position = parsePosition(parsedPacket.at("Position"));
             spawn_player();
-        } else if (signal.find("synchronize") != std::string::npos) {
+        } else if (event == "Synchronize") {
+            const sf::Vector2i position = parsePosition(parsedPacket.at("Position"));
             spawn_player();
         }
     }

@@ -35,6 +35,8 @@
 #include "Core/Window.hpp"
 #include "EyeBoss.hpp"
 
+#include <regex>
+
 namespace rtype {
 class Game {
    public:
