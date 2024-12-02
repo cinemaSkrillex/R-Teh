@@ -11,7 +11,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
       _controlSystem(),
-      //   _collisionSystem(),
+      _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
@@ -19,8 +19,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
+      _otherPlayer("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
-      _testSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 0, 55, 68}),
       _entity1(_registry.spawn_entity()),
       _entity2(_registry.spawn_entity()),
       _groundEntity(_registry.spawn_entity()) {
@@ -31,7 +31,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _upSpaceship.setScale(3, 3);
     _downSpaceship.setScale(3, 3);
     _groundSprite.setScale(3, 3);
-    _testSprite.setScale(3, 3);
+    _otherPlayer.setScale(3, 3);
+    _otherPlayer.setOpacity(90);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
@@ -126,6 +127,80 @@ void Game::init_systems() {
     });
 }
 
+std::unordered_map<std::string, std::string> parseMessage(const std::string& message) {
+    std::unordered_map<std::string, std::string> parsedData;
+    std::istringstream                           stream(message);
+    std::string                                  key, value;
+
+    while (stream) {
+        // Extract key
+        if (!std::getline(stream, key, ':')) break;
+
+        // Extract value (up to the next space or end of string)
+        if (!std::getline(stream, value, ' ')) break;
+
+        // Trim leading and trailing spaces from key and value
+        key.erase(0, key.find_first_not_of(" \t"));
+        key.erase(key.find_last_not_of(" \t") + 1);
+        value.erase(0, value.find_first_not_of(" \t"));
+        value.erase(value.find_last_not_of(" \t") + 1);
+
+        // Ensure both key and value are properly copied into the map
+        parsedData[key] = value;
+    }
+
+    return parsedData;
+}
+
+const sf::Vector2f parsePosition(const std::string& positionStr) {
+    sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
+
+    // Use a regular expression to extract the values inside "(x,y)"
+    std::regex  positionRegex(R"(\((\d+),(\d+)\))");
+    std::smatch match;
+
+    if (std::regex_search(positionStr, match, positionRegex) && match.size() == 3) {
+        // Convert the extracted strings to integers
+        position.x = std::stof(match[1].str());
+        position.y = std::stof(match[2].str());
+    } else {
+        std::cerr << "Failed to parse position: " << positionStr << std::endl;
+    }
+
+    return position;
+}
+
+void Game::handleSignal(std::string signal) {
+    if (signal.empty()) return;
+
+    std::cout << "[" << signal << "]" << std::endl;
+    std::unordered_map<std::string, std::string> parsedPacket = parseMessage(signal);
+
+    if (parsedPacket.find("Event") != parsedPacket.end()) {
+        const std::string event = parsedPacket.at("Event");
+        if (event == "New_client") {
+            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            // const int          port     = std::stoi(parsedPacket.at("Port"));
+            // add_player(port, position);
+        } else if (event == "Synchronize") {
+            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            // const int          port     = std::stoi(parsedPacket.at("Port"));
+            // add_player(port, position);
+        }
+    }
+}
+
+void Game::add_player(int player_port, sf::Vector2f position) {
+    RealEngine::Entity player = _registry.spawn_entity();
+    _registry.add_component(player, RealEngine::Position{0.0f, 0.0f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 0.0f});
+    _registry.add_component(player, RealEngine::Drawable{});
+
+    _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
+
+    _players.emplace(player_port, player);
+}
+
 void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
         {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
@@ -134,7 +209,7 @@ void Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
-        if (!serverEventsMessage.empty()) std::cout << serverEventsMessage << std::endl;
+        handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         _window.display();

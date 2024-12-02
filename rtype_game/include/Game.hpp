@@ -1,6 +1,7 @@
 
 
 #include <SFML/Graphics.hpp>
+#include <regex>
 
 #include "../../game_engine/include/ECS/Components/Acceleration.hpp"
 #include "../../game_engine/include/ECS/Components/Controllable.hpp"
@@ -46,6 +47,8 @@ class Game {
     void               init_controls();
     void               init_systems();
     RealEngine::Entity createEntity();
+    void               handleSignal(std::string signal);
+    void               add_player(int player_port, sf::Vector2f position);
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;
@@ -66,11 +69,12 @@ class Game {
     RealEngine::RadiusSystem    _radiusSystem;
     rtype::Controls             _controls;
 
+    std::unordered_map<int, RealEngine::Entity>         _players;
     std::unique_ptr<EyeBoss>                            _bossEye;
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
-    RealEngine::Sprite                                  _testSprite;
+    RealEngine::Sprite                                  _otherPlayer;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity1;

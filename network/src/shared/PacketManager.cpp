@@ -170,7 +170,7 @@ void PacketManager::handle_ack(const std::string& ack_message) {
         for (auto it = _retry_queue.begin(); it != _retry_queue.end();) {
             if (it->sequence_nb == sequence_number && it->start_sequence_nb == sequence_start) {
                 _retry_queue.erase(it);
-                std::cout << "Retry queue size: " << _retry_queue.size() << std::endl;
+                // std::cout << "Retry queue size: " << _retry_queue.size() << std::endl;
                 break;
             }
             ++it;
@@ -191,14 +191,14 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         // check that the packet is not already in the map
         std::vector<packet> temp_vector = _received_packets[pkt.start_sequence_nb];
         if (std::find(temp_vector.begin(), temp_vector.end(), pkt) != temp_vector.end()) {
-            std::cout << "Packet already received: " << pkt.sequence_nb << std::endl;
+            // std::cout << "Packet already received: " << pkt.sequence_nb << std::endl;
         } else {
             _received_packets[pkt.start_sequence_nb].push_back(pkt);
         }
 
         int final_size    = pkt.end_sequence_nb - pkt.start_sequence_nb + 1;
         int received_size = _received_packets[pkt.start_sequence_nb].size();
-        std::cout << "Got " << received_size << "/" << final_size << std::endl;
+        // std::cout << "Got " << received_size << "/" << final_size << std::endl;
 
         if (received_size == final_size) {
             all_packets_received = true;
@@ -206,7 +206,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
     }
 
     if (all_packets_received) {
-        std::cout << "Reassembling message" << std::endl;
+        // std::cout << "Reassembling message" << std::endl;
         std::vector<char> complete_data;
         {
             std::lock_guard<std::mutex> lock(_received_packets_mutex);
@@ -220,8 +220,8 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
                 complete_data.insert(complete_data.end(), packet.data.begin(), packet.data.end());
             }
             _received_packets.erase(pkt.start_sequence_nb);
-            std::cout << "Reassembled message: "
-                      << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            // std::cout << "Reassembled message: "
+                    //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
             // TODO: handle data
             const std::string message = std::string(complete_data.begin(), complete_data.end());
 
@@ -245,7 +245,7 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
     if (_known_clients.find(client_endpoint) != _known_clients.end()) return;
 
     _known_clients.insert(client_endpoint);
-    std::cout << "New client connected: " << client_endpoint << std::endl;
+    // std::cout << "New client connected: " << client_endpoint << std::endl;
     // here we used to send test message. TODO test flag to trigger the test
 
     if (_new_client_callback) _new_client_callback(client_endpoint);
@@ -283,7 +283,7 @@ static std::string testPacketManager() {
 
 void PacketManager::handle_test(const asio::ip::udp::endpoint& endpoint) {
     // send reliable packet to the client with message testPacketManager()
-    std::cout << "Sending test message" << std::endl;
+    // std::cout << "Sending test message" << std::endl;
     send_reliable_packet(testPacketManager(), endpoint);
 }
 
@@ -316,7 +316,7 @@ void PacketManager::queue_packet_for_sending(const packet& pkt) {
             _send_queue_set.insert(pkt);
             // std::cout << "Queued packet for sending seq_nb: " << pkt.sequence_nb << std::endl;
         } else {
-            std::cout << "Packet already in send queue: " << pkt.sequence_nb << std::endl;
+            // std::cout << "Packet already in send queue: " << pkt.sequence_nb << std::endl;
         }
     }
     _send_queue_cv.notify_one();
@@ -339,8 +339,8 @@ void PacketManager::send_packet(const packet& pkt) {
 void PacketManager::send_reliable_packet(const std::string&             message,
                                          const asio::ip::udp::endpoint& endpoint) {
     int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
-    std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
-              << std::endl;
+    // std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
+            //   << std::endl;
 
     int start_sequence_nb;
     int end_sequence_nb;
