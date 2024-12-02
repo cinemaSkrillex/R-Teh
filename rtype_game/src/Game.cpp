@@ -179,20 +179,20 @@ void Game::handleSignal(std::string signal) {
     if (parsedPacket.find("Event") != parsedPacket.end()) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
-            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            // const int          port     = std::stoi(parsedPacket.at("Port"));
-            // add_player(port, position);
+            const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            const int uuid = std::stoi(parsedPacket.at("Uuid"));
+            add_player(uuid, position);
         } else if (event == "Synchronize") {
-            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            // const int          port     = std::stoi(parsedPacket.at("Port"));
-            // add_player(port, position);
+            const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            const int uuid = std::stoi(parsedPacket.at("Uuid"));
+            add_player(uuid, position);
         }
     }
 }
 
 void Game::add_player(int player_port, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{0.0f, 0.0f});
+    _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 0.0f});
     _registry.add_component(player, RealEngine::Drawable{});
 
