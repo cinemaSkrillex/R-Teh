@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** R-Teh
 ** File description:
-** TCPServer.hpp
+** TCPClient.hpp
 */
 
 #ifndef TCPCLIENT_HPP
@@ -12,11 +12,12 @@
 #include "TCPPacketManager.hpp"
 #include "TCPPacketUtils.hpp"
 
-class TCPServer {
+class TCPClient {
    public:
-    TCPServer(unsigned short port);
+    TCPClient(const std::string& host, unsigned short port);
 
    private:
     TCPPacketManager _packet_manager;
 };
+
 #endif

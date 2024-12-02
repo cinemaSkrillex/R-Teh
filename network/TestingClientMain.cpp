@@ -5,10 +5,12 @@
 ** TestingClientMain.cpp
 */
 
-#include <iostream>
 #include <asio.hpp>
-#include "include/DynamicLibrary/DynamicLibrary.hpp"
+#include <iostream>
+
+#include "include/Client/TCPClient.hpp"
 #include "include/Client/UDPClient.hpp"
+#include "include/DynamicLibrary/DynamicLibrary.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -21,7 +23,7 @@
 #endif
 
 int main(int argc, char* argv[]) {
-    if (argc != 4) {
+    if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
                   << std::endl;
         return 1;
@@ -29,20 +31,24 @@ int main(int argc, char* argv[]) {
 
     std::string    server_ip   = argv[1];
     unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-    unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    // unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
         std::cout << "Starting client" << std::endl;
         asio::io_context io_context;
-        auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
-        client->send_new_client();
-        client->send_test();
-        // client->send_unreliable_packet("Hello");
-        // client->send_unreliable_packet("World");
-        // client->send_reliable_packet("Hello1");
-        // client->send_unreliable_packet("Hello2");
-        // client->send_reliable_packet("Hello3");
-        // client->send_unreliable_packet("Hello4");
+
+        // TCP
+        auto client = std::make_shared<TCPClient>(server_ip, server_port);
+
+        // UDP
+        //  auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip,
+        //  server_port); client->send_new_client(); client->send_test();
+        //  client->send_unreliable_packet("Hello");
+        //  client->send_unreliable_packet("World");
+        //  client->send_reliable_packet("Hello1");
+        //  client->send_unreliable_packet("Hello2");
+        //  client->send_reliable_packet("Hello3");
+        //  client->send_unreliable_packet("Hello4");
         io_context.run();
 
         // client->send_unreliable_packet("Hello");

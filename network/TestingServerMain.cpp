@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
+#include "include/Server/TCPServer.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -27,7 +28,11 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        auto             server = std::make_shared<UDPServer>(io_context, port);
+        // TCP
+        auto server = std::make_shared<TCPServer>(port);
+
+        // UDP
+        //  auto             server = std::make_shared<UDPServer>(io_context, port);
 
         io_context.run();
     } catch (const std::exception& e) {
