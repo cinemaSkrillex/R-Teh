@@ -1,10 +1,11 @@
 #ifndef PACKETUTILS_HPP
 #define PACKETUTILS_HPP
 
-#include <vector>
 #include <algorithm>
+#include <asio.hpp>
+#include <vector>
 
-#define SEQUENCE_TYPE std::uint32_t //TODO change int to SEQUENCE_TYPE
+#define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
 #define BUFFER_SIZE 1000
 
 enum Flags {
@@ -21,52 +22,46 @@ enum Flags {
 
 // structure for the binary protocol
 struct packet {
-    int               sequence_nb;
-    int               start_sequence_nb;
-    int               end_sequence_nb;
-    int               packet_size;
-    Flags             flag;
+    int                     sequence_nb;
+    int                     start_sequence_nb;
+    int                     end_sequence_nb;
+    int                     packet_size;
+    Flags                   flag;
     asio::ip::udp::endpoint endpoint;
-    std::vector<char> data;
+    std::vector<char>       data;
 
     bool operator==(const packet& other) const {
-        return sequence_nb == other.sequence_nb &&
-               start_sequence_nb == other.start_sequence_nb &&
-               end_sequence_nb == other.end_sequence_nb &&
-               packet_size == other.packet_size &&
-               flag == other.flag &&
-               data == other.data &&
-               endpoint == other.endpoint;
+        return sequence_nb == other.sequence_nb && start_sequence_nb == other.start_sequence_nb &&
+               end_sequence_nb == other.end_sequence_nb && packet_size == other.packet_size &&
+               flag == other.flag && data == other.data && endpoint == other.endpoint;
     }
 };
 
 namespace std {
-    template <>
-    struct hash<packet> {
-        std::size_t operator()(const packet& pkt) const {
-            return ((std::hash<int>()(pkt.sequence_nb)
-                     ^ (std::hash<int>()(pkt.start_sequence_nb) << 1)) >> 1)
-                   ^ (std::hash<int>()(pkt.end_sequence_nb) << 1);
-        }
-    };
-}
+template <>
+struct hash<packet> {
+    std::size_t operator()(const packet& pkt) const {
+        return ((std::hash<int>()(pkt.sequence_nb) ^
+                 (std::hash<int>()(pkt.start_sequence_nb) << 1)) >>
+                1) ^
+               (std::hash<int>()(pkt.end_sequence_nb) << 1);
+    }
+};
+}  // namespace std
 
 inline std::vector<char> serialize_packet(const packet& pkt) {
     std::string endpoint_address = pkt.endpoint.address().to_string();
-    uint16_t endpoint_port = pkt.endpoint.port();
+    uint16_t    endpoint_port    = pkt.endpoint.port();
 
-    std::size_t total_size = sizeof(pkt.sequence_nb) +
-                             sizeof(pkt.start_sequence_nb) +
-                             sizeof(pkt.end_sequence_nb) +
-                             sizeof(pkt.packet_size) +
-                             sizeof(pkt.flag) +
-                             sizeof(uint16_t) + // size of the port
-                             sizeof(std::size_t) + // size of the address length
-                             endpoint_address.size() + // actual address size
+    std::size_t total_size = sizeof(pkt.sequence_nb) + sizeof(pkt.start_sequence_nb) +
+                             sizeof(pkt.end_sequence_nb) + sizeof(pkt.packet_size) +
+                             sizeof(pkt.flag) + sizeof(uint16_t) +  // size of the port
+                             sizeof(std::size_t) +                  // size of the address length
+                             endpoint_address.size() +              // actual address size
                              pkt.data.size();
 
     std::vector<char> buffer(total_size);
-    auto it = buffer.begin();
+    auto              it = buffer.begin();
 
     // Copy sequence_nb
     std::copy(reinterpret_cast<const char*>(&pkt.sequence_nb),
@@ -75,12 +70,14 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
 
     // Copy start_sequence_nb
     std::copy(reinterpret_cast<const char*>(&pkt.start_sequence_nb),
-              reinterpret_cast<const char*>(&pkt.start_sequence_nb) + sizeof(pkt.start_sequence_nb), it);
+              reinterpret_cast<const char*>(&pkt.start_sequence_nb) + sizeof(pkt.start_sequence_nb),
+              it);
     it += sizeof(pkt.start_sequence_nb);
 
     // Copy end_sequence_nb
     std::copy(reinterpret_cast<const char*>(&pkt.end_sequence_nb),
-              reinterpret_cast<const char*>(&pkt.end_sequence_nb) + sizeof(pkt.end_sequence_nb), it);
+              reinterpret_cast<const char*>(&pkt.end_sequence_nb) + sizeof(pkt.end_sequence_nb),
+              it);
     it += sizeof(pkt.end_sequence_nb);
 
     // Copy packet_size
@@ -116,14 +113,15 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
 
 inline packet deserialize_packet(const std::vector<char>& buffer) {
     packet pkt;
-    auto it = buffer.begin();
+    auto   it = buffer.begin();
 
     // Extract sequence_nb
     std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));
     it += sizeof(pkt.sequence_nb);
 
     // Extract start_sequence_nb
-    std::copy(it, it + sizeof(pkt.start_sequence_nb), reinterpret_cast<char*>(&pkt.start_sequence_nb));
+    std::copy(it, it + sizeof(pkt.start_sequence_nb),
+              reinterpret_cast<char*>(&pkt.start_sequence_nb));
     it += sizeof(pkt.start_sequence_nb);
 
     // Extract end_sequence_nb
@@ -153,7 +151,8 @@ inline packet deserialize_packet(const std::vector<char>& buffer) {
     std::copy(it, it + sizeof(endpoint_port), reinterpret_cast<char*>(&endpoint_port));
     it += sizeof(endpoint_port);
 
-    pkt.endpoint = asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
+    pkt.endpoint =
+        asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
 
     // Extract data
     pkt.data.assign(it, buffer.end());
@@ -161,4 +160,4 @@ inline packet deserialize_packet(const std::vector<char>& buffer) {
     return pkt;
 }
 
-#endif // PACKETUTILS_HPP
+#endif  // PACKETUTILS_HPP
