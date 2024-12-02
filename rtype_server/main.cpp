@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 
         server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
             std::cout << "Callback: New client connected from " << new_client.address() << std::endl;
+            std::vector<int> players = {};
 
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
@@ -47,10 +48,17 @@ int main(int argc, char* argv[]) {
                     const std::string message =
                         "Event:New_client Uuid:" + std::to_string(new_client.port()) + " Position:(20,60)";
                     server->send_reliable_packet(message, client);
+                    players.push_back(client.port());
                 }
             }
 
-            const std::string message = "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Position:(50,60)";
+            std::string message = "Event:Synchronize Players:[";
+            for (int i = 0; i < players.size(); i++) {
+                if (i!=0)
+                    message += "|";
+                message += std::to_string(players.at(i)) + ",(100.0,100.0)";
+            }
+            message +="]";
             server->send_reliable_packet(message, new_client);
         });
 
