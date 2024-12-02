@@ -17,6 +17,10 @@
 #include "ECS/Registry/Registry.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 namespace rtype {
 
 enum EyeBossState { SHORT_RANGE, MID_RANGE, LONG_RANGE };

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <thread>
 
+#include "UDPServer.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)

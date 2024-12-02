@@ -1,0 +1,62 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "vcpkg",
+            "displayName": "With vcpkg",
+            "description": "Default build with vcpkg toolchain",
+            "binaryDir": "${sourceDir}/build/default",
+            "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "windows-release",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Windows Release",
+            "description": "Vcpkg windows build with Release configuration",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Windows Debug",
+            "description": "Vcpkg windows build with Debug configuration",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            }
+        },
+        {
+            "name": "linux",
+            "inherits": "vcpkg",
+            "displayName": "Vcpkg Linux x64-linux",
+            "description": "Vcpkg Linux build with triplet x64-linux-static",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "x64-linux"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "vcpkg",
+            "configurePreset": "vcpkg"
+        }
+    ]
+}

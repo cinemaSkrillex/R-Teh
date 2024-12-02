@@ -5,7 +5,7 @@
 ** PacketManager.cpp
 */
 
-#include "../../include/shared/PacketManager.hpp"
+#include "PacketManager.hpp"
 
 PacketManager::PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
     : _message_id(0),
@@ -220,6 +220,9 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
                 complete_data.insert(complete_data.end(), packet.data.begin(), packet.data.end());
             }
             _received_packets.erase(pkt.start_sequence_nb);
+            std::cout << "Reassembled message: "
+                      << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            // TODO: handle data
             const std::string message = std::string(complete_data.begin(), complete_data.end());
 
             // Process the message content
@@ -243,6 +246,7 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
 
     _known_clients.insert(client_endpoint);
     std::cout << "New client connected: " << client_endpoint << std::endl;
+    // here we used to send test message. TODO test flag to trigger the test
 
     if (_new_client_callback) _new_client_callback(client_endpoint);
 }

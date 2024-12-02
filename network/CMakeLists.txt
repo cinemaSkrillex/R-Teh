@@ -20,25 +20,32 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 endif()
 
+#define _WIN32_WINNT for windows
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
+endif()
+
 # Include directories
 if (UNIX)
-    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-linux/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
 endif()
 if (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/vcpkg_installed/x64-windows/include)
+    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
 endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Client)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
 
 # Server Source files
 file(GLOB_RECURSE NETWORK_SERVER_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Server/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/Server/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/shared/*.cpp"
 )
 
 # Client Source files
 file(GLOB_RECURSE NETWORK_CLIENT_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Client/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/Client/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/shared/*.cpp"
 )
 

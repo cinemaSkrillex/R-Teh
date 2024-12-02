@@ -16,47 +16,40 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 ## Technologies used 🖥
 
-- Frontend : Wordpress
-- Backend : C++
-- Organisation : Excel
+- Main language : C++
+- Scripting language : Lua
+- Network protocol : TCP/UDP
+- Graphic library : SFML
+- Audio library : OpenAL
+- Build system : CMake
+- CI/CD : GitHub Actions
+- Code formatter : ClangFormat
+- Package manager : Vcpkg
 
 ## Prerequisites 📋
 
-On Ubuntu:
+On Linux:
 ```bash
-# vcpkg dependencies
-sudo apt install cmake
-sudo apt install autoconf
-sudo apt install automake
-sudo apt install libtool
-sudo apt install pkg-config
-sudo apt install libfreetype-dev
-sudo apt-get install libopenal-dev
-sudo apt install liblua5.4-dev
-sudo apt-get install libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev # sfml required libraries by vcpkg
+chmod +x ./scripts/requirements.sh
+./scripts/requirements.sh
 ```
 
 On Windows:
 ```bash
-For simpler use install chocolatey
-choco install cmake
-choco install autoconf
-choco install automake
-choco install libtool
+# Open an administrator PowerShell and run the following command : 
+Set-ExecutionPolicy Bypass -Scope Process -Force; .\scripts\requirements.ps1
 ```
 
 ## Install the dependencies
 
-Our project uses the vcpkg package manager to manage the dependencies.
-
 On Windows:
 ```bash
-vcpkg install --triplet x64-windows
+cmake --preset windows
 ```
 
 On Linux:
 ```bash
-vcpkg install --triplet x64-linux
+cmake --preset linux
 ```
 
 ## How to build the project 🔨
@@ -87,7 +80,7 @@ Launch the server:
 ```bash
 ```
 
-## Commit tag
+## Commit tags
 
 - [ADD] : Add a new feature :sparkles:
 - [FIX] : Fix a bug :bug:

@@ -5,11 +5,14 @@
 ** UDPServer.cpp
 */
 
-#include "../../include/Server/UDPServer.hpp"
-
+#include "UDPServer.hpp"
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <bits/this_thread_sleep.h>
 
 #include <system_error>
+#endif
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
@@ -24,7 +27,8 @@ void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
     _client_endpoint = endpoint;
 }
 
-void UDPServer::setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback) {
+void UDPServer::setNewClientCallback(
+    const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback) {
     _packet_manager._new_client_callback = callback;
 }
 

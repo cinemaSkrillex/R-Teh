@@ -5,9 +5,7 @@
 ** UDPClient.cpp
 */
 
-#include "../../include/Client/UDPClient.hpp"
-
-#include <thread>
+#include "UDPClient.hpp"
 
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
                      const std::string& server_ip, unsigned short server_port)

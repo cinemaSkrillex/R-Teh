@@ -22,4 +22,4 @@ void View::rotate(float angle) { _view.rotate(angle); }
 
 void View::zoom(float factor) { _view.zoom(factor); }
 
-} // namespace RealEngine
+}  // namespace RealEngine

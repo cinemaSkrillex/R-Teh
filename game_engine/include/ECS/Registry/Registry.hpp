@@ -7,22 +7,24 @@
 
 #pragma once
 
-#include <unordered_map>
-#include <typeindex>
 #include <any>
-#include <type_traits>
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <stdexcept>
-#include "../SparseArray/SparseArray.hpp"
-#include "../Entities/ManageEntities.hpp"
+#include <type_traits>
+#include <typeindex>
+#include <unordered_map>
+
 #include "../Entities/Entity.hpp"
+#include "../Entities/ManageEntities.hpp"
+#include "../SparseArray/SparseArray.hpp"
 
 namespace RealEngine {
 class Registry {
-  public:
+   public:
     // Register a component type by adding a SparseArray to the registry
-    template <class Component> SparseArray<Component>& register_component() {
+    template <class Component>
+    SparseArray<Component>& register_component() {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) == _components_arrays.end()) {
@@ -42,24 +44,26 @@ class Registry {
     }
 
     // Get the component array for a given type (non-const version)
-    template <class Component> SparseArray<Component>& get_components() {
+    template <class Component>
+    SparseArray<Component>& get_components() {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
         } else {
-            throw std::runtime_error(""); // TODO: proper exception
+            throw std::runtime_error("");  // TODO: proper exception
         }
     }
 
     // Get the component array for a given type (const version)
-    template <class Component> SparseArray<Component> const& get_components() const {
+    template <class Component>
+    SparseArray<Component> const& get_components() const {
         std::type_index index(typeid(Component));
 
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component> const&>(_components_arrays.at(index));
         } else {
-            throw std::runtime_error("Component not registered!"); // TODO: proper exception
+            throw std::runtime_error("Component not registered!");  // TODO: proper exception
         }
     }
 
@@ -91,25 +95,29 @@ class Registry {
         return components[to];
     }
 
-    template <typename Component> void remove_component(Entity const& from) {
+    template <typename Component>
+    void remove_component(Entity const& from) {
         auto& components = get_components<Component>();
         components[from].reset();
     }
 
     // Add a system to the registry
-    template <class... Components, typename Function> void add_system(Function&& f) {
+    template <class... Components, typename Function>
+    void add_system(Function&& f) {
         _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
             f(*this, deltaTime, get_components_helper<Components>(*this)...);
         });
     }
 
-    template <class... Components, typename Function> void add_system(Function const& f) {
+    template <class... Components, typename Function>
+    void add_system(Function const& f) {
         _systems.push_back(
             [this, &f](float deltaTime) { f(*this, get_components_helper<Components>(*this)...); });
     }
     // Run all systems
-    void                                     run_systems(float deltaTime);
-    template <typename Component> Component* get_component(Entity const& entity) {
+    void run_systems(float deltaTime);
+    template <typename Component>
+    Component* get_component(Entity const& entity) {
         auto&       sparseArray = get_components<Component>();
         std::size_t index       = static_cast<std::size_t>(entity);
 
@@ -119,7 +127,8 @@ class Registry {
         return &(*sparseArray[index]);
     }
     // template <typename Component> SparseArray<Component>& get_sparse_array();
-    template <typename... Components> std::vector<Entity> view() {
+    template <typename... Components>
+    std::vector<Entity> view() {
         std::vector<Entity> result;
 
         for (std::size_t i = 0; i < _entity_manager.size(); ++i) {
@@ -131,7 +140,7 @@ class Registry {
         return result;
     }
 
-  private:
+   private:
     std::unordered_map<std::type_index, std::any>              _components_arrays;
     std::vector<std::function<void(float)>>                    _systems;
     std::vector<std::function<void(Registry&, Entity const&)>> _erase_functions;
@@ -147,4 +156,4 @@ class Registry {
         return registry.get_components<Component>();
     }
 };
-} // namespace RealEngine
+}  // namespace RealEngine

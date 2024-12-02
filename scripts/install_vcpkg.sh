@@ -15,10 +15,12 @@ cd vcpkg
 # Bootstrap vcpkg
 ./bootstrap-vcpkg.sh
 
+mv vcpkg ../
+
 # Update the shell configuration file
-echo "export VCPKG_ROOT=$(pwd)" >> $SHELL_CONFIG_FILE
-echo "export PATH=\"$(pwd):\$PATH\"" >> $SHELL_CONFIG_FILE
+# echo "export VCPKG_ROOT=$(pwd)" >> $SHELL_CONFIG_FILE
+# echo "export PATH=\"$(pwd):\$PATH\"" >> $SHELL_CONFIG_FILE
 
-source $SHELL_CONFIG_FILE
+# source $SHELL_CONFIG_FILE
 
-echo $VCPKG_ROOT && echo $PATH
+# echo $VCPKG_ROOT && echo $PATH

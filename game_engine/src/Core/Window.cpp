@@ -86,4 +86,4 @@ void Window::setSize(const sf::Vector2u size) {
 
 bool Window::isOpen() { return _window.isOpen(); }
 
-}; // namespace RealEngine
+};  // namespace RealEngine

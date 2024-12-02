@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, pipeline ]
   pull_request:
     branches: [ main ]
 
@@ -13,21 +13,40 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake g++ curl zip unzip
-        git clone https://github.com/microsoft/vcpkg.git
-        ./vcpkg/bootstrap-vcpkg.sh
-        echo "VCPKG_ROOT=$(pwd)/vcpkg" >> $GITHUB_ENV
-        echo "VCPKG_ROOT=$(pwd)/vcpkg" >> $HOME/.bashrc
-        ./vcpkg/vcpkg install
+    - name: apt update
+      run: sudo apt-get update
+
+    - name: install dependencies
+      run: sudo apt-get install -y cmake make g++ curl zip unzip ninja-build automake libtool build-essential libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev
+
+    - name: Install vcpkg (clone)
+      run: git clone https://github.com/microsoft/vcpkg.git
+
+    - name: Add Ninja to PATH
+      run: echo "/usr/bin/ninja" >> $GITHUB_PATH
+
+    - name: Verify Ninja path
+      run: echo $PATH
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake -G Ninja --preset linux
 
     - name: Build
-      run: cmake --build build
+      run: cd build && cmake .. && cmake --build .
+
+    - name: Archive Linux build artifacts
+      run: zip -r linux-build-artifacts.zip build/
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-build-artifacts
+        path: linux-build-artifacts.zip
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: linux-build-artifacts
+    #     path: build/
 
   build-windows:
     runs-on: windows-latest
@@ -35,16 +54,112 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
+    - name : install cmake
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && refreshenv
         git clone https://github.com/microsoft/vcpkg.git
         .\vcpkg\bootstrap-vcpkg.bat
-        echo "VCPKG_ROOT=$(pwd)/vcpkg" >> $GITHUB_ENV
         .\vcpkg\vcpkg install
+    # - name: Configure CMake
+    #   run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake --preset windows-release
 
     - name: Build
-      run: cmake --build build
+      run: cd build && cmake .. && cmake --build .
+    
+    - name: Archive Windows build artifacts
+      run: powershell Compress-Archive -Path build\* -DestinationPath windows-build-artifacts.zip
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build-artifacts
+        path: windows-build-artifacts.zip 
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: windows-build-artifacts
+    #     path: build/
+
+  download-artifacts:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - uses: actions/checkout@v2
+
+    - name: Download Linux build artifacts
+      if: needs.build-linux.result == 'success'
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-build-artifacts
+        path: linux-build/
+
+    - name: Download Windows build artifacts
+      if: needs.build-windows.result == 'success'
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-build-artifacts
+        path: windows-build/
+    - name: Determine next version
+      id: get_version
+      run: |
+        git fetch --tags
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "")
+        if [ -z "$latest_tag" ]; then
+          next_version="v1.0.0"
+        else
+          IFS='.' read -r -a version_parts <<< "$latest_tag"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          if [ "$patch" -ge 9 ]; then
+            patch=0
+            if [ "$minor" -ge 9 ]; then
+              minor=0
+              major=$((major + 1))
+            else
+              minor=$((minor + 1))
+            fi
+          else
+            patch=$((patch + 1))
+          fi
+          next_version="$major.$minor.$patch"
+        fi
+        echo "::set-output name=next_version::$next_version"
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.next_version }}
+        release_name: Release ${{ steps.get_version.outputs.next_version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Linux build artifacts to release
+      if: needs.build-linux.result == 'success'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux-build/linux-build-artifacts.zip
+        asset_name: linux-build-artifacts.zip
+        asset_content_type: application/zip
+  
+    - name: Upload Windows build artifacts to release
+      if: needs.build-windows.result == 'success'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: windows-build/windows-build-artifacts.zip
+        asset_name: windows-build-artifacts.zip
+        asset_content_type: application/zip
