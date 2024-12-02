@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
                     const std::string message =
-                        "Event:New_client Port:" + std::to_string(new_client.port()) + " Position:(20,60)";
+                        "Event:New_client Uuid:" + std::to_string(new_client.port()) + " Position:(20,60)";
                     server->send_reliable_packet(message, client);
                 }
             }
