@@ -30,7 +30,7 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 On Linux:
 ```bash
-chmod +x ./scripts/requirements.sh
+<chmod +x ./scripts/requirements.sh>
 ./scripts/requirements.sh
 ```
 
