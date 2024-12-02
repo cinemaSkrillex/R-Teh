@@ -19,8 +19,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
+      _otherPlayer("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
-      _testSprite("../assets/sprites/the_eye/boss.png", sf::IntRect{0, 0, 55, 68}),
       _entity1(_registry.spawn_entity()),
       _entity2(_registry.spawn_entity()),
       _groundEntity(_registry.spawn_entity()) {
@@ -31,7 +31,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _upSpaceship.setScale(3, 3);
     _downSpaceship.setScale(3, 3);
     _groundSprite.setScale(3, 3);
-    _testSprite.setScale(3, 3);
+    _otherPlayer.setScale(3, 3);
+    _otherPlayer.setOpacity(90);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
@@ -131,22 +132,23 @@ void Game::handleSignal(std::string signal) {
 
     if (signal.find("Event") != std::string::npos) {
         if (signal.find("new_client") != std::string::npos) {
-            spawn_player();
+            int player_port = std::stoi(signal.substr(signal.find("new_client") + 10));
+            add_player(player_port);
         } else if (signal.find("synchronize") != std::string::npos) {
-            spawn_player();
+            add_player(0);
         }
     }
 }
 
-void Game::spawn_player() {
+void Game::add_player(int player_port) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{0.f, 0.f});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 3.0f});
-    _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
-    _registry.add_component(player, RealEngine::Controllable{});
+    _registry.add_component(player, RealEngine::Position{100.f, 100.f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 0.0f});
     _registry.add_component(player, RealEngine::Drawable{});
-    _registry.add_component(
-        player, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+
+    _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
+
+    _players.emplace(player_port, player);
 }
 
 void Game::run() {
