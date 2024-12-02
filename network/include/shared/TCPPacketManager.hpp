@@ -20,6 +20,8 @@ class TCPPacketManager {
 
     // todo callback
     // packets binary protocol
+    // send message avec un endpoint
+    // check si besoin de 1 thread par nouveaux clients
     // get last message
     //  get all message
     // disconnect player
