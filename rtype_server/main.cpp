@@ -43,11 +43,14 @@ int main(int argc, char* argv[]) {
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
-                    std::string message =
+                    const std::string message =
                         "Event\nnew_client\n" + std::to_string(new_client.port()) + "\r";
                     server->send_reliable_packet(message, client);
                 }
             }
+
+            const std::string message = "Event\nsynchronize\n";
+            server->send_reliable_packet(message, new_client);
         });
 
         sf::Clock tickClock;
