@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            const std::string message = "Event\nsynchronize\n";
+            const std::string message = "Event\nsynchronize\nUuid: " + new_client.port();
             server->send_reliable_packet(message, new_client);
         });
 
