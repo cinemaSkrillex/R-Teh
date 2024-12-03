@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            std::string message = "Event:Synchronize Players:[";
+            std::string message = "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Players:[";
             for (int i = 0; i < players.size(); i++) {
                 if (i!=0)
                     message += "|";
