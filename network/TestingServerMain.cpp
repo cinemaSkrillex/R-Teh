@@ -35,7 +35,8 @@ int main(int argc, char* argv[]) {
             std::cout << "New client connected: " << client_endpoint << std::endl;
             server->send_message("Hello from server! after clientFSkozeoigz");
 
-            server->send_message("I sent ur endoint", client_endpoint);
+            server->send_message("Uwu I sent ur endoint", client_endpoint);
+            // server->send_file_to_client("epitech.pdf", client_endpoint);
         });
         server->setDisconnectClientCallback(
             [server](const asio::ip::tcp::endpoint& client_endpoint) {

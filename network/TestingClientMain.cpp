@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
         // TCP
         auto client = std::make_shared<TCPClient>(server_ip, server_port);
-        client->send_message("Hello from clientzeefjiejgerjg!");
+        // client->send_message("Hello from clientzeefjiejgerjg!");
 
         // keeping the thread alive, this is the only way for io_context to work
         std::this_thread::sleep_for(std::chrono::hours(1));

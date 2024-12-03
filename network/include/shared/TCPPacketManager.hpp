@@ -42,13 +42,12 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
 
     // new functions to send larger files
     void send_packet(std::shared_ptr<asio::ip::tcp::socket> socket, const TCPPacket& packet);
-    void send_file(const std::string& file_path, std::shared_ptr<asio::ip::tcp::socket> socket);
-    void receive_file(std::shared_ptr<asio::ip::tcp::socket> socket, const std::string& save_dir);
     void close();
 
+    void save_to_file(const std::vector<char>& file_data);
+
     // build packet
-    TCPPacket build_packet(TCPFlags flag, const std::string& message,
-                           const asio::ip::tcp::endpoint& endpoint);
+    // TODO when PACKET WORKS
 
     // callbacks
     std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
@@ -68,14 +67,10 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
 
     std::array<char, 1024> recv_buffer_;
 
-    enum { max_length = 1024 };
-    char           data_[max_length];
     Role           _role;
     std::string    _server_ip;
     unsigned short _server_port;
 
-    // private methods
-    void ensure_directory_exists(const std::string& directory_path);
     // handle receive
     void handle_receive(std::size_t bytes_recvd);
 };

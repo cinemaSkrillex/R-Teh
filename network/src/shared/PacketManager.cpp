@@ -221,7 +221,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
             }
             _received_packets.erase(pkt.start_sequence_nb);
             // std::cout << "Reassembled message: "
-                    //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
             // TODO: handle data
             const std::string message = std::string(complete_data.begin(), complete_data.end());
 
@@ -340,7 +340,7 @@ void PacketManager::send_reliable_packet(const std::string&             message,
                                          const asio::ip::udp::endpoint& endpoint) {
     int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
     // std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
-            //   << std::endl;
+    //   << std::endl;
 
     int start_sequence_nb;
     int end_sequence_nb;

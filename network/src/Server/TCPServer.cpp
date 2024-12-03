@@ -26,6 +26,11 @@ void TCPServer::send_message(const std::string& message, const asio::ip::tcp::en
     _packet_manager->send_message_to_client_endpoint(message, endpoint);
 }
 
+void TCPServer::send_file_to_client(const std::string&             file_path,
+                                    const asio::ip::tcp::endpoint& endpoint) {
+    // _packet_manager->send_file_to_client(file_path, endpoint);
+}
+
 void TCPServer::setNewClientCallback(
     const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback) {
     _packet_manager->_new_client_callback = callback;

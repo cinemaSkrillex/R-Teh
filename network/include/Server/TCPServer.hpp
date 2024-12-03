@@ -30,6 +30,7 @@ class TCPServer {
 
     void send_message(const std::string& message);
     void send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
+    void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
 
    private:
     std::shared_ptr<TCPPacketManager> _packet_manager;

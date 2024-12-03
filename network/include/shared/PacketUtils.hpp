@@ -13,7 +13,7 @@
 #include <vector>
 
 #define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 800
 
 enum class Role { SERVER, CLIENT };
 
