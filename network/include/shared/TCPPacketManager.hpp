@@ -8,6 +8,8 @@
 #ifndef TCPPACKETMANAGER_HPP
 #define TCPPACKETMANAGER_HPP
 
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -35,6 +37,10 @@ class TCPPacketManager {
 
     void send_message(const std::string& message);
 
+    // new functions to send larger files
+    void send_packet(std::shared_ptr<asio::ip::tcp::socket> socket, const TCPPacket& packet);
+    void send_file(const std::string& file_path, std::shared_ptr<asio::ip::tcp::socket> socket);
+    void receive_file(std::shared_ptr<asio::ip::tcp::socket> socket, const std::string& save_dir);
     void close();
 
    private:

@@ -7,6 +7,20 @@
 
 #include "../../include/shared/TCPPacketManager.hpp"
 
+void ensure_directory_exists(const std::string& directory_path) {
+    namespace fs = std::filesystem;
+
+    fs::path dir(directory_path);
+
+    if (!fs::exists(dir)) {
+        std::cout << "Directory does not exist. Creating: " << directory_path << std::endl;
+        if (!fs::create_directories(dir)) {
+            std::cerr << "Failed to create directory: " << directory_path << std::endl;
+            throw std::runtime_error("Failed to create directory.");
+        }
+    }
+}
+
 TCPPacketManager::TCPPacketManager(Role role) : _io_context(), _socket(_io_context), _role(role) {}
 
 void TCPPacketManager::start_server(unsigned short port) {
@@ -32,7 +46,6 @@ void TCPPacketManager::accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> a
                                                 << std::endl;
                                   }
                               });
-
             listen_for_client_data(new_socket);
         } else {
             std::cerr << "Accept error: " << ec.message() << std::endl;
@@ -50,6 +63,8 @@ void TCPPacketManager::listen_for_client_data(
             if (!ec) {
                 std::cout << "Received from client: " << std::string(buffer->data(), length)
                           << std::endl;
+                // send_file("epitech.pdf", client_socket);
+
                 listen_for_client_data(client_socket);
             } else if (ec != asio::error::eof) {
                 std::cerr << "Client read error: " << ec.message() << std::endl;
@@ -80,6 +95,9 @@ void TCPPacketManager::listen_for_server_data() {
         asio::buffer(data_, max_length), [this](asio::error_code ec, std::size_t length) {
             if (!ec) {
                 std::cout << "Received: " << std::string(data_, length) << std::endl;
+                auto socket_ptr = std::make_shared<asio::ip::tcp::socket>(std::move(_socket));
+                // receive_file(socket_ptr, "./received_files");
+
                 listen_for_server_data();
             } else {
                 std::cerr << "Error: " << ec.message() << std::endl;
@@ -88,7 +106,23 @@ void TCPPacketManager::listen_for_server_data() {
     _io_context.run();
 }
 
+void TCPPacketManager::send_packet(std::shared_ptr<asio::ip::tcp::socket> socket,
+                                   const TCPPacket&                       packet) {
+    auto serialized_data = std::make_shared<std::vector<char>>(packet.serialize());
+    asio::async_write(*socket, asio::buffer(*serialized_data),
+                      [serialized_data](asio::error_code ec, std::size_t /*length*/) {
+                          if (ec) {
+                              std::cerr << "Failed to send packet: " << ec.message() << std::endl;
+                          }
+                      });
+}
+
 void TCPPacketManager::close() {
-    _socket.close();
+    if (_socket.is_open()) {
+        _socket.close();
+        std::cout << "Socket closed." << std::endl;
+    } else {
+        std::cerr << "Socket was already closed." << std::endl;
+    }
     _io_context.stop();
 }
