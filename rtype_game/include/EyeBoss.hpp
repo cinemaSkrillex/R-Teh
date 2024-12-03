@@ -1,21 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <unordered_map>
-
-#include "ECS/Components/AI.hpp"
-#include "ECS/Components/Acceleration.hpp"
-#include "ECS/Components/Drawable.hpp"
-#include "ECS/Components/Position.hpp"
-#include "ECS/Components/Radius.hpp"
-#include "ECS/Components/Rotation.hpp"
-#include "ECS/Components/Sprite.hpp"
-#include "ECS/Components/SpriteSheet.hpp"
-#include "ECS/Components/Target.hpp"
-#include "ECS/Components/Velocity.hpp"
-#include "ECS/Entities/Entity.hpp"
-#include "ECS/Registry/Registry.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
+#include "../../game_engine/include/Engine.hpp"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
