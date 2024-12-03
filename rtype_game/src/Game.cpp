@@ -10,7 +10,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _controls(_registry),
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
-      _controlSystem(),
+      _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
@@ -39,7 +39,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _spaceshipSheet.emplace("down", _downSpaceship);
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, 3.0f});
+    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _registry.add_component(_entity2, RealEngine::Controllable{});
     _registry.add_component(_entity2, RealEngine::Drawable{});
@@ -133,13 +133,8 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
     std::string                                  key, value;
 
     while (stream) {
-        // Extract key
         if (!std::getline(stream, key, ':')) break;
-
-        // Extract value (up to the next space or end of string)
         if (!std::getline(stream, value, ' ')) break;
-
-        // Trim leading and trailing spaces from key and value
         key.erase(0, key.find_first_not_of(" \t"));
         key.erase(key.find_last_not_of(" \t") + 1);
         value.erase(0, value.find_first_not_of(" \t"));
@@ -155,7 +150,6 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 
-    // Use a regular expression to extract the values inside "(x,y)"
     std::regex  positionRegex(R"(\((\d+),(\d+)\))");
     std::smatch match;
 
@@ -170,6 +164,39 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
     return position;
 }
 
+struct PlayerData {
+    std::string  uuid;
+    sf::Vector2f position;
+};
+
+// Function to parse the player list string (without the surrounding brackets)
+std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
+    std::vector<PlayerData> players;
+
+    // Remove the surrounding brackets
+    std::string cleanedList = playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
+
+    // Split the string by "|" delimiter
+    std::regex  playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+    std::smatch match;
+
+    std::string::const_iterator searchStart(cleanedList.cbegin());
+    while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
+        if (match.size() == 4) {
+            PlayerData player;
+            player.uuid     = match[1].str();  // Extract UUID
+            player.position = sf::Vector2f(std::stof(match[2].str()),
+                                           std::stof(match[3].str()));  // Extract position
+            players.push_back(player);
+        }
+
+        // Move the search start to the end of the current match
+        searchStart = match.suffix().first;
+    }
+
+    return players;
+}
+
 void Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
@@ -179,26 +206,49 @@ void Game::handleSignal(std::string signal) {
     if (parsedPacket.find("Event") != parsedPacket.end()) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
-            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            // const int          port     = std::stoi(parsedPacket.at("Port"));
-            // add_player(port, position);
+            const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
+            add_player(uuid, position);
         } else if (event == "Synchronize") {
-            // const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            // const int          port     = std::stoi(parsedPacket.at("Port"));
-            // add_player(port, position);
+            const std::string             players = parsedPacket.at("Players");
+            const std::vector<PlayerData> datas   = parsePlayerList(players);
+            for (PlayerData player : datas) {
+                add_player(std::stoi(player.uuid), player.position);
+            }
         }
     }
 }
 
 void Game::add_player(int player_port, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{0.0f, 0.0f});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 0.0f});
+    _registry.add_component(player, RealEngine::Position{position.x, position.y});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
     _registry.add_component(player, RealEngine::Drawable{});
 
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
 
     _players.emplace(player_port, player);
+}
+
+sf::Vector2f Game::getPlayerNormalizedDirection() {
+    sf::Vector2f direction(0, 0);
+
+    if (_window.isFocused()) {
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Up))) {
+            direction.y = -1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Down))) {
+            direction.y = 1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Left))) {
+            direction.x = -1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Right))) {
+            direction.x = 1;
+        }
+    }
+    std::cout << "Direction: " << direction.x << ", " << direction.y << std::endl;
+    return direction;
 }
 
 void Game::run() {
@@ -212,6 +262,10 @@ void Game::run() {
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
+        const sf::Vector2f direction = getPlayerNormalizedDirection();
+        const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
+                                    std::to_string(direction.y) + ")";
+        _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
 }

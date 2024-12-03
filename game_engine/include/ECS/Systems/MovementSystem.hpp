@@ -16,6 +16,7 @@ namespace RealEngine {
 class MovementSystem {
    public:
     void update(Registry& registry, float deltaTime);
+    void limitSpeed(Velocity& velocity);
     void applyFriction(Velocity& velocity, float deltaTime);
 };
 }  // namespace RealEngine

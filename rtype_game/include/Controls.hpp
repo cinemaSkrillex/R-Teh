@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/System/Vector2.hpp>
+
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/Controllable.hpp"
 #include "ECS/Components/Drawable.hpp"

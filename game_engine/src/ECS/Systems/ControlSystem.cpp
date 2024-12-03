@@ -9,7 +9,7 @@
 
 namespace RealEngine {
 
-ControlSystem::ControlSystem() {
+ControlSystem::ControlSystem(Window& window) : _window(window) {
     actionHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
     actionHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
     actionHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
@@ -30,6 +30,7 @@ ControlSystem::ControlSystem() {
 }
 
 void ControlSystem::update(Registry& registry, float deltaTime) {
+    if (!_window.isFocused()) return;
     auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
 
     for (auto entity : entities) {
@@ -56,6 +57,13 @@ void ControlSystem::setActionHandler(Action action, ActionHandler handler) {
 
 void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler) {
     actionReleaseHandlers[action] = handler;
+}
+
+sf::Keyboard::Key ControlSystem::getBoundKey(Action action) {
+    for (const auto& [key, act] : keyBindings) {
+        if (act == action) return key;
+    }
+    return sf::Keyboard::Unknown;
 }
 
 }  // namespace RealEngine

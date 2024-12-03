@@ -15,6 +15,7 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
     for (auto entity : entities) {
         auto* position = registry.get_component<Position>(entity);
         auto* velocity = registry.get_component<Velocity>(entity);
+        limitSpeed(*velocity);
         if (position && velocity) {
             position->x += velocity->vx * deltaTime;
             position->y += velocity->vy * deltaTime;
@@ -22,6 +23,20 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
         if (velocity->airFrictionForce > 0.0f) {
             applyFriction(*velocity, deltaTime);
         }
+    }
+}
+
+void MovementSystem::limitSpeed(Velocity& velocity) {
+    if (velocity.vx > velocity.maxSpeed.x) {
+        velocity.vx = velocity.maxSpeed.x;
+    } else if (velocity.vx < -velocity.maxSpeed.x) {
+        velocity.vx = -velocity.maxSpeed.x;
+    }
+
+    if (velocity.vy > velocity.maxSpeed.y) {
+        velocity.vy = velocity.maxSpeed.y;
+    } else if (velocity.vy < -velocity.maxSpeed.y) {
+        velocity.vy = -velocity.maxSpeed.y;
     }
 }
 

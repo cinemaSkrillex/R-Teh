@@ -8,7 +8,6 @@
 #include <asio.hpp>
 #include <iostream>
 
-#include "include/Client/TCPClient.hpp"
 #include "include/Client/UDPClient.hpp"
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
 
@@ -23,7 +22,7 @@
 #endif
 
 int main(int argc, char* argv[]) {
-    if (argc != 3) {
+    if (argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
                   << std::endl;
         return 1;
@@ -31,29 +30,26 @@ int main(int argc, char* argv[]) {
 
     std::string    server_ip   = argv[1];
     unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-    // unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
         std::cout << "Starting client" << std::endl;
-
-        // TCP
-        auto client = std::make_shared<TCPClient>(server_ip, server_port);
-        // client->send_message("Hello from clientzeefjiejgerjg!");
-
-        // keeping the thread alive, this is the only way for io_context to work
-        std::this_thread::sleep_for(std::chrono::hours(1));
-
-        // UDP (don't forget to put argv != 4 and uncomment the client_port)
-
-        //  auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip,
-        //  server_port); client->send_new_client(); client->send_test();
-        //  client->send_unreliable_packet("Hello");
-        //  client->send_unreliable_packet("World");
-        //  client->send_reliable_packet("Hello1");
-        //  client->send_unreliable_packet("Hello2");
-        //  client->send_reliable_packet("Hello3");
-        //  client->send_unreliable_packet("Hello4");
+        asio::io_context io_context;
+        auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
+        client->send_new_client();
+        client->send_test();
+        // client->send_unreliable_packet("Hello");
         // client->send_unreliable_packet("World");
+        // client->send_reliable_packet("Hello1");
+        // client->send_unreliable_packet("Hello2");
+        // client->send_reliable_packet("Hello3");
+        // client->send_unreliable_packet("Hello4");
+        // io_context.run();
+
+        // for how long the client will run:
+        std::this_thread::sleep_for(std::chrono::seconds(30));
+        std::cout << "Client stopped" << std::endl;
+        exit(0);
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

@@ -49,6 +49,7 @@ class Game {
     RealEngine::Entity createEntity();
     void               handleSignal(std::string signal);
     void               add_player(int player_port, sf::Vector2f position);
+    sf::Vector2f       getPlayerNormalizedDirection();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;

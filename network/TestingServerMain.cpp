@@ -9,7 +9,6 @@
 #include <iostream>
 
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
-#include "include/Server/TCPServer.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -27,29 +26,13 @@ int main(int argc, char* argv[]) {
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
 
     try {
-        // asio::io_context io_context;
-        // TCP
-        auto server = std::make_shared<TCPServer>(port);
-        std::cout << "Server " << port << std::endl;
-        server->setNewClientCallback([server](const asio::ip::tcp::endpoint& client_endpoint) {
-            std::cout << "New client connected: " << client_endpoint << std::endl;
-            server->send_message("Hello from server! after clientFSkozeoigz");
+        asio::io_context io_context;
+        auto             server = std::make_shared<UDPServer>(io_context, port);
 
-            server->send_message("Uwu I sent ur endoint", client_endpoint);
-            // server->send_file_to_client("epitech.pdf", client_endpoint);
-        });
-        server->setDisconnectClientCallback(
-            [server](const asio::ip::tcp::endpoint& client_endpoint) {
-                std::cout << "Client disconnected from server I detected it: " << client_endpoint
-                          << std::endl;
-            });
-        std::this_thread::sleep_for(std::chrono::hours(1));  // For example, wait for 1 hour
-
-        std::cout << "end of server " << port << std::endl;
-        // UDP
-        //  auto             server = std::make_shared<UDPServer>(io_context, port);
-
-        // io_context.run();
+        // for how long the server will run:
+        std::this_thread::sleep_for(std::chrono::seconds(30));
+        std::cout << "Server stopped" << std::endl;
+        exit(0);
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;
