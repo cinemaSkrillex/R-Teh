@@ -22,6 +22,8 @@
 
 #include "PacketUtils.hpp"
 
+// enum class Role { SERVER, CLIENT };
+
 // Custom hash and equality for asio::ip::udp::endpoint
 // we need it in order to know if we have already seen a client (kind of a select in C)
 

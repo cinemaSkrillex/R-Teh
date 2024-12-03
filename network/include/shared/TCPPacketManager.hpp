@@ -16,9 +16,10 @@
 
 #include "TCPPacketUtils.hpp"
 
-class TCPPacketManager {
+class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
    public:
     TCPPacketManager(Role role);
+    ~TCPPacketManager() { close(); }
 
     // todo callback
     // packets binary protocol
@@ -36,6 +37,8 @@ class TCPPacketManager {
     void accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);
 
     void send_message(const std::string& message);
+    void send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
+    void client_send_message(const std::string& message);
 
     // new functions to send larger files
     void send_packet(std::shared_ptr<asio::ip::tcp::socket> socket, const TCPPacket& packet);
@@ -43,10 +46,21 @@ class TCPPacketManager {
     void receive_file(std::shared_ptr<asio::ip::tcp::socket> socket, const std::string& save_dir);
     void close();
 
+    // callbacks
+    std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
+    std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _disconnect_client_callback;
+    std::function<void(const std::string& message, const asio::ip::tcp::endpoint& endpoint)>
+        _receive_message_callback;
+    std::function<void(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint)>
+        _receive_file_callback;
+
    private:
-    asio::io_context      _io_context;
-    asio::ip::tcp::socket _socket;
-    packet                _pkt;
+    asio::io_context                                           _io_context;
+    std::shared_ptr<asio::ip::tcp::socket>                     _socket;
+    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
+    packet                                                     _pkt;
+    std::vector<std::shared_ptr<asio::ip::tcp::socket>>        _client_sockets;
+    std::thread                                                _io_thread;
 
     enum { max_length = 1024 };
     char           data_[max_length];

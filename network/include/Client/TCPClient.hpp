@@ -8,16 +8,19 @@
 #ifndef TCPCLIENT_HPP
 #define TCPCLIENT_HPP
 
-#include "PacketUtils.hpp"
+// #include "../shared/PacketUtils.hpp"
 #include "TCPPacketManager.hpp"
 #include "TCPPacketUtils.hpp"
 
 class TCPClient {
    public:
     TCPClient(const std::string& host, unsigned short port);
+    ~TCPClient();
+
+    void send_message(const std::string& message);
 
    private:
-    TCPPacketManager _packet_manager;
+    std::shared_ptr<TCPPacketManager> _packet_manager;
 };
 
 #endif
