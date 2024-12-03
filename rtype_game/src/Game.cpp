@@ -43,6 +43,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _registry.add_component(_entity2, RealEngine::Drawable{});
     _registry.add_component(
         _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+    _registry.add_component(
+        _entity2, RealEngine::Collision{
+                      {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE}, "spaceship", false});
 
     for (int i = 0; i < 50; i++) {
         RealEngine::Entity groundBlock = _registry.spawn_entity();
@@ -258,7 +261,7 @@ sf::Vector2f Game::getPlayerNormalizedDirection() {
 
 void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
-        {"spaceship", _entity2}, {"ground", _groundBlocksEntities[0]}};
+        {"spaceship", _entity2}, {"ground", _groundBlocksEntities[3]}};
     while (_window.isOpen()) {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
