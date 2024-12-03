@@ -38,8 +38,11 @@ class UDPServer {
     const std::string getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
 
    private:
-    asio::ip::udp::socket   _socket;
     asio::ip::udp::endpoint _client_endpoint;
+    asio::ip::udp::socket   _socket;
+    asio::io_context&       _io_context;
+    std::thread             _io_context_thread;
+    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
 
     PacketManager _packet_manager;
 };

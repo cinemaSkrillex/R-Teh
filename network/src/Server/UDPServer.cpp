@@ -17,11 +17,20 @@
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
       _client_endpoint(),
-      _packet_manager(io_context, _socket, Role::SERVER) {
+      _packet_manager(io_context, _socket, Role::SERVER),
+      _io_context(io_context),
+      _work_guard(asio::make_work_guard(io_context)) {
     _packet_manager.start();
+    _io_context_thread = std::thread([this]() { _io_context.run(); });
 }
 
-UDPServer::~UDPServer() { std::cout << "deleting UDPServer"; }
+UDPServer::~UDPServer() {
+    std::cout << "deleting UDPServer";
+    _io_context.stop();
+    if (_io_context_thread.joinable()) {
+        _io_context_thread.join();
+    }
+}
 
 void UDPServer::setEndpoint(const asio::ip::udp::endpoint& endpoint) {
     _client_endpoint = endpoint;
