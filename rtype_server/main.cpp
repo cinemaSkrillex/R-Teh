@@ -10,7 +10,6 @@
 #include <iostream>
 #include <thread>
 
-#include "UDPServer.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -39,26 +38,28 @@ int main(int argc, char* argv[]) {
         std::thread io_thread([&io_context]() { io_context.run(); });
 
         server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
-            std::cout << "Callback: New client connected from " << new_client.address() << std::endl;
+            std::cout << "Callback: New client connected from " << new_client.address()
+                      << std::endl;
             std::vector<int> players = {};
 
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
                     const std::string message =
-                        "Event:New_client Uuid:" + std::to_string(new_client.port()) + " Position:(20,60)";
+                        "Event:New_client Uuid:" + std::to_string(new_client.port()) +
+                        " Position:(20,60)";
                     server->send_reliable_packet(message, client);
                     players.push_back(client.port());
                 }
             }
 
-            std::string message = "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Players:[";
+            std::string message =
+                "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Players:[";
             for (int i = 0; i < players.size(); i++) {
-                if (i!=0)
-                    message += "|";
+                if (i != 0) message += "|";
                 message += std::to_string(players.at(i)) + ",(100.0,100.0)";
             }
-            message +="]";
+            message += "]";
             server->send_reliable_packet(message, new_client);
         });
 

@@ -34,15 +34,19 @@ class UDPServer {
 
     const asio::ip::udp::endpoint& getEndpoint() const;
     const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
-    const std::string getLastReliablePacket();
-    const std::string getLastUnreliablePacket();
-    const std::string getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
+    const std::string        getLastReliablePacket();
+    const std::string        getLastUnreliablePacket();
+    const std::string        getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::string> get_unreliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::string> get_reliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
 
    private:
-    asio::ip::udp::endpoint _client_endpoint;
-    asio::ip::udp::socket   _socket;
-    asio::io_context&       _io_context;
-    std::thread             _io_context_thread;
+    asio::ip::udp::endpoint                                    _client_endpoint;
+    asio::ip::udp::socket                                      _socket;
+    asio::io_context&                                          _io_context;
+    std::thread                                                _io_context_thread;
     asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
 
     PacketManager _packet_manager;

@@ -71,6 +71,12 @@ class PacketManager {
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
     const std::string get_last_reliable_packet();
     const std::string get_last_unreliable_packet();
+
+    std::vector<std::string> get_unreliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::string> get_reliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
     // endpoint);
     void print_packet(const packet& pkt);
@@ -111,11 +117,13 @@ class PacketManager {
     std::deque<packet> _retry_queue;
     std::mutex         _retry_queue_mutex;
 
-    std::stack<std::string> _unprocessed_unreliable_messages;
-    std::mutex              _unprocessed_unreliable_messages_mutex;
+    // std::stack<std::string> _unprocessed_unreliable_messages;
+    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_unreliable_messages;
+    std::mutex _unprocessed_unreliable_messages_mutex;
 
-    std::stack<std::string> _unprocessed_reliable_messages;
-    std::mutex              _unprocessed_reliable_messages_mutex;
+    // std::stack<std::string> _unprocessed_reliable_messages;
+    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
+    std::mutex _unprocessed_reliable_messages_mutex;
 
     // std::mutex  _message_complete_mutex;
     // std::string _message_complete_buffer;

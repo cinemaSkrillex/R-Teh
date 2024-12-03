@@ -5,7 +5,7 @@
 ** UDPServer.cpp
 */
 
-#include "UDPServer.hpp"
+#include "../../include/Server/UDPServer.hpp"
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -41,9 +41,7 @@ void UDPServer::setNewClientCallback(
     _packet_manager._new_client_callback = callback;
 }
 
-const asio::ip::udp::endpoint& UDPServer::getEndpoint() const {
-    return _client_endpoint;
-}
+const asio::ip::udp::endpoint& UDPServer::getEndpoint() const { return _client_endpoint; }
 
 const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>
 UDPServer::getClients() {
@@ -86,4 +84,14 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
 void UDPServer::send_reliable_packet(const std::string&             message,
                                      const asio::ip::udp::endpoint& endpoint) {
     _packet_manager.send_reliable_packet(message, endpoint);
+}
+
+std::vector<std::string> UDPServer::get_unreliable_messages_from_endpoint(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_unreliable_messages_from_endpoint(endpoint);
+}
+
+std::vector<std::string> UDPServer::get_reliable_messages_from_endpoint(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_reliable_messages_from_endpoint(endpoint);
 }

@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** PacketUtils.hpp
+*/
+
 #ifndef PACKETUTILS_HPP
 #define PACKETUTILS_HPP
 
@@ -6,7 +13,23 @@
 #include <vector>
 
 #define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 800
+
+enum class Role { SERVER, CLIENT };
+
+struct EndpointHash {
+    std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
+        std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());
+        std::size_t h2 = std::hash<unsigned short>()(endpoint.port());
+        return h1 ^ (h2 << 1);  // Combine the hashes
+    }
+};
+
+struct EndpointEqual {
+    bool operator()(const asio::ip::udp::endpoint& lhs, const asio::ip::udp::endpoint& rhs) const {
+        return lhs.address() == rhs.address() && lhs.port() == rhs.port();
+    }
+};
 
 enum Flags {
     UNRELIABLE    = 0,
@@ -20,7 +43,6 @@ enum Flags {
     TEST          = 8,
 };
 
-// structure for the binary protocol
 struct packet {
     int                     sequence_nb;
     int                     start_sequence_nb;
@@ -55,10 +77,8 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
 
     std::size_t total_size = sizeof(pkt.sequence_nb) + sizeof(pkt.start_sequence_nb) +
                              sizeof(pkt.end_sequence_nb) + sizeof(pkt.packet_size) +
-                             sizeof(pkt.flag) + sizeof(uint16_t) +  // size of the port
-                             sizeof(std::size_t) +                  // size of the address length
-                             endpoint_address.size() +              // actual address size
-                             pkt.data.size();
+                             sizeof(pkt.flag) + sizeof(uint16_t) + sizeof(std::size_t) +
+                             endpoint_address.size() + pkt.data.size();
 
     std::vector<char> buffer(total_size);
     auto              it = buffer.begin();
