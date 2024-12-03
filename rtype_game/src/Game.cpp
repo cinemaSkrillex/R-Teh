@@ -39,7 +39,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _spaceshipSheet.emplace("down", _downSpaceship);
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, 3.0f});
+    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _registry.add_component(_entity2, RealEngine::Controllable{});
     _registry.add_component(_entity2, RealEngine::Drawable{});
@@ -222,7 +222,7 @@ void Game::handleSignal(std::string signal) {
 void Game::add_player(int player_port, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, 0.0f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
     _registry.add_component(player, RealEngine::Drawable{});
 
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});

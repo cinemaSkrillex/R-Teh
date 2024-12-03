@@ -24,7 +24,7 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _registry.add_component(
         _entity,
         RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}});
-    _registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, 1.8f});
+    _registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {400.0f, 400.0f}, 1.8f});
     _registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
     _registry.add_component(_entity, RealEngine::Rotation{300.0f});
     _registry.add_component(
@@ -195,8 +195,10 @@ void EyeBoss::shootLaser() {
                                                   boss_position->y + (std::sin(angleRad) * 170)},
                              RealEngine::Drawable{});
     _registry.add_component(laser, RealEngine::SpriteComponent{_laserSprite});
-    _registry.add_component(laser, RealEngine::Velocity{std::cos(angleRad) * 500.0f,
-                                                        std::sin(angleRad) * 500.0f, 0.0f});
+    _registry.add_component(
+        laser,
+        RealEngine::Velocity{
+            std::cos(angleRad) * 500.0f, std::sin(angleRad) * 500.0f, {500.0f, 500.0f}, 0.0f});
     _registry.add_component(laser, RealEngine::Rotation{boss_rotation->angle});
     _laserEntities.push_back(laser);
 }

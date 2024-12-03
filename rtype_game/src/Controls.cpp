@@ -17,35 +17,31 @@ void Controls::moveUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& 
                       RealEngine::Position& position, float deltaTime) {
     if (velocity.vy > 50) velocity.vy = 50;
     velocity.vy -= acceleration.ay * 3 * deltaTime;
-    if (velocity.vy < -400) velocity.vy = -400;
 }
 
 void Controls::moveDown(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                         RealEngine::Position& position, float deltaTime) {
     if (velocity.vy < -50) velocity.vy = -50;
     velocity.vy += acceleration.ay * 3 * deltaTime;
-    if (velocity.vy > 400) velocity.vy = 400;
 }
 
 void Controls::moveLeft(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                         RealEngine::Position& position, float deltaTime) {
     if (velocity.vx > 50) velocity.vx = 50;
     velocity.vx -= acceleration.ax * 3 * deltaTime;
-    if (velocity.vx < -400) velocity.vx = -400;
 }
 
 void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                          RealEngine::Position& position, float deltaTime) {
     if (velocity.vx < -50) velocity.vx = -50;
     velocity.vx += acceleration.ax * 3 * deltaTime;
-    if (velocity.vx > 400) velocity.vx = 400;
 }
 
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
     RealEngine::Entity laserEntity = _registry.spawn_entity();
     _registry.add_component(laserEntity, RealEngine::Position{position.x + 32 * 3, position.y});
-    _registry.add_component(laserEntity, RealEngine::Velocity{200.0f, 0.0f});
+    _registry.add_component(laserEntity, RealEngine::Velocity{200.0f, 0.0f, {200.0f, 0.0f}, 0.0f});
     _registry.add_component(laserEntity, RealEngine::Drawable{});
     _registry.add_component(laserEntity, RealEngine::SpriteComponent{_bulletSprite});
     _entities.push_back(new RealEngine::Entity(laserEntity));
