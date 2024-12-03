@@ -5,7 +5,7 @@
 ** PacketManager.cpp
 */
 
-#include "PacketManager.hpp"
+#include "../../include/shared/PacketManager.hpp"
 
 PacketManager::PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role)
     : _message_id(0),
@@ -208,13 +208,13 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
             }
             _received_packets.erase(pkt.start_sequence_nb);
             // std::cout << "Reassembled message: "
-                    //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
+            //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
             // TODO: handle data
             const std::string message = std::string(complete_data.begin(), complete_data.end());
 
             // Process the message content
             std::lock_guard<std::mutex> unprocessed_lock(_unprocessed_reliable_messages_mutex);
-            _unprocessed_reliable_messages.push(message);
+            _unprocessed_reliable_messages.push(std::make_pair(message, pkt.endpoint));
         }
     }
 
@@ -225,7 +225,7 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
-    _unprocessed_unreliable_messages.push(message);
+    _unprocessed_unreliable_messages.push(std::make_pair(message, _endpoint));
 }
 
 void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
@@ -327,7 +327,7 @@ void PacketManager::send_reliable_packet(const std::string&             message,
                                          const asio::ip::udp::endpoint& endpoint) {
     int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
     // std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
-            //   << std::endl;
+    //   << std::endl;
 
     int start_sequence_nb;
     int end_sequence_nb;
@@ -434,7 +434,7 @@ PacketManager::getKnownClients() {
 const std::string PacketManager::get_last_reliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
     if (_unprocessed_reliable_messages.empty()) return "";
-    std::string message = _unprocessed_reliable_messages.top();
+    std::string message = _unprocessed_reliable_messages.top().first;
     _unprocessed_reliable_messages.pop();
     return message;
 }
@@ -442,9 +442,37 @@ const std::string PacketManager::get_last_reliable_packet() {
 const std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     if (_unprocessed_unreliable_messages.empty()) return "";
-    std::string message = _unprocessed_unreliable_messages.top();
+    std::string message = _unprocessed_unreliable_messages.top().first;
     _unprocessed_unreliable_messages.pop();
     return message;
+}
+
+std::vector<std::string> PacketManager::get_unreliable_messages_from_endpoint(
+    const asio::ip::udp::endpoint& endpoint) {
+    std::vector<std::string>    messages;
+    std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+    while (!_unprocessed_unreliable_messages.empty()) {
+        auto message = _unprocessed_unreliable_messages.top();
+        if (message.second == endpoint) {
+            messages.push_back(message.first);
+        }
+        _unprocessed_unreliable_messages.pop();
+    }
+    return messages;
+}
+
+std::vector<std::string> PacketManager::get_reliable_messages_from_endpoint(
+    const asio::ip::udp::endpoint& endpoint) {
+    std::vector<std::string>    messages;
+    std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
+    while (!_unprocessed_reliable_messages.empty()) {
+        auto message = _unprocessed_reliable_messages.top();
+        if (message.second == endpoint) {
+            messages.push_back(message.first);
+        }
+        _unprocessed_reliable_messages.pop();
+    }
+    return messages;
 }
 
 void PacketManager::print_packet(const packet& pkt) {

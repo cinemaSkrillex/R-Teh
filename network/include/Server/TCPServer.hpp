@@ -5,36 +5,34 @@
 ** TCPServer.hpp
 */
 
-#ifndef TCPSERVER_HPP
-#define TCPSERVER_HPP
+#ifndef TCPCLIENT_HPP
+#define TCPCLIENT_HPP
 
-#if defined(_WIN32) || defined(_WIN64)
-#define _WIN32_WINNT 0x0A00
-#endif
-
-#include <asio.hpp>
-#include <iostream>
-#include <array>
-#include <memory>
-
-// SERVER_API is a macro for the visibility of the class UDPServer,
-// its for the shared library
+#include "PacketUtils.hpp"
+#include "TCPPacketManager.hpp"
+#include "TCPPacketUtils.hpp"
 
 class TCPServer {
-  public:
-    TCPServer(asio::io_context& io_context, unsigned short port);
+   public:
+    TCPServer(unsigned short port);
+    ~TCPServer();
 
-  private:
-    void start_accept();
-    void handle_accept(std::shared_ptr<asio::ip::tcp::socket> socket,
-                       const asio::error_code&                error);
-    void handle_read(std::shared_ptr<asio::ip::tcp::socket>  socket,
-                     std::shared_ptr<std::array<char, 1024>> buffer, const asio::error_code& error,
-                     std::size_t bytes_transferred);
-    void handle_write(std::shared_ptr<asio::ip::tcp::socket> socket, const asio::error_code& error,
-                      std::size_t bytes_transferred);
+    void setNewClientCallback(
+        const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback);
+    void setDisconnectClientCallback(
+        const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback);
+    // void setReceiveMessageCallback(
+    //     const std::function<void(const std::string&             message,
+    //                              const asio::ip::tcp::endpoint& endpoint)>& callback);
+    // void setReceiveFileCallback(
+    //     const std::function<void(const std::string&             file_path,
+    //                              const asio::ip::tcp::endpoint& endpoint)>& callback);
 
-    asio::ip::tcp::acceptor acceptor_;
+    void send_message(const std::string& message);
+    void send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
+    void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
+
+   private:
+    std::shared_ptr<TCPPacketManager> _packet_manager;
 };
-
-#endif // TCPSERVER_HPP
+#endif

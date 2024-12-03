@@ -5,64 +5,38 @@
 ** TCPServer.cpp
 */
 
-#include "../include/Server/TCPServer.hpp"
+#include "../../include/Server/TCPServer.hpp"
 
-TCPServer::TCPServer(asio::io_context& io_context, unsigned short port)
-    : acceptor_(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)) {
-    start_accept();
+// TCPServer::TCPServer(unsigned short port) : _packet_manager(Role::SERVER) {
+//     _packet_manager.start_server(port);
+// }
+
+TCPServer::TCPServer(unsigned short port)
+    : _packet_manager(std::make_shared<TCPPacketManager>(Role::SERVER)) {
+    _packet_manager->start_server(port);
 }
 
-void TCPServer::start_accept() {
-    auto socket = std::make_shared<asio::ip::tcp::socket>(acceptor_.get_executor());
-    acceptor_.async_accept(
-        *socket, [this, socket](const asio::error_code& error) { handle_accept(socket, error); });
+TCPServer::~TCPServer() { _packet_manager->close(); }
+
+void TCPServer::send_message(const std::string& message) {
+    _packet_manager->send_message_to_client(message);
 }
 
-void TCPServer::handle_accept(std::shared_ptr<asio::ip::tcp::socket> socket,
-                              const asio::error_code&                error) {
-    if (!error) {
-        auto buffer = std::make_shared<std::array<char, 1024>>();
-        socket->async_read_some(
-            asio::buffer(*buffer),
-            [this, socket, buffer](const asio::error_code& error, std::size_t bytes_transferred) {
-                handle_read(socket, buffer, error, bytes_transferred);
-            });
-    }
-    start_accept();
+void TCPServer::send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint) {
+    _packet_manager->send_message_to_client_endpoint(message, endpoint);
 }
 
-void TCPServer::handle_read(std::shared_ptr<asio::ip::tcp::socket>  socket,
-                            std::shared_ptr<std::array<char, 1024>> buffer,
-                            const asio::error_code& error, std::size_t bytes_transferred) {
-    if (!error) {
-        std::string message(buffer->data(), bytes_transferred);
-
-        if (message == "ping") {
-            auto response = std::make_shared<std::string>("pong");
-            asio::async_write(*socket, asio::buffer(*response),
-                              [this, socket, response](const asio::error_code& error,
-                                                       std::size_t             bytes_transferred) {
-                                  handle_write(socket, error, bytes_transferred);
-                              });
-        } else {
-            auto new_buffer = std::make_shared<std::array<char, 1024>>();
-            socket->async_read_some(asio::buffer(*new_buffer),
-                                    [this, socket, new_buffer](const asio::error_code& error,
-                                                               std::size_t bytes_transferred) {
-                                        handle_read(socket, new_buffer, error, bytes_transferred);
-                                    });
-        }
-    }
+void TCPServer::send_file_to_client(const std::string&             file_path,
+                                    const asio::ip::tcp::endpoint& endpoint) {
+    // _packet_manager->send_file_to_client(file_path, endpoint);
 }
 
-void TCPServer::handle_write(std::shared_ptr<asio::ip::tcp::socket> socket,
-                             const asio::error_code& error, std::size_t bytes_transferred) {
-    if (!error) {
-        auto buffer = std::make_shared<std::array<char, 1024>>();
-        socket->async_read_some(
-            asio::buffer(*buffer),
-            [this, socket, buffer](const asio::error_code& error, std::size_t bytes_transferred) {
-                handle_read(socket, buffer, error, bytes_transferred);
-            });
-    }
+void TCPServer::setNewClientCallback(
+    const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback) {
+    _packet_manager->_new_client_callback = callback;
+}
+
+void TCPServer::setDisconnectClientCallback(
+    const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback) {
+    _packet_manager->_disconnect_client_callback = callback;
 }

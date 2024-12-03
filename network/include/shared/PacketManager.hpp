@@ -22,23 +22,10 @@
 
 #include "PacketUtils.hpp"
 
+// enum class Role { SERVER, CLIENT };
+
 // Custom hash and equality for asio::ip::udp::endpoint
 // we need it in order to know if we have already seen a client (kind of a select in C)
-struct EndpointHash {
-    std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
-        std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());
-        std::size_t h2 = std::hash<unsigned short>()(endpoint.port());
-        return h1 ^ (h2 << 1);  // Combine the hashes
-    }
-};
-
-struct EndpointEqual {
-    bool operator()(const asio::ip::udp::endpoint& lhs, const asio::ip::udp::endpoint& rhs) const {
-        return lhs.address() == rhs.address() && lhs.port() == rhs.port();
-    }
-};
-
-enum class Role { SERVER, CLIENT };
 
 class PacketManager {
    public:
@@ -84,6 +71,12 @@ class PacketManager {
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
     const std::string get_last_reliable_packet();
     const std::string get_last_unreliable_packet();
+
+    std::vector<std::string> get_unreliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::string> get_reliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
     // endpoint);
     void print_packet(const packet& pkt);
@@ -124,11 +117,13 @@ class PacketManager {
     std::deque<packet> _retry_queue;
     std::mutex         _retry_queue_mutex;
 
-    std::stack<std::string> _unprocessed_unreliable_messages;
-    std::mutex              _unprocessed_unreliable_messages_mutex;
+    // std::stack<std::string> _unprocessed_unreliable_messages;
+    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_unreliable_messages;
+    std::mutex _unprocessed_unreliable_messages_mutex;
 
-    std::stack<std::string> _unprocessed_reliable_messages;
-    std::mutex              _unprocessed_reliable_messages_mutex;
+    // std::stack<std::string> _unprocessed_reliable_messages;
+    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
+    std::mutex _unprocessed_reliable_messages_mutex;
 
     // std::mutex  _message_complete_mutex;
     // std::string _message_complete_buffer;
