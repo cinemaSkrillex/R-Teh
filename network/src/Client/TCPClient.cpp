@@ -18,5 +18,5 @@ TCPClient::~TCPClient() {
 }
 
 void TCPClient::send_message(const std::string& message) {
-    _packet_manager->client_send_message(message);
+    _packet_manager->send_message_to_server(message);
 }

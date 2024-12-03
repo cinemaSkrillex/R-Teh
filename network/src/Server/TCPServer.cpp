@@ -18,10 +18,12 @@ TCPServer::TCPServer(unsigned short port)
 
 TCPServer::~TCPServer() { _packet_manager->close(); }
 
-void TCPServer::send_message(const std::string& message) { _packet_manager->send_message(message); }
+void TCPServer::send_message(const std::string& message) {
+    _packet_manager->send_message_to_client(message);
+}
 
 void TCPServer::send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint) {
-    _packet_manager->send_message(message, endpoint);
+    _packet_manager->send_message_to_client_endpoint(message, endpoint);
 }
 
 void TCPServer::setNewClientCallback(
