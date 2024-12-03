@@ -10,7 +10,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _controls(_registry),
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
-      _controlSystem(),
+      _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
@@ -133,13 +133,8 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
     std::string                                  key, value;
 
     while (stream) {
-        // Extract key
         if (!std::getline(stream, key, ':')) break;
-
-        // Extract value (up to the next space or end of string)
         if (!std::getline(stream, value, ' ')) break;
-
-        // Trim leading and trailing spaces from key and value
         key.erase(0, key.find_first_not_of(" \t"));
         key.erase(key.find_last_not_of(" \t") + 1);
         value.erase(0, value.find_first_not_of(" \t"));
@@ -155,7 +150,6 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 
-    // Use a regular expression to extract the values inside "(x,y)"
     std::regex  positionRegex(R"(\((\d+),(\d+)\))");
     std::smatch match;
 
@@ -180,11 +174,11 @@ void Game::handleSignal(std::string signal) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const int uuid = std::stoi(parsedPacket.at("Uuid"));
+            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const int uuid = std::stoi(parsedPacket.at("Uuid"));
+            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         }
     }
