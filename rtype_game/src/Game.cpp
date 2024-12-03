@@ -164,6 +164,39 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
     return position;
 }
 
+struct PlayerData {
+    std::string  uuid;
+    sf::Vector2f position;
+};
+
+// Function to parse the player list string (without the surrounding brackets)
+std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
+    std::vector<PlayerData> players;
+
+    // Remove the surrounding brackets
+    std::string cleanedList = playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
+
+    // Split the string by "|" delimiter
+    std::regex  playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+    std::smatch match;
+
+    std::string::const_iterator searchStart(cleanedList.cbegin());
+    while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
+        if (match.size() == 4) {
+            PlayerData player;
+            player.uuid     = match[1].str();  // Extract UUID
+            player.position = sf::Vector2f(std::stof(match[2].str()),
+                                           std::stof(match[3].str()));  // Extract position
+            players.push_back(player);
+        }
+
+        // Move the search start to the end of the current match
+        searchStart = match.suffix().first;
+    }
+
+    return players;
+}
+
 void Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
@@ -177,9 +210,11 @@ void Game::handleSignal(std::string signal) {
             const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
-            const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
-            add_player(uuid, position);
+            const std::string             players = parsedPacket.at("Players");
+            const std::vector<PlayerData> datas   = parsePlayerList(players);
+            for (PlayerData player : datas) {
+                add_player(std::stoi(player.uuid), player.position);
+            }
         }
     }
 }
