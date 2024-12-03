@@ -10,7 +10,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _controls(_registry),
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
-      _controlSystem(),
+      _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
@@ -133,13 +133,8 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
     std::string                                  key, value;
 
     while (stream) {
-        // Extract key
         if (!std::getline(stream, key, ':')) break;
-
-        // Extract value (up to the next space or end of string)
         if (!std::getline(stream, value, ' ')) break;
-
-        // Trim leading and trailing spaces from key and value
         key.erase(0, key.find_first_not_of(" \t"));
         key.erase(key.find_last_not_of(" \t") + 1);
         value.erase(0, value.find_first_not_of(" \t"));
@@ -155,7 +150,6 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 
-    // Use a regular expression to extract the values inside "(x,y)"
     std::regex  positionRegex(R"(\((\d+),(\d+)\))");
     std::smatch match;
 
@@ -171,7 +165,7 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
 }
 
 struct PlayerData {
-    std::string uuid;
+    std::string  uuid;
     sf::Vector2f position;
 };
 
@@ -180,18 +174,19 @@ std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
     std::vector<PlayerData> players;
 
     // Remove the surrounding brackets
-    std::string cleanedList = playerList.substr(1, playerList.length() - 2); // Removes "[" and "]"
+    std::string cleanedList = playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
 
     // Split the string by "|" delimiter
-    std::regex playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+    std::regex  playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
     std::smatch match;
 
     std::string::const_iterator searchStart(cleanedList.cbegin());
     while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
         if (match.size() == 4) {
             PlayerData player;
-            player.uuid = match[1].str();  // Extract UUID
-            player.position = sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));  // Extract position
+            player.uuid     = match[1].str();  // Extract UUID
+            player.position = sf::Vector2f(std::stof(match[2].str()),
+                                           std::stof(match[3].str()));  // Extract position
             players.push_back(player);
         }
 
@@ -212,12 +207,12 @@ void Game::handleSignal(std::string signal) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const int uuid = std::stoi(parsedPacket.at("Uuid"));
+            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
-            const std::string players = parsedPacket.at("Players");
-            const std::vector<PlayerData> datas = parsePlayerList(players);
-            for (PlayerData player: datas) {
+            const std::string             players = parsedPacket.at("Players");
+            const std::vector<PlayerData> datas   = parsePlayerList(players);
+            for (PlayerData player : datas) {
                 add_player(std::stoi(player.uuid), player.position);
             }
         }

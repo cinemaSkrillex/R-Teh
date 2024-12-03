@@ -4,6 +4,7 @@ namespace RealEngine {
 
 Window::Window(const std::string title, const sf::Vector2u size) : _title(title), _size(size) {
     _window.create(sf::VideoMode(_size.x, _size.y), _title);
+    _window.setFramerateLimit(60);
 }
 
 Window::~Window() { _window.close(); }
@@ -85,5 +86,7 @@ void Window::setSize(const sf::Vector2u size) {
 }
 
 bool Window::isOpen() { return _window.isOpen(); }
+
+bool Window::isFocused() { return _window.hasFocus(); }
 
 };  // namespace RealEngine

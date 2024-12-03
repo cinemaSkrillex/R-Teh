@@ -4,7 +4,7 @@
 
 namespace RealEngine {
 class Window {
-  public:
+   public:
     Window(const std::string title, const sf::Vector2u size);
     ~Window();
 
@@ -15,12 +15,13 @@ class Window {
     void              setTitle(const std::string title);
     void              setSize(const sf::Vector2u size);
     bool              isOpen();
+    bool              isFocused();
     sf::RenderWindow& getRenderWindow() { return _window; }
 
-  private:
+   private:
     sf::RenderWindow _window;
     sf::Event        _event;
     sf::Vector2u     _size;
     std::string      _title;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

@@ -9,7 +9,7 @@
 
 namespace RealEngine {
 
-ControlSystem::ControlSystem() {
+ControlSystem::ControlSystem(Window& window) : _window(window) {
     actionHandlers[Action::Up]      = [](Velocity&, Acceleration&, Position&, float) {};
     actionHandlers[Action::Down]    = [](Velocity&, Acceleration&, Position&, float) {};
     actionHandlers[Action::Left]    = [](Velocity&, Acceleration&, Position&, float) {};
@@ -30,6 +30,7 @@ ControlSystem::ControlSystem() {
 }
 
 void ControlSystem::update(Registry& registry, float deltaTime) {
+    if (!_window.isFocused()) return;
     auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
 
     for (auto entity : entities) {
