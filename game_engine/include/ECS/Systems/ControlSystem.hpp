@@ -8,12 +8,12 @@
 #pragma once
 #include <SFML/Window.hpp>
 
+#include "../include/Core/Window.hpp"
 #include "../include/ECS/Components/Acceleration.hpp"
 #include "../include/ECS/Components/Controllable.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Velocity.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
-#include "Core/Window.hpp"
 
 namespace RealEngine {
 class ControlSystem {
