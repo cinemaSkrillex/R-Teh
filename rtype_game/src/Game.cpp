@@ -261,8 +261,11 @@ void Game::run() {
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
-        getPlayerNormalizedDirection();
         handle_collision(_registry, entities);
+        const sf::Vector2f direction = getPlayerNormalizedDirection();
+        const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
+                                    std::to_string(direction.y) + ")";
+        _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
 }
