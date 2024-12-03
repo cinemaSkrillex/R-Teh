@@ -12,10 +12,10 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
       _shootCooldown(0.0f),
       _shootPhaseTimer(0.0f),
       _isInShootPhase(false) {
-    _shortSprite.setScale(3, 3);
-    _midSprite.setScale(3, 3);
-    _longSprite.setScale(3, 3);
-    _laserSprite.setScale(3, 3);
+    _shortSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _midSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _longSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _laserSprite.setScale(GAME_SCALE, GAME_SCALE);
     _bossSheet.emplace("short", _shortSprite);
     _bossSheet.emplace("mid", _midSprite);
     _bossSheet.emplace("long", _longSprite);
@@ -126,8 +126,8 @@ void EyeBoss::shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Ent
         float distance = std::sqrt(dx * dx + dy * dy);
 
         if (distance > 10.0f) {
-            acceleration->ax = dx / distance * 12.0f;
-            acceleration->ay = dy / distance * 12.0f;
+            acceleration->ax = dx / distance * 6.0f;
+            acceleration->ay = dy / distance * 6.0f;
             velocity->vx += acceleration->ax;
             velocity->vy += acceleration->ay;
         } else {
@@ -190,10 +190,11 @@ void EyeBoss::shootLaser() {
     auto*              boss_rotation = _registry.get_component<RealEngine::Rotation>(_entity);
     float              angleRad      = boss_rotation->angle * M_PI / 180.0f;
 
-    _registry.add_components(laser,
-                             RealEngine::Position{boss_position->x + (std::cos(angleRad) * 170),
-                                                  boss_position->y + (std::sin(angleRad) * 170)},
-                             RealEngine::Drawable{});
+    _registry.add_components(
+        laser,
+        RealEngine::Position{boss_position->x + (std::cos(angleRad) * (56 * GAME_SCALE)),
+                             boss_position->y + (std::sin(angleRad) * (56 * GAME_SCALE))},
+        RealEngine::Drawable{});
     _registry.add_component(laser, RealEngine::SpriteComponent{_laserSprite});
     _registry.add_component(
         laser,

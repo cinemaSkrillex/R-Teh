@@ -8,6 +8,7 @@
 #include "CollisionHandler.hpp"
 #include "Controls.hpp"
 #include "EyeBoss.hpp"
+#include "Macros.hpp"
 
 namespace rtype {
 class Game {
@@ -51,8 +52,7 @@ class Game {
     RealEngine::Sprite                                  _otherPlayer;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
-    RealEngine::Entity                                  _entity1;
     RealEngine::Entity                                  _entity2;
-    RealEngine::Entity                                  _groundEntity;
+    std::vector<RealEngine::Entity>                     _groundBlocksEntities;
 };
 }  // namespace rtype

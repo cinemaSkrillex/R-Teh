@@ -15,23 +15,21 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
-      _view({100, 100}, {800, 600}),
+      _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
       _otherPlayer("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
-      _entity1(_registry.spawn_entity()),
-      _entity2(_registry.spawn_entity()),
-      _groundEntity(_registry.spawn_entity()) {
+      _entity2(_registry.spawn_entity()) {
     init_registry();
     init_controls();
     init_systems();
-    _idleSpaceship.setScale(3, 3);
-    _upSpaceship.setScale(3, 3);
-    _downSpaceship.setScale(3, 3);
-    _groundSprite.setScale(3, 3);
-    _otherPlayer.setScale(3, 3);
+    _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
+    _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
+    _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
+    _groundSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _otherPlayer.setScale(GAME_SCALE, GAME_SCALE);
     _otherPlayer.setOpacity(90);
 
     _spaceshipSheet.emplace("up", _upSpaceship);
@@ -46,13 +44,21 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
     _registry.add_component(
         _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
 
-    _registry.add_components(_groundEntity, RealEngine::Position{400.f, 300.f},
-                             RealEngine::Drawable{});
-    _registry.add_component(_groundEntity, RealEngine::SpriteComponent{_groundSprite});
+    for (int i = 0; i < 50; i++) {
+        RealEngine::Entity groundBlock = _registry.spawn_entity();
+        _registry.add_components(groundBlock,
+                                 RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
+                                                      i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},
+                                 RealEngine::Drawable{});
+        _groundBlocksEntities.push_back(groundBlock);
+        _registry.add_component(groundBlock, RealEngine::SpriteComponent{_groundSprite});
+        _registry.add_component(
+            groundBlock, RealEngine::Collision{
+                             {0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE}, "ground", false});
+    }
+
     _bossEye = std::make_unique<EyeBoss>(_registry);
     _bossEye->setTarget(_entity2);
-    _registry.add_component(_groundEntity,
-                            RealEngine::Collision{{0.f, 0.f, 100.f, 100.f}, "sol", false});
 }
 
 Game::~Game() {}
@@ -247,17 +253,17 @@ sf::Vector2f Game::getPlayerNormalizedDirection() {
             direction.x = 1;
         }
     }
-    std::cout << "Direction: " << direction.x << ", " << direction.y << std::endl;
     return direction;
 }
 
 void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
-        {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
+        {"spaceship", _entity2}, {"ground", _groundBlocksEntities[0]}};
     while (_window.isOpen()) {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
+        _view.move({50.0f * _deltaTime, 0});
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
@@ -268,5 +274,6 @@ void Game::run() {
         _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
+    exit(0);
 }
 }  // namespace rtype

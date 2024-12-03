@@ -5,7 +5,7 @@ void handle_collision(RealEngine::Registry&                                     
     auto& collisions = registry.get_components<RealEngine::Collision>();
     auto& positions  = registry.get_components<RealEngine::Position>();
 
-    RealEngine::Entity spaceship2 = entities.at("spaceship2");
+    RealEngine::Entity spaceship2 = entities.at("spaceship");
     RealEngine::Entity sol        = entities.at("ground");
 
     auto& spaceship2_collision = collisions[spaceship2];
