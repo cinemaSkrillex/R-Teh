@@ -4,8 +4,8 @@
 
 namespace RealEngine {
 class View {
-  public:
-    View(const sf::Vector2f center, const sf::Vector2f size);
+   public:
+    View(sf::RenderWindow& window, const sf::Vector2f center, const sf::Vector2f size);
     ~View();
 
     void          setCenter(const sf::Vector2f center);
@@ -23,7 +23,8 @@ class View {
     sf::Transform getTransform() { return _view.getTransform(); }
     sf::Transform getInverseTransform() { return _view.getInverseTransform(); }
 
-  private:
-    sf::View _view;
+   private:
+    sf::View          _view;
+    sf::RenderWindow& _window;
 };
-} // namespace RealEngine
+}  // namespace RealEngine
