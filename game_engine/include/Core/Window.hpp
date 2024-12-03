@@ -14,6 +14,8 @@ class Window {
     void              close();
     void              setTitle(const std::string title);
     void              setSize(const sf::Vector2u size);
+    void              setFullscreen(bool isFullscreen);
+    void              setView(sf::View& view);
     bool              isOpen();
     bool              isFocused();
     sf::RenderWindow& getRenderWindow() { return _window; }

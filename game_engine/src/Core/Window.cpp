@@ -85,6 +85,16 @@ void Window::setSize(const sf::Vector2u size) {
     _window.setSize(_size);
 }
 
+void Window::setFullscreen(bool isFullscreen) {
+    if (isFullscreen) {
+        _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Fullscreen);
+    } else {
+        _window.create(sf::VideoMode(_size.x, _size.y), _title);
+    }
+}
+
+void Window::setView(sf::View& view) { _window.setView(view); }
+
 bool Window::isOpen() { return _window.isOpen(); }
 
 bool Window::isFocused() { return _window.hasFocus(); }
