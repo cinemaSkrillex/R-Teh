@@ -230,6 +230,27 @@ void Game::add_player(int player_port, sf::Vector2f position) {
     _players.emplace(player_port, player);
 }
 
+sf::Vector2f Game::getPlayerNormalizedDirection() {
+    sf::Vector2f direction(0, 0);
+
+    if (_window.isFocused()) {
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Up))) {
+            direction.y = -1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Down))) {
+            direction.y = 1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Left))) {
+            direction.x = -1;
+        }
+        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Right))) {
+            direction.x = 1;
+        }
+    }
+    std::cout << "Direction: " << direction.x << ", " << direction.y << std::endl;
+    return direction;
+}
+
 void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
         {"spaceship1", _entity1}, {"spaceship2", _entity2}, {"ground", _groundEntity}};
@@ -240,6 +261,7 @@ void Game::run() {
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
+        getPlayerNormalizedDirection();
         handle_collision(_registry, entities);
         _window.display();
     }
