@@ -12,7 +12,6 @@
 #include "../include/ECS/Components/Controllable.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Velocity.hpp"
-#include "../include/ECS/Enum/ActionEnum.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
 #include "Core/Window.hpp"
 

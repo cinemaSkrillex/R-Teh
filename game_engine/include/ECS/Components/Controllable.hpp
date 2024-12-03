@@ -8,7 +8,9 @@
 #pragma once
 
 namespace RealEngine {
+enum class Action { Up, Down, Left, Right, Action1, Action2, Action3, Action4 };
+
 struct Controllable {
     // This is a tag to identify controllable entities
 };
-} // namespace RealEngine
+}  // namespace RealEngine
