@@ -43,10 +43,12 @@ int main(int argc, char* argv[]) {
         // client->send_unreliable_packet("Hello2");
         // client->send_reliable_packet("Hello3");
         // client->send_unreliable_packet("Hello4");
-        io_context.run();
+        // io_context.run();
 
-        // client->send_unreliable_packet("Hello");
-        // client->send_unreliable_packet("World");
+        // for how long the client will run:
+        std::this_thread::sleep_for(std::chrono::seconds(30));
+        std::cout << "Client stopped" << std::endl;
+        exit(0);
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

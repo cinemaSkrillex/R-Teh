@@ -31,19 +31,6 @@ void PacketManager::start() {
 packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb,
                                    Flags flag, const asio::ip::udp::endpoint& endpoint,
                                    const std::string& message) {
-    // packet pkt;
-    // pkt.sequence_nb = sequence_nb;
-    // pkt.start_sequence_nb = start_sequence_nb;
-    // pkt.end_sequence_nb = end_sequence_nb;
-    // pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
-    // std::cout << "Packet size: " << pkt.packet_size << std::endl;
-    // pkt.flag = flag;
-    // pkt.data.assign(message.begin() + sequence_nb * BUFFER_SIZE,
-    //                 message.begin() + sequence_nb * BUFFER_SIZE + pkt.packet_size);
-    // std::cout << "Packet data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
-    // std::cout << "Packet original data: " << message << std::endl;
-    // pkt.endpoint = endpoint;
-    // return pkt;
     packet pkt;
     pkt.sequence_nb       = sequence_nb;
     pkt.start_sequence_nb = start_sequence_nb;

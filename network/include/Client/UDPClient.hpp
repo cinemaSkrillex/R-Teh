@@ -30,8 +30,11 @@ class UDPClient {
     const std::string get_last_unreliable_packet();
 
    private:
-    asio::ip::udp::socket   _socket;
     asio::ip::udp::endpoint _server_endpoint;
+    asio::ip::udp::socket   _socket;
+    asio::io_context&       _io_context;
+    std::thread             _io_context_thread;
+    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
 
     // Reliable packet handling via sequence numbers
     PacketManager _packet_manager;
