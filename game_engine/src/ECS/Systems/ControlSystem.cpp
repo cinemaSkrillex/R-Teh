@@ -59,4 +59,11 @@ void ControlSystem::setActionReleaseHandler(Action action, ActionHandler handler
     actionReleaseHandlers[action] = handler;
 }
 
+sf::Keyboard::Key ControlSystem::getBoundKey(Action action) {
+    for (const auto& [key, act] : keyBindings) {
+        if (act == action) return key;
+    }
+    return sf::Keyboard::Unknown;
+}
+
 }  // namespace RealEngine

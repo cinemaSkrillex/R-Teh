@@ -22,10 +22,11 @@ class ControlSystem {
     ControlSystem(Window& window);
 
     using ActionHandler = std::function<void(Velocity&, Acceleration&, Position&, float)>;
-    void update(Registry& registry, float deltaTime);
-    void bindKey(sf::Keyboard::Key key, Action action);
-    void setActionHandler(Action action, ActionHandler handler);
-    void setActionReleaseHandler(Action action, ActionHandler handler);
+    void              update(Registry& registry, float deltaTime);
+    void              bindKey(sf::Keyboard::Key key, Action action);
+    void              setActionHandler(Action action, ActionHandler handler);
+    void              setActionReleaseHandler(Action action, ActionHandler handler);
+    sf::Keyboard::Key getBoundKey(Action action);
 
    private:
     std::unordered_map<sf::Keyboard::Key, Action> keyBindings;
