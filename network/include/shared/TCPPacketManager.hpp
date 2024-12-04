@@ -44,7 +44,7 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
     void send_packet(std::shared_ptr<asio::ip::tcp::socket> socket, const TCPPacket& packet);
     void close();
 
-    void save_to_file(const std::vector<char>& file_data);
+    void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
 
     // build packet
     // TODO when PACKET WORKS
@@ -73,6 +73,8 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
 
     // handle receive
     void handle_receive(std::size_t bytes_recvd);
+    void receive_file_data(std::shared_ptr<std::vector<char>> file_buffer, std::size_t total_size,
+                           std::size_t bytes_received);
 };
 
 #endif  // TCPPACKETMANAGER_HPP

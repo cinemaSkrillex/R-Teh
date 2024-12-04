@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "include/DynamicLibrary/DynamicLibrary.hpp"
+#include "include/Server/TCPServer.hpp"
 #include "include/Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -27,10 +28,16 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        auto             server = std::make_shared<UDPServer>(io_context, port);
+        auto             tcpserver = std::make_shared<TCPServer>(port);
+        tcpserver->setNewClientCallback(
+            [tcpserver](const asio::ip::tcp::endpoint& client_endpoint) {
+                std::cout << "New client connected: " << client_endpoint << std::endl;
+                tcpserver->send_file_to_client("epitech.pdf", client_endpoint);
+            });
+        // auto             server = std::make_shared<UDPServer>(io_context, port);
 
         // for how long the server will run:
-        std::this_thread::sleep_for(std::chrono::seconds(30));
+        std::this_thread::sleep_for(std::chrono::seconds(10000000));
         std::cout << "Server stopped" << std::endl;
         exit(0);
     } catch (const std::exception& e) {
