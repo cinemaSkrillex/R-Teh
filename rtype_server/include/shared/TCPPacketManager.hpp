@@ -8,13 +8,17 @@
 #ifndef TCPPACKETMANAGER_HPP
 #define TCPPACKETMANAGER_HPP
 
+#include <asio.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <thread>
 
-#include "TCPPacketUtils.hpp"
+#include "PacketUtils.hpp"
+
+enum class TCPFlags { MESSAGE = 0, IMAGE = 1 };
 
 class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
    public:
@@ -41,10 +45,11 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
     void send_message_to_server(const std::string& message);
 
     // new functions to send larger files
-    void send_packet(std::shared_ptr<asio::ip::tcp::socket> socket, const TCPPacket& packet);
     void close();
 
     void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
+
+    std::shared_ptr<std::vector<char>> serialize_string(const std::string& message, TCPFlags flag);
 
     // build packet
     // TODO when PACKET WORKS
@@ -61,7 +66,6 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
     asio::io_context                                           _io_context;
     std::shared_ptr<asio::ip::tcp::socket>                     _socket;
     asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
-    packet                                                     _pkt;
     std::vector<std::shared_ptr<asio::ip::tcp::socket>>        _client_sockets;
     std::thread                                                _io_thread;
 
@@ -75,6 +79,8 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
     void handle_receive(std::size_t bytes_recvd);
     void receive_file_data(std::shared_ptr<std::vector<char>> file_buffer, std::size_t total_size,
                            std::size_t bytes_received);
+    void send_message(std::shared_ptr<std::vector<char>>     serialized_message,
+                      std::shared_ptr<asio::ip::tcp::socket> receiver_socket);
 };
 
 #endif  // TCPPACKETMANAGER_HPP

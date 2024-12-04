@@ -7,8 +7,6 @@
 
 #include "../../include/shared/TCPPacketManager.hpp"
 
-#include <TCPPacketUtils.hpp>
-
 TCPPacketManager::TCPPacketManager(Role role)
     : _io_context(),
       _socket(std::make_shared<asio::ip::tcp::socket>(_io_context)),
@@ -59,60 +57,71 @@ void TCPPacketManager::send_message_to_client(const std::string& message) {
             std::cerr << "Client socket is not open." << std::endl;
             continue;
         }
-        // auto packet = build_packet(TCPFlags::DATA, message, client_socket->remote_endpoint());
-        TCPPacket packet;
-        packet.sequence_nb       = 0;
-        packet.start_sequence_nb = 0;
-        packet.end_sequence_nb   = 0;
-        packet.packet_size       = message.size();
-        packet.flag              = TCPFlags::DATA;
-        packet.endpoint          = client_socket->remote_endpoint();
-        packet.data.assign(message.begin(), message.end());
-
-        // auto serialized_data = std::make_shared<std::vector<char>>(packet.serialize());
-        send_packet(client_socket, packet);
     }
+}
+
+std::shared_ptr<std::vector<char>> TCPPacketManager::serialize_string(const std::string& message,
+                                                                      TCPFlags           flag) {
+    // int message_size = message.size();
+    // // std::vector<char> buffer(sizeof(int) + message_size);
+    // std::vector<char> buffer(sizeof(TCPFlags) + sizeof(int) + message_size);
+
+    // // Copy the flag to the beginning of the buffer
+    // std::memcpy(buffer.data(), &flag, sizeof(TCPFlags));
+
+    // // Copy the size of the message after the flag
+    // std::memcpy(buffer.data() + sizeof(TCPFlags), &message_size, sizeof(int));
+
+    // // Copy the message content after the size
+    // std::memcpy(buffer.data() + sizeof(TCPFlags) + sizeof(int), message.data(), message_size);
+
+    // return buffer;
+
+    int message_size = message.size();
+    int total_size   = sizeof(TCPFlags) + message_size;
+    std::cout << "totalsize" << total_size << std::endl;
+    auto buffer =
+        std::make_shared<std::vector<char>>(sizeof(int) + sizeof(TCPFlags) + message_size);
+
+    // Copy the total size to the beginning of the buffer
+    std::memcpy(buffer->data(), &total_size, sizeof(int));
+
+    // Copy the flag after the total size
+    std::memcpy(buffer->data() + sizeof(int), &flag, sizeof(TCPFlags));
+
+    // Copy the message content after the flag
+    std::memcpy(buffer->data() + sizeof(int) + sizeof(TCPFlags), message.data(), message_size);
+
+    return buffer;
+}
+
+void TCPPacketManager::send_message(std::shared_ptr<std::vector<char>>     serialized_message,
+                                    std::shared_ptr<asio::ip::tcp::socket> receiver_socket) {
+    asio::async_write(*receiver_socket, asio::buffer(*serialized_message),
+                      [this](std::error_code ec, std::size_t bytes_sent) {
+                          if (!ec) {
+                              std::cout << "Message sent successfully." << std::endl;
+                          } else {
+                              std::cerr << "Failed to send message: " << ec.message() << std::endl;
+                          }
+                      });
 }
 
 void TCPPacketManager::send_message_to_client_endpoint(const std::string&             message,
                                                        const asio::ip::tcp::endpoint& endpoint) {
+    std::shared_ptr<asio::ip::tcp::socket> receiver_socket;
     for (auto& client_socket : _client_sockets) {
         if (!client_socket->is_open()) {
             std::cerr << "Client socket is not open." << std::endl;
             continue;
         }
         if (client_socket->remote_endpoint() == endpoint) {
-            // auto packet = build_packet(TCPFlags::DATA, message,
-            // client_socket->remote_endpoint());
-            // send_packet(client_socket, packet);
-            return;
+            receiver_socket = client_socket;
+            break;
         }
     }
-}
-
-void TCPPacketManager::send_packet(std::shared_ptr<asio::ip::tcp::socket> socket,
-                                   const TCPPacket&                       packet) {
-    if (!socket->is_open()) {
-        std::cerr << "Socket is not open, cannot send packet." << std::endl;
-        return;
-    }
-
-    try {
-        // Serialize the packet
-        const auto buffer = std::make_shared<std::vector<char>>(serialize(packet));
-        asio::async_write(
-            *socket, asio::buffer(*buffer),
-            [this, buffer](const asio::error_code& ec, std::size_t bytes_transferred) {
-                if (!ec) {
-                    std::cout << "Successfully sent " << bytes_transferred << " bytes."
-                              << std::endl;
-                } else {
-                    std::cerr << "Failed to send packet: " << ec.message() << std::endl;
-                }
-            });
-    } catch (const std::exception& e) {
-        std::cerr << "Failed to send packet: " << e.what() << std::endl;
-    }
+    auto serialized_message = serialize_string(message, TCPFlags::MESSAGE);
+    send_message(serialized_message, receiver_socket);
 }
 
 void TCPPacketManager::send_message_to_server(const std::string& message) {
@@ -133,23 +142,6 @@ void TCPPacketManager::send_message_to_server(const std::string& message) {
                       });
 }
 
-// void TCPPacketManager::listen_for_server_data() {
-//     auto self(shared_from_this());
-//     _socket->async_read_some(
-//         asio::buffer(recv_buffer_), [this, self](std::error_code ec, std::size_t bytes_recvd) {
-//             if (!ec && bytes_recvd > 0) {
-//                 handle_receive(bytes_recvd);
-//             } else {
-//                 if (ec) {
-//                     std::cerr << "Receive error: " << ec.message() << std::endl;
-//                 } else {
-//                     std::cerr << "Received 0 bytes" << std::endl;
-//                 }
-//             }
-//             listen_for_server_data();
-//         });
-// }
-
 void TCPPacketManager::receive_file_data(std::shared_ptr<std::vector<char>> file_buffer,
                                          size_t total_size, size_t bytes_received) {
     auto self(shared_from_this());
@@ -164,6 +156,11 @@ void TCPPacketManager::receive_file_data(std::shared_ptr<std::vector<char>> file
         file.write(file_buffer->data(), total_size);
         file.close();
         std::cout << "File written successfully. Total bytes: " << total_size << std::endl;
+
+        // callback
+        if (_receive_file_callback) {
+            _receive_file_callback();
+        }
 
         // Listen for more server data
         listen_for_server_data();
@@ -191,30 +188,105 @@ void TCPPacketManager::receive_file_data(std::shared_ptr<std::vector<char>> file
                              });
 }
 
+// void TCPPacketManager::listen_for_server_data() {
+//     auto self(shared_from_this());
+//     if (!_socket->is_open()) {
+//         std::cerr << "Socket is not open." << std::endl;
+//         return;
+//     }
+//     // read an int describing the size of the file
+//     auto buffer = std::make_shared<std::array<char, sizeof(int)>>();
+//     _socket->async_read_some(
+//         asio::buffer(*buffer), [this, self, buffer](asio::error_code ec, std::size_t length) {
+//             if (!ec) {
+//                 int size;
+//                 std::memcpy(&size, buffer->data(), sizeof(int));
+//                 std::cout << "Received " << length << " bytes. File size: " << size << std::endl;
+//                 // read the file
+//                 // Step 2: Start receiving the file data
+//                 auto file_buffer = std::make_shared<std::vector<char>>(size);
+//                 receive_file_data(file_buffer, size, 0);
+//             } else {
+//                 if (ec != asio::error::eof) {
+//                     std::cerr << "Server read error: " << ec.message() << std::endl;
+//                 }
+//             }
+//         });
+// }
+
 void TCPPacketManager::listen_for_server_data() {
     auto self(shared_from_this());
     if (!_socket->is_open()) {
         std::cerr << "Socket is not open." << std::endl;
         return;
     }
-    // read an int describing the size of the file
-    auto buffer = std::make_shared<std::array<char, sizeof(int)>>();
-    _socket->async_read_some(
-        asio::buffer(*buffer), [this, self, buffer](asio::error_code ec, std::size_t length) {
-            if (!ec) {
-                int size;
-                std::memcpy(&size, buffer->data(), sizeof(int));
-                std::cout << "Received " << length << " bytes. File size: " << size << std::endl;
-                // read the file
-                // Step 2: Start receiving the file data
-                auto file_buffer = std::make_shared<std::vector<char>>(size);
-                receive_file_data(file_buffer, size, 0);
-            } else {
-                if (ec != asio::error::eof) {
-                    std::cerr << "Server read error: " << ec.message() << std::endl;
+
+    // Step 1: Read the total size
+    auto size_buffer = std::make_shared<std::array<char, sizeof(int)>>();
+    _socket->async_read_some(asio::buffer(*size_buffer), [this, self, size_buffer](
+                                                             asio::error_code ec,
+                                                             std::size_t      length) {
+        if (!ec) {
+            int total_size;
+            std::memcpy(&total_size, size_buffer->data(), sizeof(int));
+            std::cout << "Received " << length << " bytes. Total size: " << total_size << std::endl;
+
+            // Step 2: Read the flag
+            auto flag_buffer = std::make_shared<std::array<char, sizeof(TCPFlags)>>();
+            _socket->async_read_some(asio::buffer(*flag_buffer), [this, self, flag_buffer,
+                                                                  total_size](asio::error_code ec,
+                                                                              std::size_t length) {
+                if (!ec) {
+                    TCPFlags flag;
+                    std::memcpy(&flag, flag_buffer->data(), sizeof(TCPFlags));
+                    // std::cout << "Received flag: " << flag << std::endl;
+
+                    // Step 3: Read the data based on the flag
+                    int data_size = total_size - sizeof(TCPFlags);
+                    if (flag == TCPFlags::MESSAGE) {
+                        // Read the message content
+                        auto message_buffer = std::make_shared<std::vector<char>>(data_size);
+                        _socket->async_read_some(
+                            asio::buffer(*message_buffer),
+                            [this, self, message_buffer](asio::error_code ec, std::size_t length) {
+                                if (!ec) {
+                                    std::string message(message_buffer->begin(),
+                                                        message_buffer->end());
+                                    std::cout << "Received message: " << message << std::endl;
+                                    listen_for_server_data();
+                                } else {
+                                    std::cerr << "Message read error: " << ec.message()
+                                              << std::endl;
+                                }
+                            });
+                    } else if (flag == TCPFlags::IMAGE) {
+                        // Read the file data
+                        // auto file_buffer = std::make_shared<std::vector<char>>(data_size);
+                        // receive_file_data(file_buffer, data_size, 0);
+                        auto        file_buffer = std::make_shared<std::vector<char>>(data_size);
+                        std::thread file_thread([this, file_buffer, data_size]() {
+                            receive_file_data(file_buffer, data_size, 0);
+                        });
+
+                        // Detach the thread so it can run independently
+                        file_thread.detach();
+
+                        // Continue listening for other server data
+                        listen_for_server_data();
+                    }
+                } else {
+                    if (ec != asio::error::eof) {
+                        std::cerr << "Flag read error: " << ec.message() << std::endl;
+                        listen_for_server_data();
+                    }
                 }
+            });
+        } else {
+            if (ec != asio::error::eof) {
+                std::cerr << "Size read error: " << ec.message() << std::endl;
             }
-        });
+        }
+    });
 }
 
 void TCPPacketManager::handle_receive(std::size_t bytes_recvd) {}
@@ -292,20 +364,22 @@ void TCPPacketManager::send_file_to_client(const std::string&             file_p
     }
 
     // add an int describing the size of the file at the beginning of the file_data
-    int  size           = file_data->size();
-    auto data_with_size = std::make_shared<std::vector<char>>(sizeof(int) + file_data->size());
-    std::memcpy(data_with_size->data(), &size, sizeof(int));
-    std::memcpy(data_with_size->data() + sizeof(int), file_data->data(), file_data->size());
+    // int  size           = file_data->size();
+    // auto data_with_size = std::make_shared<std::vector<char>>(sizeof(int) + file_data->size());
+    // std::memcpy(data_with_size->data(), &size, sizeof(int));
+    // std::memcpy(data_with_size->data() + sizeof(int), file_data->data(), file_data->size());
 
-    std::cout << data_with_size->size() << " bytes prepared for sending." << std::endl;
-
+    // std::cout << data_with_size->size() << " bytes prepared for sending." << std::endl;
+    std::shared_ptr<std::vector<char>> serialized_data =
+        serialize_string(std::string(file_data->begin(), file_data->end()), TCPFlags::IMAGE);
+    std::cout << serialized_data->size() << " bytes prepared for sending." << std::endl;
     if (!current_socket || !current_socket->is_open()) {
         std::cerr << "Socket is not valid or not open." << std::endl;
         return;
     }
 
-    asio::async_write(*current_socket, asio::buffer(*data_with_size),
-                      [data_with_size](const asio::error_code& ec, std::size_t bytes_transferred) {
+    asio::async_write(*current_socket, asio::buffer(*serialized_data),
+                      [serialized_data](const asio::error_code& ec, std::size_t bytes_transferred) {
                           if (!ec) {
                               std::cout << "Successfully sent " << bytes_transferred << " bytes."
                                         << std::endl;

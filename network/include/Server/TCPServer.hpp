@@ -10,7 +10,6 @@
 
 #include "PacketUtils.hpp"
 #include "TCPPacketManager.hpp"
-#include "TCPPacketUtils.hpp"
 
 class TCPServer {
    public:
