@@ -5,22 +5,7 @@
 ** main
 */
 
-#include <SFML/System/Clock.hpp>
-#include <asio.hpp>
-#include <iostream>
-#include <thread>
-
-#include "include/Server/UDPServer.hpp"
-
-#if defined(_WIN32) || defined(_WIN64)
-#define _WIN32_WINNT 0x0A00
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
-
-const sf::Int32 SERVER_TICK = 10;
+#include "include/RtypeServer.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
