@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/System/Clock.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <asio.hpp>
 #include <iostream>
 #include <thread>
@@ -27,9 +28,12 @@ const sf::Int32 SERVER_TICK = 10;
 class Player
 {
 private:
-    float x = 0.f, y = 0.f;
+    sf::Vector2f _position;
+    std::vector<sf::Vector2f> _positions;
+
 public:
     Player(/* args */);
+    Player(sf::Vector2f current_position);
     ~Player();
 };
 

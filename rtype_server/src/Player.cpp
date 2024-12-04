@@ -11,6 +11,10 @@ Player::Player(/* args */)
 {
 }
 
+Player::Player(sf::Vector2f current_position) : _position(current_position)
+{
+}
+
 Player::~Player()
 {
 }
