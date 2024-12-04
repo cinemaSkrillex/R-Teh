@@ -5,6 +5,7 @@
 ** main
 */
 
+#include "include/Game/GameInstance.hpp"
 #include "include/RtypeServer.hpp"
 
 int main(int argc, char* argv[]) {

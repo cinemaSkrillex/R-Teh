@@ -193,9 +193,8 @@ std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
     while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
         if (match.size() == 4) {
             PlayerData player;
-            player.uuid     = match[1].str();  // Extract UUID
-            player.position = sf::Vector2f(std::stof(match[2].str()),
-                                           std::stof(match[3].str()));  // Extract position
+            player.uuid     = match[1].str();
+            player.position = sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));
             players.push_back(player);
         }
 
