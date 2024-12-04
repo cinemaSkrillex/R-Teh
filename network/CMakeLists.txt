@@ -76,3 +76,30 @@ if(WIN32)
     add_executable(testing_rtype_client TestingClientMain.cpp)
     target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client on Windows
 endif()
+
+
+# Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server
+add_custom_target(copy_headers ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+    ${CMAKE_SOURCE_DIR}/rtype_server/include/Client
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+    ${CMAKE_SOURCE_DIR}/rtype_server/include/Server
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_SOURCE_DIR}/rtype_server/include/shared
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/Client
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/Server
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared
+)
+
+# Ensure the headers are copied before building rtype_server and rtype_game
+add_dependencies(rtype_server copy_headers)
+add_dependencies(rtype_client copy_headers)
