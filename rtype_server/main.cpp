@@ -56,9 +56,11 @@ int main(int argc, char* argv[]) {
                 tickClock.restart();
 
                 // do server work.
-                const std::string message = server->getLastUnreliablePacket();
-                if (!message.empty()) std::cout << "Server tick: " << message << std::endl;
                 for (auto client : server->getClients()) {
+                    std::cout << "Parsing Client: " << client.port() << std::endl;
+                    for (const auto messages : server->get_unreliable_messages_from_endpoint(client)) {
+                        std::cout << "Unreliable message: " << messages << std::endl;
+                    }
                     // server->send_unreliable_packet("tick\n", client);
                 }
             }

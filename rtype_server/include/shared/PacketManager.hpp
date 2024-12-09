@@ -118,11 +118,11 @@ class PacketManager {
     std::mutex         _retry_queue_mutex;
 
     // std::stack<std::string> _unprocessed_unreliable_messages;
-    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_unreliable_messages;
+    std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_unreliable_messages;
     std::mutex _unprocessed_unreliable_messages_mutex;
 
     // std::stack<std::string> _unprocessed_reliable_messages;
-    std::stack<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
+    std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
     std::mutex _unprocessed_reliable_messages_mutex;
 
     // std::mutex  _message_complete_mutex;
