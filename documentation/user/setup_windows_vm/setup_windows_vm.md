@@ -2,49 +2,67 @@
 
 Prepare a windows 11 VM for running the project
 
-### tiny11
+## Prerequisites
 
+### Install windows 11 for VM
+
+This is a light windows 11 version that can be used for testing purposes. It is not activated, but it is enough for our needs.
+
+The installation media is called tiny11
+
+You can download it here : 
 ```bash
 https://fr.taiwebs.com/windows/download-tiny11-8649.html
 ```
 
-## Install windows 11 for vcpkg
+### On the host machine (Linux)
 
-**Note** You want about half of your ram for the VM, and also about 50gb of disk space.
+1. Install virt-manager or gnome-boxes for managing the VM
 
-install chocolatey (powershell admin)
-```bash
-Set-ExecutionPolicy AllSigned
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-```
+    ```bash
+    sudo apt-get install virt-manager
+    #or
+    sudo apt-get install gnome-boxes
+    ```
 
-install git, cmake and ninja from chocolatey (powershell admin)
+2. Add the ISO into the VM
 
-```bash
-choco install git -y
-choco install cmake -y
-choco install ninja -y
-```
+3. You want about half of your ram for the VM, and also about 50gb of disk space.
 
-Install visual studio
-And in the visual studio installer, add the c++ dependencies
-```bash
-https://visualstudio.microsoft.com/fr/
-```
+4. Create the VM
 
-Install windows sdk
-```bash
-https://go.microsoft.com/fwlink/?linkid=2286561
-```
+5. Start the VM
 
-## On linux
+## Windows 11 installation
 
-### install gnome-boxes or virt-manager for VM management
+1. Do the installation of windows 11, setup stuff like language, keyboard, etc.
 
-```bash
-sudo apt-get install virt-manager
-sudo apt-get install gnome-boxes
-```
+
+2. Install chocolatey (powershell admin)
+    ```bash
+    Set-ExecutionPolicy AllSigned
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    ```
+
+3. Install git, cmake and ninja from chocolatey (powershell admin)
+
+    ```bash
+    choco install git -y
+    choco install cmake -y
+    choco install ninja -y
+    ```
+
+4. Install visual studio, and in the visual studio installer, add the c++ dependencies
+    ```bash
+    https://visualstudio.microsoft.com/fr/
+    ```
+
+5. Install windows sdk
+    ```bash
+    https://go.microsoft.com/fwlink/?linkid=2286561
+    ```
+
+## Install vcpkg dependencies
 
 ### vcpkg
 ```bash

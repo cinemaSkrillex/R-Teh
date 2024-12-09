@@ -44,10 +44,10 @@ enum Flags {
 };
 
 struct packet {
-    int                     sequence_nb;
-    int                     start_sequence_nb;
-    int                     end_sequence_nb;
-    int                     packet_size;
+    SEQUENCE_TYPE           sequence_nb;
+    SEQUENCE_TYPE           start_sequence_nb;
+    SEQUENCE_TYPE           end_sequence_nb;
+    SEQUENCE_TYPE           packet_size;
     Flags                   flag;
     asio::ip::udp::endpoint endpoint;
     std::vector<char>       data;

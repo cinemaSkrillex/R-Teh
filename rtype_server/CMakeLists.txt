@@ -22,7 +22,7 @@ if (UNIX)
     set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/openal)
 elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
-    set(SFML_STATIC_LIBRARIES TRUE)
+    # set(SFML_STATIC_LIBRARIES TRUE)
     set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows")
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
     set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/openal)
@@ -35,6 +35,17 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../game_engine/include)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/Config)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/Core)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/Components)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/Entities)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/Enum)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/Registry)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/SparseArray)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/ECS/Systems)
+include_directories(${CMAKE_SOURCE_DIR}/../game_engine/include/Media)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Game)
 
 # Add sources files
@@ -46,7 +57,7 @@ file(GLOB_RECURSE SOURCES
 find_package(SFML 2.5 REQUIRED system window graphics network audio)
 
 # Create the binary
-add_executable(r_type_server ${SOURCES} )
+add_executable(r_type_server ${SOURCES})
 
 # Link pthread for Linux
 if(UNIX)
