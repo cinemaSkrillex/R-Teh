@@ -23,6 +23,6 @@ class GameInstance {
     RealEngine::RotationSystem  _rotationSystem;
     RealEngine::RadiusSystem    _radiusSystem;
 
-    std::unordered_map<int, RealEngine::Entity> _players;
+    std::unordered_map<long int, RealEngine::Entity> _players;
     std::vector<RealEngine::Entity>             _groundBlocksEntities;
 };
