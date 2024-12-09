@@ -50,21 +50,21 @@ int main(int argc, char* argv[]) {
             std::vector<long int> players = {};
 
             UUIDGenerator uuid_generator;
-            std::string   uuid = uuid_generator.generate();
-
+            long int      uuid = uuid_generator.generate_long();
+            std::cout << "Generated UUID: " << uuid << std::endl;
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
-                    const std::string message = "Event:New_client Uuid:" + uuid + " Position:(" +
+                    const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) + " Position:(" +
                                                 std::to_string(PLAYER_START_POSITION.x) + "," +
                                                 std::to_string(PLAYER_START_POSITION.y) + ")";
 
                     server->send_reliable_packet(message, client);
-                    players.push_back(std::stol(uuid));
+                    players.push_back(uuid);
                 }
             }
             // Create the uuid for each new client
-            std::string message = "Event:Synchronize Uuid:" + uuid + " Position:(" +
+            std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) + " Position:(" +
                                   std::to_string(PLAYER_START_POSITION.x) + "," +
                                   std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
             for (int i = 0; i < players.size(); i++) {
