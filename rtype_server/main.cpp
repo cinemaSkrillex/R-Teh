@@ -7,21 +7,22 @@
 
 #include "include/Game/GameInstance.hpp"
 #include "include/RtypeServer.hpp"
+#include "include/shared/GenerateUuid.hpp"
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
 
     // Break the message into key-value pairs using a delimiter
     std::istringstream stream(message);
-    std::string token;
+    std::string        token;
 
     // Process each key-value pair
-    while (std::getline(stream, token, ' ')) { // ' ' as delimiter for key:value pairs
+    while (std::getline(stream, token, ' ')) {  // ' ' as delimiter for key:value pairs
         auto delimiter_pos = token.find(':');
         if (delimiter_pos != std::string::npos) {
-            std::string key = token.substr(0, delimiter_pos);
+            std::string key   = token.substr(0, delimiter_pos);
             std::string value = token.substr(delimiter_pos + 1);
-            parsed_data[key] = value; // Store in the map
+            parsed_data[key]  = value;  // Store in the map
         }
     }
 
@@ -48,6 +49,9 @@ int main(int argc, char* argv[]) {
                       << std::endl;
             std::vector<int> players = {};
 
+            UUIDGenerator uuid_generator;
+            std::string   uuid = uuid_generator.generate();
+            std::cout << "Generated UUID: " << uuid << std::endl;
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
@@ -58,7 +62,7 @@ int main(int argc, char* argv[]) {
                     players.push_back(client.port());
                 }
             }
-
+            // Create the uuid for each new client
             std::string message =
                 "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Players:[";
             for (int i = 0; i < players.size(); i++) {
@@ -78,7 +82,8 @@ int main(int argc, char* argv[]) {
                 // do server work.
                 for (auto client : server->getClients()) {
                     std::cout << "Parsing Client: " << client.port() << std::endl;
-                    for (const auto messages : server->get_unreliable_messages_from_endpoint(client)) {
+                    for (const auto messages :
+                         server->get_unreliable_messages_from_endpoint(client)) {
                         const auto parsed_data = parse_message(messages);
                         if (parsed_data.find("Direction") != parsed_data.end()) {
                             std::cout << "Direction: " << parsed_data.at("Direction") << std::endl;
