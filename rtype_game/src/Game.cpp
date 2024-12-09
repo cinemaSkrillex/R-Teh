@@ -265,7 +265,7 @@ void Game::run() {
         _window.update();
         _deltaTime = _clock.restart().asSeconds();
         _window.clear();
-        _view.move({50.0f * _deltaTime, 0});
+        // _view.move({50.0f * _deltaTime, 0});
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
