@@ -8,6 +8,26 @@
 #include "include/Game/GameInstance.hpp"
 #include "include/RtypeServer.hpp"
 
+std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
+    std::unordered_map<std::string, std::string> parsed_data;
+
+    // Break the message into key-value pairs using a delimiter
+    std::istringstream stream(message);
+    std::string token;
+
+    // Process each key-value pair
+    while (std::getline(stream, token, ' ')) { // ' ' as delimiter for key:value pairs
+        auto delimiter_pos = token.find(':');
+        if (delimiter_pos != std::string::npos) {
+            std::string key = token.substr(0, delimiter_pos);
+            std::string value = token.substr(delimiter_pos + 1);
+            parsed_data[key] = value; // Store in the map
+        }
+    }
+
+    return parsed_data;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -59,7 +79,10 @@ int main(int argc, char* argv[]) {
                 for (auto client : server->getClients()) {
                     std::cout << "Parsing Client: " << client.port() << std::endl;
                     for (const auto messages : server->get_unreliable_messages_from_endpoint(client)) {
-                        std::cout << "Unreliable message: " << messages << std::endl;
+                        const auto parsed_data = parse_message(messages);
+                        if (parsed_data.find("Direction") != parsed_data.end()) {
+                            std::cout << "Direction: " << parsed_data.at("Direction") << std::endl;
+                        }
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }
