@@ -1,4 +1,6 @@
-# Install vcpkg
+# Windows VM requirements
+
+Prepare a windows 11 VM for running the project
 
 ### tiny11
 
@@ -8,7 +10,7 @@ https://fr.taiwebs.com/windows/download-tiny11-8649.html
 
 ## Install windows 11 for vcpkg
 
-RAM / 2 (16 = 8), 70+ gb (visual studio = 15 + windows sdk 3.5), tiny11 3.5gb
+**Note** You want about half of your ram for the VM, and also about 50gb of disk space.
 
 install chocolatey (powershell admin)
 ```bash
@@ -46,30 +48,25 @@ sudo apt-get install gnome-boxes
 
 ### vcpkg
 ```bash
-LINUX vcpkg:
+# LINUX vcpkg:
+# in the root of the repository
 git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-./bootstrap-vcpkg.sh
-pwd
-/home/user/vcpkg
-export PATH="$(pwd):$PATH"
-check if installed
-vcpkg --version
 ```
 
 WINDOWS vcpkg :
 ```bash
+#in the root of the repository
 open git CMD
-
 git clone https://github.com/microsoft/vcpkg.git
 cd vcpkg
 .\bootstrap-vcpkg.bat
 ```
 
-Now to install vcpkg sfml.
-
-
-**Note** On both system this command works.
+### Install vcpkg dependencies
 ```bash
-vcpkg install sfml
+# In the root of the repository
+#Linux
+cmake --preset linux
+#Windows
+cmake --preset windows
 ```
