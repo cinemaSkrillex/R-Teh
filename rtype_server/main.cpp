@@ -47,24 +47,26 @@ int main(int argc, char* argv[]) {
         server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
             std::cout << "Callback: New client connected from " << new_client.address()
                       << std::endl;
-            std::vector<int> players = {};
+            std::vector<long int> players = {};
 
             UUIDGenerator uuid_generator;
             std::string   uuid = uuid_generator.generate();
-            std::cout << "Generated UUID: " << uuid << std::endl;
+
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
-                    const std::string message =
-                        "Event:New_client Uuid:" + std::to_string(new_client.port()) +
-                        " Position:(20,60)";
+                    const std::string message = "Event:New_client Uuid:" + uuid + " Position:(" +
+                                                std::to_string(PLAYER_START_POSITION.x) + "," +
+                                                std::to_string(PLAYER_START_POSITION.y) + ")";
+
                     server->send_reliable_packet(message, client);
-                    players.push_back(client.port());
+                    players.push_back(std::stol(uuid));
                 }
             }
             // Create the uuid for each new client
-            std::string message =
-                "Event:Synchronize Uuid:" + std::to_string(new_client.port()) + " Players:[";
+            std::string message = "Event:Synchronize Uuid:" + uuid + " Position:(" +
+                                  std::to_string(PLAYER_START_POSITION.x) + "," +
+                                  std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
             for (int i = 0; i < players.size(); i++) {
                 if (i != 0) message += "|";
                 message += std::to_string(players.at(i)) + ",(100.0,100.0)";

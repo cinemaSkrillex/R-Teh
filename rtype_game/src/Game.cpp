@@ -162,7 +162,7 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
     std::regex  positionRegex(R"(\((\d+),(\d+)\))");
     std::smatch match;
 
-    if (std::regex_search(positionStr, match, positionRegex) && match.size() == 3) {
+    if (std::regex_search(positionStr, match, positionRegex)) {
         // Convert the extracted strings to integers
         position.x = std::stof(match[1].str());
         position.y = std::stof(match[2].str());
@@ -215,7 +215,7 @@ void Game::handleSignal(std::string signal) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const int          uuid     = std::stoi(parsedPacket.at("Uuid"));
+            const long int          uuid     = std::stoi(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
             const std::string             players = parsedPacket.at("Players");
