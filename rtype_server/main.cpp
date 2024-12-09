@@ -91,6 +91,7 @@ int main(int argc, char* argv[]) {
                     std::cout << "Parsing Client: " << client.port() << std::endl;
                     for (const auto messages :
                          server->get_unreliable_messages_from_endpoint(client)) {
+                        std::cout << "Message: " << messages << std::endl;
                         const auto parsed_data = parse_message(messages);
                         if (parsed_data.find("Direction") != parsed_data.end()) {
                             std::cout << "Direction: " << parsed_data.at("Direction") << std::endl;

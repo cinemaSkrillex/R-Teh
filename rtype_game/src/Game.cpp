@@ -174,7 +174,6 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
     return position;
 }
 
-
 struct PlayerData {
     std::string  uuid;
     sf::Vector2f position;
@@ -185,23 +184,39 @@ std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
     std::vector<PlayerData> players;
 
     // Remove the surrounding brackets
-    std::string cleanedList = playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
+    if (playerList.size() >= 2 && playerList.front() == '[' && playerList.back() == ']') {
+        std::string cleanedList =
+            playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
 
-    // Split the string by "|" delimiter
-    std::regex  playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
-    std::smatch match;
+        // Regex to match player data
+        std::regex  playerRegex(R"(\|?([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+        std::smatch match;
 
-    std::string::const_iterator searchStart(cleanedList.cbegin());
-    while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
-        if (match.size() == 4) {
-            PlayerData player;
-            player.uuid     = match[1].str();
-            player.position = sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));
-            players.push_back(player);
+        std::string::const_iterator searchStart(cleanedList.cbegin());
+        while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
+            if (match.size() == 4) {
+                PlayerData player;
+                player.uuid = match[1].str();
+                player.position =
+                    sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));
+
+                // Sanitize UUID
+                player.uuid.erase(std::remove(player.uuid.begin(), player.uuid.end(), '|'),
+                                  player.uuid.end());
+
+                players.push_back(player);
+
+                std::cout << "Parsed player - UUID: " << player.uuid << ", Position: ("
+                          << player.position.x << ", " << player.position.y << ")" << std::endl;
+            } else {
+                std::cerr << "Malformed player data: " << match.str() << std::endl;
+            }
+
+            // Move the search start to the end of the current match
+            searchStart = match.suffix().first;
         }
-
-        // Move the search start to the end of the current match
-        searchStart = match.suffix().first;
+    } else {
+        std::cerr << "Malformed player list: " << playerList << std::endl;
     }
 
     return players;
@@ -276,7 +291,7 @@ void Game::run() {
         const sf::Vector2f direction = getPlayerNormalizedDirection();
         const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
                                     std::to_string(direction.y) + ")";
-        // _clientUDP->send_unreliable_packet(message);
+        _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
     exit(0);
