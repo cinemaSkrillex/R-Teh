@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
             std::vector<int> players = {};
 
             UUIDGenerator uuid_generator;
-            std::string   uuid = uuid_generator.generate();
+            long int      uuid = uuid_generator.generate_long();
             std::cout << "Generated UUID: " << uuid << std::endl;
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {

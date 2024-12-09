@@ -22,6 +22,13 @@ class UUIDGenerator {
         }
         return res;
     }
+    long int generate_long() {
+        long int res = 0;
+        for (int i = 0; i < 10; i++) {
+            res = res * 10 + dist(rng);
+        }
+        return res;
+    }
 
    private:
     std::random_device                 dev;
