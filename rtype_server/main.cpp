@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 
                 // do server work.
                 for (auto client : server->getClients()) {
-                    // std::cout << "Parsing Client: " << client.port() << std::endl;
+                    std::cout << "Parsing Client: " << client.port() << std::endl;
                     for (const auto messages :
                          server->get_unreliable_messages_from_endpoint(client)) {
                         const auto parsed_data = parse_message(messages);

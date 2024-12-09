@@ -159,11 +159,12 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 
-    std::regex  positionRegex(R"(\((\d+),(\d+)\))");
+    // Updated regex to handle floating-point numbers
+    std::regex  positionRegex(R"(\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
     std::smatch match;
 
     if (std::regex_search(positionStr, match, positionRegex)) {
-        // Convert the extracted strings to integers
+        // Convert the extracted strings to floats
         position.x = std::stof(match[1].str());
         position.y = std::stof(match[2].str());
     } else {
@@ -172,6 +173,7 @@ const sf::Vector2f parsePosition(const std::string& positionStr) {
 
     return position;
 }
+
 
 struct PlayerData {
     std::string  uuid;
