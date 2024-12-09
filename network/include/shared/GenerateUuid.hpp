@@ -13,17 +13,12 @@
 
 class UUIDGenerator {
    public:
-    UUIDGenerator() : rng(dev()), dist(0, 15) {}
+    UUIDGenerator() : rng(dev()), dist(0, 9) {}
 
     std::string generate() {
-        const char *v      = "0123456789abcdef";
-        const bool  dash[] = {0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
-
         std::string res;
-        for (int i = 0; i < 16; i++) {
-            if (dash[i]) res += "-";
-            res += v[dist(rng)];
-            res += v[dist(rng)];
+        for (int i = 0; i < 32; i++) {
+            res += std::to_string(dist(rng));
         }
         return res;
     }
