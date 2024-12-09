@@ -52,9 +52,9 @@ void GameInstance::run() {
     }
 }
 
-RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f cameraPosition) {
+RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{cameraPosition.x, cameraPosition.y});
+    _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
     _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);

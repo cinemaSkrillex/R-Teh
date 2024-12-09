@@ -9,7 +9,7 @@ class GameInstance {
     void                  init_systems();
     void                  run();
     void                  handleSignal(const std::string& message);
-    RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f cameraPosition);
+    RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f position);
     void                  movePlayer(int playerPort, sf::Vector2f direction);
     RealEngine::Registry* getRegistry() { return &_registry; }
 
