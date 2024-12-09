@@ -47,7 +47,6 @@ int main(int argc, char* argv[]) {
         server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
             std::cout << "Callback: New client connected from " << new_client.address()
                       << std::endl;
-            std::vector<long int> players = {};
 
             UUIDGenerator uuid_generator;
             long int      uuid = uuid_generator.generate_long();
@@ -60,19 +59,20 @@ int main(int argc, char* argv[]) {
                                                 std::to_string(PLAYER_START_POSITION.y) + ")";
 
                     server->send_reliable_packet(message, client);
-                    players.push_back(uuid);
                 }
             }
             // Create the uuid for each new client
             std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) + " Position:(" +
                                   std::to_string(PLAYER_START_POSITION.x) + "," +
                                   std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
-            for (int i = 0; i < players.size(); i++) {
+            for (int i = 0; i < PLAYERS.size(); i++) {
                 if (i != 0) message += "|";
-                message += std::to_string(players.at(i)) + ",(100.0,100.0)";
+                message += std::to_string(PLAYERS.at(i)) + ",(100.0,100.0)";
             }
             message += "]";
             server->send_reliable_packet(message, new_client);
+
+            PLAYERS.push_back(uuid);
         });
 
         sf::Clock tickClock;
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 
                 // do server work.
                 for (auto client : server->getClients()) {
-                    std::cout << "Parsing Client: " << client.port() << std::endl;
+                    // std::cout << "Parsing Client: " << client.port() << std::endl;
                     for (const auto messages :
                          server->get_unreliable_messages_from_endpoint(client)) {
                         const auto parsed_data = parse_message(messages);

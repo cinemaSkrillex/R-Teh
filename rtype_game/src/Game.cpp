@@ -273,7 +273,7 @@ void Game::run() {
         const sf::Vector2f direction = getPlayerNormalizedDirection();
         const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
                                     std::to_string(direction.y) + ")";
-        _clientUDP->send_unreliable_packet(message);
+        // _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
     exit(0);
