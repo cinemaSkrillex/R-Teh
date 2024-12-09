@@ -5,7 +5,6 @@
 ** main
 */
 
-#include "include/Game/GameInstance.hpp"
 #include "include/RtypeServer.hpp"
 #include "include/shared/GenerateUuid.hpp"
 
@@ -54,7 +53,8 @@ int main(int argc, char* argv[]) {
             // Notify all other clients about the new client
             for (const auto& client : server->getClients()) {
                 if (client != new_client) {
-                    const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) + " Position:(" +
+                    const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) +
+                                                " Position:(" +
                                                 std::to_string(PLAYER_START_POSITION.x) + "," +
                                                 std::to_string(PLAYER_START_POSITION.y) + ")";
 
@@ -67,12 +67,14 @@ int main(int argc, char* argv[]) {
                                   std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
             for (int i = 0; i < PLAYERS.size(); i++) {
                 if (i != 0) message += "|";
-                message += std::to_string(PLAYERS.at(i)) + ",(100.0,100.0)";
+                const auto position = PLAYERS.at(i).getPosition();
+                message += std::to_string(PLAYERS.at(i).getUUID()) + ",(" +
+                           std::to_string(position.x) + "," + std::to_string(position.y) + ")";
             }
             message += "]";
             server->send_reliable_packet(message, new_client);
 
-            PLAYERS.push_back(uuid);
+            PLAYERS.push_back(Player(uuid, PLAYER_START_POSITION));
         });
 
         sf::Clock tickClock;

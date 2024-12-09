@@ -7,14 +7,9 @@
 
 #include "../include/RtypeServer.hpp"
 
-Player::Player(/* args */)
-{
-}
+Player::Player(/* args */) {}
 
-Player::Player(sf::Vector2f current_position) : _position(current_position)
-{
-}
+Player::Player(long int uuid, sf::Vector2f current_position)
+    : _uuid(uuid), _position(current_position) {}
 
-Player::~Player()
-{
-}
+Player::~Player() {}

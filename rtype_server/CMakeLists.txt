@@ -35,7 +35,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../game_engine/include)
 
 # Add sources files
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp",
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 

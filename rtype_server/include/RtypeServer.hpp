@@ -23,29 +23,33 @@
 #include <windows.h>
 #endif
 
-const sf::Int32 SERVER_TICK = 10;
+const sf::Int32    SERVER_TICK           = 10;
 const sf::Vector2f PLAYER_START_POSITION = {50.f, 50.f};
-static std::vector<long int> PLAYERS = {};
 
-class Player
-{
-private:
-    sf::Vector2f _position;
+class Player {
+   public:
+    long int                         getUUID() const { return _uuid; }
+    sf::Vector2f                     getPosition() const { return _position; }
+    const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
+
+   private:
+    long int                  _uuid;
+    sf::Vector2f              _position;
     std::vector<sf::Vector2f> _positions;
 
-public:
+   public:
     Player(/* args */);
-    Player(sf::Vector2f current_position);
+    Player(long int uuid, sf::Vector2f current_position);
     ~Player();
 };
 
+static std::vector<Player> PLAYERS = {};
 
-class RtypeServer
-{
-private:
+class RtypeServer {
+   private:
     std::unordered_map<int, Player> _players;
-public:
+
+   public:
     RtypeServer(/* args */);
     ~RtypeServer();
 };
-
