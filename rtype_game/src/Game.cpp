@@ -215,13 +215,13 @@ void Game::handleSignal(std::string signal) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const long int          uuid     = std::stoi(parsedPacket.at("Uuid"));
+            const long int          uuid     = std::stol(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
             const std::string             players = parsedPacket.at("Players");
             const std::vector<PlayerData> datas   = parsePlayerList(players);
             for (PlayerData player : datas) {
-                add_player(std::stoi(player.uuid), player.position);
+                add_player(std::stol(player.uuid), player.position);
             }
         }
     }
