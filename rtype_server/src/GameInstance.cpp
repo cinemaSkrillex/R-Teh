@@ -56,6 +56,7 @@ RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f po
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
+    _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);
 }
@@ -64,15 +65,15 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     RealEngine::Entity player       = _players.at(playerUuid);
-    // auto*              acceleration = _registry.get_component<RealEngine::Acceleration>(player);
-    // auto*              velocity     = _registry.get_component<RealEngine::Velocity>(player);
+    auto*              acceleration = _registry.get_component<RealEngine::Acceleration>(player);
+    auto*              velocity     = _registry.get_component<RealEngine::Velocity>(player);
 
-    // if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
-    // if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
-    // if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
-    // if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
-    // velocity->vx += (acceleration->ax * 3 * _deltaTime) * direction.x;
-    // velocity->vy += (acceleration->ay * 3 * _deltaTime) * direction.y;
+    if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
+    if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
+    if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
+    if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
+    velocity->vx += (acceleration->ax * 3 * _deltaTime) * direction.x;
+    velocity->vy += (acceleration->ay * 3 * _deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {
