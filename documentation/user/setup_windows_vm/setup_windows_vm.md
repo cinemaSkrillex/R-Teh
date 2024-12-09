@@ -6,13 +6,9 @@ Prepare a windows 11 VM for running the project
 
 ### Install windows 11 for VM
 
-This is a light windows 11 version that can be used for testing purposes. It is not activated, but it is enough for our needs.
-
-The installation media is called tiny11
-
-You can download it here : 
+Download the iso from the official windows website : 
 ```bash
-https://fr.taiwebs.com/windows/download-tiny11-8649.html
+https://www.microsoft.com/fr-fr/software-download/windows11
 ```
 
 ### On the host machine (Linux)
@@ -56,11 +52,14 @@ https://fr.taiwebs.com/windows/download-tiny11-8649.html
     ```bash
     https://visualstudio.microsoft.com/fr/
     ```
+    In the visual studio installer, add c++, vcpkg, msvc v141 (2017) for x64 and x86
 
 5. Install windows sdk
     ```bash
     https://go.microsoft.com/fwlink/?linkid=2286561
     ```
+
+6. Quality of life : Spice windows guest tools : https://www.spice-space.org/download.html
 
 ## Install vcpkg dependencies
 
