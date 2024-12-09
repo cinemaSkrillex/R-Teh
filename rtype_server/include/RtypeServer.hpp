@@ -13,6 +13,7 @@
 #include <iostream>
 #include <thread>
 
+#include "Game/GameInstance.hpp"
 #include "Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -28,18 +29,22 @@ const sf::Vector2f PLAYER_START_POSITION = {50.f, 50.f};
 
 class Player {
    public:
-    long int                         getUUID() const { return _uuid; }
-    sf::Vector2f                     getPosition() const { return _position; }
+    long int     getUUID() const { return _uuid; }
+    sf::Vector2f getPosition() const {
+        RealEngine::Position* component = _registry->get_component<RealEngine::Position>(*_entity);
+        return { component->x, component->y };
+    }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
 
    private:
     long int                  _uuid;
-    sf::Vector2f              _position;
     std::vector<sf::Vector2f> _positions;
+    RealEngine::Entity*       _entity;
+    RealEngine::Registry*     _registry;
 
    public:
     Player(/* args */);
-    Player(long int uuid, sf::Vector2f current_position);
+    Player(long int uuid, RealEngine::Entity* player_entity, RealEngine::Registry* registry);
     ~Player();
 };
 

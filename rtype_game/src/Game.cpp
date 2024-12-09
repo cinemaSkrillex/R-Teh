@@ -215,7 +215,7 @@ void Game::handleSignal(std::string signal) {
         const std::string event = parsedPacket.at("Event");
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-            const long int          uuid     = std::stol(parsedPacket.at("Uuid"));
+            const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
             const std::string             players = parsedPacket.at("Players");
@@ -227,7 +227,7 @@ void Game::handleSignal(std::string signal) {
     }
 }
 
-void Game::add_player(int player_port, sf::Vector2f position) {
+RealEngine::Entity* Game::add_player(long int player_uuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x + 300, position.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
@@ -235,7 +235,8 @@ void Game::add_player(int player_port, sf::Vector2f position) {
 
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
 
-    _players.emplace(player_port, player);
+    _players.emplace(player_uuid, player);
+    return &_players.at(player_uuid);
 }
 
 sf::Vector2f Game::getPlayerNormalizedDirection() {
