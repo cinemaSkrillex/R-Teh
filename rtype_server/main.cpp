@@ -7,7 +7,6 @@
 
 #include "GenerateUuid.hpp"
 #include "RtypeServer.hpp"
-#include "include/Game/GameInstance.hpp"
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
@@ -39,12 +38,14 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context io_context;
-        auto             server = std::make_shared<UDPServer>(io_context, port);
+        auto             server        = std::make_shared<UDPServer>(io_context, port);
+        auto             game_instance = std::make_shared<GameInstance>();
 
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
-        server->setNewClientCallback([server](const asio::ip::udp::endpoint& new_client) {
+        server->setNewClientCallback([server,
+                                      game_instance](const asio::ip::udp::endpoint& new_client) {
             std::cout << "Callback: New client connected from " << new_client.address()
                       << std::endl;
 
@@ -68,14 +69,15 @@ int main(int argc, char* argv[]) {
                                   std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
             for (int i = 0; i < PLAYERS.size(); i++) {
                 if (i != 0) message += "|";
-                const auto position = PLAYERS.at(i).getPosition();
                 message += std::to_string(PLAYERS.at(i).getUUID()) + ",(" +
-                           std::to_string(position.x) + "," + std::to_string(position.y) + ")";
+                           std::to_string(PLAYERS.at(i).getPosition().x) + "," +
+                           std::to_string(PLAYERS.at(i).getPosition().y) + ")";
             }
             message += "]";
             server->send_reliable_packet(message, new_client);
-
-            PLAYERS.push_back(Player(uuid, PLAYER_START_POSITION));
+            auto player = Player(uuid, game_instance->addPlayer(uuid, PLAYER_START_POSITION),
+                                 game_instance->getRegistry());
+            PLAYERS.push_back(player);
         });
 
         sf::Clock tickClock;

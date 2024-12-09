@@ -8,7 +8,10 @@ GameInstance::GameInstance()
       _collisionSystem(),
       _aiSystem(),
       _rotationSystem(),
-      _radiusSystem() {}
+      _radiusSystem() {
+    init_components();
+    init_systems();
+}
 
 void GameInstance::init_components() {
     _registry.register_component<RealEngine::Position>();
@@ -49,11 +52,12 @@ void GameInstance::run() {
     }
 }
 
-void GameInstance::addPlayer(int playerPort, sf::Vector2f cameraPosition) {
+RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f cameraPosition) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{cameraPosition.x + 300, cameraPosition.y});
+    _registry.add_component(player, RealEngine::Position{cameraPosition.x, cameraPosition.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
-    _players.emplace(playerPort, player);
+    _players.emplace(playerUuid, player);
+    return &_players.at(playerUuid);
 }
 
 void GameInstance::movePlayer(int playerPort, sf::Vector2f direction) {

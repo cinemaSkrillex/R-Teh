@@ -5,12 +5,13 @@
 class GameInstance {
    public:
     GameInstance();
-    void init_components();
-    void init_systems();
-    void run();
-    void handleSignal(const std::string& message);
-    void addPlayer(int playerPort, sf::Vector2f cameraPosition);
-    void movePlayer(int playerPort, sf::Vector2f direction);
+    void                  init_components();
+    void                  init_systems();
+    void                  run();
+    void                  handleSignal(const std::string& message);
+    RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f cameraPosition);
+    void                  movePlayer(int playerPort, sf::Vector2f direction);
+    RealEngine::Registry* getRegistry() { return &_registry; }
 
    private:
     float                       _deltaTime;
