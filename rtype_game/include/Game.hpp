@@ -54,5 +54,6 @@ class Game {
     RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity2;
     std::vector<RealEngine::Entity>                     _groundBlocksEntities;
+    long int                                            _localPlayerUUID;
 };
 }  // namespace rtype

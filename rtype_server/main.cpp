@@ -96,6 +96,9 @@ int main(int argc, char* argv[]) {
                         if (parsed_data.find("Direction") != parsed_data.end()) {
                             std::cout << "Direction: " << parsed_data.at("Direction") << std::endl;
                         }
+                        if (parsed_data.find("Uuid") != parsed_data.end()) {
+                            std::cout << "Uuid: " << parsed_data.at("Uuid") << std::endl;
+                        }
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }

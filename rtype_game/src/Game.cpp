@@ -235,6 +235,7 @@ void Game::handleSignal(std::string signal) {
             const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
+            _localPlayerUUID                      = std::stol(parsedPacket.at("Uuid"));
             const std::string             players = parsedPacket.at("Players");
             const std::vector<PlayerData> datas   = parsePlayerList(players);
             for (PlayerData player : datas) {
@@ -289,7 +290,8 @@ void Game::run() {
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         const sf::Vector2f direction = getPlayerNormalizedDirection();
-        const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
+        const std::string  message   = "Uuid:" + std::to_string(_localPlayerUUID) + " Direction:(" +
+                                    std::to_string(direction.x) + "," +
                                     std::to_string(direction.y) + ")";
         _clientUDP->send_unreliable_packet(message);
         _window.display();
