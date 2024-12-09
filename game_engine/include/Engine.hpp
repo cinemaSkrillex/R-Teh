@@ -45,4 +45,4 @@
 #include "Media/Graphics/Rendering/Sprite.hpp"
 #include "Media/Graphics/UI/Text.hpp"
 // Scripting
-#include "Scripting/LuaManager.hpp"
+// #include "Scripting/LuaManager.hpp"

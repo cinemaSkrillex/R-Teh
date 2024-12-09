@@ -19,6 +19,7 @@ if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
     set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux")
     set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
+    set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/openal)
 elseif (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
     set(SFML_STATIC_LIBRARIES TRUE)
@@ -29,6 +30,7 @@ elseif (WIN32)
 endif()
 
 #add includes files
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
@@ -41,16 +43,21 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-find_package(SFML 2.5 REQUIRED COMPONENTS system)
+find_package(SFML 2.5 REQUIRED system window graphics network audio)
 
 # Create the binary
-add_executable(r_type_server ${SOURCES})
+add_executable(r_type_server ${SOURCES} )
 
 # Link pthread for Linux
 if(UNIX)
     target_link_libraries(r_type_server
         pthread
         sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-network
+        sfml-audio
+        rtype_engine
     )
 endif()
 
@@ -59,6 +66,11 @@ if(WIN32)
     target_link_libraries(r_type_server
         ws2_32
         sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-network
+        sfml-audio
+        rtype_engine
     )
 endif()
 

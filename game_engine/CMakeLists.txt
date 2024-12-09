@@ -82,7 +82,7 @@ target_include_directories(rtype_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/SparseArray
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Media
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting
+    # ${CMAKE_CURRENT_SOURCE_DIR}/include/Scripting
 )
 
 # Link libraries

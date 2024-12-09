@@ -29,11 +29,11 @@ class Game {
     std::shared_ptr<UDPClient> _clientUDP;
 
    private:
-    float                       _deltaTime = 0.f;
-    RealEngine::Window          _window;
-    RealEngine::View            _view;
-    sf::Clock                   _clock;
-    RealEngine::LuaManager      _luaManager;
+    float              _deltaTime = 0.f;
+    RealEngine::Window _window;
+    RealEngine::View   _view;
+    sf::Clock          _clock;
+    // RealEngine::LuaManager      _luaManager;
     RealEngine::Registry        _registry;
     RealEngine::DrawSystem      _drawSystem;
     RealEngine::ControlSystem   _controlSystem;

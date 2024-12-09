@@ -5,8 +5,9 @@
 ** main
 */
 
-#include "include/RtypeServer.hpp"
-#include "include/shared/GenerateUuid.hpp"
+#include "GenerateUuid.hpp"
+#include "RtypeServer.hpp"
+#include "include/Game/GameInstance.hpp"
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
