@@ -159,11 +159,12 @@ std::unordered_map<std::string, std::string> parseMessage(const std::string& mes
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 
-    std::regex  positionRegex(R"(\((\d+),(\d+)\))");
+    // Updated regex to handle floating-point numbers
+    std::regex  positionRegex(R"(\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
     std::smatch match;
 
     if (std::regex_search(positionStr, match, positionRegex)) {
-        // Convert the extracted strings to integers
+        // Convert the extracted strings to floats
         position.x = std::stof(match[1].str());
         position.y = std::stof(match[2].str());
     } else {
@@ -183,23 +184,39 @@ std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
     std::vector<PlayerData> players;
 
     // Remove the surrounding brackets
-    std::string cleanedList = playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
+    if (playerList.size() >= 2 && playerList.front() == '[' && playerList.back() == ']') {
+        std::string cleanedList =
+            playerList.substr(1, playerList.length() - 2);  // Removes "[" and "]"
 
-    // Split the string by "|" delimiter
-    std::regex  playerRegex(R"(([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
-    std::smatch match;
+        // Regex to match player data
+        std::regex  playerRegex(R"(\|?([^,]+),\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+        std::smatch match;
 
-    std::string::const_iterator searchStart(cleanedList.cbegin());
-    while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
-        if (match.size() == 4) {
-            PlayerData player;
-            player.uuid     = match[1].str();
-            player.position = sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));
-            players.push_back(player);
+        std::string::const_iterator searchStart(cleanedList.cbegin());
+        while (std::regex_search(searchStart, cleanedList.cend(), match, playerRegex)) {
+            if (match.size() == 4) {
+                PlayerData player;
+                player.uuid = match[1].str();
+                player.position =
+                    sf::Vector2f(std::stof(match[2].str()), std::stof(match[3].str()));
+
+                // Sanitize UUID
+                player.uuid.erase(std::remove(player.uuid.begin(), player.uuid.end(), '|'),
+                                  player.uuid.end());
+
+                players.push_back(player);
+
+                std::cout << "Parsed player - UUID: " << player.uuid << ", Position: ("
+                          << player.position.x << ", " << player.position.y << ")" << std::endl;
+            } else {
+                std::cerr << "Malformed player data: " << match.str() << std::endl;
+            }
+
+            // Move the search start to the end of the current match
+            searchStart = match.suffix().first;
         }
-
-        // Move the search start to the end of the current match
-        searchStart = match.suffix().first;
+    } else {
+        std::cerr << "Malformed player list: " << playerList << std::endl;
     }
 
     return players;
@@ -218,6 +235,7 @@ void Game::handleSignal(std::string signal) {
             const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
             add_player(uuid, position);
         } else if (event == "Synchronize") {
+            _localPlayerUUID                      = std::stol(parsedPacket.at("Uuid"));
             const std::string             players = parsedPacket.at("Players");
             const std::vector<PlayerData> datas   = parsePlayerList(players);
             for (PlayerData player : datas) {
@@ -272,9 +290,10 @@ void Game::run() {
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         const sf::Vector2f direction = getPlayerNormalizedDirection();
-        const std::string  message   = "Tick:3700 Direction:(" + std::to_string(direction.x) + "," +
+        const std::string  message   = "Uuid:" + std::to_string(_localPlayerUUID) + " Direction:(" +
+                                    std::to_string(direction.x) + "," +
                                     std::to_string(direction.y) + ")";
-        // _clientUDP->send_unreliable_packet(message);
+        _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
     exit(0);

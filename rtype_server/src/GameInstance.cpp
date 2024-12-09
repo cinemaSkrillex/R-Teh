@@ -56,14 +56,15 @@ RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f po
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
+    _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);
 }
 
-void GameInstance::movePlayer(int playerPort, sf::Vector2f direction) {
-    if (_players.find(playerPort) == _players.end()) return;
+void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction) {
+    if (_players.find(playerUuid) == _players.end()) return;
 
-    RealEngine::Entity player       = _players.at(playerPort);
+    RealEngine::Entity player       = _players.at(playerUuid);
     auto*              acceleration = _registry.get_component<RealEngine::Acceleration>(player);
     auto*              velocity     = _registry.get_component<RealEngine::Velocity>(player);
 

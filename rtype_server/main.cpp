@@ -7,6 +7,7 @@
 
 #include "GenerateUuid.hpp"
 #include "RtypeServer.hpp"
+#include <regex>
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
@@ -26,6 +27,24 @@ std::unordered_map<std::string, std::string> parse_message(const std::string& me
     }
 
     return parsed_data;
+}
+
+sf::Vector2f parseDirection(const std::string& directionStr) {
+    sf::Vector2f direction(0.f, 0.f);  // Default to (0, 0) in case of a parsing error
+
+    // Regex to match floating-point numbers inside parentheses
+    std::regex directionRegex(R"(\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+    std::smatch match;
+
+    if (std::regex_search(directionStr, match, directionRegex)) {
+        // Convert the extracted strings to floats
+        direction.x = std::stof(match[1].str());
+        direction.y = std::stof(match[2].str());
+    } else {
+        std::cerr << "Failed to parse direction: " << directionStr << std::endl;
+    }
+
+    return direction;
 }
 
 int main(int argc, char* argv[]) {
@@ -88,13 +107,15 @@ int main(int argc, char* argv[]) {
 
                 // do server work.
                 for (auto client : server->getClients()) {
-                    // std::cout << "Parsing Client: " << client.port() << std::endl;
+                    std::cout << "Parsing Client: " << client.port() << std::endl;
                     for (const auto messages :
                          server->get_unreliable_messages_from_endpoint(client)) {
+                        std::cout << "Message: " << messages << std::endl;
                         const auto parsed_data = parse_message(messages);
-                        if (parsed_data.find("Direction") != parsed_data.end()) {
-                            std::cout << "Direction: " << parsed_data.at("Direction") << std::endl;
-                        }
+                        const auto player_direction = parseDirection(parsed_data.at("Direction"));
+                        const auto player_uuid = std::stol(parsed_data.at("Uuid"));
+
+                        game_instance->movePlayer(player_uuid, player_direction);
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }

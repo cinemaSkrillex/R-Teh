@@ -10,7 +10,7 @@ class GameInstance {
     void                  run();
     void                  handleSignal(const std::string& message);
     RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f position);
-    void                  movePlayer(int playerPort, sf::Vector2f direction);
+    void                  movePlayer(long int playerUuid, sf::Vector2f direction);
     RealEngine::Registry* getRegistry() { return &_registry; }
 
    private:
@@ -23,6 +23,6 @@ class GameInstance {
     RealEngine::RotationSystem  _rotationSystem;
     RealEngine::RadiusSystem    _radiusSystem;
 
-    std::unordered_map<int, RealEngine::Entity> _players;
+    std::unordered_map<long int, RealEngine::Entity> _players;
     std::vector<RealEngine::Entity>             _groundBlocksEntities;
 };
