@@ -24,6 +24,7 @@
 #endif
 
 const sf::Int32 SERVER_TICK = 10;
+const sf::Vector2f PLAYER_START_POSITION = {50, 50};
 
 class Player
 {
