@@ -3,10 +3,10 @@
 #include <SFML/Graphics.hpp>
 #include <regex>
 
-#include "../../game_engine/include/Engine.hpp"
 #include "Client/UDPClient.hpp"
 #include "CollisionHandler.hpp"
 #include "Controls.hpp"
+#include "Engine.hpp"
 #include "EyeBoss.hpp"
 #include "Macros.hpp"
 

@@ -33,9 +33,9 @@ void RadiusSystem::update(Registry& registry) {
         if (outer_min && entity_radius->lastState != RadiusState::OUTER_MIN) {
             entity_radius->behaviorOuterMin();
             entity_radius->lastState = RadiusState::OUTER_MIN;
-        } else if (in && entity_radius->lastState != RadiusState::IN) {
+        } else if (in && entity_radius->lastState != RadiusState::INSIDE) {
             entity_radius->behaviorIn();
-            entity_radius->lastState = RadiusState::IN;
+            entity_radius->lastState = RadiusState::INSIDE;
         } else if (outer_max && entity_radius->lastState != RadiusState::OUTER_MAX) {
             entity_radius->behaviorOuterMax();
             entity_radius->lastState = RadiusState::OUTER_MAX;

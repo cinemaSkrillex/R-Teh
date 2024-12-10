@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../game_engine/include/Engine.hpp"
+#include "Engine.hpp"
 
 class GameInstance {
    public:
@@ -24,5 +24,5 @@ class GameInstance {
     RealEngine::RadiusSystem    _radiusSystem;
 
     std::unordered_map<long int, RealEngine::Entity> _players;
-    std::vector<RealEngine::Entity>             _groundBlocksEntities;
+    std::vector<RealEngine::Entity>                  _groundBlocksEntities;
 };
