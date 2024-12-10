@@ -293,8 +293,11 @@ void Game::run() {
     std::unordered_map<std::string, RealEngine::Entity> entities = {
         {"spaceship", _entity2}, {"ground", _groundBlocksEntities[3]}};
     while (_window.isOpen()) {
-        _window.update();
+        if (_clock.getElapsedTime().asMilliseconds() <= 1000 / 60)
+            continue;
+
         _deltaTime = _clock.restart().asSeconds();
+        _window.update();
         _window.clear();
         // _view.move({50.0f * _deltaTime, 0});
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();

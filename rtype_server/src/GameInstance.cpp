@@ -43,7 +43,8 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::run(float deltaTime) { 
-    _movementSystem.update(_registry, deltaTime);
+        // _registry.update(deltaTime);
+        _movementSystem.update(_registry, deltaTime);
     };
 
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {

@@ -15,6 +15,7 @@ void RtypeServer::run() {
 
             // Do server work
             for (auto client : _server->getClients()) {
+                // Process all messages from the client
                 for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
                     const auto parsed_data         = parseMessage(message);
                     const auto player_direction    = parseDirection(parsed_data.at("Direction"));
@@ -27,18 +28,8 @@ void RtypeServer::run() {
                     _players.at(client).setLastTimestamp(timestamp);
 
                     // Use consistent server delta time for simulation
-                    const float server_tick_duration = _deltaTime;  // Duration for the current tick
-                    float       time_to_simulate     = client_elapsed_time_seconds;
-
-                    // Simulate the physics, splitting the client elapsed time if necessary
-                    while (time_to_simulate > 0.0f) {
-                        float delta_time = std::min(time_to_simulate, server_tick_duration);
-                        _game_instance->movePlayer(player_uuid, player_direction, delta_time);
-                        _game_instance->run(delta_time);
-
-                        // Decrease the time remaining to simulate
-                        time_to_simulate -= delta_time;
-                    }
+                    _game_instance->movePlayer(player_uuid, player_direction, _deltaTime);
+                    _game_instance->run(_deltaTime);
                 }
             }
         }
