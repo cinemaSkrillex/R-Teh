@@ -33,7 +33,8 @@ int main(int argc, char* argv[]) {
         });
 
         // Launch the game on the main thread
-        rtype::Game game(client);
+        // added the port, temporarily for testing.
+        rtype::Game game(client, client_port);
 
         client->send_new_client();
 
