@@ -1,29 +1,7 @@
 # Network project
 project(Network)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Add debug flags for Valgrind
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-    endif()
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-    endif()
-endif()
-
-#define _WIN32_WINNT for windows
-if (WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
-endif()
 
 # Include directories
 if (UNIX)

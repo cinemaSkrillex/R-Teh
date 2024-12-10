@@ -55,16 +55,15 @@ cmake --preset linux
 ## How to build the project 🔨
  
 ```bash
-cd build
+cd build/default
 
 # Build debug mode (g3 flag)
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 # Build release mode (O3 flag)
 cmake -DCMAKE_BUILD_TYPE=Release ..
 
-# Alternative way to build
-cmake ..
-cmake --build .
+# Build the cmake and build the project with 8 threads
+cmake . && cmake --build . -j 8
 
 ```
 
