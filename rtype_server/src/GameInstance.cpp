@@ -49,8 +49,8 @@ void GameInstance::run(float deltaTime) {
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.f});
+    _registry.add_component(player, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);
 }
