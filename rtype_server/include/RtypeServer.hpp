@@ -12,7 +12,10 @@
 #include <asio.hpp>
 #include <chrono>
 #include <iostream>
+#include <regex>
 #include <thread>
+#include <unordered_map>
+#include <vector>
 
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
@@ -26,7 +29,8 @@
 #include <windows.h>
 #endif
 
-const sf::Int32    SERVER_TICK           = 10;
+const sf::Int32    SERVER_TICK           = 60;
+const sf::Int32    SERVER_BROADCAST_TICK = 10;
 const sf::Vector2f PLAYER_START_POSITION = {50.f, 250.f};
 
 class Player {

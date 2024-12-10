@@ -7,32 +7,6 @@
 
 #include "../include/RtypeServer.hpp"
 
-std::unordered_map<std::string, std::string> RtypeServer::parseMessage(const std::string& message) {
-    std::unordered_map<std::string, std::string> parsed_data;
-
-    // Break the message into key-value pairs using a delimiter
-    std::istringstream stream(message);
-    std::string        token;
-
-    // Process each key-value pair
-    while (std::getline(stream, token, ' ')) {  // ' ' as delimiter for key:value pairs
-        auto delimiter_pos = token.find(':');
-        if (delimiter_pos != std::string::npos) {
-            std::string key   = token.substr(0, delimiter_pos);
-            std::string value = token.substr(delimiter_pos + 1);
-            parsed_data[key]  = value;  // Store in the map
-        }
-    }
-
-    return parsed_data;
-}
-
-std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_point& start_time) {
-    auto now     = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-    return std::to_string(elapsed);  // in milliseconds
-}
-
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
         std::cout << "Callback: New client connected from " << sender.address() << std::endl;
