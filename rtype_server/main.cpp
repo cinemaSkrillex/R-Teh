@@ -140,16 +140,19 @@ int main(int argc, char* argv[]) {
                 // do server work.
                 for (auto client : server->getClients()) {
                     std::cout << "Parsing Client: " << client.port() << std::endl;
-                    for (const auto messages :
+                    for (const auto& message :
                          server->get_unreliable_messages_from_endpoint(client)) {
-                        std::cout << "Message: " << messages << std::endl;
-                        const auto parsed_data      = parse_message(messages);
+                        std::cout << "Message: " << message << std::endl;
+
+                        const auto parsed_data      = parse_message(message);
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
                         const auto player_uuid      = std::stol(parsed_data.at("Uuid"));
                         const auto timestamp        = std::stol(parsed_data.at("Timestamp"));
-                        const auto lastTimestamp    = getPlayerLastTimestamp(player_uuid);
-                        long client_elapsed_time =  timestamp - lastTimestamp;
-                        float client_elapsed_time_seconds = client_elapsed_time / 1000.f;
+
+                        const auto lastTimestamp       = getPlayerLastTimestamp(player_uuid);
+                        long       client_elapsed_time = timestamp - lastTimestamp;
+                        float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
+
                         setPlayerLastTimestamp(player_uuid, timestamp);
 
                         std::cout << "Player UUID: " << player_uuid << std::endl;
@@ -157,12 +160,25 @@ int main(int argc, char* argv[]) {
                                   << player_direction.y << std::endl;
                         std::cout << "Player Timestamp: " << timestamp << std::endl;
                         std::cout << "Player Last Timestamp: " << lastTimestamp << std::endl;
-                        std::cout << "Client Elapsed Time: " << client_elapsed_time << std::endl;
+                        std::cout << "Client Elapsed Time (ms): " << client_elapsed_time
+                                  << std::endl;
 
-                        game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds * 6);
-                        game_instance->run(client_elapsed_time_seconds * 6);
+                        // Simulate multiple steps if necessary (for multiple frames per server
+                        // tick)
+                        const float server_tick_duration =
+                            1.0f / 10;  // e.g., 0.1f for 10 ticks per second
+                        float time_to_simulate = client_elapsed_time_seconds;
+
+                        // Simulate the physics, splitting the client elapsed time if necessary
+                        while (time_to_simulate > 0.0f) {
+                            float delta_time = std::min(time_to_simulate, server_tick_duration);
+                            game_instance->movePlayer(player_uuid, player_direction, delta_time);
+                            game_instance->run(delta_time);
+
+                            // Decrease the time remaining to simulate
+                            time_to_simulate -= delta_time;
+                        }
                     }
-                    // server->send_unreliable_packet("tick\n", client);
                 }
             }
         }
