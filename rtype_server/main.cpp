@@ -116,6 +116,7 @@ int main(int argc, char* argv[]) {
                         const auto player_uuid = std::stol(parsed_data.at("Uuid"));
 
                         game_instance->movePlayer(player_uuid, player_direction);
+                        game_instance->run();
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }
