@@ -28,8 +28,8 @@ void RtypeServer::run() {
                     _players.at(client).setLastTimestamp(timestamp);
 
                     // Use consistent server delta time for simulation
-                    _game_instance->movePlayer(player_uuid, player_direction, _deltaTime);
-                    _game_instance->run(_deltaTime);
+                    _game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds);
+                    _game_instance->run(client_elapsed_time_seconds);
                 }
             }
         }
