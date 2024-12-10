@@ -239,6 +239,9 @@ void Game::handleSignal(std::string signal) {
             _localPlayerUUID                    = std::stol(parsedPacket.at("Uuid"));
             const std::string players           = parsedPacket.at("Players");
             _serverTime                         = std::stol(parsedPacket.at("Clock"));
+            const std::string positions        = parsedPacket.at("Position");
+            sf::Vector2f      localPlayerPos    = parsePosition(positions);
+            _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
             const std::vector<PlayerData> datas = parsePlayerList(players);
             for (PlayerData player : datas) {
                 add_player(std::stol(player.uuid), player.position);
