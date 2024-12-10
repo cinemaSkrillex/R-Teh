@@ -1,4 +1,12 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** Game
+*/
 
+#ifndef GAME_HPP_
+#define GAME_HPP_
 
 #include <SFML/Graphics.hpp>
 #include <chrono>
@@ -76,3 +84,5 @@ class Game {
     long                                                _serverTime;
 };
 }  // namespace rtype
+
+#endif /* !GAME_HPP_ */
