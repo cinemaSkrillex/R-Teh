@@ -9,6 +9,7 @@
 #include "Controls.hpp"
 #include "Engine.hpp"
 #include "EyeBoss.hpp"
+#include "Log.hpp"
 #include "Macros.hpp"
 
 namespace rtype {

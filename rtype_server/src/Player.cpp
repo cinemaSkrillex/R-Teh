@@ -14,3 +14,4 @@ Player::Player(long int uuid, long int timestamp, RealEngine::Entity* player_ent
     : _uuid(uuid), _entity(player_entity), _registry(registry), _last_update(timestamp) {}
 
 Player::~Player() {}
+

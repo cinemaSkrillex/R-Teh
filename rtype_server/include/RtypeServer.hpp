@@ -15,6 +15,7 @@
 #include <thread>
 
 #include "Game/GameInstance.hpp"
+#include "GenerateUuid.hpp"
 #include "Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -38,6 +39,7 @@ class Player {
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
     void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
     long int getLastTimestamp() const { return _last_update; }
+    void     setPositionByUuid(long int uuid, sf::Vector2f position);
 
    private:
     long int                  _uuid;
@@ -48,7 +50,8 @@ class Player {
 
    public:
     Player(/* args */);
-    Player(long int uuid, long int timestamp, RealEngine::Entity* player_entity, RealEngine::Registry* registry);
+    Player(long int uuid, long int timestamp, RealEngine::Entity* player_entity,
+           RealEngine::Registry* registry);
     ~Player();
 };
 
@@ -56,9 +59,26 @@ static std::vector<Player> PLAYERS = {};
 
 class RtypeServer {
    private:
-    std::unordered_map<int, Player> _players;
+    std::shared_ptr<UDPServer>                          _server;
+    std::shared_ptr<GameInstance>                       _game_instance;
+    std::unordered_map<asio::ip::udp::endpoint, Player> _players;
+    float                                               _deltaTime;
+    sf::Clock                                           _clock;
+    sf::Clock                                           _broadcastClock;
+    std::chrono::steady_clock::time_point               _startTime;
 
    public:
-    RtypeServer(/* args */);
+    RtypeServer(std::shared_ptr<UDPServer> server);
     ~RtypeServer();
+
+    void run();
+    void initCallbacks();
+
+    std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
+    std::shared_ptr<UDPServer>            getServer() { return _server; }
+    std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
+
+    std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
+    sf::Vector2f                                 parseDirection(const std::string& direction);
+    std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 };

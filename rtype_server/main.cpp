@@ -7,7 +7,6 @@
 
 #include <regex>
 
-#include "GenerateUuid.hpp"
 #include "RtypeServer.hpp"
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
@@ -72,6 +71,15 @@ long int getPlayerLastTimestamp(long int uuid) {
     return -1;
 }
 
+Player* getPlayerByUuid(long int uuid) {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+        if (PLAYERS.at(i).getUUID() == uuid) {
+            return &PLAYERS.at(i);
+        }
+    }
+    return nullptr;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -81,110 +89,53 @@ int main(int argc, char* argv[]) {
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
 
     try {
-        asio::io_context io_context;
-        auto             server        = std::make_shared<UDPServer>(io_context, port);
-        auto             game_instance = std::make_shared<GameInstance>();
-        float            deltaTime     = 0.f;
-        std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
-
+        asio::io_context             io_context;
+        auto                         server        = std::make_shared<UDPServer>(io_context, port);
+        auto                         game_instance = std::make_shared<GameInstance>();
+        std::shared_ptr<RtypeServer> rtype_server  = std::make_shared<RtypeServer>(server);
+        std::chrono::steady_clock::time_point start_time = rtype_server->getStartTime();
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
-        server->setNewClientCallback([server, game_instance,
-                                      start_time](const asio::ip::udp::endpoint& new_client) {
-            std::cout << "Callback: New client connected from " << new_client.address()
-                      << std::endl;
+        // sf::Clock tickClock;
+        // while (true) {
+        //     if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
+        //         // Reset the clock for the next tick
+        //         deltaTime = tickClock.restart().asSeconds();
 
-            UUIDGenerator uuid_generator;
-            long int      uuid = uuid_generator.generate_long();
-            std::cout << "Generated UUID: " << uuid << std::endl;
-            // Notify all other clients about the new client
-            for (const auto& client : server->getClients()) {
-                if (client != new_client) {
-                    const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) +
-                                                " Position:(" +
-                                                std::to_string(PLAYER_START_POSITION.x) + "," +
-                                                std::to_string(PLAYER_START_POSITION.y) + ")";
+        //         // Do server work
+        //         for (auto client : server->getClients()) {
+        //             for (const auto& message :
+        //                  server->get_unreliable_messages_from_endpoint(client)) {
+        //                 const auto parsed_data      = parse_message(message);
+        //                 const auto player_direction =
+        //                 parseDirection(parsed_data.at("Direction")); const auto player_uuid =
+        //                 std::stol(parsed_data.at("Uuid")); const auto timestamp        =
+        //                 std::stol(parsed_data.at("Timestamp")); const auto lastTimestamp    =
+        //                 getPlayerLastTimestamp(player_uuid); long       client_elapsed_time =
+        //                 timestamp - lastTimestamp; float      client_elapsed_time_seconds =
+        //                 client_elapsed_time / 1000.f;
 
-                    server->send_reliable_packet(message, client);
-                }
-            }
-            // Create the uuid for each new client
-            std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) +
-                                  " Clock:" + formatTimestamp(start_time) + " Position:(" +
-                                  std::to_string(PLAYER_START_POSITION.x) + "," +
-                                  std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
-            for (int i = 0; i < PLAYERS.size(); i++) {
-                if (i != 0) message += "|";
-                message += std::to_string(PLAYERS.at(i).getUUID()) + ",(" +
-                           std::to_string(PLAYERS.at(i).getPosition().x) + "," +
-                           std::to_string(PLAYERS.at(i).getPosition().y) + ")";
-            }
-            message += "]";
-            server->send_reliable_packet(message, new_client);
-            long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                                    std::chrono::steady_clock::now() - start_time)
-                                    .count();
-            auto player =
-                Player(uuid, elapsed_time, game_instance->addPlayer(uuid, PLAYER_START_POSITION),
-                       game_instance->getRegistry());
-            PLAYERS.push_back(player);
-        });
+        //                 setPlayerLastTimestamp(player_uuid, timestamp);
 
-        sf::Clock tickClock;
-        while (true) {
-            if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
-                // Measure time at the start of the tick
-                auto tick_start_time = std::chrono::steady_clock::now();
+        //                 // Use consistent server delta time for simulation
+        //                 const float server_tick_duration =
+        //                     deltaTime;  // Duration for the current tick
+        //                 float time_to_simulate = client_elapsed_time_seconds;
 
-                // Reset the clock for the next tick
-                deltaTime = tickClock.restart().asSeconds();
+        //                 // Simulate the physics, splitting the client elapsed time if necessary
+        //                 while (time_to_simulate > 0.0f) {
+        //                     float delta_time = std::min(time_to_simulate, server_tick_duration);
+        //                     game_instance->movePlayer(player_uuid, player_direction, delta_time);
+        //                     game_instance->run(delta_time);
 
-                // Do server work
-                for (auto client : server->getClients()) {
-                    std::cout << "Parsing Client: " << client.port() << std::endl;
-
-                    for (const auto& message :
-                         server->get_unreliable_messages_from_endpoint(client)) {
-                        std::cout << "Message: " << message << std::endl;
-
-                        const auto parsed_data      = parse_message(message);
-                        const auto player_direction = parseDirection(parsed_data.at("Direction"));
-                        const auto player_uuid      = std::stol(parsed_data.at("Uuid"));
-                        const auto timestamp        = std::stol(parsed_data.at("Timestamp"));
-
-                        const auto lastTimestamp       = getPlayerLastTimestamp(player_uuid);
-                        long       client_elapsed_time = timestamp - lastTimestamp;
-                        float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
-
-                        setPlayerLastTimestamp(player_uuid, timestamp);
-
-                        std::cout << "Player UUID: " << player_uuid << std::endl;
-                        std::cout << "Player Direction: " << player_direction.x << ", "
-                                  << player_direction.y << std::endl;
-                        std::cout << "Player Timestamp: " << timestamp << std::endl;
-                        std::cout << "Player Last Timestamp: " << lastTimestamp << std::endl;
-                        std::cout << "Client Elapsed Time (ms): " << client_elapsed_time
-                                  << std::endl;
-
-                        // Simulate multiple steps if necessary (for multiple frames per server
-                        // tick)
-                        const float server_tick_duration = deltaTime + tickClock.getElapsedTime().asSeconds();  // Use the global deltaTime
-                        float       time_to_simulate     = client_elapsed_time_seconds;
-
-                        // Simulate the physics, splitting the client elapsed time if necessary
-                        while (time_to_simulate > 0.0f) {
-                            float delta_time = std::min(time_to_simulate, server_tick_duration);
-                            game_instance->movePlayer(player_uuid, player_direction, delta_time);
-                            game_instance->run(delta_time);
-
-                            // Decrease the time remaining to simulate
-                            time_to_simulate -= delta_time;
-                        }
-                    }
-                }
-            } 
-        }
+        //                     // Decrease the time remaining to simulate
+        //                     time_to_simulate -= delta_time;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         io_thread.join();  // Wait for the io_thread to finish (if needed)
     } catch (const std::exception& e) {

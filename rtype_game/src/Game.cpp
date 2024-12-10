@@ -250,6 +250,10 @@ void Game::handleSignal(std::string signal) {
             for (PlayerData player : datas) {
                 add_player(std::stol(player.uuid), player.position);
             }
+        } else if (event == "Player_position") {
+            const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+            const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+            _registry.add_component<RealEngine::Position>(_entity2, {position.x, position.y});
         }
     }
 }
@@ -295,6 +299,7 @@ void Game::run() {
         // _view.move({50.0f * _deltaTime, 0});
         const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
         handleSignal(serverEventsMessage);
+        handleSignal(_clientUDP->get_last_unreliable_packet());
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
         const sf::Vector2f direction  = getPlayerNormalizedDirection();
@@ -305,9 +310,6 @@ void Game::run() {
         const std::string message    = "Uuid:" + std::to_string(_localPlayerUUID) +
                                     " Timestamp:" + std::to_string(delta_time) +" Direction:(" + std::to_string(direction.x) +
                                     "," + std::to_string(direction.y) + ")";
-        auto* position = _registry.get_component<RealEngine::Position>(_entity2);
-        std::cout << "Player" << "Position: (" << position->x << ", " << position->y << ")"
-                  << std::endl;
         _clientUDP->send_unreliable_packet(message);
         _window.display();
     }

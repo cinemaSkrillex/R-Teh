@@ -63,8 +63,6 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float
     auto*              velocity     = _registry.get_component<RealEngine::Velocity>(player);
     auto*              position     = _registry.get_component<RealEngine::Position>(player);
 
-    std::cout << "Player: " << playerUuid << " Position: (" << position->x << ", " << position->y << ")" << std::endl;
-
     if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
     if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
     if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
