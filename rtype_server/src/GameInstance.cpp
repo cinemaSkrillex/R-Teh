@@ -29,28 +29,21 @@ void GameInstance::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _movementSystem.update(registry, deltaTime);
     });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _collisionSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _aiSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _rotationSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _radiusSystem.update(registry);
-    });
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _collisionSystem.update(registry, deltaTime);
+    // });
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _aiSystem.update(registry, deltaTime);
+    // });
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _rotationSystem.update(registry, deltaTime);
+    // });
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _radiusSystem.update(registry);
+    // });
 }
 
-void GameInstance::run() {
-    while (true) {
-        _deltaTime                            = _clock.restart().asSeconds();
-        const std::string serverEventsMessage = "Event:New_client Uuid:123 Position:(20,60)";
-        handleSignal(serverEventsMessage);
-        _registry.run_systems(_deltaTime);
-    }
-}
+void GameInstance::run() { _registry.run_systems(_deltaTime); };
 
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
@@ -67,6 +60,11 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction) {
     RealEngine::Entity player       = _players.at(playerUuid);
     auto*              acceleration = _registry.get_component<RealEngine::Acceleration>(player);
     auto*              velocity     = _registry.get_component<RealEngine::Velocity>(player);
+    auto*              position     = _registry.get_component<RealEngine::Position>(player);
+
+    std::cout << "Player: " << playerUuid << " Position: (" << position->x << ", " << position->y << ")" << std::endl;
+
+    _deltaTime = 1.f / 60.f;
 
     if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
     if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
