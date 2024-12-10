@@ -58,9 +58,21 @@ static std::vector<Player> PLAYERS = {};
 
 class RtypeServer {
    private:
-    std::unordered_map<int, Player> _players;
+    std::shared_ptr<UDPServer>                          _server;
+    std::shared_ptr<GameInstance>                       _game_instance;
+    std::unordered_map<asio::ip::udp::endpoint, Player> _players;
+    float                                               _deltaTime;
+    sf::Clock                                           _clock;
+    sf::Clock                                           _broadcastClock;
+    std::chrono::steady_clock::time_point               _startTime;
 
    public:
-    RtypeServer(/* args */);
+    RtypeServer(std::shared_ptr<UDPServer> server);
     ~RtypeServer();
+
+    void run();
+
+    std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
+    std::shared_ptr<UDPServer>            getServer() { return _server; }
+    std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
 };

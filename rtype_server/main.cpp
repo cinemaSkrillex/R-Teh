@@ -148,7 +148,6 @@ int main(int argc, char* argv[]) {
 
                 // Do server work
                 for (auto client : server->getClients()) {
-                    long int client_uuid = -1;
                     for (const auto& message :
                          server->get_unreliable_messages_from_endpoint(client)) {
 
@@ -161,7 +160,6 @@ int main(int argc, char* argv[]) {
                         float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
 
                         setPlayerLastTimestamp(player_uuid, timestamp);
-                        client_uuid = player_uuid;
 
                         // Use consistent server delta time for simulation
                         const float server_tick_duration =
@@ -178,14 +176,6 @@ int main(int argc, char* argv[]) {
                             time_to_simulate -= delta_time;
                         }
                     }
-                    const auto player = getPlayerByUuid(client_uuid);
-                    const auto position = player->getPosition();
-                    const std::string message = "Event:Player_position Uuid:" +
-                                                std::to_string(player->getUUID()) +
-                                                " Position:(" +
-                                                std::to_string(position.x) + "," +
-                                                std::to_string(position.y) + ")";
-                    server->send_unreliable_packet(message, client);
                 }
             }
         }
