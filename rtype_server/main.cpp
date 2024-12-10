@@ -134,9 +134,6 @@ int main(int argc, char* argv[]) {
         sf::Clock tickClock;
         while (true) {
             if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
-                // Measure time at the start of the tick
-                auto tick_start_time = std::chrono::steady_clock::now();
-
                 // Reset the clock for the next tick
                 deltaTime = tickClock.restart().asSeconds();
 
@@ -146,7 +143,6 @@ int main(int argc, char* argv[]) {
 
                     for (const auto& message :
                          server->get_unreliable_messages_from_endpoint(client)) {
-                        std::cout << "Message: " << message << std::endl;
 
                         const auto parsed_data      = parse_message(message);
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
@@ -159,18 +155,12 @@ int main(int argc, char* argv[]) {
 
                         setPlayerLastTimestamp(player_uuid, timestamp);
 
-                        std::cout << "Player UUID: " << player_uuid << std::endl;
-                        std::cout << "Player Direction: " << player_direction.x << ", "
-                                  << player_direction.y << std::endl;
-                        std::cout << "Player Timestamp: " << timestamp << std::endl;
-                        std::cout << "Player Last Timestamp: " << lastTimestamp << std::endl;
-                        std::cout << "Client Elapsed Time (ms): " << client_elapsed_time
-                                  << std::endl;
+                        // Use consistent server delta time for simulation
+                        const float server_tick_duration =
+                            deltaTime;  // Duration for the current tick
+                        float time_to_simulate = client_elapsed_time_seconds;
 
-                        // Simulate multiple steps if necessary (for multiple frames per server
-                        // tick)
-                        const float server_tick_duration = deltaTime + tickClock.getElapsedTime().asSeconds();  // Use the global deltaTime
-                        float       time_to_simulate     = client_elapsed_time_seconds;
+                        std::cout << "Player UUID: " << player_uuid << std::endl;
 
                         // Simulate the physics, splitting the client elapsed time if necessary
                         while (time_to_simulate > 0.0f) {
@@ -183,7 +173,7 @@ int main(int argc, char* argv[]) {
                         }
                     }
                 }
-            } 
+            }
         }
 
         io_thread.join();  // Wait for the io_thread to finish (if needed)
