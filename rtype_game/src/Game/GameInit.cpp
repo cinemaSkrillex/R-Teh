@@ -9,6 +9,62 @@
 
 namespace rtype {
 
+Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
+    : _clientUDP(clientUDP),
+      _deltaTime(0.f),
+      _window("SKRILLEX client_port: " + std::to_string(client_port), sf::Vector2u(800, 600)),
+      _clock(),
+      _controls(_registry),
+      _movementSystem(),
+      _drawSystem(_window.getRenderWindow()),
+      _controlSystem(_window),
+      _collisionSystem(),
+      _aiSystem(),
+      _rotationSystem(),
+      _radiusSystem(),
+      _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
+      _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
+      _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
+      _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
+      _otherPlayer("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
+      _groundSprite("../../assets/r-type_front_line_base_obstacle_1.png"),
+      _entity2(_registry.spawn_entity()),
+      _localPlayerUUID(0),
+      _startTime(std::chrono::steady_clock::now()) {
+    // Inside GameInit.cpp
+    init_all_game();
+    //
+
+    _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
+    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(_entity2, RealEngine::Controllable{});
+    _registry.add_component(_entity2, RealEngine::Drawable{});
+    _registry.add_component(
+        _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+    _registry.add_component(
+        _entity2, RealEngine::Collision{
+                      {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE}, "spaceship", false});
+
+    for (int i = 0; i < 50; i++) {
+        RealEngine::Entity groundBlock = _registry.spawn_entity();
+        _registry.add_components(groundBlock,
+                                 RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
+                                                      i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},
+                                 RealEngine::Drawable{});
+        _groundBlocksEntities.push_back(groundBlock);
+        _registry.add_component(groundBlock, RealEngine::SpriteComponent{_groundSprite});
+        _registry.add_component(
+            groundBlock, RealEngine::Collision{
+                             {0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE}, "ground", false});
+    }
+
+    _bossEye = std::make_unique<EyeBoss>(_registry);
+    _bossEye->setTarget(_entity2);
+}
+
+Game::~Game() {}
+
 void Game::init_all_game() {
     init_registry();
     init_controls();
