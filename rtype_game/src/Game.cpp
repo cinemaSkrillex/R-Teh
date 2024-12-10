@@ -16,11 +16,11 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _rotationSystem(),
       _radiusSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
-      _upSpaceship("../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
-      _idleSpaceship("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-      _downSpaceship("../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
-      _otherPlayer("../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-      _groundSprite("../assets/r-type_front_line_base_obstacle_1.png"),
+      _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
+      _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
+      _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
+      _otherPlayer("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
+      _groundSprite("../../assets/r-type_front_line_base_obstacle_1.png"),
       _entity2(_registry.spawn_entity()) {
     init_registry();
     init_controls();

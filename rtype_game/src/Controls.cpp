@@ -7,7 +7,7 @@ namespace rtype {
 Controls::Controls(RealEngine::Registry& registry)
     : _registry(registry),
       _shootCooldown(0.0f),
-      _bulletSprite("../assets/sprites/whanos.png", {0, 0, 524, 267}) {
+      _bulletSprite("../../assets/sprites/whanos.png", {0, 0, 524, 267}) {
     _bulletSprite.setScale(0.2, 0.2);
 }
 

@@ -22,7 +22,7 @@ Sprite::~Sprite() {}
 
 void Sprite::loadFile(const std::string filePath) {
     if (!_texture.loadFromFile(filePath)) {
-        _texture.loadFromFile("../assets/missing_texture.png");
+        _texture.loadFromFile("../../assets/missing_texture.png");
         _texture.setRepeated(true);
         // get the sprite hibox to be the size of the texture
         _sprite.setTextureRect(sf::IntRect(0, 0, _texture.getSize().x, _texture.getSize().y));
@@ -32,7 +32,7 @@ void Sprite::loadFile(const std::string filePath) {
 
 void Sprite::loadFile(const std::string filePath, const sf::IntRect textureRect) {
     if (!_texture.loadFromFile(filePath, textureRect)) {
-        _texture.loadFromFile("../assets/missing_texture.png");
+        _texture.loadFromFile("../../assets/missing_texture.png");
         _texture.setRepeated(true);
     }
     _sprite.setTexture(_texture);
