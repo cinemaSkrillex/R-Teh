@@ -15,6 +15,7 @@
 #include <thread>
 
 #include "Game/GameInstance.hpp"
+#include "GenerateUuid.hpp"
 #include "Server/UDPServer.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -71,8 +72,13 @@ class RtypeServer {
     ~RtypeServer();
 
     void run();
+    void initCallbacks();
 
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }
     std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
+
+    std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
+    sf::Vector2f                                 parseDirection(const std::string& direction);
+    std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 };
