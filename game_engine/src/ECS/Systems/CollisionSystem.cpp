@@ -24,6 +24,9 @@ bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Colli
 void CollisionSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Collision, SpriteComponent, SpriteSheet>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* collision   = registry.get_component<Collision>(entity);
         auto* sprite      = registry.get_component<SpriteComponent>(entity);

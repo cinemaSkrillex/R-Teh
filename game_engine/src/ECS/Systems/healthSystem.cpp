@@ -4,6 +4,9 @@ namespace RealEngine {
 void HealthSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Health>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* health = registry.get_component<Health>(entity);
 

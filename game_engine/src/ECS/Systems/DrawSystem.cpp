@@ -46,6 +46,9 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
 void DrawSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Drawable>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* drawable    = registry.get_component<Drawable>(entity);
         auto* position    = registry.get_component<Position>(entity);

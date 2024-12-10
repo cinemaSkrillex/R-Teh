@@ -2,15 +2,20 @@
 
 namespace RealEngine {
 
-RadiusSystem::RadiusSystem() {}
+RadiusSystem::RadiusSystem() {
+}
 
 RadiusSystem::~RadiusSystem() {}
 
 void RadiusSystem::update(Registry& registry) {
-    auto radius_entities = registry.view<Position, Radius>();
+    auto radius_entities = registry.view<Position, Radius>();  // crash when get redius entities
     auto player_entities = registry.view<Position, Controllable>();
     bool in, outer_max, outer_min = false;
 
+
+    if (radius_entities.empty() || player_entities.empty()) {
+        return;
+    }
     for (auto entity : radius_entities) {
         auto* entity_position = registry.get_component<Position>(entity);
         auto* entity_radius   = registry.get_component<Radius>(entity);
@@ -41,7 +46,6 @@ void RadiusSystem::update(Registry& registry) {
             entity_radius->lastState = RadiusState::OUTER_MAX;
         }
     }
-    return;
 }
 
 void setBehaviorIn(Entity entity, Registry& registry, std::function<void()> behavior) {

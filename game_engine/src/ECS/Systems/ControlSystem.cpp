@@ -33,6 +33,9 @@ void ControlSystem::update(Registry& registry, float deltaTime) {
     if (!_window.isFocused()) return;
     auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* velocity     = registry.get_component<Velocity>(entity);
         auto* acceleration = registry.get_component<Acceleration>(entity);

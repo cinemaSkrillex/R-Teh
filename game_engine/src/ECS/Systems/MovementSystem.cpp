@@ -12,6 +12,9 @@ namespace RealEngine {
 void MovementSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Position, Velocity>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* position = registry.get_component<Position>(entity);
         auto* velocity = registry.get_component<Velocity>(entity);
