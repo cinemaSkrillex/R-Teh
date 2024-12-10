@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../game_engine/include/Engine.hpp"
+#include "Engine.hpp"
 #include "Macros.hpp"
 
 namespace rtype {
