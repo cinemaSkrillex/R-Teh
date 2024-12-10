@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release: ${{ steps.check_release.outputs.release }}
+      build: ${{ steps.check_build.outputs.build }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -22,10 +24,19 @@ jobs:
         else
           echo "::set-output name=release::false"
         fi
+    - name: Check for build keyword
+      id: check_build
+      run: |
+        if git log -1 --pretty=%B | grep -q "\[BUILD\]"; then
+          echo "::set-output name=build::true"
+        else
+          echo "::set-output name=build::false"
+        fi
 
   build-linux:
     runs-on: ubuntu-latest
     needs: check-release
+    if: needs.check-release.outputs.build == 'true'
 
     steps:
     - uses: actions/checkout@v2
@@ -69,6 +80,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     needs: check-release
+    if : needs.check-release.outputs.build == 'true'
 
     steps:
     - uses: actions/checkout@v2
