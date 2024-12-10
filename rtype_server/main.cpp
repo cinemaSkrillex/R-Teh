@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
         asio::io_context io_context;
         auto             server        = std::make_shared<UDPServer>(io_context, port);
         auto             game_instance = std::make_shared<GameInstance>();
+        float deltaTime = 0.f;
 
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
         while (true) {
             if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
                 // reset the clock for next tick.
-                tickClock.restart();
+                deltaTime = tickClock.restart().asSeconds();
 
                 // do server work.
                 for (auto client : server->getClients()) {
@@ -115,8 +116,8 @@ int main(int argc, char* argv[]) {
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
                         const auto player_uuid = std::stol(parsed_data.at("Uuid"));
 
-                        game_instance->movePlayer(player_uuid, player_direction);
-                        game_instance->run();
+                        game_instance->movePlayer(player_uuid, player_direction, deltaTime * messages.size());
+                        game_instance->run(deltaTime * messages.size());
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }

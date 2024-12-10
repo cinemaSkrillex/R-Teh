@@ -1,7 +1,6 @@
 #include "../include/Game/GameInstance.hpp"
 
-GameInstance::GameInstance()
-    : _deltaTime(0.f),
+GameInstance::GameInstance():
       _clock(),
       _registry(),
       _movementSystem(),
@@ -43,20 +42,20 @@ void GameInstance::init_systems() {
     // });
 }
 
-void GameInstance::run() { 
-    _movementSystem.update(_registry, _deltaTime);
+void GameInstance::run(float deltaTime) { 
+    _movementSystem.update(_registry, deltaTime);
     };
 
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
+    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     _registry.add_component(player, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
     _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);
 }
 
-void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction) {
+void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     RealEngine::Entity player       = _players.at(playerUuid);
@@ -66,14 +65,12 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction) {
 
     std::cout << "Player: " << playerUuid << " Position: (" << position->x << ", " << position->y << ")" << std::endl;
 
-    _deltaTime = 1.f / 60.f;
-
     if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
     if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
     if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
     if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
-    velocity->vx += (acceleration->ax * 3 * _deltaTime) * direction.x;
-    velocity->vy += (acceleration->ay * 3 * _deltaTime) * direction.y;
+    velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
+    velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {

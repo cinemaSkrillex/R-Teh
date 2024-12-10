@@ -299,7 +299,7 @@ void Game::run() {
                                     std::to_string(direction.x) + "," +
                                     std::to_string(direction.y) + ")";
         auto* position = _registry.get_component<RealEngine::Position>(_entity2);
-        std::cout << "Player" << "Position: (" << position->x << ", " << position->y << ")" << std::endl;
+        std::cout << "Player" << "Position: {" << position->x << ", " << position->y << "}" << std::endl;
         _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
