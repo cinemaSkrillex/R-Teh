@@ -233,11 +233,16 @@ void Game::handleSignal(std::string signal) {
         if (event == "New_client") {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
             const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-            add_player(uuid, position);
         } else if (event == "Synchronize") {
+            std::cout << "Synchronize event" << std::endl;
             _localPlayerUUID                      = std::stol(parsedPacket.at("Uuid"));
+            const std::string            positionStr = parsedPacket.at("Position");
+            const sf::Vector2f            position    = parsePosition(positionStr);
             const std::string             players = parsedPacket.at("Players");
             const std::vector<PlayerData> datas   = parsePlayerList(players);
+            auto* player_position = _registry.get_component<RealEngine::Position>(_entity2);
+            player_position->x = position.x;
+            player_position->y = position.y;
             for (PlayerData player : datas) {
                 add_player(std::stol(player.uuid), player.position);
             }

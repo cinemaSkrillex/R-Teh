@@ -43,7 +43,9 @@ void GameInstance::init_systems() {
     // });
 }
 
-void GameInstance::run() { _registry.run_systems(_deltaTime); };
+void GameInstance::run() { 
+    _movementSystem.update(_registry, _deltaTime);
+    };
 
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
