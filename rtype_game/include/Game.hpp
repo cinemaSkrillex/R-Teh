@@ -43,6 +43,7 @@ class Game {
     RealEngine::AISystem        _aiSystem;
     RealEngine::RotationSystem  _rotationSystem;
     RealEngine::RadiusSystem    _radiusSystem;
+    RealEngine::DestructibleSystem _destructibleSystem;
     rtype::Controls             _controls;
 
     std::unordered_map<int, RealEngine::Entity>         _players;

@@ -11,6 +11,9 @@ AISystem::~AISystem() {}
 void AISystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<AI>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* ai     = registry.get_component<AI>(entity);
         auto* target = registry.get_component<Target>(entity);

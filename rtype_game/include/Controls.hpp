@@ -8,6 +8,7 @@
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/Velocity.hpp"
+#include "ECS/Components/AutoDestructible.hpp"
 #include "ECS/Registry/Registry.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"

@@ -31,7 +31,7 @@ void Registry::kill_entity(Entity const& e) {
     if (!_entity_manager.is_valid(e)) {
         throw std::invalid_argument("kill_entity: Invalid entity");
     }
-    _entity_manager.kill_entity(e);
+    // _entity_manager.kill_entity(e);
     remove_entity(e);
 }
 

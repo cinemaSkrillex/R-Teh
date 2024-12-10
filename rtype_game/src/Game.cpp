@@ -82,6 +82,7 @@ void Game::init_registry() {
     _registry.register_component<RealEngine::Rotation>();
     _registry.register_component<RealEngine::Radius>();
     _registry.register_component<RealEngine::Target>();
+    _registry.register_component<RealEngine::AutoDestructible>();
 }
 
 void Game::init_controls() {
@@ -135,6 +136,9 @@ void Game::init_systems() {
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _radiusSystem.update(registry);
+    });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _destructibleSystem.update(registry, deltaTime);
     });
 }
 

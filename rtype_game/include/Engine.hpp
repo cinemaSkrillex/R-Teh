@@ -23,6 +23,7 @@
 #include "ECS/Components/SpriteSheet.hpp"
 #include "ECS/Components/Target.hpp"
 #include "ECS/Components/Velocity.hpp"
+#include "ECS/Components/AutoDestructible.hpp"
 // Entities
 #include "ECS/Entities/Entity.hpp"
 #include "ECS/Entities/ManageEntities.hpp"
@@ -38,6 +39,7 @@
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
+#include "ECS/Systems/DestructibleSystem.hpp"
 // Media
 #include "Media/Audio/Music.hpp"
 #include "Media/Audio/Sound.hpp"
