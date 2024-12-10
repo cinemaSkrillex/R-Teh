@@ -72,6 +72,15 @@ long int getPlayerLastTimestamp(long int uuid) {
     return -1;
 }
 
+Player* getPlayerByUuid(long int uuid) {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+        if (PLAYERS.at(i).getUUID() == uuid) {
+            return &PLAYERS.at(i);
+        }
+    }
+    return nullptr;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -139,8 +148,7 @@ int main(int argc, char* argv[]) {
 
                 // Do server work
                 for (auto client : server->getClients()) {
-                    std::cout << "Parsing Client: " << client.port() << std::endl;
-
+                    long int client_uuid = -1;
                     for (const auto& message :
                          server->get_unreliable_messages_from_endpoint(client)) {
 
@@ -148,19 +156,17 @@ int main(int argc, char* argv[]) {
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
                         const auto player_uuid      = std::stol(parsed_data.at("Uuid"));
                         const auto timestamp        = std::stol(parsed_data.at("Timestamp"));
-
                         const auto lastTimestamp       = getPlayerLastTimestamp(player_uuid);
                         long       client_elapsed_time = timestamp - lastTimestamp;
                         float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
 
                         setPlayerLastTimestamp(player_uuid, timestamp);
+                        client_uuid = player_uuid;
 
                         // Use consistent server delta time for simulation
                         const float server_tick_duration =
                             deltaTime;  // Duration for the current tick
                         float time_to_simulate = client_elapsed_time_seconds;
-
-                        std::cout << "Player UUID: " << player_uuid << std::endl;
 
                         // Simulate the physics, splitting the client elapsed time if necessary
                         while (time_to_simulate > 0.0f) {
@@ -172,6 +178,14 @@ int main(int argc, char* argv[]) {
                             time_to_simulate -= delta_time;
                         }
                     }
+                    const auto player = getPlayerByUuid(client_uuid);
+                    const auto position = player->getPosition();
+                    const std::string message = "Event:Player_position Uuid:" +
+                                                std::to_string(player->getUUID()) +
+                                                " Position:(" +
+                                                std::to_string(position.x) + "," +
+                                                std::to_string(position.y) + ")";
+                    server->send_unreliable_packet(message, client);
                 }
             }
         }
