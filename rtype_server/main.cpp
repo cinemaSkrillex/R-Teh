@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
         asio::io_context io_context;
         auto             server        = std::make_shared<UDPServer>(io_context, port);
         auto             game_instance = std::make_shared<GameInstance>();
+        float           deltaTime     = 0.f;
         std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
 
         // Run io_context in a separate thread
