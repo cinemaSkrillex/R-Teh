@@ -7,7 +7,7 @@ class GameInstance {
     GameInstance();
     void                  init_components();
     void                  init_systems();
-    void                  run(float deltaTime);
+    void                  run(RealEngine::Entity& entity, float deltaTime);
     void                  handleSignal(const std::string& message);
     RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f position);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);

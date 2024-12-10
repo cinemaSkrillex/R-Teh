@@ -41,9 +41,10 @@ class Player {
         return {component->x, component->y};
     }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
-    void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
-    long int getLastTimestamp() const { return _last_update; }
-    void     setPositionByUuid(long int uuid, sf::Vector2f position);
+    void                setLastTimestamp(long int timestamp) { _last_update = timestamp; }
+    long int            getLastTimestamp() const { return _last_update; }
+    void                setPositionByUuid(long int uuid, sf::Vector2f position);
+    RealEngine::Entity* getEntity() { return _entity; }
 
    private:
     long int                  _uuid;

@@ -1,7 +1,7 @@
 #include "../include/Game/GameInstance.hpp"
 
-GameInstance::GameInstance():
-      _clock(),
+GameInstance::GameInstance()
+    : _clock(),
       _registry(),
       _movementSystem(),
       _collisionSystem(),
@@ -42,10 +42,10 @@ void GameInstance::init_systems() {
     // });
 }
 
-void GameInstance::run(float deltaTime) { 
-        // _registry.update(deltaTime);
-        _movementSystem.update(_registry, deltaTime);
-    };
+void GameInstance::run(RealEngine::Entity& entity, float deltaTime) {
+    // _registry.update(deltaTime);
+    _movementSystem.update(_registry, entity, deltaTime);
+};
 
 RealEngine::Entity* GameInstance::addPlayer(long int playerUuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
