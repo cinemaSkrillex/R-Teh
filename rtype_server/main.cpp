@@ -134,12 +134,16 @@ int main(int argc, char* argv[]) {
         sf::Clock tickClock;
         while (true) {
             if (tickClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
-                // reset the clock for next tick.
+                // Measure time at the start of the tick
+                auto tick_start_time = std::chrono::steady_clock::now();
+
+                // Reset the clock for the next tick
                 deltaTime = tickClock.restart().asSeconds();
 
-                // do server work.
+                // Do server work
                 for (auto client : server->getClients()) {
                     std::cout << "Parsing Client: " << client.port() << std::endl;
+
                     for (const auto& message :
                          server->get_unreliable_messages_from_endpoint(client)) {
                         std::cout << "Message: " << message << std::endl;
@@ -165,9 +169,8 @@ int main(int argc, char* argv[]) {
 
                         // Simulate multiple steps if necessary (for multiple frames per server
                         // tick)
-                        const float server_tick_duration =
-                            1.0f / 10;  // e.g., 0.1f for 10 ticks per second
-                        float time_to_simulate = client_elapsed_time_seconds;
+                        const float server_tick_duration = deltaTime + tickClock.getElapsedTime().asSeconds();  // Use the global deltaTime
+                        float       time_to_simulate     = client_elapsed_time_seconds;
 
                         // Simulate the physics, splitting the client elapsed time if necessary
                         while (time_to_simulate > 0.0f) {
@@ -180,7 +183,7 @@ int main(int argc, char* argv[]) {
                         }
                     }
                 }
-            }
+            } 
         }
 
         io_thread.join();  // Wait for the io_thread to finish (if needed)

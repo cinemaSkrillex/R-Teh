@@ -252,8 +252,7 @@ void Game::handleSignal(std::string signal) {
 
 RealEngine::Entity* Game::add_player(long int player_uuid, sf::Vector2f position) {
     RealEngine::Entity player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{position.x + 300, position.y});
-    _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {1000.0f, 1000.0f}, 0.0f});
+    _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Drawable{});
 
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
