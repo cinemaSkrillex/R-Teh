@@ -71,11 +71,6 @@ jobs:
       with:
         name: linux-build-artifacts
         path: linux-build-artifacts.zip
-    # - name: Upload build artifacts
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: linux-build-artifacts
-    #     path: build/
 
   build-windows:
     runs-on: windows-latest
@@ -91,8 +86,6 @@ jobs:
         git clone https://github.com/microsoft/vcpkg.git
         .\vcpkg\bootstrap-vcpkg.bat
         .\vcpkg\vcpkg install
-    # - name: Configure CMake
-    #   run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Configure CMake
       run: cmake --preset windows-release
