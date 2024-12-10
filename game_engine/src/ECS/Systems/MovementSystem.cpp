@@ -26,8 +26,7 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
         if (velocity->airFrictionForce > 0.0f) {
             applyFriction(*velocity, deltaTime);
         }
-        // std::cout << entity << " Position: " << position->x << " " << position->y << " DeltaTime:
-        // " << deltaTime << std::endl;
+        std::cout << entity << " Position: " << position->x << " " << position->y << " DeltaTime: " << deltaTime << std::endl;
     }
 }
 
