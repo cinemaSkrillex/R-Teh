@@ -5,9 +5,10 @@
 ** main
 */
 
+#include <regex>
+
 #include "GenerateUuid.hpp"
 #include "RtypeServer.hpp"
-#include <regex>
 
 std::unordered_map<std::string, std::string> parse_message(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
@@ -33,7 +34,7 @@ sf::Vector2f parseDirection(const std::string& directionStr) {
     sf::Vector2f direction(0.f, 0.f);  // Default to (0, 0) in case of a parsing error
 
     // Regex to match floating-point numbers inside parentheses
-    std::regex directionRegex(R"(\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
+    std::regex  directionRegex(R"(\(([-+]?\d*\.?\d+),([-+]?\d*\.?\d+)\))");
     std::smatch match;
 
     if (std::regex_search(directionStr, match, directionRegex)) {
@@ -45,6 +46,12 @@ sf::Vector2f parseDirection(const std::string& directionStr) {
     }
 
     return direction;
+}
+
+std::string formatTimestamp(const std::chrono::steady_clock::time_point& start_time) {
+    auto now     = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
+    return std::to_string(elapsed);  // in milliseconds
 }
 
 int main(int argc, char* argv[]) {
@@ -59,13 +66,13 @@ int main(int argc, char* argv[]) {
         asio::io_context io_context;
         auto             server        = std::make_shared<UDPServer>(io_context, port);
         auto             game_instance = std::make_shared<GameInstance>();
-        float deltaTime = 0.f;
+        std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
 
         // Run io_context in a separate thread
         std::thread io_thread([&io_context]() { io_context.run(); });
 
-        server->setNewClientCallback([server,
-                                      game_instance](const asio::ip::udp::endpoint& new_client) {
+        server->setNewClientCallback([server, game_instance,
+                                      start_time](const asio::ip::udp::endpoint& new_client) {
             std::cout << "Callback: New client connected from " << new_client.address()
                       << std::endl;
 
@@ -84,7 +91,8 @@ int main(int argc, char* argv[]) {
                 }
             }
             // Create the uuid for each new client
-            std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) + " Position:(" +
+            std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) +
+                                  " Clock:" + formatTimestamp(start_time) + " Position:(" +
                                   std::to_string(PLAYER_START_POSITION.x) + "," +
                                   std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
             for (int i = 0; i < PLAYERS.size(); i++) {
@@ -112,9 +120,9 @@ int main(int argc, char* argv[]) {
                     for (const auto messages :
                          server->get_unreliable_messages_from_endpoint(client)) {
                         std::cout << "Message: " << messages << std::endl;
-                        const auto parsed_data = parse_message(messages);
+                        const auto parsed_data      = parse_message(messages);
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
-                        const auto player_uuid = std::stol(parsed_data.at("Uuid"));
+                        const auto player_uuid      = std::stol(parsed_data.at("Uuid"));
 
                         game_instance->movePlayer(player_uuid, player_direction, deltaTime * messages.size());
                         game_instance->run(deltaTime * messages.size());

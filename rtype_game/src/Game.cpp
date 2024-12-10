@@ -21,7 +21,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP)
       _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
       _otherPlayer("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _groundSprite("../../assets/r-type_front_line_base_obstacle_1.png"),
-      _entity2(_registry.spawn_entity()) {
+      _entity2(_registry.spawn_entity()),
+      _localPlayerUUID(0),
+      _startTime(std::chrono::steady_clock::now()) {
     init_registry();
     init_controls();
     init_systems();
@@ -234,15 +236,10 @@ void Game::handleSignal(std::string signal) {
             const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
             const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
         } else if (event == "Synchronize") {
-            std::cout << "Synchronize event" << std::endl;
-            _localPlayerUUID                      = std::stol(parsedPacket.at("Uuid"));
-            const std::string            positionStr = parsedPacket.at("Position");
-            const sf::Vector2f            position    = parsePosition(positionStr);
-            const std::string             players = parsedPacket.at("Players");
-            const std::vector<PlayerData> datas   = parsePlayerList(players);
-            auto* player_position = _registry.get_component<RealEngine::Position>(_entity2);
-            player_position->x = position.x;
-            player_position->y = position.y;
+            _localPlayerUUID                    = std::stol(parsedPacket.at("Uuid"));
+            const std::string players           = parsedPacket.at("Players");
+            _serverTime                         = std::stol(parsedPacket.at("Clock"));
+            const std::vector<PlayerData> datas = parsePlayerList(players);
             for (PlayerData player : datas) {
                 add_player(std::stol(player.uuid), player.position);
             }
@@ -294,12 +291,17 @@ void Game::run() {
         handleSignal(serverEventsMessage);
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);
-        const sf::Vector2f direction = getPlayerNormalizedDirection();
-        const std::string  message   = "Uuid:" + std::to_string(_localPlayerUUID) + " Direction:(" +
-                                    std::to_string(direction.x) + "," +
-                                    std::to_string(direction.y) + ")";
+        const sf::Vector2f direction  = getPlayerNormalizedDirection();
+        auto               client_now = std::chrono::steady_clock::now();
+        long               client_elapsed_time =
+            std::chrono::duration_cast<std::chrono::milliseconds>(client_now - _startTime).count();
+        long              delta_time = client_elapsed_time - _serverTime;
+        const std::string message    = "Uuid:" + std::to_string(_localPlayerUUID) +
+                                    " Timestamp:" + std::to_string(delta_time) +" Direction:(" + std::to_string(direction.x) +
+                                    "," + std::to_string(direction.y) + ")";
         auto* position = _registry.get_component<RealEngine::Position>(_entity2);
-        std::cout << "Player" << "Position: {" << position->x << ", " << position->y << "}" << std::endl;
+        std::cout << "Player" << "Position: (" << position->x << ", " << position->y << ")"
+                  << std::endl;
         _clientUDP->send_unreliable_packet(message);
         _window.display();
     }
