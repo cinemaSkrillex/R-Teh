@@ -10,6 +10,6 @@
 Player::Player(/* args */) {}
 
 Player::Player(long int uuid, RealEngine::Entity* player_entity, RealEngine::Registry* registry)
-    : _uuid(uuid), _entity(player_entity), _registry(registry) {}
+    : _uuid(uuid), _entity(player_entity), _registry(registry), _last_update(std::chrono::steady_clock::now()) {}
 
 Player::~Player() {}

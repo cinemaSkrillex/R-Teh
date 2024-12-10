@@ -1,6 +1,7 @@
 
 
 #include <SFML/Graphics.hpp>
+#include <chrono>
 #include <regex>
 
 #include "../../game_engine/include/Engine.hpp"
@@ -55,5 +56,7 @@ class Game {
     RealEngine::Entity                                  _entity2;
     std::vector<RealEngine::Entity>                     _groundBlocksEntities;
     long int                                            _localPlayerUUID;
+    std::chrono::steady_clock::time_point               _startTime;
+    long                                                _serverTime;
 };
 }  // namespace rtype

@@ -10,6 +10,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <asio.hpp>
+#include <chrono>
 #include <iostream>
 #include <thread>
 
@@ -32,15 +33,16 @@ class Player {
     long int     getUUID() const { return _uuid; }
     sf::Vector2f getPosition() const {
         RealEngine::Position* component = _registry->get_component<RealEngine::Position>(*_entity);
-        return { component->x, component->y };
+        return {component->x, component->y};
     }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
 
    private:
-    long int                  _uuid;
-    std::vector<sf::Vector2f> _positions;
-    RealEngine::Entity*       _entity;
-    RealEngine::Registry*     _registry;
+    long int                              _uuid;
+    std::vector<sf::Vector2f>             _positions;
+    RealEngine::Entity*                   _entity;
+    RealEngine::Registry*                 _registry;
+    std::chrono::steady_clock::time_point _last_update;
 
    public:
     Player(/* args */);
