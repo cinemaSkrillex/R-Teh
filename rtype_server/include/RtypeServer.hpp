@@ -36,17 +36,19 @@ class Player {
         return {component->x, component->y};
     }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
+    void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
+    long int getLastTimestamp() const { return _last_update; }
 
    private:
-    long int                              _uuid;
-    std::vector<sf::Vector2f>             _positions;
-    RealEngine::Entity*                   _entity;
-    RealEngine::Registry*                 _registry;
-    std::chrono::steady_clock::time_point _last_update;
+    long int                  _uuid;
+    std::vector<sf::Vector2f> _positions;
+    RealEngine::Entity*       _entity;
+    RealEngine::Registry*     _registry;
+    long                      _last_update;
 
    public:
     Player(/* args */);
-    Player(long int uuid, RealEngine::Entity* player_entity, RealEngine::Registry* registry);
+    Player(long int uuid, long int timestamp, RealEngine::Entity* player_entity, RealEngine::Registry* registry);
     ~Player();
 };
 

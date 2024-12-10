@@ -54,6 +54,24 @@ std::string formatTimestamp(const std::chrono::steady_clock::time_point& start_t
     return std::to_string(elapsed);  // in milliseconds
 }
 
+void setPlayerLastTimestamp(long int uuid, long int timestamp) {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+        if (PLAYERS.at(i).getUUID() == uuid) {
+            PLAYERS.at(i).setLastTimestamp(timestamp);
+            return;
+        }
+    }
+}
+
+long int getPlayerLastTimestamp(long int uuid) {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+        if (PLAYERS.at(i).getUUID() == uuid) {
+            return PLAYERS.at(i).getLastTimestamp();
+        }
+    }
+    return -1;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
@@ -66,7 +84,7 @@ int main(int argc, char* argv[]) {
         asio::io_context io_context;
         auto             server        = std::make_shared<UDPServer>(io_context, port);
         auto             game_instance = std::make_shared<GameInstance>();
-        float           deltaTime     = 0.f;
+        float            deltaTime     = 0.f;
         std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
 
         // Run io_context in a separate thread
@@ -104,8 +122,12 @@ int main(int argc, char* argv[]) {
             }
             message += "]";
             server->send_reliable_packet(message, new_client);
-            auto player = Player(uuid, game_instance->addPlayer(uuid, PLAYER_START_POSITION),
-                                 game_instance->getRegistry());
+            long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::steady_clock::now() - start_time)
+                                    .count();
+            auto player =
+                Player(uuid, elapsed_time, game_instance->addPlayer(uuid, PLAYER_START_POSITION),
+                       game_instance->getRegistry());
             PLAYERS.push_back(player);
         });
 
@@ -124,9 +146,21 @@ int main(int argc, char* argv[]) {
                         const auto parsed_data      = parse_message(messages);
                         const auto player_direction = parseDirection(parsed_data.at("Direction"));
                         const auto player_uuid      = std::stol(parsed_data.at("Uuid"));
+                        const auto timestamp        = std::stol(parsed_data.at("Timestamp"));
+                        const auto lastTimestamp    = getPlayerLastTimestamp(player_uuid);
+                        long client_elapsed_time =  timestamp - lastTimestamp;
+                        float client_elapsed_time_seconds = client_elapsed_time / 1000.f;
+                        setPlayerLastTimestamp(player_uuid, timestamp);
 
-                        game_instance->movePlayer(player_uuid, player_direction, deltaTime * messages.size());
-                        game_instance->run(deltaTime * messages.size());
+                        std::cout << "Player UUID: " << player_uuid << std::endl;
+                        std::cout << "Player Direction: " << player_direction.x << ", "
+                                  << player_direction.y << std::endl;
+                        std::cout << "Player Timestamp: " << timestamp << std::endl;
+                        std::cout << "Player Last Timestamp: " << lastTimestamp << std::endl;
+                        std::cout << "Client Elapsed Time: " << client_elapsed_time << std::endl;
+
+                        game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds * 6);
+                        game_instance->run(client_elapsed_time_seconds * 6);
                     }
                     // server->send_unreliable_packet("tick\n", client);
                 }
