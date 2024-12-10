@@ -18,6 +18,21 @@ if(MSVC)
     add_compile_options(/permissive-)
 endif()
 
+# Add debug flags for Valgrind and GDB
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
+    endif()
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    endif()
+endif()
+
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
