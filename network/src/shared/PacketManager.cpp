@@ -214,7 +214,8 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
 
             // Process the message content
             std::lock_guard<std::mutex> unprocessed_lock(_unprocessed_reliable_messages_mutex);
-            _unprocessed_reliable_messages.push_back(std::make_pair(message, pkt.endpoint));
+            // For now: we will push with the last _endpoint. Can cause issues in the future
+            _unprocessed_reliable_messages.push_back(std::make_pair(message, _endpoint));
         }
     }
 
@@ -451,7 +452,8 @@ std::vector<std::string> PacketManager::get_unreliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     std::vector<std::string>    messages;
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
-    for (auto it = _unprocessed_unreliable_messages.begin(); it != _unprocessed_unreliable_messages.end();) {
+    for (auto it = _unprocessed_unreliable_messages.begin();
+         it != _unprocessed_unreliable_messages.end();) {
         if (it->second == endpoint) {
             messages.push_back(it->first);
             it = _unprocessed_unreliable_messages.erase(it);
@@ -466,7 +468,8 @@ std::vector<std::string> PacketManager::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     std::vector<std::string>    messages;
     std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
-    for (auto it = _unprocessed_reliable_messages.begin(); it != _unprocessed_reliable_messages.end();) {
+    for (auto it = _unprocessed_reliable_messages.begin();
+         it != _unprocessed_reliable_messages.end();) {
         if (it->second == endpoint) {
             messages.push_back(it->first);
             it = _unprocessed_reliable_messages.erase(it);
