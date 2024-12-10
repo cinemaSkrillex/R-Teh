@@ -7,14 +7,13 @@ class GameInstance {
     GameInstance();
     void                  init_components();
     void                  init_systems();
-    void                  run();
+    void                  run(float deltaTime);
     void                  handleSignal(const std::string& message);
     RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f position);
-    void                  movePlayer(long int playerUuid, sf::Vector2f direction);
+    void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
     RealEngine::Registry* getRegistry() { return &_registry; }
 
    private:
-    float                       _deltaTime;
     sf::Clock                   _clock;
     RealEngine::Registry        _registry;
     RealEngine::MovementSystem  _movementSystem;
