@@ -41,18 +41,7 @@ void RtypeServer::run() {
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
             _broadcastClock.restart();
             for (const auto& player : _players) {
-                RealEngine::Entity* entity = player.second.getEntity();
-                auto*               position =
-                    _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
-                if (position) {
-                    std::string message =
-                        "Event:Player_position Uuid:" + std::to_string(player.second.getUUID()) +
-                        " Position:(" + std::to_string(position->x) + "," +
-                        std::to_string(position->y) + ")";
-                    for (auto client : _server->getClients()) {
-                        _server->send_unreliable_packet(message, client);
-                    }
-                }
+                broadcastPlayerState(player.second);
             }
         }
     }

@@ -48,12 +48,6 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
     }
 }
 
-// void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket)
-// {
-//     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-//     const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-//     _registry.add_component<RealEngine::Position>(_entity2, {position.x, position.y});
-// }
 void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket) {
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
     const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));

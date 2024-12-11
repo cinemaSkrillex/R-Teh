@@ -80,6 +80,7 @@ class RtypeServer {
 
     void run();
     void initCallbacks();
+    void broadcastPlayerState(const Player& player);
 
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }
