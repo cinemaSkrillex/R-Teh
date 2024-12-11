@@ -15,6 +15,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _window("SKRILLEX client_port: " + std::to_string(client_port), sf::Vector2u(800, 600)),
       _clock(),
       _controls(_registry),
+      _lagCompensationSystem(),
       _movementSystem(),
       _drawSystem(_window.getRenderWindow()),
       _controlSystem(_window),
@@ -91,6 +92,10 @@ void Game::init_sprites() {
 
 void Game::add_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _lagCompensationSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _movementSystem.update(registry, deltaTime);
     });
 
@@ -120,6 +125,7 @@ void Game::add_systems() {
 
 void Game::register_components() {
     _registry.register_component<RealEngine::Position>();
+    _registry.register_component<RealEngine::Interpolation>();
     _registry.register_component<RealEngine::Velocity>();
     _registry.register_component<RealEngine::Health>();
     _registry.register_component<RealEngine::SpriteComponent>();

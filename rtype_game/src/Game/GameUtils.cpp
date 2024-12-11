@@ -51,14 +51,18 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
 void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket) {
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
     const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
+    float        step     = std::stof(parsedPacket.at("Step"));
     auto               it       = _players.find(uuid);
 
     if (it == _players.end()) return;
     RealEngine::Entity player = it->second;
     // Update the position component of the player
-    auto* positionComponent = _registry.get_component<RealEngine::Position>(player);
-    if (positionComponent) {
-        positionComponent->x = position.x;
-        positionComponent->y = position.y;
+    auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
+    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
+    if (positionComponent && interpolationComponent && interpolationComponent->current_step >= 1.f) {
+        interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+        interpolationComponent->end          = position;
+        interpolationComponent->step         = 1.f / step;
+        interpolationComponent->current_step = 0.f;
     }
 }

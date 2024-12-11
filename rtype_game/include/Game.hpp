@@ -66,16 +66,17 @@ class Game {
     RealEngine::View   _view;
     sf::Clock          _clock;
     // RealEngine::LuaManager      _luaManager;
-    RealEngine::Registry           _registry;
-    RealEngine::DrawSystem         _drawSystem;
-    RealEngine::ControlSystem      _controlSystem;
-    RealEngine::MovementSystem     _movementSystem;
-    RealEngine::CollisionSystem    _collisionSystem;
-    RealEngine::AISystem           _aiSystem;
-    RealEngine::RotationSystem     _rotationSystem;
-    RealEngine::RadiusSystem       _radiusSystem;
-    RealEngine::DestructibleSystem _destructibleSystem;
-    rtype::Controls                _controls;
+    RealEngine::Registry              _registry;
+    RealEngine::LagCompensationSystem _lagCompensationSystem;
+    RealEngine::DrawSystem            _drawSystem;
+    RealEngine::ControlSystem         _controlSystem;
+    RealEngine::MovementSystem        _movementSystem;
+    RealEngine::CollisionSystem       _collisionSystem;
+    RealEngine::AISystem              _aiSystem;
+    RealEngine::RotationSystem        _rotationSystem;
+    RealEngine::RadiusSystem          _radiusSystem;
+    RealEngine::DestructibleSystem    _destructibleSystem;
+    rtype::Controls                   _controls;
 
     std::unordered_map<int, RealEngine::Entity>         _players;
     std::unique_ptr<EyeBoss>                            _bossEye;
