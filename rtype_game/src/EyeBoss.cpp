@@ -38,7 +38,7 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
                        [this](RealEngine::Registry& registry, float deltaTime) {
                            noTargetBossBehavior(registry, deltaTime);
                        },
-                       true});
+                       false});  // the boss ai is disabled for now
 }
 
 EyeBoss::~EyeBoss() {}

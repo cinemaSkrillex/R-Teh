@@ -16,7 +16,9 @@
 #include "CollisionHandler.hpp"
 #include "Controls.hpp"
 #include "Engine.hpp"
+#include "EyeBomber.hpp"
 #include "EyeBoss.hpp"
+#include "EyeMinion.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
 #include "PlayerUtils.hpp"
@@ -84,10 +86,12 @@ class Game {
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity2;
-    std::vector<RealEngine::Entity>                     _groundBlocksEntities;
-    long int                                            _localPlayerUUID;
-    std::chrono::steady_clock::time_point               _startTime;
-    long                                                _serverTime;
+    // std::unique_ptr<EyeMinion>                          _eyeMinion;
+    std::vector<std::unique_ptr<EyeBomber>> _eyeMinions;
+    std::vector<RealEngine::Entity>         _groundBlocksEntities;
+    long int                                _localPlayerUUID;
+    std::chrono::steady_clock::time_point   _startTime;
+    long                                    _serverTime;
 };
 }  // namespace rtype
 

@@ -31,9 +31,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _entity2(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
-    // Inside GameInit.cpp
     init_all_game();
-    //
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
@@ -59,6 +57,10 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                              {0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE}, "ground", false});
     }
 
+    // _eyeMinion = std::make_unique<EyeMinion>(_registry, sf::Vector2f({200.f, 200.f}));
+    auto eyeBomber = std::make_unique<EyeBomber>(_registry, sf::Vector2f({200.f, 200.f}));
+    eyeBomber->setTarget(_entity2, _registry);
+    _eyeMinions.push_back(std::move(eyeBomber));
     _bossEye = std::make_unique<EyeBoss>(_registry);
     _bossEye->setTarget(_entity2);
 }
