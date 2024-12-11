@@ -46,6 +46,7 @@ class Player {
     long int            getLastTimestamp() const { return _last_update; }
     void                setPositionByUuid(long int uuid, sf::Vector2f position);
     RealEngine::Entity* getEntity() { return _entity; }
+    RealEngine::Entity* getEntity() const { return _entity; }
 
    private:
     long int                  _uuid;

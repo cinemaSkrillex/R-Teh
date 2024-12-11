@@ -6,8 +6,11 @@
 */
 
 #include "../include/RtypeServer.hpp"
+#include "Log.hpp"
 
 void RtypeServer::run() {
+    auto log = std::make_shared<Log>("RtypeServer.log");
+
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
             // Reset the clock for the next tick
@@ -28,8 +31,27 @@ void RtypeServer::run() {
                     _players.at(client).setLastTimestamp(timestamp);
 
                     // Use consistent server delta time for simulation
-                    _game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds);
-                    _game_instance->run(*_players.at(client).getEntity(), client_elapsed_time_seconds);
+                    _game_instance->movePlayer(player_uuid, player_direction,
+                                               client_elapsed_time_seconds);
+                    _game_instance->run(*_players.at(client).getEntity(),
+                                        client_elapsed_time_seconds);
+                }
+            }
+        }
+        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
+            _broadcastClock.restart();
+            for (const auto& player : _players) {
+                RealEngine::Entity* entity = player.second.getEntity();
+                auto*               position =
+                    _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
+                if (position) {
+                    std::string message =
+                        "Event:Player_position Uuid:" + std::to_string(player.second.getUUID()) +
+                        " Position:(" + std::to_string(position->x) + "," +
+                        std::to_string(position->y) + ")";
+                    for (auto client : _server->getClients()) {
+                        _server->send_unreliable_packet(message, client);
+                    }
                 }
             }
         }
