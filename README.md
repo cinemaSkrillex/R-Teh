@@ -30,26 +30,26 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 On Linux:
 ```bash
-<chmod +x ./scripts/requirements.sh>
+chmod +x ./scripts/requirements.sh
 ./scripts/requirements.sh
 ```
 
 On Windows:
 ```bash
-# Open an administrator PowerShell and run the following command : 
+# Open an administrator PowerShell and run the following command :
 Set-ExecutionPolicy Bypass -Scope Process -Force; .\scripts\requirements.ps1
 ```
 
 ## Install the dependencies
 
-On Windows:
-```bash
-cmake --preset windows
-```
-
 On Linux:
 ```bash
 cmake --preset linux
+```
+
+On Windows:
+```bash
+cmake --preset windows
 ```
 
 ## How to build the project 🔨

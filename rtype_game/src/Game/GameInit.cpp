@@ -29,6 +29,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
       _otherPlayer("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _groundSprite("../../assets/r-type_front_line_base_obstacle_1.png"),
+      _eyeBomberSprite("../../assets/sprites/the_eye/bomber.png"),
+      _eyeMinionSprite("../../assets/sprites/the_eye/minion.png"),
       _entity2(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
@@ -59,8 +61,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     }
 
     // _eyeMinion = std::make_unique<EyeMinion>(_registry, sf::Vector2f({200.f, 200.f}));
-    auto eyeBomber = std::make_unique<EyeBomber>(_registry, sf::Vector2f({200.f, 200.f}));
-    eyeBomber->setTarget(_entity2, _registry);
+    auto eyeBomber =
+        std::make_unique<EyeBomber>(_registry, sf::Vector2f({200.f, 200.f}), _eyeBomberSprite);
+    // eyeBomber->setTarget(_entity2, _registry);
     _eyeMinions.push_back(std::move(eyeBomber));
     _bossEye = std::make_unique<EyeBoss>(_registry);
     _bossEye->setTarget(_entity2);

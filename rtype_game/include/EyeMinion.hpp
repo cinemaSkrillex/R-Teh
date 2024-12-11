@@ -7,7 +7,9 @@ namespace rtype {
 
 class EyeMinion {
    public:
-    EyeMinion(RealEngine::Registry& registry, sf::Vector2f position);
+    EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, RealEngine::Sprite eyeSprite);
+    EyeMinion(RealEngine::Registry& registry,
+              sf::Vector2f          position);  // for serve rthat displays nothing
     ~EyeMinion();
     void setTarget(RealEngine::Entity target, RealEngine::Registry& registry);
     void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity target,

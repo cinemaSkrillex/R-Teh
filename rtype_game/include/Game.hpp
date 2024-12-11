@@ -84,6 +84,8 @@ class Game {
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
     RealEngine::Sprite                                  _otherPlayer;
+    RealEngine::Sprite                                  _eyeBomberSprite;
+    RealEngine::Sprite                                  _eyeMinionSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
     RealEngine::Entity                                  _entity2;

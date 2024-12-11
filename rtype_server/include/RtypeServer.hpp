@@ -79,8 +79,6 @@ class RtypeServer {
     void initCallbacks();
     void broadcastPlayerState(const Player& player);
 
-    // std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
-    // sf::Vector2f                                 parseDirection(const std::string& direction);
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
    public:

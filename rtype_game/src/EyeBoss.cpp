@@ -20,7 +20,7 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
     _bossSheet.emplace("mid", _midSprite);
     _bossSheet.emplace("long", _longSprite);
 
-    _registry.add_components(_entity, RealEngine::Position{200.f, 200.f}, RealEngine::Drawable{});
+    _registry.add_components(_entity, RealEngine::Position{800.f, 800.f}, RealEngine::Drawable{});
     _registry.add_component(
         _entity,
         RealEngine::SpriteSheet{_bossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}});

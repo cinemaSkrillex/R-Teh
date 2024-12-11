@@ -1,10 +1,12 @@
 #include "EyeBomber.hpp"
 
 namespace rtype {
-EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
+EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
+                     RealEngine::Sprite eyeSprite)
     : _eyeEntity(registry.spawn_entity()),
-      _eyeSprite("../../assets/sprites/the_eye/bomber.png", sf::IntRect{0, 0, 15 * 2, 10}),
-      _directionTimer(0.0f) {
+      _eyeSprite(eyeSprite),
+      _directionTimer(0.0f),
+      _goLeft(false) {
     _eyeSprite.setScale(GAME_SCALE, GAME_SCALE);
     _eyeSheet.emplace("normal", _eyeSprite);
 
@@ -13,6 +15,22 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
         _eyeEntity,
         RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}},
         RealEngine::Drawable{});
+    registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
+    registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
+    registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
+    registry.add_component(
+        _eyeEntity,
+        RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,
+                              float deltaTime) { agressiveBehavior(registry, target, deltaTime); },
+                       [this](RealEngine::Registry& registry, float deltaTime) {
+                           simpleBehavior(registry, deltaTime);
+                       },
+                       true});
+}
+
+EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
+    : _eyeEntity(registry.spawn_entity()), _directionTimer(0.0f), _goLeft(false) {
+    registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
     registry.add_component(_eyeEntity, RealEngine::Acceleration{240.0f, 240.0f, 2.0f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
@@ -29,6 +47,10 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
 EyeBomber::~EyeBomber() {}
 
 void EyeBomber::setTarget(RealEngine::Entity target, RealEngine::Registry& registry) {
+    auto* acceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
+
+    acceleration->ax = 240.0f;
+    acceleration->ay = 240.0f;
     registry.add_component(_eyeEntity, RealEngine::Target{target});
 }
 
@@ -86,13 +108,21 @@ void EyeBomber::aimAtTarget(RealEngine::Position* targetPosition, RealEngine::Re
 
 void EyeBomber::simpleBehavior(RealEngine::Registry& registry, float deltaTime) {
     auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(_eyeEntity);
-    auto* eyePosition     = registry.get_component<RealEngine::Position>(_eyeEntity);
     auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(_eyeEntity);
     auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
 
-    eyeRotation->angle += 1.0f;
-    eyeVelocity->vx += eyeAcceleration->ax * deltaTime * cos(eyeRotation->angle * M_PI / 180.0f);
-    eyeVelocity->vy += eyeAcceleration->ay * deltaTime * sin(eyeRotation->angle * M_PI / 180.0f);
+    eyeVelocity->vx += eyeAcceleration->ax * deltaTime;
+    eyeVelocity->vy += eyeAcceleration->ay * deltaTime;
+    _directionTimer -= deltaTime;
+    if (_directionTimer <= 0.0f) {
+        eyeVelocity->vx     = 0.0f;
+        eyeVelocity->vy     = 0.0f;
+        eyeAcceleration->ax = -eyeAcceleration->ax;
+        eyeAcceleration->ay = -eyeAcceleration->ay;
+        _goLeft             = !_goLeft;
+        eyeRotation->angle += 180.0f;
+        _directionTimer = 1.8f;
+    }
 }
 
 }  // namespace rtype
