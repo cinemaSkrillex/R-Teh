@@ -7,6 +7,7 @@
 namespace RealEngine {
 class Sprite : public IRender {
    public:
+    Sprite() = default;
     Sprite(const std::string filePath);
     Sprite(const std::string filePath, sf::IntRect textureRect);
     ~Sprite();

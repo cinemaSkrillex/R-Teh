@@ -7,7 +7,9 @@ namespace rtype {
 
 class EyeBomber {
    public:
-    EyeBomber(RealEngine::Registry& registry, sf::Vector2f position);
+    EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, RealEngine::Sprite eyeSprite);
+    EyeBomber(RealEngine::Registry& registry,
+              sf::Vector2f          position);  // for server that displays nothing
     ~EyeBomber();
     void setTarget(RealEngine::Entity target, RealEngine::Registry& registry);
     void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
@@ -22,5 +24,6 @@ class EyeBomber {
     RealEngine::Sprite                                  _eyeSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _eyeSheet;
     float                                               _directionTimer;
+    bool                                                _goLeft;
 };
 }  // namespace rtype

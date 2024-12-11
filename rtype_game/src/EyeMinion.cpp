@@ -1,10 +1,9 @@
 #include "EyeMinion.hpp"
 
 namespace rtype {
-EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
-    : _eyeEntity(registry.spawn_entity()),
-      _eyeSprite("../../assets/sprites/the_eye/minion.png", sf::IntRect{0, 0, 18 * 2, 11}),
-      _directionTimer(0.0f) {
+EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position,
+                     RealEngine::Sprite eyeSprite)
+    : _eyeEntity(registry.spawn_entity()), _eyeSprite(eyeSprite), _directionTimer(0.0f) {
     _eyeSprite.setScale(GAME_SCALE, GAME_SCALE);
     _eyeSheet.emplace("normal", _eyeSprite);
 
@@ -13,6 +12,22 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
         _eyeEntity,
         RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {18, 11}, false, true, 120, {12, 5}},
         RealEngine::Drawable{});
+    registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {100.0f, 100.0f}, 0.8f});
+    registry.add_component(_eyeEntity, RealEngine::Acceleration{200.0f, 200.0f, 2.0f});
+    registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
+    registry.add_component(
+        _eyeEntity,
+        RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,
+                              float deltaTime) { agressiveBehavior(registry, target, deltaTime); },
+                       [this](RealEngine::Registry& registry, float deltaTime) {
+                           simpleBehavior(registry, deltaTime);
+                       },
+                       true});
+}
+
+EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
+    : _eyeEntity(registry.spawn_entity()), _directionTimer(0.0f) {
+    registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {100.0f, 100.0f}, 0.8f});
     registry.add_component(_eyeEntity, RealEngine::Acceleration{200.0f, 200.0f, 2.0f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
