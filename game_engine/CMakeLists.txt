@@ -14,6 +14,8 @@ file(GLOB_RECURSE NETWORK_SOURCES
 # Library target
 add_library(rtype_engine STATIC ${NETWORK_SOURCES})
 
+target_link_libraries(rtype_engine utils)
+
 # Include directories
 target_include_directories(rtype_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -28,6 +30,15 @@ target_include_directories(rtype_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Media
 )
+
+add_custom_target(copy_headers_lagcompensation_engine ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
+    ${CMAKE_SOURCE_DIR}/game_engine/include
+)
+
+add_dependencies(rtype_engine copy_headers_lagcompensation_engine)
+
 # Link libraries
 if(UNIX)
     target_link_libraries(rtype_engine

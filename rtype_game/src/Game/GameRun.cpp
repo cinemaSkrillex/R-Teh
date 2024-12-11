@@ -16,9 +16,7 @@ void rtype::Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.update();
         _window.clear();
-        // _view.move({50.0f * _deltaTime, 0});
-        const std::string serverEventsMessage = _clientUDP->get_last_reliable_packet();
-        handleSignal(serverEventsMessage);
+        handleSignal(_clientUDP->get_last_reliable_packet());
         handleSignal(_clientUDP->get_last_unreliable_packet());
         _registry.run_systems(_deltaTime);
         handle_collision(_registry, entities);

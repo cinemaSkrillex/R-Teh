@@ -51,19 +51,14 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
 void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket) {
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
     const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+    auto               it       = _players.find(uuid);
 
-    // Find the player entity by UUID
-    auto it = _players.find(uuid);
-    if (it != _players.end()) {
-        RealEngine::Entity player = it->second;
-        // Update the position component of the player
-        auto* positionComponent = _registry.get_component<RealEngine::Position>(player);
-        if (positionComponent) {
-            positionComponent->x = position.x;
-            positionComponent->y = position.y;
-        } else {
-            // If the position component does not exist, add it
-            _registry.add_component(player, RealEngine::Position{position.x, position.y});
-        }
+    if (it == _players.end()) return;
+    RealEngine::Entity player = it->second;
+    // Update the position component of the player
+    auto* positionComponent = _registry.get_component<RealEngine::Position>(player);
+    if (positionComponent) {
+        positionComponent->x = position.x;
+        positionComponent->y = position.y;
     }
 }

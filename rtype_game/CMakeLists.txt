@@ -12,7 +12,6 @@ add_executable(r_type ${SOURCES})
 
 # Link lib to binary
 target_link_libraries(r_type rtype_engine)
-target_link_libraries(r_type utils)
 target_link_libraries(r_type rtype_client)
 
 target_include_directories(r_type PUBLIC
