@@ -5,7 +5,7 @@ project(rtype_project)
 
 # Set C++ standard
 if (UNIX)
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
 endif()
 
@@ -14,7 +14,7 @@ if (WIN32)
 endif()
 
 if(MSVC)
-    add_compile_options(/std:c++17)
+    add_compile_options(/std:c++20)
     add_compile_options(/permissive-)
 endif()
 

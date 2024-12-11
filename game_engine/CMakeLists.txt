@@ -2,8 +2,13 @@
 cmake_minimum_required(VERSION 3.14)
 project(game_engine)
 
+if (UNIX)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED True)
+endif()
+
 # Find dependencies
-find_package(SFML 2.5 REQUIRED system window graphics network audio)
+find_package(SFML REQUIRED system window graphics network audio)
 # find_package(Lua REQUIRED)
 
 # Source files
