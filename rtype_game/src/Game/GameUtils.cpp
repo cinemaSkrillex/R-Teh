@@ -30,6 +30,7 @@ void rtype::Game::handleSignal(std::string signal) {
 void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> parsedPacket) {
     const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+    add_player(uuid, position);
 }
 
 void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket) {
