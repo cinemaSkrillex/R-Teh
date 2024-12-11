@@ -13,13 +13,13 @@ std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_p
     return std::to_string(elapsed);  // in milliseconds
 }
 
-void RtypeServer::broadcastPlayerState(const Player& player, const float delta) {
+void RtypeServer::broadcastPlayerState(const Player& player) {
     // Get the player's position
     RealEngine::Entity* entity = player.getEntity();
     auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
     if (position) {
         std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +
-                              " Step:" + std::to_string(_deltaTimeBroadcast + delta) + " Position:(" +
+                              " Step:0.0101" + " Position:(" +
                               std::to_string(position->x) + "," + std::to_string(position->y) + ")";
         for (auto client : _server->getClients()) {
             _server->send_unreliable_packet(message, client);
