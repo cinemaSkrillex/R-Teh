@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iostream>
 #include <regex>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
