@@ -7,6 +7,7 @@
 
 #include "../include/RtypeServer.hpp"
 
+// this is the same function
 std::unordered_map<std::string, std::string> RtypeServer::parseMessage(const std::string& message) {
     std::unordered_map<std::string, std::string> parsed_data;
 
