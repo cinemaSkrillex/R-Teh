@@ -70,23 +70,25 @@ class RtypeServer {
     std::shared_ptr<GameInstance>                       _game_instance;
     std::unordered_map<asio::ip::udp::endpoint, Player> _players;
     float                                               _deltaTime;
+    float                                               _deltaTimeBroadcast;
     sf::Clock                                           _clock;
     sf::Clock                                           _broadcastClock;
     std::chrono::steady_clock::time_point               _startTime;
+
+    void initCallbacks();
+    void broadcastPlayerState(const Player& player);
+
+    std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
+    sf::Vector2f                                 parseDirection(const std::string& direction);
+    std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
    public:
     RtypeServer(std::shared_ptr<UDPServer> server);
     ~RtypeServer();
 
     void run();
-    void initCallbacks();
-    void broadcastPlayerState(const Player& player);
 
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }
     std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
-
-    std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
-    sf::Vector2f                                 parseDirection(const std::string& direction);
-    std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 };
