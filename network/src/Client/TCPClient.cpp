@@ -5,7 +5,8 @@
 ** TCPClient.cpp
 */
 
-#include "../../include/Client/TCPClient.hpp"
+#include "TCPClient.hpp"
+#include <iostream>
 
 TCPClient::TCPClient(const std::string& host, unsigned short port)
     : _packet_manager(std::make_shared<TCPPacketManager>(Role::CLIENT)) {
@@ -13,7 +14,6 @@ TCPClient::TCPClient(const std::string& host, unsigned short port)
 }
 
 TCPClient::~TCPClient() {
-    std::cout << "closing packet manager" << std::endl;
     _packet_manager->close();
 }
 
