@@ -15,7 +15,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
 struct PlayerData {
     std::string  uuid;
     sf::Vector2f position;

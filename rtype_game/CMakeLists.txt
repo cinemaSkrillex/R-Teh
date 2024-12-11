@@ -12,6 +12,7 @@ add_executable(r_type ${SOURCES})
 
 # Link lib to binary
 target_link_libraries(r_type rtype_engine)
+target_link_libraries(r_type utils)
 target_link_libraries(r_type rtype_client)
 
 target_include_directories(r_type PUBLIC
@@ -35,10 +36,22 @@ add_custom_target(copy_headers_engine_for_game ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/game_engine/include
     ${CMAKE_SOURCE_DIR}/rtype_game/include
+    )
+add_custom_target(copy_headers_parser ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/PeterParser/include
+    ${CMAKE_SOURCE_DIR}/rtype_game/include
+)
+add_custom_target(copy_headers_lagcompensation ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
+    ${CMAKE_SOURCE_DIR}/rtype_game/include
 )
 
 # Ensure the headers are copied before building rtype_game
 add_dependencies(r_type copy_headers_engine_for_game)
+add_dependencies(r_type copy_headers_parser)
+add_dependencies(r_type copy_headers_lagcompensation)
 
 
 if (WIN32)

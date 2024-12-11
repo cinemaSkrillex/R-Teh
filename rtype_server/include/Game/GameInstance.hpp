@@ -12,6 +12,7 @@ class GameInstance {
     RealEngine::Entity*   addPlayer(long int playerUuid, sf::Vector2f position);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
     RealEngine::Registry* getRegistry() { return &_registry; }
+    RealEngine::Registry& getRegistryRef() { return _registry; }
 
    private:
     sf::Clock                   _clock;

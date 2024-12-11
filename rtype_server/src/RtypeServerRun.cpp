@@ -6,8 +6,11 @@
 */
 
 #include "../include/RtypeServer.hpp"
+#include "Log.hpp"
 
 void RtypeServer::run() {
+    auto log = std::make_shared<Log>("RtypeServer.log");
+
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
             // Reset the clock for the next tick
@@ -28,9 +31,17 @@ void RtypeServer::run() {
                     _players.at(client).setLastTimestamp(timestamp);
 
                     // Use consistent server delta time for simulation
-                    _game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds);
-                    _game_instance->run(*_players.at(client).getEntity(), client_elapsed_time_seconds);
+                    _game_instance->movePlayer(player_uuid, player_direction,
+                                               client_elapsed_time_seconds);
+                    _game_instance->run(*_players.at(client).getEntity(),
+                                        client_elapsed_time_seconds);
                 }
+            }
+        }
+        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
+            _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
+            for (const auto& player : _players) {
+                broadcastPlayerState(player.second);
             }
         }
     }
