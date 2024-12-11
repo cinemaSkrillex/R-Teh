@@ -19,7 +19,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
     auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
     if (position) {
         std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +
-                              " Step:0.0101" + " Position:(" +
+                              " Step:0.0102" + " Position:(" +
                               std::to_string(position->x) + "," + std::to_string(position->y) + ")";
         for (auto client : _server->getClients()) {
             _server->send_unreliable_packet(message, client);
