@@ -7,26 +7,28 @@
 
 #include "PlayerUtils.hpp"
 
+// this is in the library
 std::unordered_map<std::string, std::string> parseMessage(const std::string& message) {
-    std::unordered_map<std::string, std::string> parsedData;
-    std::istringstream                           stream(message);
-    std::string                                  key, value;
+    std::unordered_map<std::string, std::string> parsed_data;
 
-    while (stream) {
-        if (!std::getline(stream, key, ':')) break;
-        if (!std::getline(stream, value, ' ')) break;
-        key.erase(0, key.find_first_not_of(" \t"));
-        key.erase(key.find_last_not_of(" \t") + 1);
-        value.erase(0, value.find_first_not_of(" \t"));
-        value.erase(value.find_last_not_of(" \t") + 1);
+    // Break the message into key-value pairs using a delimiter
+    std::istringstream stream(message);
+    std::string        token;
 
-        // Ensure both key and value are properly copied into the map
-        parsedData[key] = value;
+    // Process each key-value pair
+    while (std::getline(stream, token, ' ')) {  // ' ' as delimiter for key:value pairs
+        auto delimiter_pos = token.find(':');
+        if (delimiter_pos != std::string::npos) {
+            std::string key   = token.substr(0, delimiter_pos);
+            std::string value = token.substr(delimiter_pos + 1);
+            parsed_data[key]  = value;  // Store in the map
+        }
     }
 
-    return parsedData;
+    return parsed_data;
 }
 
+// this is now parseVector2f
 const sf::Vector2f parsePosition(const std::string& positionStr) {
     sf::Vector2f position(0, 0);  // Default to (0, 0) in case of a parsing error
 

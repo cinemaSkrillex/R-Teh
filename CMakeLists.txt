@@ -49,6 +49,7 @@ if (WIN32)
 endif()
 
 # Add subdirectories
+add_subdirectory(lib_utils)
 add_subdirectory(network)
 
 # add_subdirectory(client)
