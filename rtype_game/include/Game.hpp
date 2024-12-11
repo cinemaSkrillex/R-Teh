@@ -53,6 +53,12 @@ class Game {
     void populate_sprite_sheet();
     //
 
+    // GameSignals
+    void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
+    void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
+    //
+
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
     RealEngine::View   _view;
