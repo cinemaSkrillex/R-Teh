@@ -60,10 +60,11 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
     if (!positionComponent && !interpolationComponent) return;
-    positionComponent->x = interpolationComponent->end.x;
-    positionComponent->y = interpolationComponent->end.y;
+    positionComponent->x                 = interpolationComponent->end.x;
+    positionComponent->y                 = interpolationComponent->end.y;
     interpolationComponent->start        = {positionComponent->x, positionComponent->y};
     interpolationComponent->end          = position;
     interpolationComponent->step         = 1.f / step;
     interpolationComponent->current_step = 0.f;
+    interpolationComponent->reset        = true;
 }

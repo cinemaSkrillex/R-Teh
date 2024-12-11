@@ -19,10 +19,10 @@ void LagCompensationSystem::update(Registry &registry, float deltaTime) {
     for (auto entity : entities) {
         Interpolation *interpolation = registry.get_component<Interpolation>(entity);
         Position      *position      = registry.get_component<Position>(entity);
-        if (interpolation->current_step >= 1.f) {
+        if (interpolation->reset) {
             position->x = interpolation->end.x;
             position->y = interpolation->end.y;
-            continue;
+            interpolation->reset = false;
         }
         sf::Vector2f newPos = LagCompensation::lerp(interpolation->start, interpolation->end,
                                                     interpolation->current_step);

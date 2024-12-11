@@ -14,7 +14,7 @@ RealEngine::Entity* Game::add_player(long int player_uuid, sf::Vector2f position
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Drawable{});
 
-    _registry.add_component(player, RealEngine::Interpolation{{0, 0}, {0, 0}, 0.f, 1.f});
+    _registry.add_component(player, RealEngine::Interpolation{{0, 0}, {0, 0}, 0.f, 1.f, false});
 
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
 
