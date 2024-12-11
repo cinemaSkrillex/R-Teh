@@ -30,7 +30,7 @@
 #include <windows.h>
 #endif
 
-const sf::Int32    SERVER_TICK           = 10;
+const sf::Int32    SERVER_TICK           = 30;
 const sf::Int32    SERVER_BROADCAST_TICK = 10;
 const sf::Vector2f PLAYER_START_POSITION = {50.f, 250.f};
 const float        SNAP_TRESHOLD         = 3.5f;
