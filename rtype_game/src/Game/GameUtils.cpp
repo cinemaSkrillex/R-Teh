@@ -11,7 +11,7 @@ void rtype::Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
     std::cout << "[" << signal << "]" << std::endl;
-    std::unordered_map<std::string, std::string> parsedPacket = parseMessage(signal);
+    std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
 
     if (parsedPacket.find("Event") != parsedPacket.end()) {
         const std::string event = parsedPacket.at("Event");
@@ -28,8 +28,8 @@ void rtype::Game::handleSignal(std::string signal) {
 }
 
 void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> parsedPacket) {
-    const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
-    const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+    sf::Vector2f   position = PeterParser::parseVector2f(parsedPacket.at("Position"));
+    const long int uuid     = std::stol(parsedPacket.at("Uuid"));
     add_player(uuid, position);
 }
 
@@ -40,17 +40,17 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
     auto client_now                  = std::chrono::steady_clock::now();
     _startTime                       = client_now - std::chrono::milliseconds(_serverTime);
     const std::string positions      = parsedPacket.at("Position");
-    sf::Vector2f      localPlayerPos = parsePosition(positions);
+    sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
-    const std::vector<PlayerData> datas = parsePlayerList(players);
-    for (PlayerData player : datas) {
+    const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
+    for (PeterParser::PlayerData player : datas) {
         add_player(std::stol(player.uuid), player.position);
     }
 }
 
 void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket) {
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-    const sf::Vector2f position = parsePosition(parsedPacket.at("Position"));
+    const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
 
     // Find the player entity by UUID
     auto it = _players.find(uuid);
