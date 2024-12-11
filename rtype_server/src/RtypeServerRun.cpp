@@ -39,7 +39,7 @@ void RtypeServer::run() {
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
-            _broadcastClock.restart();
+            _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (const auto& player : _players) {
                 broadcastPlayerState(player.second);
             }
