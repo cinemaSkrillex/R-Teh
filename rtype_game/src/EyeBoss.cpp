@@ -201,7 +201,7 @@ void EyeBoss::shootLaser() {
         RealEngine::Velocity{
             std::cos(angleRad) * 500.0f, std::sin(angleRad) * 500.0f, {500.0f, 500.0f}, 0.0f});
     _registry.add_component(laser, RealEngine::Rotation{boss_rotation->angle});
-    _registry.add_component(laser, RealEngine::AutoDestructible{lifeTime : 2.0f});
+    _registry.add_component(laser, RealEngine::AutoDestructible{2.0f});
     _laserEntities.push_back(laser);
 }
 

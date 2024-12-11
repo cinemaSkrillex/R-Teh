@@ -40,7 +40,7 @@ void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleratio
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
     RealEngine::Entity laserEntity = _registry.spawn_entity();
-    _registry.add_component(laserEntity, RealEngine::AutoDestructible{lifeTime : 1.0f});
+    _registry.add_component(laserEntity, RealEngine::AutoDestructible{1.0f});
     _registry.add_component(laserEntity, RealEngine::Position{position.x + 32 * 3, position.y});
     _registry.add_component(laserEntity, RealEngine::Velocity{200.0f, 0.0f, {200.0f, 0.0f}, 0.0f});
     _registry.add_component(laserEntity, RealEngine::Drawable{});
