@@ -77,7 +77,7 @@ class RtypeServer {
     std::chrono::steady_clock::time_point               _startTime;
 
     void initCallbacks();
-    void broadcastPlayerState(const Player& player);
+    void broadcastPlayerState(const Player& player, float delta);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 

@@ -39,10 +39,12 @@ void RtypeServer::run() {
                 }
             }
         }
+
+        sf::Clock broadcastClock;
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (auto it = _players.begin(); it != _players.end(); ++it) {
-                broadcastPlayerState(it->second);
+                broadcastPlayerState(it->second, broadcastClock.getElapsedTime().asSeconds());
             }
         }
     }
