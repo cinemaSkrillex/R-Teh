@@ -10,3 +10,8 @@ choco install -y cmake
 choco install -y autoconf
 choco install -y automake
 choco install -y libtool
+choco install -y git
+
+# git clone vcpkg
+
+git clone https://github.com/microsoft/vcpkg.git
