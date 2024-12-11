@@ -20,12 +20,13 @@ void RtypeServer::run() {
             for (auto client : _server->getClients()) {
                 // Process all messages from the client
                 for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
-                    const auto parsed_data         = parseMessage(message);
-                    const auto player_direction    = parseDirection(parsed_data.at("Direction"));
-                    const auto player_uuid         = std::stol(parsed_data.at("Uuid"));
-                    const auto timestamp           = std::stol(parsed_data.at("Timestamp"));
-                    const auto lastTimestamp       = _players.at(client).getLastTimestamp();
-                    long       client_elapsed_time = timestamp - lastTimestamp;
+                    const auto parsed_data = PeterParser::parseMessage(message);
+                    const auto player_direction =
+                        PeterParser::parseVector2f(parsed_data.at("Direction"));
+                    const auto player_uuid                 = std::stol(parsed_data.at("Uuid"));
+                    const auto timestamp                   = std::stol(parsed_data.at("Timestamp"));
+                    const auto lastTimestamp               = _players.at(client).getLastTimestamp();
+                    long       client_elapsed_time         = timestamp - lastTimestamp;
                     float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
 
                     _players.at(client).setLastTimestamp(timestamp);

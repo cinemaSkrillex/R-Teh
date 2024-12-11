@@ -15,6 +15,9 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+namespace PeterParser {
+
 struct PlayerData {
     std::string  uuid;
     sf::Vector2f position;
@@ -22,8 +25,11 @@ struct PlayerData {
 
 PlayerData                                   parsePlayerData(const std::smatch& match);
 std::string                                  sanitizeUUID(const std::string& uuid);
-const sf::Vector2f                           parsePosition(const std::string& positionStr);
+sf::Vector2f                                 parseVector2f(const std::string& vector2fStr);
+const sf::Vector2f                           parseVector2Const(const std::string& Vector2fConst);
 std::vector<PlayerData>                      parsePlayerList(const std::string& playerList);
 std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
+
+}  // namespace PeterParser
 
 #endif /* !PLAYERUTILS_HPP_ */
