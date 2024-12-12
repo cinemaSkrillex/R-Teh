@@ -1,15 +1,19 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** EyeBomber
+*/
+
 #pragma once
 
 #include "Engine.hpp"
-#include "Macros.hpp"
 
 namespace rtype {
 
 class EyeBomber {
    public:
     EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, RealEngine::Sprite eyeSprite);
-    EyeBomber(RealEngine::Registry& registry,
-              sf::Vector2f          position);  // for server that displays nothing
     ~EyeBomber();
     void setTarget(RealEngine::Entity target, RealEngine::Registry& registry);
     void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity target,

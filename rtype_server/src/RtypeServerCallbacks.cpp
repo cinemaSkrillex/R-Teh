@@ -32,7 +32,7 @@ void RtypeServer::initCallbacks() {
         bool first = true;
         for (const auto& player_pair : _players) {
             if (!first) message += "|";
-            first = false;
+            first              = false;
             const auto& player = player_pair.second;
             message += std::to_string(player.getUUID()) + ",(" +
                        std::to_string(player.getPosition().x) + "," +
@@ -44,7 +44,7 @@ void RtypeServer::initCallbacks() {
                                 std::chrono::steady_clock::now() - _startTime)
                                 .count();
         auto player =
-            Player(uuid, elapsed_time, _game_instance->addPlayer(uuid, PLAYER_START_POSITION),
+            Player(uuid, elapsed_time, _game_instance->addAndGetPlayer(uuid, PLAYER_START_POSITION),
                    _game_instance->getRegistry());
         _players[sender] = player;
     });

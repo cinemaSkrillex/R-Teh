@@ -7,6 +7,9 @@
 
 #pragma once
 
+#define M_PI 3.14159265358979323846
+#define GAME_SCALE 3.0f
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <functional>
@@ -51,6 +54,7 @@
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
+#
 // Media
 #include "Media/Audio/Music.hpp"
 #include "Media/Audio/Sound.hpp"

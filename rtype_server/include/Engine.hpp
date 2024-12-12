@@ -1,5 +1,8 @@
 #pragma once
 
+#define M_PI 3.14159265358979323846
+#define GAME_SCALE 3.0f
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <functional>
@@ -12,8 +15,10 @@
 // Components
 #include "ECS/Components/AI.hpp"
 #include "ECS/Components/Acceleration.hpp"
+#include "ECS/Components/AutoDestructible.hpp"
 #include "ECS/Components/Collision.hpp"
 #include "ECS/Components/Controllable.hpp"
+#include "ECS/Components/Damage.hpp"
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/Components/Position.hpp"
@@ -34,7 +39,9 @@
 #include "ECS/Systems/AISystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
+#include "ECS/Systems/DestructibleSystem.hpp"
 #include "ECS/Systems/DrawSystem.hpp"
+#include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"

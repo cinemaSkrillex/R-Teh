@@ -5,7 +5,7 @@
 ** EyeBomber
 */
 
-#include "EyeBomber.hpp"
+#include "../include/Game/EyeBomber.hpp"
 
 namespace rtype {
 EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
