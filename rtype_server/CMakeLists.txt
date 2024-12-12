@@ -45,11 +45,26 @@ add_custom_target(copy_headers_server_lagcompensation ALL
     ${CMAKE_SOURCE_DIR}/rtype_server/include
 )
 
+# Copy the configuration file to the build directory
+# add_custom_target(copy_config ALL
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_CURRENT_SOURCE_DIR}/Config
+#     $<TARGET_FILE_DIR:rtype_server>/Config
+# )
+# Copy the configuration file to the build directory
+# Copy the configuration file to the build directory
+add_custom_target(copy_config ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/rtype_server/Config
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_SOURCE_DIR}/rtype_server/src/RtypeServer/Config/server.config
+    ${CMAKE_BINARY_DIR}/rtype_server/Config/server.config
+)
 
 # Ensure the headers are copied before building rtype_game
 add_dependencies(r_type copy_headers_engine_for_server)
 add_dependencies(r_type copy_headers_server_parser)
 add_dependencies(r_type copy_headers_server_lagcompensation)
+add_dependencies(r_type copy_config)
 
 
 if (WIN32)
