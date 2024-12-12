@@ -23,6 +23,7 @@ void RtypeServer::run() {
                     const auto parsed_data = PeterParser::parseMessage(message);
 
                     if (parsed_data.find("Event") != parsed_data.end()) {
+                        runEvent(parsed_data, client, _players.at(client));
                     } else {
                         runSimulation(parsed_data, client, _players.at(client));
                     }
