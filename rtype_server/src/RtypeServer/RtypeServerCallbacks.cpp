@@ -5,7 +5,7 @@
 ** RtypeServerCallbacks
 */
 
-#include "../include/RtypeServer.hpp"
+#include "../../include/RtypeServer.hpp"
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {

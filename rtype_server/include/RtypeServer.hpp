@@ -86,6 +86,8 @@ class RtypeServer {
     ~RtypeServer();
 
     void run();
+    void runEvent(const std::unordered_map<std::string, std::string>& parsed_data,
+                  asio::ip::udp::endpoint& client, Player& player);
     void runSimulation(const std::unordered_map<std::string, std::string>& parsed_data,
                        asio::ip::udp::endpoint& client, Player& player);
 
