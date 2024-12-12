@@ -13,11 +13,12 @@ void DestructibleSystem::update(Registry& registry, float deltaTime) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
                 registry.kill_entity(entity);
+                continue;
             }
         }
-        if (destructible->killCondition()) {
-            registry.kill_entity(entity);
-        }
+        // if (destructible->killCondition()) {
+        //     registry.kill_entity(entity);
+        // }
     }
 }
 } // namespace RealEngine
