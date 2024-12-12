@@ -12,8 +12,12 @@ namespace RealEngine {
 CollisionSystem::CollisionSystem() {}
 
 bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Collision>& collisions,
-                           Registry& registry, Entity entity) {
-    for (auto currentCollision : collisions) {
+                           Registry& registry) {
+    auto entities = registry.view<Collision>();
+
+    for (auto entity : entities) {
+        auto* currentCollision = registry.get_component<Collision>(entity);
+
         if (currentCollision->id.compare(collision->id) == 0) continue;
         if (collision->bounds.intersects(currentCollision->bounds)) {
             if (collision->collisionActionHandler) {
@@ -39,8 +43,8 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         if (sprite) collision->bounds = sprite->sprite.getBounds();
         if (spritesheet)
             collision->bounds = spritesheet->sprites.at(spritesheet->spriteIndex).getBounds();
-        collision->isColliding = isCollidingWithOthers(
-            *collision, registry.get_components<Collision>(), registry, entity);
+        collision->isColliding =
+            isCollidingWithOthers(*collision, registry.get_components<Collision>(), registry);
     }
 }
 }  // namespace RealEngine

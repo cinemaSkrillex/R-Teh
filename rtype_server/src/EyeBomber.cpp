@@ -35,24 +35,8 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   collisionBehaviour(collisionType, registry, collider);
                               }});
+    registry.add_component(_eyeEntity, RealEngine::Damage{10});
     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
-    registry.add_component(
-        _eyeEntity,
-        RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,
-                              float deltaTime) { agressiveBehavior(registry, target, deltaTime); },
-                       [this](RealEngine::Registry& registry, float deltaTime) {
-                           simpleBehavior(registry, deltaTime);
-                       },
-                       true});
-    registry.add_component(_eyeEntity, RealEngine::Damage{40});
-}
-
-EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
-    : _eyeEntity(registry.spawn_entity()), _directionTimer(0.0f), _goLeft(false) {
-    registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
-    registry.add_component(_eyeEntity, RealEngine::Acceleration{240.0f, 240.0f, 2.0f});
-    registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
     registry.add_component(
         _eyeEntity,
         RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,

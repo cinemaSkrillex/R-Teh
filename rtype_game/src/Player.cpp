@@ -33,10 +33,14 @@ void Game::player_collide_with_ground() {
 }
 
 void Game::player_take_damage(RealEngine::Entity collider) {
-    auto* playerHealth = _registry.get_component<RealEngine::Health>(_entity2);
-    // auto* colliderDamage = _registry.get_component<RealEngine::Damage>(collider);
+    auto* playerHealth   = _registry.get_component<RealEngine::Health>(_entity2);
+    auto* colliderDamage = _registry.get_component<RealEngine::Damage>(collider);
 
-    if (playerHealth) playerHealth->damage += 1000;
-    // std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;
+    if (playerHealth) {
+        if (colliderDamage) {
+            playerHealth->damage += colliderDamage->amount;
+            std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;
+        }
+    }
 }
 }  // namespace rtype
