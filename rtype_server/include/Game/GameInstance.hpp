@@ -16,10 +16,15 @@ class GameInstance {
     GameInstance();
     void                  init_components();
     void                  init_systems();
-    void                  run(RealEngine::Entity& entity, float deltaTime);
+
     void                  handleSignal(const std::string& message);
+
     RealEngine::Entity*   addAndGetPlayer(long int playerUuid, sf::Vector2f position);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
+
+    void                  runPlayerSimulation(RealEngine::Entity& entity, float deltaTime);
+    void                  run(float deltaTime);
+
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
