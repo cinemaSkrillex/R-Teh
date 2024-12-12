@@ -46,13 +46,7 @@ add_custom_target(copy_headers_server_lagcompensation ALL
 )
 
 # Copy the configuration file to the build directory
-# add_custom_target(copy_config ALL
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#     ${CMAKE_CURRENT_SOURCE_DIR}/Config
-#     $<TARGET_FILE_DIR:rtype_server>/Config
-# )
-# Copy the configuration file to the build directory
-# Copy the configuration file to the build directory
+# After that, no need to recompile the server to update the configuration, go to build/default/rtype_server/Config/server.config
 add_custom_target(copy_config ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/rtype_server/Config
     COMMAND ${CMAKE_COMMAND} -E copy
