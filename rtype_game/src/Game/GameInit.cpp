@@ -164,6 +164,10 @@ void Game::bind_keys() {
     _controlSystem.bindKey(sf::Keyboard::S, RealEngine::Action::Down);
     _controlSystem.bindKey(sf::Keyboard::Q, RealEngine::Action::Left);
     _controlSystem.bindKey(sf::Keyboard::D, RealEngine::Action::Right);
+    _controlSystem.bindKey(sf::Keyboard::Up, RealEngine::Action::Up);
+    _controlSystem.bindKey(sf::Keyboard::Down, RealEngine::Action::Down);
+    _controlSystem.bindKey(sf::Keyboard::Left, RealEngine::Action::Left);
+    _controlSystem.bindKey(sf::Keyboard::Right, RealEngine::Action::Right);
     _controlSystem.bindKey(sf::Keyboard::Space, RealEngine::Action::Action1);
 }
 
