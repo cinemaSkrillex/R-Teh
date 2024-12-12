@@ -86,6 +86,8 @@ class RtypeServer {
     ~RtypeServer();
 
     void run();
+    void runSimulation(const std::unordered_map<std::string, std::string>& parsed_data,
+                       asio::ip::udp::endpoint& client, Player& player);
 
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }

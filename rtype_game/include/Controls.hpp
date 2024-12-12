@@ -12,11 +12,13 @@
 #include "ECS/Registry/Registry.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
+#include "Macros.hpp"
+#include "Client/UDPClient.hpp"
 
 namespace rtype {
 class Controls {
    public:
-    Controls(RealEngine::Registry& registry);
+    Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> client);
     ~Controls();
     void moveUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                 RealEngine::Position& position, float deltaTime);
@@ -31,6 +33,6 @@ class Controls {
 
    private:
     RealEngine::Registry& _registry;
-    RealEngine::Sprite    _bulletSprite;
+    std::shared_ptr<UDPClient> _client;
 };
 }  // namespace rtype
