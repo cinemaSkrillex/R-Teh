@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** AI
+*/
+
 #pragma once
 #include <functional>
 

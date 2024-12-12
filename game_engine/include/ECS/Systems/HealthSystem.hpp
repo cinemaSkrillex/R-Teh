@@ -6,6 +6,8 @@
 namespace RealEngine {
 class HealthSystem {
    public:
+    HealthSystem();
+    ~HealthSystem() = default;
     void update(Registry& registry, float deltaTime);
 };
 }  // namespace RealEngine

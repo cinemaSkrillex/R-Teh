@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** EyeBomber
+*/
+
 #include "EyeBomber.hpp"
 
 namespace rtype {
@@ -18,6 +25,18 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
     registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
+    registry.add_component(
+        _eyeEntity,
+        RealEngine::Collision{{0.f, 0.f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
+                              "eye",
+                              false,
+                              RealEngine::CollisionType::HIT,
+                              [this](RealEngine::CollisionType collisionType,
+                                     RealEngine::Registry& registry, RealEngine::Entity collider) {
+                                  collisionBehaviour(collisionType, registry, collider);
+                              }});
+    registry.add_component(_eyeEntity, RealEngine::Damage{10});
+    registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
     registry.add_component(
         _eyeEntity,
         RealEngine::AI{[this](RealEngine::Registry& registry, RealEngine::Entity target,
@@ -125,4 +144,27 @@ void EyeBomber::simpleBehavior(RealEngine::Registry& registry, float deltaTime) 
     }
 }
 
+void EyeBomber::collisionBehaviour(RealEngine::CollisionType collisionType,
+                                   RealEngine::Registry& registry, RealEngine::Entity collider) {
+    switch (collisionType) {
+        case RealEngine::CollisionType::INACTIVE:
+            break;
+        case RealEngine::CollisionType::SOLID:
+            break;
+        case RealEngine::CollisionType::HIT:
+            break;
+        case RealEngine::CollisionType::PICKABLE:
+            break;
+        case RealEngine::CollisionType::OTHER:
+            selfDestruct(registry);
+            break;
+        default:
+            break;
+    }
+}
+
+void EyeBomber::selfDestruct(RealEngine::Registry& registry) {
+    auto* health = registry.get_component<RealEngine::Health>(_eyeEntity);
+    if (health) health->damage += health->maxHealth;
+}
 }  // namespace rtype

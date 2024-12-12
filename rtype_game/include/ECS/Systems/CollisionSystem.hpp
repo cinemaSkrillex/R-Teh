@@ -7,18 +7,19 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../include/ECS/Registry/Registry.hpp"
+
 #include "../include/ECS/Components/Collision.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
+#include "../include/ECS/Registry/Registry.hpp"
 
 namespace RealEngine {
 class CollisionSystem {
-
-  public:
+   public:
     CollisionSystem();
+    ~CollisionSystem() = default;
 
     void update(Registry& registry, float deltaTime);
 
-  private:
+   private:
 };
-} // namespace RealEngine
+}  // namespace RealEngine

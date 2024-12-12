@@ -13,7 +13,6 @@
 #include <regex>
 
 #include "Client/UDPClient.hpp"
-#include "CollisionHandler.hpp"
 #include "Controls.hpp"
 #include "Engine.hpp"
 #include "EyeBomber.hpp"
@@ -46,6 +45,11 @@ class Game {
     void init_systems();
     void init_sprites();
 
+    void player_collision_handler(RealEngine::CollisionType collisionType,
+                                  RealEngine::Registry& registry, RealEngine::Entity collider);
+    void player_collide_with_ground();
+    void player_take_damage(RealEngine::Entity collider);
+
     void register_components();
     void bind_keys();
     void set_action_handlers();
@@ -76,6 +80,7 @@ class Game {
     RealEngine::RotationSystem        _rotationSystem;
     RealEngine::RadiusSystem          _radiusSystem;
     RealEngine::DestructibleSystem    _destructibleSystem;
+    RealEngine::HealthSystem          _healthSystem;
     rtype::Controls                   _controls;
 
     std::unordered_map<int, RealEngine::Entity>         _players;

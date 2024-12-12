@@ -17,6 +17,9 @@ class EyeBomber {
     void aimAtTarget(RealEngine::Position* targetPosition, RealEngine::Registry& registry,
                      float rotationSpeed, float deltaTime);
     void simpleBehavior(RealEngine::Registry& registry, float deltaTime);
+    void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                            RealEngine::Entity collider);
+    void selfDestruct(RealEngine::Registry& registry);
     RealEngine::Entity getEntity() { return _eyeEntity; }
 
    private:

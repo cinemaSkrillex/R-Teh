@@ -23,6 +23,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _aiSystem(),
       _rotationSystem(),
       _radiusSystem(),
+      _healthSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
@@ -44,8 +45,16 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _registry.add_component(
         _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
     _registry.add_component(
-        _entity2, RealEngine::Collision{
-                      {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE}, "spaceship", false});
+        _entity2,
+        RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+                              "spaceship",
+                              false,
+                              RealEngine::CollisionType::OTHER,
+                              [this](RealEngine::CollisionType collisionType,
+                                     RealEngine::Registry& registry, RealEngine::Entity collider) {
+                                  player_collision_handler(collisionType, registry, collider);
+                              }});
+    _registry.add_component(_entity2, RealEngine::Health{100, 200});
 
     for (int i = 0; i < 50; i++) {
         RealEngine::Entity groundBlock = _registry.spawn_entity();
@@ -56,13 +65,15 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
         _groundBlocksEntities.push_back(groundBlock);
         _registry.add_component(groundBlock, RealEngine::SpriteComponent{_groundSprite});
         _registry.add_component(
-            groundBlock, RealEngine::Collision{
-                             {0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE}, "ground", false});
+            groundBlock, RealEngine::Collision{{0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE},
+                                               "ground",
+                                               false,
+                                               RealEngine::CollisionType::SOLID});
     }
 
     // _eyeMinion = std::make_unique<EyeMinion>(_registry, sf::Vector2f({200.f, 200.f}));
     auto eyeBomber =
-        std::make_unique<EyeBomber>(_registry, sf::Vector2f({200.f, 200.f}), _eyeBomberSprite);
+        std::make_unique<EyeBomber>(_registry, sf::Vector2f({500.f, 200.f}), _eyeBomberSprite);
     // eyeBomber->setTarget(_entity2, _registry);
     _eyeMinions.push_back(std::move(eyeBomber));
     _bossEye = std::make_unique<EyeBoss>(_registry);
@@ -124,6 +135,9 @@ void Game::add_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destructibleSystem.update(registry, deltaTime);
     });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _healthSystem.update(registry, deltaTime);
+    });
 }
 
 void Game::register_components() {
@@ -142,6 +156,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Radius>();
     _registry.register_component<RealEngine::Target>();
     _registry.register_component<RealEngine::AutoDestructible>();
+    _registry.register_component<RealEngine::Damage>();
 }
 
 void Game::bind_keys() {

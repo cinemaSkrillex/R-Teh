@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** \
+**
 ** File description:
 ** GameRun
 */
@@ -8,8 +8,6 @@
 #include "Game.hpp"
 
 void rtype::Game::run() {
-    std::unordered_map<std::string, RealEngine::Entity> entities = {
-        {"spaceship", _entity2}, {"ground", _groundBlocksEntities[3]}};
     while (_window.isOpen()) {
         if (_clock.getElapsedTime().asMilliseconds() <= 1000 / 60) continue;
 
@@ -19,7 +17,6 @@ void rtype::Game::run() {
         handleSignal(_clientUDP->get_last_reliable_packet());
         handleSignal(_clientUDP->get_last_unreliable_packet());
         _registry.run_systems(_deltaTime);
-        handle_collision(_registry, entities);
         const sf::Vector2f direction = getPlayerNormalizedDirection();
         _window.display();
         auto client_now = std::chrono::steady_clock::now();

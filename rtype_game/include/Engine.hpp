@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** Engine
+*/
+
 #pragma once
 
 #include <SFML/Graphics.hpp>
@@ -15,6 +22,7 @@
 #include "ECS/Components/AutoDestructible.hpp"
 #include "ECS/Components/Collision.hpp"
 #include "ECS/Components/Controllable.hpp"
+#include "ECS/Components/Damage.hpp"
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/Components/Interpolation.hpp"
@@ -38,6 +46,7 @@
 #include "ECS/Systems/ControlSystem.hpp"
 #include "ECS/Systems/DestructibleSystem.hpp"
 #include "ECS/Systems/DrawSystem.hpp"
+#include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/LagCompensationSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"

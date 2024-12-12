@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** EyeMinion
+*/
+
 #include "EyeMinion.hpp"
 
 namespace rtype {
