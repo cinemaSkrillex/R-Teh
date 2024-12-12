@@ -29,11 +29,12 @@ void RtypeServer::run() {
                 }
             }
 
-            if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
-                _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
-                for (const auto& player : _players) {
-                    broadcastPlayerState(player.second);
-                }
+            _game_instance->run(_deltaTime);
+        }
+        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
+            _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
+            for (const auto& player : _players) {
+                broadcastPlayerState(player.second);
             }
         }
     }
