@@ -17,9 +17,8 @@ int main(int argc, char* argv[]) {
 
     try {
         asio::io_context             io_context;
-        auto                         server        = std::make_shared<UDPServer>(io_context, port);
-        auto                         game_instance = std::make_shared<GameInstance>();
-        std::shared_ptr<RtypeServer> rtype_server  = std::make_shared<RtypeServer>(server);
+        auto                         server       = std::make_shared<UDPServer>(io_context, port);
+        std::shared_ptr<RtypeServer> rtype_server = std::make_shared<RtypeServer>(server);
         std::chrono::steady_clock::time_point start_time = rtype_server->getStartTime();
 
         rtype_server->run();
