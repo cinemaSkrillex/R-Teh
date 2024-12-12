@@ -29,3 +29,8 @@ void TCPServer::send_message(const std::string& message, const asio::ip::tcp::en
 void TCPServer::send_file(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint) {
     _packet_manager->send_file_to_client(file_path, endpoint);
 }
+
+void TCPServer::send_directory(const std::string& directory_path,
+                               const asio::ip::tcp::endpoint& endpoint) {
+    _packet_manager->send_directory_to_client(directory_path, endpoint);
+}

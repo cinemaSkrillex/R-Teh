@@ -76,34 +76,85 @@ void TCPPacketManager::send_message_to_client_endpoint(const std::string& messag
     }
 }
 
+void TCPPacketManager::handle_file_reception(std::string& data, const std::string& current_directory) {
+    namespace fs = std::filesystem;
 
-void TCPPacketManager::receive_file_data(std::shared_ptr<std::ofstream> file,
-                                         std::size_t expected_size) {
-    std::vector<char> buffer(4096);
-    std::size_t total_received = 0;
+    size_t name_end = data.find(':', 5);
+    size_t size_end = data.find('\n', name_end + 1);
 
-    while (total_received < expected_size) {
-        std::size_t bytes_to_read = std::min(static_cast<std::size_t>(4096), expected_size - total_received);
+    if (name_end == std::string::npos || size_end == std::string::npos) {
+        std::cerr << "Malformed file header received." << std::endl;
+        return;
+    }
+
+    std::string file_name = data.substr(5, name_end - 5);
+    std::size_t file_size = std::stoul(data.substr(name_end + 1, size_end - name_end - 1));
+    std::cout << "Receiving file: " << file_name << " (" << file_size << " bytes)" << std::endl;
+    std::string directory = current_directory.empty() ? "test" : current_directory;
+
+    if (!fs::exists(directory)) {
+        try {
+            fs::create_directory(directory);
+            std::cout << "Directory created: " << directory << std::endl;
+        } catch (const fs::filesystem_error& e) {
+            std::cerr << "Failed to create directory '" << directory << "': " << e.what() << std::endl;
+            return;
+        }
+    }
+
+    std::string file_path = directory + "/" + file_name;
+
+    std::ofstream file(file_path, std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for writing: " << file_path << std::endl;
+        return;
+    }
+    std::string file_data = data.substr(size_end + 1);
+    size_t file_data_in_buffer = std::min(file_size, file_data.size());
+    file.write(file_data.data(), file_data_in_buffer);
+    file_size -= file_data_in_buffer;
+
+    data = file_data.substr(file_data_in_buffer);
+    while (file_size > 0) {
+        std::vector<char> file_buffer(4096);
+        std::size_t bytes_to_read = std::min(static_cast<std::size_t>(4096), file_size);
         asio::error_code ec;
-        std::size_t bytes_read = _socket->read_some(asio::buffer(buffer.data(), bytes_to_read), ec);
+        std::size_t bytes_read = _socket->read_some(asio::buffer(file_buffer.data(), bytes_to_read), ec);
 
         if (ec) {
             std::cerr << "Error receiving file data: " << ec.message() << std::endl;
             return;
         }
-        file->write(buffer.data(), bytes_read);
-        total_received += bytes_read;
-        // std::cout << "Received chunk: " << bytes_read << " bytes (Total: " << total_received
-        //           << "/" << expected_size << ")" << std::endl;
+
+        file.write(file_buffer.data(), bytes_read);
+        file_size -= bytes_read;
     }
 
-    file->close();
-    std::cout << "File received and saved successfully." << std::endl;
+    file.close();
 }
+
+
+
+void TCPPacketManager::handle_directory_reception(const std::string& directory_name) {
+    namespace fs = std::filesystem;
+
+    if (!fs::exists(directory_name)) {
+        try {
+            fs::create_directory(directory_name);
+            std::cout << "Directory created: " << directory_name << std::endl;
+        } catch (const fs::filesystem_error& e) {
+            std::cerr << "Failed to create directory '" << directory_name << "': " << e.what() << std::endl;
+            return;
+        }
+    }
+}
+
 
 void TCPPacketManager::listen_for_server_data() {
     std::vector<char> buffer(4096);
     asio::error_code ec;
+
+    std::string current_directory;
 
     while (true) {
         std::size_t length = _socket->read_some(asio::buffer(buffer), ec);
@@ -116,7 +167,9 @@ void TCPPacketManager::listen_for_server_data() {
                 break;
             }
         }
+
         std::string data(buffer.data(), length);
+
         while (!data.empty()) {
             if (data.rfind("MSG:", 0) == 0) {
                 size_t end_pos = data.find('\n');
@@ -127,61 +180,29 @@ void TCPPacketManager::listen_for_server_data() {
                 std::string message = data.substr(4, end_pos - 4);
                 std::cout << "Message received: " << message << std::endl;
                 data = data.substr(end_pos + 1);
+
+            } else if (data.rfind("DIR:", 0) == 0) {
+                size_t end_pos = data.find('\n');
+                if (end_pos == std::string::npos) {
+                    std::cerr << "Malformed directory header received." << std::endl;
+                    break;
+                }
+
+                current_directory = data.substr(4, end_pos - 4);
+                current_directory.erase(current_directory.find_last_not_of(" \r\n") + 1);
+                handle_directory_reception(current_directory);
+
+                data = data.substr(end_pos + 1);
+
             } else if (data.rfind("FILE:", 0) == 0) {
-                size_t name_end = data.find(':', 5);
-                size_t size_end = data.find('\n', name_end + 1);
-                if (name_end == std::string::npos || size_end == std::string::npos) {
-                    std::cerr << "Malformed file header received." << std::endl;
-                    break;
-                }
-                std::string file_name = data.substr(5, name_end - 5);
-                std::size_t file_size = std::stoul(data.substr(name_end + 1, size_end - name_end - 1));
-                std::cout << "Receiving file: " << file_name << " (" << file_size << " bytes)" << std::endl;
-                data = data.substr(size_end + 1);
-
-                std::filesystem::path path("test");
-                if (!std::filesystem::exists(path)) {
-                    try {
-                        std::filesystem::create_directory(path);
-                        std::cout << "Created directory: " << path << std::endl;
-                    } catch (const std::filesystem::filesystem_error& e) {
-                        std::cerr << "Error creating directory: " << e.what() << std::endl;
-                        break;
-                    }
-                }
-
-                size_t file_data_in_buffer = std::min(file_size, data.size());
-                std::ofstream file("test/" + file_name, std::ios::binary);
-
-                if (!file.is_open()) {
-                    std::cerr << "Failed to open file for writing: " << file_name << std::endl;
-                    break;
-                }
-                file.write(data.data(), file_data_in_buffer);
-                file_size -= file_data_in_buffer;
-                data = data.substr(file_data_in_buffer);
-                while (file_size > 0) {
-                    std::vector<char> file_buffer(4096);
-                    std::size_t bytes_to_read = std::min(static_cast<std::size_t>(4096), file_size);
-                    std::size_t bytes_read = _socket->read_some(asio::buffer(file_buffer.data(), bytes_to_read), ec);
-                    if (ec) {
-                        std::cerr << "Error receiving file data: " << ec.message() << std::endl;
-                        return;
-                    }
-                    file.write(file_buffer.data(), bytes_read);
-                    file_size -= bytes_read;
-                    // std::cout << "Received chunk: " << bytes_read << " bytes (Remaining: " << file_size << ")" << std::endl;
-                }
-                file.close();
-                std::cout << "File received and saved successfully." << std::endl;
+                handle_file_reception(data, current_directory);
             } else {
-                std::cerr << "Unknown data format received." << std::endl;
+                std::cerr << "Unknown data format received: [" << data << "]" << std::endl;
                 break;
             }
         }
     }
 }
-
 
 void TCPPacketManager::send_file_to_client(const std::string& file_path,
                                            const asio::ip::tcp::endpoint& endpoint) {
@@ -214,12 +235,45 @@ void TCPPacketManager::send_file_to_client(const std::string& file_path,
                     return;
                 }
                 asio::write(*client_socket, asio::buffer(chunk_buffer->data(), bytes_read));
-                // std::cout << "Sent chunk: " << bytes_read << " bytes" << std::endl;
             }
             std::cout << "File sent successfully to " << endpoint << std::endl;
             break;
         }
     }
+}
+
+void TCPPacketManager::send_directory_to_client(const std::string& directory_path, const asio::ip::tcp::endpoint& endpoint) {
+    namespace fs = std::filesystem;
+
+    if (!fs::exists(directory_path) || !fs::is_directory(directory_path)) {
+        std::cerr << "Directory does not exist or is not valid: " << directory_path << std::endl;
+        return;
+    }
+
+    std::string directory_name = fs::path(directory_path).filename().string();
+    std::cout << "Directory name to send: [" << directory_name << "]" << std::endl;
+    std::string header = "DIR:" + directory_name + "\n";
+    std::cout << "Header sent to client: [" << header << "]" << std::endl;
+    for (auto& client_socket : _client_sockets) {
+        if (client_socket->remote_endpoint() == endpoint) {
+            if (!client_socket->is_open()) {
+                std::cerr << "Socket is not open for endpoint: " << endpoint << std::endl;
+                return;
+            }
+
+            asio::write(*client_socket, asio::buffer(header));
+            break;
+        }
+    }
+    for (const auto& entry : fs::directory_iterator(directory_path)) {
+        if (entry.is_regular_file()) {
+            send_file_to_client(entry.path().string(), endpoint);
+        } else {
+            std::cout << "Skipping non-regular file: " << entry.path().string() << std::endl;
+        }
+    }
+
+    std::cout << "Directory sent successfully: " << directory_name << std::endl;
 }
 
 

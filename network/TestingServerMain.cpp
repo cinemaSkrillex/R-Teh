@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
                 tcpserver->send_message("UWU12", client_endpoint);
                 tcpserver->send_message("UWU13", client_endpoint);
                 tcpserver->send_file("testing_rtype_client", client_endpoint);
+                tcpserver->send_directory("zebiiiiiii", client_endpoint);
             });
         // auto             server = std::make_shared<UDPServer>(io_context, port);
 
