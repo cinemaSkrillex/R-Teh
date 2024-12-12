@@ -30,10 +30,6 @@ GameInstance::GameInstance()
     _spaceshipSheet.emplace("down", _downSpaceship);
     init_components();
     init_systems();
-    auto eyeBomber = std::make_unique<rtype::EyeBomber>(_registry, sf::Vector2f({500.f, 200.f}),
-                                                        _eyeBomberSprite);
-    // eyeBomber->setTarget(_entity2, _registry);
-    _ennemies.push_back(std::move(eyeBomber));
     std::cout << "GameInstance created" << std::endl;
 }
 
@@ -56,9 +52,9 @@ void GameInstance::init_components() {
 }
 
 void GameInstance::init_systems() {
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _movementSystem.update(registry, deltaTime);
-    });
+    // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    //     _movementSystem.update(registry, deltaTime);
+    // });
     // _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
     //     _drawSystem.update(registry, deltaTime);
     // });
