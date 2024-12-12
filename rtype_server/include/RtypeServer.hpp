@@ -19,6 +19,7 @@
 
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
+#include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "Server/UDPServer.hpp"
 

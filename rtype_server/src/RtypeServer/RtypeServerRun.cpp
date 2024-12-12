@@ -6,7 +6,6 @@
 */
 
 #include "../../include/RtypeServer.hpp"
-#include "Log.hpp"
 
 void RtypeServer::run() {
     auto log = std::make_shared<Log>("RtypeServer.log");
