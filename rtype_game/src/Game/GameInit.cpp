@@ -133,10 +133,10 @@ void Game::add_systems() {
         _radiusSystem.update(registry);
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _destructibleSystem.update(registry, deltaTime);
+        _healthSystem.update(registry, deltaTime);
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _healthSystem.update(registry, deltaTime);
+        _destructibleSystem.update(registry, deltaTime);
     });
 }
 
