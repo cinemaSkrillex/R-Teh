@@ -33,7 +33,7 @@ class TCPPacketManager {
     void send_directory_to_client(const std::string& directory_path,
                                   const asio::ip::tcp::endpoint& endpoint);
     void handle_file_reception(std::string& data, const std::string& current_directory);
-    void handle_directory_reception(const std::string& directory_name);
+    void handle_directory_reception(const std::string& directory_name, const std::string& parent_directory);
     void close();
 
     std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
