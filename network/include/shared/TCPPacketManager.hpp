@@ -30,8 +30,7 @@ class TCPPacketManager {
     void send_message_to_client_endpoint(const std::string& message,
                                          const asio::ip::tcp::endpoint& endpoint);
     void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
-    void receive_file_data(std::shared_ptr<std::ofstream> file, std::size_t expected_size,
-                           std::size_t total_received);
+    void receive_file_data(std::shared_ptr<std::ofstream> file, std::size_t expected_size);
     void close();
 
     std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;

@@ -32,17 +32,22 @@ int main(int argc, char* argv[]) {
         tcpserver->setNewClientCallback(
             [tcpserver](const asio::ip::tcp::endpoint& client_endpoint) {
                 std::cout << "New client connected: " << client_endpoint << std::endl;
-                // tcpserver->send_message("UWU1", client_endpoint);
-                // tcpserver->send_message("UWU4", client_endpoint);
-                // tcpserver->send_message("UWU5", client_endpoint);
+                tcpserver->send_message("UWU1", client_endpoint);
+                tcpserver->send_message("UWU2", client_endpoint);
+                tcpserver->send_message("UWU3", client_endpoint);
+                tcpserver->send_message("UWU4", client_endpoint);
+                tcpserver->send_message("UWU5", client_endpoint);
                 tcpserver->send_file("epitech.pdf", client_endpoint);
-                // tcpserver->send_message("UWU6", client_endpoint);
-                // tcpserver->send_message("UWU7", client_endpoint);
-                // tcpserver->send_message("UWU8", client_endpoint);
-                // tcpserver->send_message("UWU9", client_endpoint);
+                tcpserver->send_message("UWU6", client_endpoint);
+                tcpserver->send_message("UWU7", client_endpoint);
+                tcpserver->send_message("UWU8", client_endpoint);
+                tcpserver->send_message("UWU9", client_endpoint);
                 tcpserver->send_file("test.pdf", client_endpoint);
-                // tcpserver->send_message("UWU10", client_endpoint);
-                // tcpserver->send_file_to_client("testing_rtype_client", client_endpoint);
+                tcpserver->send_message("UWU10", client_endpoint);
+                tcpserver->send_message("UWU11", client_endpoint);
+                tcpserver->send_message("UWU12", client_endpoint);
+                tcpserver->send_message("UWU13", client_endpoint);
+                tcpserver->send_file("testing_rtype_client", client_endpoint);
             });
         // auto             server = std::make_shared<UDPServer>(io_context, port);
 
