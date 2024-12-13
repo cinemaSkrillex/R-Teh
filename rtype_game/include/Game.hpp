@@ -81,6 +81,7 @@ class Game {
     RealEngine::RadiusSystem          _radiusSystem;
     RealEngine::DestructibleSystem    _destructibleSystem;
     RealEngine::HealthSystem          _healthSystem;
+    RealEngine::ReappearingSystem     _reappearingSystem;
     rtype::Controls                   _controls;
 
     std::unordered_map<int, RealEngine::Entity>         _players;
@@ -93,10 +94,12 @@ class Game {
     RealEngine::Sprite                                  _eyeMinionSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _groundSprite;
+    RealEngine::Sprite                                  _backgroundSprite;
     RealEngine::Entity                                  _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
     std::vector<std::unique_ptr<EyeBomber>> _eyeMinions;
     std::vector<RealEngine::Entity>         _groundBlocksEntities;
+    std::vector<RealEngine::Entity>         _backgroundEntities;
     long int                                _localPlayerUUID;
     std::chrono::steady_clock::time_point   _startTime;
     long                                    _serverTime;
