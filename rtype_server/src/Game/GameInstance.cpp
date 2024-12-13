@@ -13,11 +13,18 @@ void GameInstance::runPlayerSimulation(RealEngine::Entity& entity, float deltaTi
 
 void GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
-    _collisionSystem.update(_registry, deltaTime);
+    _drawSystem.updateWithoutDisplay(_registry, deltaTime);
+    // if (!_ennemies.empty()) {
+    //     for (auto& ennemy : _ennemies) {
+    //         _movementSystem.update(_registry, ennemy->getEntity(), deltaTime);
+    //     }
+    // }
+    // _movementSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
     _destructibleSystem.update(_registry, deltaTime);
+    _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
 }
 
@@ -25,7 +32,7 @@ RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vecto
     rtype::Player player(_registry, position, _spaceshipSheet);
     std::cout << position.x << " " << position.y << std::endl;
     _players.emplace(playerUuid, player.getEntity());
-    auto eyeBomber = std::make_unique<rtype::EyeBomber>(_registry, sf::Vector2f({500.f, 500.f}),
+    auto eyeBomber = std::make_unique<rtype::EyeBomber>(_registry, sf::Vector2f({500.f, 200.f}),
                                                         _eyeBomberSprite);
     // eyeBomber->setTarget(_entity2, _registry);
     _ennemies.push_back(std::move(eyeBomber));
