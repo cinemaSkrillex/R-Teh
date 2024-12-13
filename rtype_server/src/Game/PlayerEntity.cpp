@@ -7,8 +7,22 @@
 
 #include "../include/Game/PlayerEntity.hpp"
 
-namespace rtype {
+#include "../include/ECS/Registry/Registry.hpp"
 
+static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& entity,
+                           float deltaTime) {
+    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
+    for (auto& netvar : netvars) {
+        if (netvar->name != "shootCooldown") continue;
+        std::cout << "Updating cooldown" << std::endl;
+        netvar->value = std::any_cast<float>(netvar->value) - deltaTime;
+        if (std::any_cast<float>(netvar->value) < 0) {
+            netvar->value = 0.f;
+        }
+    }
+}
+
+namespace rtype {
 Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                std::unordered_map<std::string, RealEngine::Sprite> playerSprites)
     : _playerEntity(registry.spawn_entity()), _spaceshipSheet(playerSprites) {
@@ -32,6 +46,8 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                               }});
     auto* collision = registry.get_component<RealEngine::Collision>(_playerEntity);
     registry.add_component(_playerEntity, RealEngine::Health{100, 200});
+    registry.add_component(_playerEntity,
+                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
 }
 
 Player::~Player() {}

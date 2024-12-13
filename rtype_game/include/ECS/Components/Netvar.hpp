@@ -13,10 +13,11 @@
 
 #include "ECS/Registry/Registry.hpp"
 
+namespace RealEngine {
+
 #define NETVAR_UPDATE_CALLBACK_TYPE \
     std::function<void(Registry & registry, Entity & entity, float deltaTime)>
 
-namespace RealEngine {
 struct Netvar {
     std::string                 type;
     std::string                 name;
