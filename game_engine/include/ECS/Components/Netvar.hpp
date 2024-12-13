@@ -18,6 +18,7 @@
 
 namespace RealEngine {
 struct Netvar {
+    std::string                 type;
     std::string                 name;
     std::any                    value;
     NETVAR_UPDATE_CALLBACK_TYPE updateCallback = nullptr;
