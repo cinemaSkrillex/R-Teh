@@ -14,7 +14,6 @@ static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& e
     std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
     for (auto& netvar : netvars) {
         if (netvar->name != "shootCooldown") continue;
-        std::cout << "Updating cooldown" << std::endl;
         netvar->value = std::any_cast<float>(netvar->value) - deltaTime;
         if (std::any_cast<float>(netvar->value) < 0) {
             netvar->value = 0.f;
