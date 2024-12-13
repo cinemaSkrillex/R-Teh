@@ -4,10 +4,8 @@
 
 namespace rtype {
 
-Controls::Controls(RealEngine::Registry& registry)
-    : _registry(registry), _bulletSprite("../../assets/sprites/whanos.png", {0, 0, 524, 267}) {
-    _bulletSprite.setScale(0.2, 0.2);
-}
+Controls::Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> client)
+    : _registry(registry), _client(client) {}
 
 Controls::~Controls() {}
 
@@ -37,19 +35,6 @@ void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleratio
 
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
-    RealEngine::Entity laserEntity = _registry.spawn_entity();
-
-    RealEngine::AutoDestructible laser_autodestructible = {3.5f};
-    RealEngine::Position         laser_position         = {position.x + 32 * 3, position.y};
-    RealEngine::Velocity         laser_velocity         = {200.0f, 0.0f, {200.0f, 0.0f}, 0.0f};
-
-    // _registry.add_component(laserEntity,
-    //                         RealEngine::AutoDestructible{laser_autodestructible.lifeTime});
-    _registry.add_component(laserEntity, RealEngine::Position{laser_position.x, laser_position.y});
-    _registry.add_component(laserEntity, RealEngine::Velocity{laser_velocity.vx, laser_velocity.vy,
-                                                              laser_velocity.maxSpeed,
-                                                              laser_velocity.airFrictionForce});
-    _registry.add_component(laserEntity, RealEngine::Drawable{});
-    _registry.add_component(laserEntity, RealEngine::SpriteComponent{_bulletSprite});
+    _client->send_unreliable_packet("Event:Shoot");
 }
 }  // namespace rtype

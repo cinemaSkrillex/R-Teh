@@ -14,7 +14,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _deltaTime(0.f),
       _window("SKRILLEX client_port: " + std::to_string(client_port), sf::Vector2u(800, 600)),
       _clock(),
-      _controls(_registry),
+      _controls(_registry, clientUDP),
       _lagCompensationSystem(),
       _movementSystem(),
       _drawSystem(&_window.getRenderWindow()),

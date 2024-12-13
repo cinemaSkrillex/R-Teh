@@ -5,7 +5,7 @@
 ** RtypeServerUtils
 */
 
-#include "../include/RtypeServer.hpp"
+#include "../../include/RtypeServer.hpp"
 
 std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_point& start_time) {
     auto now     = std::chrono::steady_clock::now();

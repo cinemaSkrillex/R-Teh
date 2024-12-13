@@ -7,8 +7,12 @@
 
 #include "../include/Game/GameInstance.hpp"
 
-void GameInstance::updateFrameSystems(float deltaTime) {
-    _movementSystem.update(_registry, deltaTime);
+void GameInstance::runPlayerSimulation(RealEngine::Entity& entity, float deltaTime) {
+    _movementSystem.update(_registry, entity, deltaTime);
+};
+
+void GameInstance::run(float deltaTime) {
+    // _registry.update(deltaTime);
     _collisionSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
