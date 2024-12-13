@@ -9,6 +9,8 @@
 #include <SFML/Graphics.hpp>
 
 #include "../include/ECS/Components/Collision.hpp"
+#include "../include/ECS/Components/Position.hpp"
+#include "../include/ECS/Components/Sprite.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
 

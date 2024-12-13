@@ -22,7 +22,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
         RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
     registry.add_component(
         _playerEntity,
-        RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+        RealEngine::Collision{{0.0f, 0.0f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
                               "spaceship",
                               false,
                               RealEngine::CollisionType::OTHER,
@@ -30,8 +30,8 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   player_collision_handler(collisionType, registry, collider);
                               }});
+    auto* collision = registry.get_component<RealEngine::Collision>(_playerEntity);
     registry.add_component(_playerEntity, RealEngine::Health{100, 200});
-    std::cout << "Player created" << std::endl;
 }
 
 Player::~Player() {}

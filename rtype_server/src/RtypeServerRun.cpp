@@ -38,6 +38,7 @@ void RtypeServer::run() {
                                         client_elapsed_time_seconds);
                 }
             }
+            // _game_instance->updateFrameSystems(_deltaTime);
         }
 
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {

@@ -7,16 +7,19 @@
 
 #include "../include/Game/GameInstance.hpp"
 
-void GameInstance::run(RealEngine::Entity& entity, float deltaTime) {
-    // _registry.update(deltaTime);
-    _movementSystem.update(_registry, entity, deltaTime);
+void GameInstance::updateFrameSystems(float deltaTime) {
+    _movementSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
-    // _rotationSystem.update(_registry, deltaTime);
-    // _radiusSystem.update(_registry);
-    _healthSystem.update(_registry, deltaTime);
+    _rotationSystem.update(_registry, deltaTime);
+    // _radiusSystem.update(_registry, deltaTime);
     _destructibleSystem.update(_registry, deltaTime);
-    // _registry.run_systems(deltaTime);
+    _healthSystem.update(_registry, deltaTime);
+}
+
+void GameInstance::run(RealEngine::Entity& entity, float deltaTime) {
+    _drawSystem.updateWithoutDisplay(_registry, deltaTime);
+    _movementSystem.update(_registry, entity, deltaTime);
 };
 
 RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vector2f position) {

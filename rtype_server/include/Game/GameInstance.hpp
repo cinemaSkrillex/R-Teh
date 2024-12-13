@@ -17,6 +17,7 @@ class GameInstance {
     void                  init_components();
     void                  init_systems();
     void                  run(RealEngine::Entity& entity, float deltaTime);
+    void                  updateFrameSystems(float deltaTime);
     void                  handleSignal(const std::string& message);
     RealEngine::Entity*   addAndGetPlayer(long int playerUuid, sf::Vector2f position);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
@@ -26,6 +27,7 @@ class GameInstance {
    private:
     sf::Clock                      _clock;
     RealEngine::Registry           _registry;
+    RealEngine::DrawSystem         _drawSystem;
     RealEngine::MovementSystem     _movementSystem;
     RealEngine::CollisionSystem    _collisionSystem;
     RealEngine::AISystem           _aiSystem;

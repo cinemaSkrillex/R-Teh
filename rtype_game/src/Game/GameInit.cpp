@@ -17,7 +17,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _controls(_registry),
       _lagCompensationSystem(),
       _movementSystem(),
-      _drawSystem(_window.getRenderWindow()),
+      _drawSystem(&_window.getRenderWindow()),
       _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),

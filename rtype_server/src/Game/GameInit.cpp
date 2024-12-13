@@ -10,6 +10,7 @@
 GameInstance::GameInstance()
     : _clock(),
       _registry(),
+      _drawSystem(nullptr),
       _movementSystem(),
       _collisionSystem(),
       _aiSystem(),
