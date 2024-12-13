@@ -17,6 +17,7 @@ GameInstance::GameInstance()
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
+      _netvarSystem(),
       _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
       _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
       _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
@@ -50,6 +51,7 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::Target>();
     _registry.register_component<RealEngine::AutoDestructible>();
     _registry.register_component<RealEngine::Damage>();
+    _registry.register_component<RealEngine::Netvar>();
 }
 
 void GameInstance::init_systems() {
@@ -79,5 +81,8 @@ void GameInstance::init_systems() {
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _healthSystem.update(registry, deltaTime);
+    });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _netvarSystem.update(registry, deltaTime);
     });
 }
