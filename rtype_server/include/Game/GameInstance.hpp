@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "BulletEntity.hpp"
 #include "EyeBomber.hpp"
 #include "PlayerEntity.hpp"
 
@@ -20,6 +21,7 @@ class GameInstance {
     void                  handleSignal(const std::string& message);
 
     RealEngine::Entity*   addAndGetPlayer(long int playerUuid, sf::Vector2f position);
+    void                  addBullet(sf::Vector2f position, sf::Vector2f direction, float speed);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
 
     void                  runPlayerSimulation(RealEngine::Entity& entity, float deltaTime);
@@ -41,10 +43,12 @@ class GameInstance {
 
     std::unordered_map<long int, RealEngine::Entity>    _players;
     RealEngine::Sprite                                  _eyeBomberSprite;
+    RealEngine::Sprite                                  _bulletSprite;
     RealEngine::Sprite                                  _upSpaceship;
     RealEngine::Sprite                                  _idleSpaceship;
     RealEngine::Sprite                                  _downSpaceship;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     std::vector<std::unique_ptr<rtype::EyeBomber>>      _ennemies;
     std::vector<RealEngine::Entity>                     _groundBlocksEntities;
+    std::vector<RealEngine::Entity>                     _bullets;
 };

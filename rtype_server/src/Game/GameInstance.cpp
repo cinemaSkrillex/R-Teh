@@ -20,6 +20,11 @@ void GameInstance::run(float deltaTime) {
     _healthSystem.update(_registry, deltaTime);
     _destructibleSystem.update(_registry, deltaTime);
     // _registry.run_systems(deltaTime);
+
+    //update bullet movement
+    for (auto& bullet : _bullets) {
+        _movementSystem.update(_registry, bullet, deltaTime);
+    }
 };
 
 RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vector2f position) {
@@ -38,6 +43,12 @@ RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vecto
     // _players.emplace(playerUuid, player);
     return &_players.at(playerUuid);
 }
+
+void GameInstance::addBullet(sf::Vector2f position, sf::Vector2f direction, float speed) {
+    rtype::Bullet bullet(_registry, position, direction, speed, _bulletSprite);
+    _bullets.push_back(bullet.getEntity());
+}
+
 
 void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
