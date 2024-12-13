@@ -7,8 +7,21 @@
 
 #include "../include/Game/PlayerEntity.hpp"
 
-namespace rtype {
+#include "../include/ECS/Registry/Registry.hpp"
 
+static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& entity,
+                           float deltaTime) {
+    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
+    for (auto& netvar : netvars) {
+        if (netvar->name != "shootCooldown") continue;
+        netvar->value = std::any_cast<float>(netvar->value) - deltaTime;
+        if (std::any_cast<float>(netvar->value) < 0) {
+            netvar->value = 0.f;
+        }
+    }
+}
+
+namespace rtype {
 Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                std::unordered_map<std::string, RealEngine::Sprite> playerSprites)
     : _playerEntity(registry.spawn_entity()), _spaceshipSheet(playerSprites) {
@@ -22,7 +35,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
         RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
     registry.add_component(
         _playerEntity,
-        RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+        RealEngine::Collision{{0.0f, 0.0f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
                               "spaceship",
                               false,
                               RealEngine::CollisionType::OTHER,
@@ -30,8 +43,10 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   player_collision_handler(collisionType, registry, collider);
                               }});
+    auto* collision = registry.get_component<RealEngine::Collision>(_playerEntity);
     registry.add_component(_playerEntity, RealEngine::Health{100, 200});
-    std::cout << "Player created" << std::endl;
+    registry.add_component(_playerEntity,
+                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
 }
 
 Player::~Player() {}

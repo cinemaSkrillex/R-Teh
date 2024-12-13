@@ -18,6 +18,8 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
     _eyeSheet.emplace("normal", _eyeSprite);
 
     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
+    auto eyeSpriteSheet =
+        RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}};
     registry.add_components(
         _eyeEntity,
         RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}},
@@ -28,7 +30,7 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(
         _eyeEntity,
         RealEngine::Collision{{0.f, 0.f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
-                              "eye",
+                              "normal",
                               false,
                               RealEngine::CollisionType::HIT,
                               [this](RealEngine::CollisionType collisionType,

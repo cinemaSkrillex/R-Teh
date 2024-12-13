@@ -19,8 +19,10 @@
 
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
+#include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "Server/UDPServer.hpp"
+#include "ServerConfig.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -30,10 +32,10 @@
 #include <windows.h>
 #endif
 
-const sf::Int32    SERVER_TICK           = 60;
-const sf::Int32    SERVER_BROADCAST_TICK = 10;
-const sf::Vector2f PLAYER_START_POSITION = {50.f, 250.f};
-const float        SNAP_TRESHOLD         = 3.5f;
+// const sf::Int32    SERVER_TICK           = 60;
+// const sf::Int32    SERVER_BROADCAST_TICK = 10;
+// const sf::Vector2f PLAYER_START_POSITION = {50.f, 250.f};
+// const float        SNAP_TRESHOLD         = 3.5f;
 
 class Player {
    public:
@@ -68,6 +70,7 @@ static std::vector<Player> PLAYERS = {};
 class RtypeServer {
    private:
     std::shared_ptr<UDPServer>                          _server;
+    ServerConfig                                        _config;
     std::shared_ptr<GameInstance>                       _game_instance;
     std::unordered_map<asio::ip::udp::endpoint, Player> _players;
     float                                               _deltaTime;

@@ -24,7 +24,7 @@ class EyeBomber {
     void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                             RealEngine::Entity collider);
     void selfDestruct(RealEngine::Registry& registry);
-    RealEngine::Entity getEntity() { return _eyeEntity; }
+    RealEngine::Entity& getEntity() { return _eyeEntity; }
 
    private:
     RealEngine::Entity                                  _eyeEntity;

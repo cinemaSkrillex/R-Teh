@@ -51,6 +51,8 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         if (sprite) collision->bounds = sprite->sprite.getBounds();
         if (spritesheet)
             collision->bounds = spritesheet->sprites.at(spritesheet->spriteIndex).getBounds();
+        // std::cout << "bounds: " << collision->bounds.left << " " << collision->bounds.top << " "
+        //           << collision->bounds.width << " " << collision->bounds.height << std::endl;
         collision->isColliding =
             isCollidingWithOthers(*collision, registry.get_components<Collision>(), registry);
     }

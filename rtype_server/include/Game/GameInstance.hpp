@@ -15,17 +15,17 @@
 class GameInstance {
    public:
     GameInstance();
-    void                  init_components();
-    void                  init_systems();
+    void init_components();
+    void init_systems();
 
-    void                  handleSignal(const std::string& message);
+    void handleSignal(const std::string& message);
 
     RealEngine::Entity*   addAndGetPlayer(long int playerUuid, sf::Vector2f position);
     void                  addBullet(sf::Vector2f position, sf::Vector2f direction, float speed);
     void                  movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
 
-    void                  runPlayerSimulation(RealEngine::Entity& entity, float deltaTime);
-    void                  run(float deltaTime);
+    void runPlayerSimulation(RealEngine::Entity& entity, float deltaTime);
+    void run(float deltaTime);
 
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
@@ -33,6 +33,7 @@ class GameInstance {
    private:
     sf::Clock                      _clock;
     RealEngine::Registry           _registry;
+    RealEngine::DrawSystem         _drawSystem;
     RealEngine::MovementSystem     _movementSystem;
     RealEngine::CollisionSystem    _collisionSystem;
     RealEngine::AISystem           _aiSystem;
@@ -40,6 +41,7 @@ class GameInstance {
     RealEngine::RadiusSystem       _radiusSystem;
     RealEngine::DestructibleSystem _destructibleSystem;
     RealEngine::HealthSystem       _healthSystem;
+    RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, RealEngine::Entity>    _players;
     RealEngine::Sprite                                  _eyeBomberSprite;

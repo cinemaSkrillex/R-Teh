@@ -6,7 +6,6 @@
 */
 
 #include "../../include/RtypeServer.hpp"
-#include "Log.hpp"
 
 void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& parsed_data,
                            asio::ip::udp::endpoint& client, Player& player) {
