@@ -15,9 +15,10 @@ void NetvarSystem::update(Registry& registry, float deltaTime) {
         return;
     }
     for (auto entity : entities) {
-        auto netvar = registry.get_component<Netvar>(entity);
-        if (netvar->updateCallback != nullptr) {
-            netvar->updateCallback(registry, entity, deltaTime);
+        for (auto& component : registry.get_components<Netvar>(entity)) {
+            if (component->updateCallback != nullptr) {
+                component->updateCallback(registry, entity, deltaTime);
+            }
         }
     }
 }
