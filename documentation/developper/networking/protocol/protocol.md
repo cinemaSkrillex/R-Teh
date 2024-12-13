@@ -40,6 +40,12 @@ Event:New_client Uuid:123456789 Position:(50.0,250.0)
 
 **Example**: Event:Player_position Uuid:7038767116 Step:0.051000 Position:(401.1,265.4)
 
+## What about security against Hackers?
+
+The client is only sending the direction of his movement, therefore the client has no control over the position of the player. The server is the only one that have authority over the position of the player.
+
 ## Additional Information
 
-For more details on how the server and clients handle these events, refer to the respective implementation files in the codebase. The server and clients are written in C++ using the Boost.Asio library for networking.
+For more details on how the server and clients handle these events, refer to the respective implementation files in the codebase.
+
+The server and clients are written in C++ using the Boost.Asio library for networking.
