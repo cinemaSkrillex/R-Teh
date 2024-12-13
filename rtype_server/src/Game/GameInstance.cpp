@@ -21,11 +21,6 @@ void GameInstance::run(float deltaTime) {
     _healthSystem.update(_registry, deltaTime);
 }
 
-void GameInstance::run(RealEngine::Entity& entity, float deltaTime) {
-    _drawSystem.updateWithoutDisplay(_registry, deltaTime);
-    _movementSystem.update(_registry, entity, deltaTime);
-};
-
 RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vector2f position) {
     rtype::Player player(_registry, position, _spaceshipSheet);
     std::cout << position.x << " " << position.y << std::endl;
