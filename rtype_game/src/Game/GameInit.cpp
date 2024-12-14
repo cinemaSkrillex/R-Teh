@@ -118,11 +118,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                RealEngine::CollisionType::SOLID});
     }
 
-    // _eyeMinion = std::make_unique<EyeMinion>(_registry, sf::Vector2f({200.f, 200.f}));
-    auto eyeBomber =
-        std::make_unique<EyeBomber>(_registry, sf::Vector2f({500.f, 200.f}), _eyeBomberSprite);
-    // eyeBomber->setTarget(_entity2, _registry);
-    _eyeMinions.push_back(std::move(eyeBomber));
     _bossEye = std::make_unique<EyeBoss>(_registry);
     _bossEye->setTarget(_entity2);
 }

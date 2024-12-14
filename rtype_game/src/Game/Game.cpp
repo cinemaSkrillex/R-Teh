@@ -22,6 +22,13 @@ std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::V
     return _players.at(player_uuid);
 }
 
+std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vector2f position) {
+    auto enemy       = EyeBomber(_registry, position, _eyeBomberSprite);
+    auto enemyEntity = enemy.getEntity();
+    _enemies.emplace(enemy_uuid, enemyEntity);
+    return _enemies.at(enemy_uuid);
+}
+
 sf::Vector2f Game::getPlayerNormalizedDirection() {
     sf::Vector2f direction(0, 0);
 

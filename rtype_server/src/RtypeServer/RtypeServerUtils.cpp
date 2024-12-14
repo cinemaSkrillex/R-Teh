@@ -26,3 +26,15 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
         }
     }
 }
+
+void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity) {
+    auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
+    if (position) {
+        std::string message = "Event:Entity_position Uuid:" + std::to_string(uuid) +
+                              " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
+                              std::to_string(position->x) + "," + std::to_string(position->y) + ")";
+        for (auto client : _server->getClients()) {
+            _server->send_unreliable_packet(message, client);
+        }
+    }
+}
