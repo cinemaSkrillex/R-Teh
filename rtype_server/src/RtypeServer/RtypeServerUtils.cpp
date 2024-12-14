@@ -15,7 +15,7 @@ std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_p
 
 void RtypeServer::broadcastPlayerState(const Player& player) {
     // Get the player's position
-    RealEngine::Entity* entity = player.getEntity();
+    std::shared_ptr<RealEngine::Entity> entity = player.getEntity();
     auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
     if (position) {
         std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +

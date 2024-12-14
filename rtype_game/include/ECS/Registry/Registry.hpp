@@ -10,6 +10,7 @@
 #include <any>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 #include <typeindex>
@@ -63,17 +64,27 @@ class Registry {
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component> const&>(_components_arrays.at(index));
         } else {
-            throw std::runtime_error("Component not registered!");  // TODO: proper exception
+            throw std::runtime_error("Component not registered!");
         }
     }
 
     // Entity management methods
 
     // Remove an entity from all component arrays
-    void   remove_entity(Entity const& entity);
-    Entity spawn_entity();
-    Entity entity_from_index(std::size_t idx);
-    void   kill_entity(Entity const& e);
+    void                    remove_entity(Entity const& entity);
+    std::shared_ptr<Entity> spawn_entity();
+    Entity                  entity_from_index(std::size_t idx);
+    bool                    is_valid(Entity const& e) const;
+    void                    kill_entity(Entity const& e);
+
+    template <typename Component>
+    typename SparseArray<Component>::reference_type add_component(std::shared_ptr<Entity> to,
+                                                                  Component&&             c) {
+        auto& components = get_components<Component>();
+        components[*to]  = std::forward<Component>(c);
+        return components[*to];
+    }
+
     template <typename Component>
     typename SparseArray<Component>::reference_type add_component(Entity const& to, Component&& c) {
         auto& components = get_components<Component>();
@@ -83,22 +94,22 @@ class Registry {
 
     // add more than one component at once
     template <typename... Components>
-    void add_components(Entity const& to, Components&&... components) {
+    void add_components(std::shared_ptr<Entity> to, Components&&... components) {
         (add_component(to, std::forward<Components>(components)), ...);
     }
 
     template <typename Component, typename... Params>
-    typename SparseArray<Component>::reference_type emplace_component(Entity const& to,
+    typename SparseArray<Component>::reference_type emplace_component(std::shared_ptr<Entity> to,
                                                                       Params&&... p) {
         auto& components = get_components<Component>();
-        components[to].emplace(std::forward<Params>(p)...);
-        return components[to];
+        components[*to].emplace(std::forward<Params>(p)...);
+        return components[*to];
     }
 
     template <typename Component>
-    void remove_component(Entity const& from) {
+    void remove_component(std::shared_ptr<Entity> from) {
         auto& components = get_components<Component>();
-        components[from].reset();
+        components[*from].reset();
     }
 
     // Add a system to the registry
@@ -116,6 +127,21 @@ class Registry {
     }
     // Run all systems
     void run_systems(float deltaTime);
+
+    template <typename Component>
+    Component* get_component(std::shared_ptr<Entity> entity) {
+        if (!entity) {
+            return nullptr;
+        }
+        auto&       sparseArray = get_components<Component>();
+        std::size_t index       = static_cast<std::size_t>(*entity);
+
+        if (index >= sparseArray.size() || !sparseArray[index]) {
+            return nullptr;
+        }
+        return &(*sparseArray[index]);
+    }
+
     template <typename Component>
     Component* get_component(Entity const& entity) {
         auto&       sparseArray = get_components<Component>();
@@ -126,6 +152,26 @@ class Registry {
         }
         return &(*sparseArray[index]);
     }
+
+    template <typename Component>
+    std::vector<Component*> get_components(std::shared_ptr<Entity> entity) {
+        if (!entity) {
+            return std::vector<Component*>();
+        }
+
+        auto&       sparseArray = get_components<Component>();
+        std::size_t index       = static_cast<std::size_t>(*entity);
+
+        std::vector<Component*> components;
+
+        if (index >= sparseArray.size() || !sparseArray[index]) {
+            return components;  // Return an empty vector if the entity is invalid
+        }
+
+        components.push_back(&(*sparseArray[index]));
+        return components;
+    }
+
     template <typename Component>
     std::vector<Component*> get_components(Entity const& entity) {
         auto&       sparseArray = get_components<Component>();

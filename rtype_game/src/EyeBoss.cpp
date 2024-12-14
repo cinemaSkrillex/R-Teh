@@ -43,7 +43,7 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
 
 EyeBoss::~EyeBoss() {}
 
-void EyeBoss::setTarget(RealEngine::Entity target) {
+void EyeBoss::setTarget(std::shared_ptr<RealEngine::Entity> target) {
     _registry.add_component(_entity, RealEngine::Target{target});
 }
 
@@ -185,10 +185,10 @@ void EyeBoss::longRangeBehavior(RealEngine::Registry& registry, RealEngine::Enti
 }
 
 void EyeBoss::shootLaser() {
-    RealEngine::Entity laser         = _registry.spawn_entity();
-    auto*              boss_position = _registry.get_component<RealEngine::Position>(_entity);
-    auto*              boss_rotation = _registry.get_component<RealEngine::Rotation>(_entity);
-    float              angleRad      = boss_rotation->angle * M_PI / 180.0f;
+    auto  laser         = _registry.spawn_entity();
+    auto* boss_position = _registry.get_component<RealEngine::Position>(_entity);
+    auto* boss_rotation = _registry.get_component<RealEngine::Rotation>(_entity);
+    float angleRad      = boss_rotation->angle * M_PI / 180.0f;
 
     _registry.add_components(
         laser,

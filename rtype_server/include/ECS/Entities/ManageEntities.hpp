@@ -6,15 +6,17 @@
 */
 
 #pragma once
-#include <vector>
-#include <stdexcept>
 #include <algorithm>
+#include <memory>
+#include <stdexcept>
+#include <vector>
+
 #include "Entity.hpp"
 
 namespace RealEngine {
 class ManageEntities {
-  public:
-    Entity spawn_entity();
+   public:
+    std::shared_ptr<Entity> spawn_entity();
 
     Entity entity_from_index(std::size_t idx);
     void   kill_entity(Entity const& e);
@@ -22,8 +24,8 @@ class ManageEntities {
 
     std::size_t size() const;
 
-  private:
+   private:
     std::size_t         _next_entity = 0;
     std::vector<Entity> _dead_entities;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

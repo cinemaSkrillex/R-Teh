@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 // Core
@@ -43,9 +44,9 @@
 #include "ECS/Systems/DrawSystem.hpp"
 #include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/NetvarSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
-#include "ECS/Systems/NetvarSystem.hpp"
 // Media
 #include "Media/Audio/Music.hpp"
 #include "Media/Audio/Sound.hpp"

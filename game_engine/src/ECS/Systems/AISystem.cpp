@@ -21,7 +21,7 @@ void AISystem::update(Registry& registry, float deltaTime) {
         if (ai->active) {
             if (target) {
                 if (ai->behaviorOnTarget) {
-                    ai->behaviorOnTarget(registry, target->target, deltaTime);
+                    ai->behaviorOnTarget(registry, *target->target, deltaTime);
                 }
             } else {
                 if (ai->behaviorPassive) {

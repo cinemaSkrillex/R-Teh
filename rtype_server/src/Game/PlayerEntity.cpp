@@ -29,7 +29,6 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_playerEntity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     registry.add_component(_playerEntity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_playerEntity, RealEngine::Controllable{});
-    registry.add_component(_playerEntity, RealEngine::Drawable{});
     registry.add_component(
         _playerEntity,
         RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});

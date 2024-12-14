@@ -13,7 +13,7 @@ class EyeBoss {
     ~EyeBoss();
     void targetBossBehavior(RealEngine::Registry& registry, RealEngine::Entity target,
                             float deltaTime);
-    void setTarget(RealEngine::Entity target);
+    void setTarget(std::shared_ptr<RealEngine::Entity> target);
     void aimAtTarget(RealEngine::Position* targetPosition, float rotationSpeed, float deltaTime);
     void noTargetBossBehavior(RealEngine::Registry& registry, float deltaTime);
     void shortRangeBehavior(RealEngine::Registry& registry, RealEngine::Entity target);
@@ -22,11 +22,11 @@ class EyeBoss {
     void circularAttack(RealEngine::Registry& registry, RealEngine::Entity target, float deltaTime);
     void shootLaser();
     void setBossStatus(int state);
-    RealEngine::Entity getEntity() { return _entity; }
+    std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 
    private:
     RealEngine::Registry&                               _registry;
-    RealEngine::Entity                                  _entity;
+    std::shared_ptr<RealEngine::Entity>                 _entity;
     RealEngine::Sprite                                  _shortSprite;
     RealEngine::Sprite                                  _midSprite;
     RealEngine::Sprite                                  _longSprite;
@@ -36,7 +36,7 @@ class EyeBoss {
     float                                               _shootCooldown;
     float                                               _shootPhaseTimer;
     bool                                                _isInShootPhase;
-    std::vector<RealEngine::Entity>                     _laserEntities;
-    std::vector<RealEngine::Entity>                     _laserEntitiesToDelete;
+    std::vector<std::shared_ptr<RealEngine::Entity>>    _laserEntities;
+    std::vector<std::shared_ptr<RealEngine::Entity>>    _laserEntitiesToDelete;
 };
 }  // namespace rtype

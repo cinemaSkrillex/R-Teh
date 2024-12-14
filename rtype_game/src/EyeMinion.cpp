@@ -50,7 +50,8 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
 
 EyeMinion::~EyeMinion() {}
 
-void EyeMinion::setTarget(RealEngine::Entity target, RealEngine::Registry& registry) {
+void EyeMinion::setTarget(std::shared_ptr<RealEngine::Entity> target,
+                          RealEngine::Registry&               registry) {
     registry.add_component(_eyeEntity, RealEngine::Target{target});
 }
 

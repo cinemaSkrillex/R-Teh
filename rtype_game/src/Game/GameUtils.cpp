@@ -58,7 +58,7 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
     auto               it       = _players.find(uuid);
 
     if (it == _players.end()) return;
-    RealEngine::Entity player = it->second;
+    std::shared_ptr<RealEngine::Entity> player = it->second;
     // Update the position component of the player
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
