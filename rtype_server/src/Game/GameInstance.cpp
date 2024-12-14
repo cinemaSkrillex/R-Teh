@@ -15,10 +15,8 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 void GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
-    // if (!_ennemies.empty()) {
-    // for (auto& ennemy : _ennemies) {
-    //     _movementSystem.update(_registry, ennemy->getEntity(), deltaTime);
-    // }
+    // for (auto ennemy : _ennemies) {
+    //     runPlayerSimulation(ennemy, deltaTime);
     // }
     // _movementSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
@@ -51,11 +49,6 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     p
     std::cout << position.x << " " << position.y << std::endl;
     auto playerEntity = player.getEntity();
     _players.emplace(playerUuid, playerEntity);
-    auto eyeBomber = std::make_unique<rtype::EyeBomber>(_registry, sf::Vector2f({500.f, 200.f}),
-                                                        _eyeBomberSprite);
-    // eyeBomber->setTarget(_entity2, _registry);
-    _ennemies.push_back(std::move(eyeBomber));
-
     // RealEngine::Entity player = _registry.spawn_entity();
     // _registry.add_component(player, RealEngine::Position{position.x, position.y});
     // _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.f});
@@ -64,12 +57,12 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     p
     return _players.at(playerUuid);
 }
 
-// std::shared_ptr<RealEngine::Entity> groundBlock = _registry.spawn_entity();
-// _registry.add_components(groundBlock,
-//                          RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
-//                                               i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},
-//                          RealEngine::Drawable{});
-// _groundBlocksEntities.push_back(groundBlock);
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f position) {
+    auto eyeBomber = rtype::EyeBomber(_registry, position, _eyeBomberSprite);
+    auto entity    = eyeBomber.getEntity();
+    _ennemies.push_back(std::make_unique<rtype::EyeBomber>(eyeBomber));
+    return entity;
+}
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
                                                                   sf::Vector2f direction,

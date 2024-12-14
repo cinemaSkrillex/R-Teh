@@ -32,6 +32,7 @@ class Game {
     RealEngine::Entity                  createEntity();
     void                                handleSignal(std::string signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::Vector2f                        getPlayerNormalizedDirection();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
@@ -63,16 +64,24 @@ class Game {
     void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
     void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleNewMob(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleMobPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);
     //
 
     // ComponentFunctions
-    void createPositionComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
-    void createVelocityComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
-    void createSpriteComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
-    void createDrawableComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
-    void createAutoDestrcutibleComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
-    void createCollisionComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity);
+    void createPositionComponent(const std::string&                  value,
+                                 std::shared_ptr<RealEngine::Entity> entity);
+    void createVelocityComponent(const std::string&                  value,
+                                 std::shared_ptr<RealEngine::Entity> entity);
+    void createSpriteComponent(const std::string&                  value,
+                               std::shared_ptr<RealEngine::Entity> entity);
+    void createDrawableComponent(const std::string&                  value,
+                                 std::shared_ptr<RealEngine::Entity> entity);
+    void createAutoDestrcutibleComponent(const std::string&                  value,
+                                         std::shared_ptr<RealEngine::Entity> entity);
+    void createCollisionComponent(const std::string&                  value,
+                                  std::shared_ptr<RealEngine::Entity> entity);
     // don't need more for now but can add more
 
     float              _deltaTime = 0.f;
@@ -95,6 +104,7 @@ class Game {
     rtype::Controls                   _controls;
 
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _players;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _enemies;
     std::unique_ptr<EyeBoss>                                     _bossEye;
     RealEngine::Sprite                                           _upSpaceship;
     RealEngine::Sprite                                           _idleSpaceship;
@@ -113,25 +123,33 @@ class Game {
     long int                                         _localPlayerUUID;
     std::chrono::steady_clock::time_point            _startTime;
     long                                             _serverTime;
-    std::unordered_map<std::string, std::function<void(const std::string&, std::shared_ptr<RealEngine::Entity>)>> _componentFunctions = {
-        {"Position", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-             createPositionComponent(value, entity);
-         }},
-        {"Velocity", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-             createVelocityComponent(value, entity);
-         }},
-        {"Sprite", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-             createSpriteComponent(value, entity);
-         }},
-        {"Drawable", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-             createDrawableComponent(value, entity);
-         }},
-        {"AutoDestructible", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-             createAutoDestrcutibleComponent(value, entity);
-         }},
-        // {"Collision", [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
-        //      createCollisionComponent(value, entity);
-        //  }},
+    std::unordered_map<std::string,
+                       std::function<void(const std::string&, std::shared_ptr<RealEngine::Entity>)>>
+        _componentFunctions = {
+            {"Position",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createPositionComponent(value, entity);
+             }},
+            {"Velocity",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createVelocityComponent(value, entity);
+             }},
+            {"Sprite",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createSpriteComponent(value, entity);
+             }},
+            {"Drawable",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createDrawableComponent(value, entity);
+             }},
+            {"AutoDestructible",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createAutoDestrcutibleComponent(value, entity);
+             }},
+            // {"Collision", [this](const std::string& value, std::shared_ptr<RealEngine::Entity>
+            // entity) {
+            //      createCollisionComponent(value, entity);
+            //  }},
     };
 };
 }  // namespace rtype

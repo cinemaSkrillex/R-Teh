@@ -69,18 +69,20 @@ static std::vector<Player> PLAYERS = {};
 
 class RtypeServer {
    private:
-    std::shared_ptr<UDPServer>                          _server;
-    ServerConfig                                        _config;
-    std::shared_ptr<GameInstance>                       _game_instance;
-    std::unordered_map<asio::ip::udp::endpoint, Player> _players;
-    float                                               _deltaTime;
-    float                                               _deltaTimeBroadcast;
-    sf::Clock                                           _clock;
-    sf::Clock                                           _broadcastClock;
-    std::chrono::steady_clock::time_point               _startTime;
+    std::shared_ptr<UDPServer>                                   _server;
+    ServerConfig                                                 _config;
+    std::shared_ptr<GameInstance>                                _game_instance;
+    std::unordered_map<asio::ip::udp::endpoint, Player>          _players;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _server_entities;
+    float                                                        _deltaTime;
+    float                                                        _deltaTimeBroadcast;
+    sf::Clock                                                    _clock;
+    sf::Clock                                                    _broadcastClock;
+    std::chrono::steady_clock::time_point                        _startTime;
 
     void initCallbacks();
     void broadcastPlayerState(const Player& player);
+    void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
     void broadCastAll(std::string message);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);

@@ -47,5 +47,9 @@ void RtypeServer::initCallbacks() {
                                   _game_instance->addAndGetPlayer(uuid, _config.PLAYER_START_POSITION),
                                   _game_instance->getRegistry());
         _players[sender] = player;
+        int entity_uuid  = uuid_generator.generate_long();
+        // _server_entities[entity_uuid] =
+        // _game_instance->addAndGetEntity({500.f, 200.f});
+        std::cout << "Added entity with uuid: " << entity_uuid << std::endl;
     });
 }

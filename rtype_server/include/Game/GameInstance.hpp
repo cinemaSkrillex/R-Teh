@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "BulletEntity.hpp"
 #include "Engine.hpp"
 #include "BulletEntity.hpp"
 #include "EyeBomber.hpp"
@@ -21,7 +22,9 @@ class GameInstance {
     void handleSignal(const std::string& message);
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(long int playerUuid, sf::Vector2f position);
-    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position, sf::Vector2f direction, float speed);
+    std::shared_ptr<RealEngine::Entity> addAndGetEntity(sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
+                                                        sf::Vector2f direction, float speed);
     void movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
@@ -44,13 +47,13 @@ class GameInstance {
     RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
+    std::vector<std::unique_ptr<rtype::EyeBomber>>                    _ennemies;
     RealEngine::Sprite                                                _eyeBomberSprite;
     RealEngine::Sprite                                                _bulletSprite;
     RealEngine::Sprite                                                _upSpaceship;
     RealEngine::Sprite                                                _idleSpaceship;
     RealEngine::Sprite                                                _downSpaceship;
     std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
-    std::vector<std::unique_ptr<rtype::EyeBomber>>                    _ennemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _groundBlocksEntities;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };
