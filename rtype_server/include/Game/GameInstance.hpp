@@ -39,6 +39,7 @@ class GameInstance {
     RealEngine::RadiusSystem       _radiusSystem;
     RealEngine::DestructibleSystem _destructibleSystem;
     RealEngine::HealthSystem       _healthSystem;
+    RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, RealEngine::Entity>    _players;
     RealEngine::Sprite                                  _eyeBomberSprite;

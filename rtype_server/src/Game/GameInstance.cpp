@@ -26,6 +26,7 @@ void GameInstance::run(float deltaTime) {
     _destructibleSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
+    _netvarSystem.update(_registry, deltaTime);
 }
 
 RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vector2f position) {

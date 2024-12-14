@@ -127,6 +127,21 @@ class Registry {
         }
         return &(*sparseArray[index]);
     }
+    template <typename Component>
+    std::vector<Component*> get_components(Entity const& entity) {
+        auto&       sparseArray = get_components<Component>();
+        std::size_t index       = static_cast<std::size_t>(entity);
+
+        std::vector<Component*> components;
+
+        if (index >= sparseArray.size() || !sparseArray[index]) {
+            return components;  // Return an empty vector if the entity is invalid
+        }
+
+        components.push_back(&(*sparseArray[index]));
+        return components;
+    }
+
     // template <typename Component> SparseArray<Component>& get_sparse_array();
     template <typename... Components>
     std::vector<Entity> view() {

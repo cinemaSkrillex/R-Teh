@@ -16,20 +16,24 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 ## Technologies used 🖥
 
-- Main language : C++
-- Scripting language : Lua
-- Network protocol : TCP/UDP
-- Graphic library : SFML
-- Audio library : OpenAL
-- Build system : CMake
-- CI/CD : GitHub Actions
-- Code formatter : ClangFormat
-- Package manager : Vcpkg
+#### Languages and Libraries
+- Main language: C++
+- Graphic library: SFML
+- Network protocol: TCP/UDP using Asio
+- Scripting language: Lua
+
+#### Tools and Systems
+- Build system: CMake
+- Code formatter: ClangFormat
+- Package manager: Vcpkg
+- CI/CD: GitHub Actions
+
 
 ## Prerequisites 📋
 
 On Linux:
 ```bash
+# Run the script to install the dependencies (from root)
 chmod +x ./scripts/requirements.sh
 ./scripts/requirements.sh
 ```
@@ -71,7 +75,12 @@ cmake . && cmake --build . -j 8
 
 Launch the server:
 ```bash
-./build/network/rtype_server [PORT]
+./build/default/r_type_server/rtype_server [PORT]
+```
+
+Launch the client:
+```bash
+./build/default/rtype_game/rtype [SERVER_IP] [SERVER_PORT] [CLIENT_PORT]
 ```
 
 ## How to run the tests 🧪
