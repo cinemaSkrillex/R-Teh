@@ -12,7 +12,8 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
     if (parsed_data.at("Event") == "Shoot") {
         // check player entity netvar shootCooldown
         // auto* component = registry.get_component<Component>(entity);
-        auto* netvar = _game_instance->getRegistry()->get_component<RealEngine::Netvar>(player.getEntity());
+        auto* netvar =
+            _game_instance->getRegistry()->get_component<RealEngine::Netvar>(player.getEntity());
         if (netvar == nullptr) {
             return;
         }

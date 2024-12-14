@@ -42,18 +42,7 @@ add_custom_target(copy_headers_lagcompensation_engine ALL
     ${CMAKE_SOURCE_DIR}/game_engine/include
 )
 
-add_custom_target(copy_assets_engine ALL
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/game_engine/assets
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
-    ${CMAKE_BINARY_DIR}/game_engine/assets
-)
-
-add_compile_definitions(ASSETS_PATH=\"$<TARGET_FILE_DIR:rtype_engine>/assets\")
-
-
 add_dependencies(rtype_engine copy_headers_lagcompensation_engine)
-add_dependencies(rtype_engine copy_assets_engine)
 
 # Link libraries
 if(UNIX)
