@@ -63,7 +63,7 @@ class Registry {
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component> const&>(_components_arrays.at(index));
         } else {
-            throw std::runtime_error("Component not registered!");  // TODO: proper exception
+            throw std::runtime_error("Component not registered!");
         }
     }
 
@@ -73,6 +73,7 @@ class Registry {
     void   remove_entity(Entity const& entity);
     Entity spawn_entity();
     Entity entity_from_index(std::size_t idx);
+    bool   is_valid(Entity const& e) const;
     void   kill_entity(Entity const& e);
     template <typename Component>
     typename SparseArray<Component>::reference_type add_component(Entity const& to, Component&& c) {

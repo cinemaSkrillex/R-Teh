@@ -41,4 +41,6 @@ void Registry::run_systems(float deltaTime) {
     }
 }
 
-} // namespace RealEngine
+bool Registry::is_valid(Entity const& e) const { return _entity_manager.is_valid(e); }
+
+}  // namespace RealEngine
