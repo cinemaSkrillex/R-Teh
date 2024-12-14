@@ -18,7 +18,7 @@ void Registry::remove_entity(Entity const& entity) {
     }
 }
 
-Entity Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
+std::shared_ptr<Entity> Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
 
 Entity Registry::entity_from_index(std::size_t idx) {
     if (idx >= _entity_manager.size()) {

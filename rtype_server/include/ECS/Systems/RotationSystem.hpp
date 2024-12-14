@@ -13,7 +13,5 @@ class RotationSystem {
     ~RotationSystem();
 
     void update(Registry& registry, float deltaTime);
-    void setRotation(Registry& registry, Entity entity, float angle);
-    void rotate(Registry& registry, Entity entity, float angle);
 };
 }  // namespace RealEngine

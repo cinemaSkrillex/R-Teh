@@ -16,7 +16,7 @@ namespace RealEngine {
 class MovementSystem {
    public:
     void update(Registry& registry, float deltaTime);
-    void update(Registry& registry, Entity& entity, float deltaTime);
+    void update(Registry& registry, std::shared_ptr<Entity> entity, float deltaTime);
     void limitSpeed(Velocity& velocity);
     void applyFriction(Velocity& velocity, float deltaTime);
 };

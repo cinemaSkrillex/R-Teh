@@ -31,7 +31,10 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
     }
 }
 
-void MovementSystem::update(Registry& registry, Entity& entity, float deltaTime) {
+void MovementSystem::update(Registry& registry, std::shared_ptr<Entity> entity, float deltaTime) {
+    if (!entity) {
+        return;
+    }
     auto* position = registry.get_component<Position>(entity);
     auto* velocity = registry.get_component<Velocity>(entity);
     limitSpeed(*velocity);

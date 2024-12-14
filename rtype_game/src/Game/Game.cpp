@@ -9,8 +9,8 @@
 
 namespace rtype {
 
-RealEngine::Entity* Game::add_player(long int player_uuid, sf::Vector2f position) {
-    RealEngine::Entity player = _registry.spawn_entity();
+std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::Vector2f position) {
+    std::shared_ptr<RealEngine::Entity> player = _registry.spawn_entity();
     _registry.add_component(player, RealEngine::Position{position.x, position.y});
     _registry.add_component(player, RealEngine::Drawable{});
 
@@ -19,7 +19,7 @@ RealEngine::Entity* Game::add_player(long int player_uuid, sf::Vector2f position
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
 
     _players.emplace(player_uuid, player);
-    return &_players.at(player_uuid);
+    return _players.at(player_uuid);
 }
 
 sf::Vector2f Game::getPlayerNormalizedDirection() {

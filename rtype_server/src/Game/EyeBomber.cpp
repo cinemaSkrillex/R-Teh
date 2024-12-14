@@ -50,7 +50,7 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
 
 EyeBomber::~EyeBomber() {}
 
-void EyeBomber::setTarget(RealEngine::Entity target, RealEngine::Registry& registry) {
+void EyeBomber::setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry) {
     auto* acceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
 
     acceleration->ax = 240.0f;

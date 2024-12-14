@@ -4,6 +4,6 @@
 
 namespace RealEngine {
 struct Target {
-    Entity target;
+    std::shared_ptr<Entity> target;
 };
 }  // namespace RealEngine

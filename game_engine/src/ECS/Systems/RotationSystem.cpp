@@ -27,24 +27,4 @@ void RotationSystem::update(Registry& registry, float deltaTime) {
     }
 }
 
-void RotationSystem::setRotation(Registry& registry, Entity entity, float angle) {
-    auto* rotation = registry.get_component<Rotation>(entity);
-
-    if (rotation) {
-        rotation->angle = angle;
-    } else {
-        std::cerr << "Error: Entity does not have an Rotation component!" << std::endl;
-    }
-}
-
-void RotationSystem::rotate(Registry& registry, Entity entity, float angle) {
-    auto* rotation = registry.get_component<Rotation>(entity);
-
-    if (rotation) {
-        rotation->angle += angle;
-    } else {
-        std::cerr << "Error: Entity does not have an Rotation component!" << std::endl;
-    }
-}
-
 }  // namespace RealEngine

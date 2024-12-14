@@ -42,35 +42,27 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _backgroundSprite.setScale(5.f, 5.f);
     float spriteWidth = 192.f * 5.f;
 
-    RealEngine::Entity backgroundBlock1 = _registry.spawn_entity();
-    _registry.add_components(
-        backgroundBlock1,
-        RealEngine::Position{0.f, 0.f},
-        RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
-        RealEngine::Reappearing{100.f, 900.f, spriteWidth},
-        RealEngine::Drawable{}
-    );
+    std::shared_ptr<RealEngine::Entity> backgroundBlock1 = _registry.spawn_entity();
+    _registry.add_components(backgroundBlock1, RealEngine::Position{0.f, 0.f},
+                             RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
+                             RealEngine::Reappearing{100.f, 900.f, spriteWidth},
+                             RealEngine::Drawable{});
     _registry.add_component(backgroundBlock1, RealEngine::SpriteComponent{_backgroundSprite});
     _backgroundEntities.push_back(backgroundBlock1);
 
-    RealEngine::Entity backgroundBlock2 = _registry.spawn_entity();
-    _registry.add_components(
-        backgroundBlock2,
-        RealEngine::Position{spriteWidth, 0.f},
-        RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
-        RealEngine::Reappearing{100.f, 900.f , spriteWidth},
-        RealEngine::Drawable{}
-    );
+    std::shared_ptr<RealEngine::Entity> backgroundBlock2 = _registry.spawn_entity();
+    _registry.add_components(backgroundBlock2, RealEngine::Position{spriteWidth, 0.f},
+                             RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
+                             RealEngine::Reappearing{100.f, 900.f, spriteWidth},
+                             RealEngine::Drawable{});
     _registry.add_component(backgroundBlock2, RealEngine::SpriteComponent{_backgroundSprite});
     _backgroundEntities.push_back(backgroundBlock2);
-
-
 
     // _backgroundSprite.setScale(3.f, 3.f);
 
     // float spriteWidth2 = 192.f * 3.f;
 
-    // RealEngine::Entity backgroundBlock3 = _registry.spawn_entity();
+    // std::shared_ptr<RealEngine::Entity> backgroundBlock3 = _registry.spawn_entity();
     // _registry.add_components(
     //     backgroundBlock3,
     //     RealEngine::Position{0.f, 0.f},
@@ -81,7 +73,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     // _registry.add_component(backgroundBlock3, RealEngine::SpriteComponent{_backgroundSprite});
     // _backgroundEntities.push_back(backgroundBlock3);
 
-    // RealEngine::Entity backgroundBlock4 = _registry.spawn_entity();
+    // std::shared_ptr<RealEngine::Entity> backgroundBlock4 = _registry.spawn_entity();
     // _registry.add_components(
     //     backgroundBlock4,
     //     RealEngine::Position{spriteWidth2, 0.f},
@@ -112,7 +104,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _registry.add_component(_entity2, RealEngine::Health{100, 200});
 
     for (int i = 0; i < 50; i++) {
-        RealEngine::Entity groundBlock = _registry.spawn_entity();
+        std::shared_ptr<RealEngine::Entity> groundBlock = _registry.spawn_entity();
         _registry.add_components(groundBlock,
                                  RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
                                                       i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},

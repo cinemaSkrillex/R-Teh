@@ -9,13 +9,13 @@
 
 namespace RealEngine {
 
-Entity ManageEntities::spawn_entity() {
+std::shared_ptr<Entity> ManageEntities::spawn_entity() {
     if (!_dead_entities.empty()) {
         Entity entity = _dead_entities.back();
         _dead_entities.pop_back();
-        return entity;
+        return std::make_shared<Entity>(entity);
     } else {
-        return Entity{_next_entity++};
+        return std::make_shared<Entity>(Entity{_next_entity++});
     }
 }
 
@@ -31,4 +31,4 @@ bool ManageEntities::is_valid(Entity const& e) const {
 }
 
 std::size_t ManageEntities::size() const { return _next_entity; }
-} // namespace RealEngine
+}  // namespace RealEngine

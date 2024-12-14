@@ -45,22 +45,22 @@ class Player {
         return {component->x, component->y};
     }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
-    void                setLastTimestamp(long int timestamp) { _last_update = timestamp; }
-    long int            getLastTimestamp() const { return _last_update; }
-    void                setPositionByUuid(long int uuid, sf::Vector2f position);
-    RealEngine::Entity* getEntity() { return _entity; }
-    RealEngine::Entity* getEntity() const { return _entity; }
+    void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
+    long int getLastTimestamp() const { return _last_update; }
+    void     setPositionByUuid(long int uuid, sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
+    std::shared_ptr<RealEngine::Entity> getEntity() const { return _entity; }
 
    private:
-    long int                  _uuid;
-    std::vector<sf::Vector2f> _positions;
-    RealEngine::Entity*       _entity;
-    RealEngine::Registry*     _registry;
-    long                      _last_update;
+    long int                            _uuid;
+    std::vector<sf::Vector2f>           _positions;
+    std::shared_ptr<RealEngine::Entity> _entity;
+    RealEngine::Registry*               _registry;
+    long                                _last_update;
 
    public:
     Player(/* args */);
-    Player(long int uuid, long int timestamp, RealEngine::Entity* player_entity,
+    Player(long int uuid, long int timestamp, std::shared_ptr<RealEngine::Entity> player_entity,
            RealEngine::Registry* registry);
     ~Player();
 };

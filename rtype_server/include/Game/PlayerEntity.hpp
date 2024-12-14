@@ -16,14 +16,14 @@ class Player {
            std::unordered_map<std::string, RealEngine::Sprite> playerSprites);
     ~Player();
 
-    RealEngine::Entity getEntity() { return _playerEntity; }
-    void               player_collision_handler(RealEngine::CollisionType collisionType,
-                                                RealEngine::Registry& registry, RealEngine::Entity collider);
-    void               player_collide_with_ground(RealEngine::Registry& registry);
+    std::shared_ptr<RealEngine::Entity> getEntity() { return _playerEntity; }
+    void player_collision_handler(RealEngine::CollisionType collisionType,
+                                  RealEngine::Registry& registry, RealEngine::Entity collider);
+    void player_collide_with_ground(RealEngine::Registry& registry);
     void player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider);
 
    private:
-    RealEngine::Entity                                  _playerEntity;
+    std::shared_ptr<RealEngine::Entity>                 _playerEntity;
     std::unordered_map<std::string, RealEngine::Sprite> _spaceshipSheet;
     RealEngine::Sprite                                  _idlePlayerSprite;
     RealEngine::Sprite                                  _upPlayerSprite;
