@@ -12,6 +12,7 @@ void DestructibleSystem::update(Registry& registry, float deltaTime) {
         if (destructible->lifeTime > 0) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
+                std::cout << "Entity " << entity << " destroyed" << std::endl; //TODO: remove
                 registry.kill_entity(entity);
                 continue;
             }

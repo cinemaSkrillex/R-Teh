@@ -26,3 +26,9 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
         }
     }
 }
+
+void RtypeServer::broadCastAll(std::string message) {
+    for (auto client : _server->getClients()) {
+        _server->send_unreliable_packet(message, client);
+    }
+}

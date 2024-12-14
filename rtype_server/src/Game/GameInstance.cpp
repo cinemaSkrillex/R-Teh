@@ -28,7 +28,22 @@ void GameInstance::run(float deltaTime) {
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
-}
+    // update bullet movement
+    if (!_bullets.empty()) {
+        for (auto& bullet : _bullets) {
+            if (_registry.get_component<RealEngine::Health>(bullet) == nullptr) {
+                _bullets.erase(std::remove(_bullets.begin(), _bullets.end(), bullet),
+                               _bullets.end());
+                // std::cout << "Bullet destroyed in movment check" << std::endl;
+                // this allow to remove the bullet from the vector cause even if we use
+                // shared_pointer when the bullet is destroyed the pointer is still in the vector
+                // and the move update segfault
+                continue;
+            }
+            _movementSystem.update(_registry, bullet, deltaTime);
+        }
+    }
+};
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     playerUuid,
                                                                   sf::Vector2f position) {
@@ -47,6 +62,22 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     p
     // _registry.add_component(player, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     // _players.emplace(playerUuid, player);
     return _players.at(playerUuid);
+}
+
+// std::shared_ptr<RealEngine::Entity> groundBlock = _registry.spawn_entity();
+// _registry.add_components(groundBlock,
+//                          RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
+//                                               i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},
+//                          RealEngine::Drawable{});
+// _groundBlocksEntities.push_back(groundBlock);
+
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
+                                                                  sf::Vector2f direction,
+                                                                  float        speed) {
+    std::shared_ptr<rtype::Bullet> bullet =
+        std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
+    _bullets.push_back(bullet->getEntity());
+    return bullet->getEntity();
 }
 
 void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {

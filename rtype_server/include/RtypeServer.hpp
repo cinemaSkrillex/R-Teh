@@ -81,6 +81,7 @@ class RtypeServer {
 
     void initCallbacks();
     void broadcastPlayerState(const Player& player);
+    void broadCastAll(std::string message);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
