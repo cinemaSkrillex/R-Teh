@@ -16,12 +16,13 @@ class Bullet {
            float speed, RealEngine::Sprite& bulletSprite);
     ~Bullet();
 
-    RealEngine::Entity getEntity() { return _bulletEntity; }
+    std::shared_ptr<RealEngine::Entity> getEntity() { return _bulletEntity; }
     void               bullet_collision_handler(RealEngine::CollisionType collisionType,
                                                 RealEngine::Registry& registry, RealEngine::Entity collider);
+    void bullet_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider);
 
    private:
-    RealEngine::Entity _bulletEntity;
+    std::shared_ptr<RealEngine::Entity> _bulletEntity;
     RealEngine::Sprite _bulletSprite;
 };
 }  // namespace rtype

@@ -24,9 +24,10 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
                                                                       RealEngine::Registry& registry, RealEngine::Entity collider) {
                                                                    bullet_collision_handler(collisionType, registry, collider);
                                                                }});
-    registry.add_component(_bulletEntity, RealEngine::AutoDestructible{20});
+    registry.add_component(_bulletEntity, RealEngine::AutoDestructible{5});
     registry.add_component(_bulletEntity, RealEngine::Damage{10});
-    std::cout << "Bullet created id: " << _bulletEntity << std::endl;
+    registry.add_component(_bulletEntity, RealEngine::Health{10, 10});
+    std::cout << "Bullet created id: " << *_bulletEntity << std::endl;
 }
 
 Bullet::~Bullet() {}
@@ -38,20 +39,23 @@ void Bullet::bullet_collision_handler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::INACTIVE:
             break;
         case RealEngine::CollisionType::SOLID:
-            registry.remove_entity(_bulletEntity);
+            bullet_take_damage(registry, collider);
             break;
         case RealEngine::CollisionType::HIT:
-            try {
-                std::cout << "Bullet id: " << _bulletEntity << std::endl;
-                registry.remove_entity(_bulletEntity);
-            } catch (const std::exception& e) {
-                std::cerr << e.what() << '\n';
-            }
+            bullet_take_damage(registry, collider);
             break;
         case RealEngine::CollisionType::PICKABLE:
             break;
         default:
             break;
+    }
+}
+
+void Bullet::bullet_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider) {
+    auto* health = registry.get_component<RealEngine::Health>(_bulletEntity);
+
+    if (health) {
+        health->damage += 10;
     }
 }
 }

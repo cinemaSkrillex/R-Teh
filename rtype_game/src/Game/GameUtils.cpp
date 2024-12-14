@@ -72,9 +72,39 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
     interpolationComponent->reset        = true;
 }
 
+void rtype::Game::createPositionComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+    auto position = PeterParser::parseVector2f(value);
+    _registry.add_component(entity, RealEngine::Position{position.x, position.y});
+}
+
+void rtype::Game::createVelocityComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+    std::vector<float> values = PeterParser::parseVelocity(value);
+    //this parsing is ok for full args, will have problem with partial args TODO
+    _registry.add_component(entity, RealEngine::Velocity{values[0], values[1], {values[2], values[3]}, values[4]});
+}
+
+void rtype::Game::createSpriteComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+    auto sprite = RealEngine::Sprite{value};
+    _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
+}
+
+void rtype::Game::createDrawableComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+    _registry.add_component(entity, RealEngine::Drawable{});
+}
+
+void rtype::Game::createAutoDestrcutibleComponent(const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+    _registry.add_component(entity, RealEngine::AutoDestructible{std::stof(value)});
+}
+
 void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
-    std::cout << "New entity" << std::endl;
+    auto newEntity = _registry.spawn_entity();
+    std::cout << "New entity: " << *newEntity << std::endl;
     for (auto& [key, value] : parsedPacket) {
         std::cout << key << " : " << value << std::endl;
+        if (_componentFunctions.find(key) != _componentFunctions.end()) {
+            _componentFunctions[key](value, newEntity);
+        } else {
+            std::cout << "No component found for key: " << key << std::endl;
+        }
     }
 }
