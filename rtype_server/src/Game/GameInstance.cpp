@@ -15,15 +15,18 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 void GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
-    // for (auto ennemy : _ennemies) {
-    //     runPlayerSimulation(ennemy, deltaTime);
-    // }
+    for (auto& [uuid, entity] : _ennemies) {
+        _movementSystem.update(_registry, entity, deltaTime);
+    }
     // _movementSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
+    std::cout << "Before destructible update" << std::endl;
     _destructibleSystem.update(_registry, deltaTime);
+    std::cout << "Before collision update" << std::endl;
     _collisionSystem.update(_registry, deltaTime);
+    std::cout << "Before health update" << std::endl;
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
     // update bullet movement
@@ -57,10 +60,11 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     p
     return _players.at(playerUuid);
 }
 
-std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f position) {
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(long int     uuid,
+                                                                  sf::Vector2f position) {
     auto eyeBomber = rtype::EyeBomber(_registry, position, _eyeBomberSprite);
     auto entity    = eyeBomber.getEntity();
-    _ennemies.push_back(std::make_unique<rtype::EyeBomber>(eyeBomber));
+    _ennemies.emplace(uuid, entity);
     return entity;
 }
 
