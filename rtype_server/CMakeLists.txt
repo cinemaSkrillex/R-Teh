@@ -54,7 +54,7 @@ add_custom_target(copy_config ALL
     ${CMAKE_BINARY_DIR}/rtype_server/Config/server.config
     )
 
-add_compile_definitions(CONFIG_FILE_PATH=\"$<TARGET_FILE_DIR:rtype_server>/Config/server.config\")
+add_compile_definitions(CONFIG_FILE_PATH=\"$<TARGET_FILE_DIR:r_type_server>/Config/server.config\")
 
 # Copy the assets to the build directory
 add_custom_target(copy_assets_server ALL
