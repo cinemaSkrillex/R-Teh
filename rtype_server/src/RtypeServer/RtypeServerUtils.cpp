@@ -38,3 +38,9 @@ void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngin
         }
     }
 }
+
+void RtypeServer::broadCastAll(std::string message) {
+    for (auto client : _server->getClients()) {
+        _server->send_unreliable_packet(message, client);
+    }
+}
