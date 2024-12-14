@@ -52,6 +52,7 @@ RealEngine::Entity* GameInstance::addAndGetPlayer(long int playerUuid, sf::Vecto
 
 void GameInstance::addBullet(sf::Vector2f position, sf::Vector2f direction, float speed) {
     rtype::Bullet bullet(_registry, position, direction, speed, _bulletSprite);
+    std::cout << "Bullet created id: " << bullet.getEntity() << std::endl;
     _bullets.push_back(bullet.getEntity());
 }
 

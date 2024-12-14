@@ -34,9 +34,9 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
 void MovementSystem::update(Registry& registry, Entity& entity, float deltaTime) {
     auto* position = registry.get_component<Position>(entity);
     auto* velocity = registry.get_component<Velocity>(entity);
-    std::cout << "Updating entity " << entity << std::endl;
-    std::cout << "Position: " << position->x << " " << position->y << std::endl;
-    std::cout << "Velocity: " << velocity->vx << " " << velocity->vy << std::endl;
+    // std::cout << "Updating entity " << entity << std::endl;
+    // std::cout << "Position: " << position->x << " " << position->y << std::endl;
+    // std::cout << "Velocity: " << velocity->vx << " " << velocity->vy << std::endl;
     limitSpeed(*velocity);
     if (position && velocity) {
         position->x += velocity->vx * deltaTime;

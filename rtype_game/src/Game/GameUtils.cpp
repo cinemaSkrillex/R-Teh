@@ -24,6 +24,9 @@ void rtype::Game::handleSignal(std::string signal) {
         if (event == "Player_position") {
             handlePlayerPosition(parsedPacket);
         }
+        if (event == "New_entity") {
+            handleNewEntity(parsedPacket);
+        }
     }
 }
 
@@ -67,4 +70,11 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
     interpolationComponent->step         = 1.f / step;
     interpolationComponent->current_step = 0.f;
     interpolationComponent->reset        = true;
+}
+
+void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
+    std::cout << "New entity" << std::endl;
+    for (auto& [key, value] : parsedPacket) {
+        std::cout << key << " : " << value << std::endl;
+    }
 }
