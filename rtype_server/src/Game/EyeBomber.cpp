@@ -20,10 +20,9 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     auto eyeSpriteSheet =
         RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}};
-    registry.add_components(
+    registry.add_component(
         _eyeEntity,
-        RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}},
-        RealEngine::Drawable{});
+        RealEngine::SpriteSheet{_eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}});
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
     registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});

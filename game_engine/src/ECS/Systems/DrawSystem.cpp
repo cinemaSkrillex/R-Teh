@@ -50,13 +50,12 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
 }
 
 void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Drawable>();
+    auto entities = registry.view<Position>();
 
     if (entities.empty()) {
         return;
     }
     for (auto entity : entities) {
-        auto* drawable    = registry.get_component<Drawable>(entity);
         auto* position    = registry.get_component<Position>(entity);
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
         auto* spritesheet = registry.get_component<SpriteSheet>(entity);
@@ -73,7 +72,7 @@ void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
 }
 
 void DrawSystem::update(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Drawable>();
+    auto entities = registry.view<Drawable, Position>();
 
     if (entities.empty()) {
         return;
