@@ -33,16 +33,16 @@ sf::Vector2f Game::getPlayerNormalizedDirection() {
     sf::Vector2f direction(0, 0);
 
     if (_window.isFocused()) {
-        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Up))) {
+        if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
             direction.y = -1;
         }
-        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Down))) {
+        if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
             direction.y = 1;
         }
-        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Left))) {
+        if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {
             direction.x = -1;
         }
-        if (sf::Keyboard::isKeyPressed(_controlSystem.getBoundKey(RealEngine::Action::Right))) {
+        if (_controlSystem.isActionPressed(RealEngine::Action::Right)) {
             direction.x = 1;
         }
     }

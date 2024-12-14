@@ -69,4 +69,11 @@ sf::Keyboard::Key ControlSystem::getBoundKey(Action action) {
     return sf::Keyboard::Unknown;
 }
 
+bool ControlSystem::isActionPressed(Action action) {
+    for (const auto& [key, act] : keyBindings) {
+        if (act == action && sf::Keyboard::isKeyPressed(key))
+            return true;
+    }
+    return false;
+}
 }  // namespace RealEngine

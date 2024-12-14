@@ -26,6 +26,7 @@ class ControlSystem {
     void              setActionHandler(Action action, ActionHandler handler);
     void              setActionReleaseHandler(Action action, ActionHandler handler);
     sf::Keyboard::Key getBoundKey(Action action);
+    bool              isActionPressed(Action action);
 
    private:
     std::unordered_map<sf::Keyboard::Key, Action> keyBindings;
