@@ -47,11 +47,21 @@ add_custom_target(copy_headers_lagcompensation ALL
     ${CMAKE_SOURCE_DIR}/rtype_game/include
 )
 
+# Copy the assets to the build directory
+add_custom_target(copy_assets ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/rtype_game/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    ${CMAKE_BINARY_DIR}/rtype_game/assets
+)
+
+add_compile_definitions(ASSETS_PATH=\"$<TARGET_FILE_DIR:r_type>/assets\")
+
 # Ensure the headers are copied before building rtype_game
 add_dependencies(r_type copy_headers_engine_for_game)
 add_dependencies(r_type copy_headers_parser)
 add_dependencies(r_type copy_headers_lagcompensation)
-
+add_dependencies(r_type copy_assets)
 
 if (WIN32)
 # Copy all DLLs from the bin directory to the output directory
