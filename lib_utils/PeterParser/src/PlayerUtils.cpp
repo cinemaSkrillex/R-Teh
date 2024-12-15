@@ -104,21 +104,21 @@ std::string sanitizeUUID(const std::string& uuid) {
 }
 
 std::vector<float> parseVelocity(const std::string& velocity) {
-    //turn (500,0,{500,500},0)
-    //into 500,0,500,500,0
+    // turn (500,0,{500,500},0)
+    // into 500,0,500,500,0
     std::string cleanedVelocity = velocity;
     cleanedVelocity.erase(std::remove(cleanedVelocity.begin(), cleanedVelocity.end(), '('),
                           cleanedVelocity.end());
     cleanedVelocity.erase(std::remove(cleanedVelocity.begin(), cleanedVelocity.end(), ')'),
-                            cleanedVelocity.end());
+                          cleanedVelocity.end());
     cleanedVelocity.erase(std::remove(cleanedVelocity.begin(), cleanedVelocity.end(), '{'),
-                            cleanedVelocity.end());
+                          cleanedVelocity.end());
     cleanedVelocity.erase(std::remove(cleanedVelocity.begin(), cleanedVelocity.end(), '}'),
-                            cleanedVelocity.end());
+                          cleanedVelocity.end());
     std::replace(cleanedVelocity.begin(), cleanedVelocity.end(), ',', ' ');
     std::istringstream stream(cleanedVelocity);
     std::vector<float> values;
-    int              value;
+    float              value;
     while (stream >> value) {
         values.push_back(value);
     }

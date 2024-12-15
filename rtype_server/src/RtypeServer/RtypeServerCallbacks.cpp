@@ -47,17 +47,29 @@ void RtypeServer::initCallbacks() {
             auto* position =
                 _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
             if (!position) continue;
-            auto *destructible = _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
+            auto* destructible =
+                _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
+            if (!destructible) continue;
+            auto* velocity =
+                _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
+            if (!velocity) continue;
+
+            std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
+            std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            std::string velocityStr =
+                std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
+                std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
+                "}," + std::to_string(velocity->airFrictionForce);
             std::string MobMessage = "Event:New_entity";
             MobMessage += " Type:mob";
             MobMessage += " Sprite:../../assets/sprites/the_eye/bomber.png";
             MobMessage += " Position:(" + std::to_string(position->x) + "," +
                           std::to_string(position->y) + ")";
-            MobMessage += " Velocity:(-250,0,{1000,500},0)";
+            MobMessage += " Velocity:(" + velocityStr + ")";
             MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
             MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
             MobMessage += " Drawable:true";
-            _server->send_reliable_packet(MobMessage, sender);
+            _server->send_unreliable_packet(MobMessage, sender);
         }
 
         long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(

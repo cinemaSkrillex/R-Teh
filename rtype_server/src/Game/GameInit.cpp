@@ -90,6 +90,6 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::init_mobs() {
-    _simpleMobs.push_back(addAndGetSimpleMob({1000, 100}, {-1, 0}, 50));
-    _simpleMobs.push_back(addAndGetSimpleMob({1000, 200}, {-1, 0}, 50));
+    _simpleMobs.push_back(addAndGetSimpleMob({500, 100}, {-1, 0}, 50));
+    _simpleMobs.push_back(addAndGetSimpleMob({500, 200}, {-1, 0}, 35));
 }

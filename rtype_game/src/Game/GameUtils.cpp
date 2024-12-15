@@ -10,7 +10,9 @@
 void rtype::Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
-    std::cout << "[" << signal << "]" << std::endl;
+    // if signal contains "Event:Player_position" don't print it
+    if (signal.find("Event:Player_position") == std::string::npos)
+        std::cout << "[" << signal << "]" << std::endl;
     std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
 
     if (parsedPacket.find("Event") != parsedPacket.end()) {
@@ -101,6 +103,8 @@ void rtype::Game::createAutoDestrcutibleComponent(const std::string&            
                                                   std::shared_ptr<RealEngine::Entity> entity) {
     _registry.add_component(entity, RealEngine::AutoDestructible{std::stof(value)});
 }
+
+// TODO: add create collision and type component functions
 
 void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
     auto newEntity = _registry.spawn_entity();

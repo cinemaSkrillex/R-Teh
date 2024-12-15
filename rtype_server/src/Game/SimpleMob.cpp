@@ -28,7 +28,7 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   mob_collision_handler(collisionType, registry, collider);
                               }});
-    registry.add_component(_entity, RealEngine::AutoDestructible{5});
+    registry.add_component(_entity, RealEngine::AutoDestructible{10});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
     std::cout << "Mob created id: " << *_entity << std::endl;
