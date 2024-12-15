@@ -45,6 +45,12 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
                        },
                        true});
     registry.add_component(_eyeEntity, RealEngine::Damage{40});
+    auto* collision = registry.get_component<RealEngine::Collision>(_eyeEntity);
+    if (collision) {
+        collision->bounds = _eyeSprite.getBounds();
+        std::cout << "bounds: " << collision->bounds.left << " " << collision->bounds.top << " "
+                  << collision->bounds.width << " " << collision->bounds.height << std::endl;
+    }
 }
 
 EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
@@ -130,6 +136,9 @@ void EyeBomber::simpleBehavior(RealEngine::Registry& registry, float deltaTime) 
     auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(_eyeEntity);
     auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(_eyeEntity);
     auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
+
+    if (!eyeRotation || !eyeVelocity || !eyeAcceleration)
+        std::cout << "Error: EyeBomber components not found!" << std::endl;
 
     eyeVelocity->vx += eyeAcceleration->ax * deltaTime;
     eyeVelocity->vy += eyeAcceleration->ay * deltaTime;

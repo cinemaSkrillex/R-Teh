@@ -144,6 +144,10 @@ class Registry {
 
     template <typename Component>
     Component* get_component(Entity const& entity) {
+        if (!is_valid(entity)) {
+            return nullptr;
+        }
+
         auto&       sparseArray = get_components<Component>();
         std::size_t index       = static_cast<std::size_t>(entity);
 
@@ -174,6 +178,9 @@ class Registry {
 
     template <typename Component>
     std::vector<Component*> get_components(Entity const& entity) {
+        if (!is_valid(entity)) {
+            return std::vector<Component*>();
+        }
         auto&       sparseArray = get_components<Component>();
         std::size_t index       = static_cast<std::size_t>(entity);
 

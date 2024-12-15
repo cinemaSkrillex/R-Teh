@@ -29,6 +29,9 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_playerEntity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     registry.add_component(_playerEntity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_playerEntity, RealEngine::Controllable{});
+    registry.add_component(_playerEntity, RealEngine::Health{100, 200});
+    registry.add_component(_playerEntity,
+                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
     registry.add_component(
         _playerEntity,
         RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
@@ -42,10 +45,6 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   player_collision_handler(collisionType, registry, collider);
                               }});
-    auto* collision = registry.get_component<RealEngine::Collision>(_playerEntity);
-    registry.add_component(_playerEntity, RealEngine::Health{100, 200});
-    registry.add_component(_playerEntity,
-                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
 }
 
 Player::~Player() {}
@@ -72,8 +71,8 @@ void Player::player_collision_handler(RealEngine::CollisionType collisionType,
 }
 
 void Player::player_collide_with_ground(RealEngine::Registry& registry) {
-    auto* playerPosition = registry.get_component<RealEngine::Position>(_playerEntity);
-    auto* playerVelocity = registry.get_component<RealEngine::Velocity>(_playerEntity);
+    auto* playerPosition = registry.get_component<RealEngine::Position>(*_playerEntity);
+    auto* playerVelocity = registry.get_component<RealEngine::Velocity>(*_playerEntity);
 
     playerVelocity->vy = 0;
     playerVelocity->vx = 0;
@@ -82,10 +81,11 @@ void Player::player_collide_with_ground(RealEngine::Registry& registry) {
 }
 
 void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider) {
-    auto* playerHealth   = registry.get_component<RealEngine::Health>(_playerEntity);
+    auto* playerHealth   = registry.get_component<RealEngine::Health>(*_playerEntity);
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth) {
+        std::cout << "Player took damage" << std::endl;
         if (colliderDamage) {
             playerHealth->damage += colliderDamage->amount;
             std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;

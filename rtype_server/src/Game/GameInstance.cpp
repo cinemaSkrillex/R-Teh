@@ -22,11 +22,8 @@ void GameInstance::run(float deltaTime) {
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
-    std::cout << "Before destructible update" << std::endl;
     _destructibleSystem.update(_registry, deltaTime);
-    std::cout << "Before collision update" << std::endl;
     _collisionSystem.update(_registry, deltaTime);
-    std::cout << "Before health update" << std::endl;
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
     // update bullet movement

@@ -29,7 +29,7 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(
         _eyeEntity,
         RealEngine::Collision{{0.f, 0.f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
-                              "normal",
+                              "eye bomber",
                               false,
                               RealEngine::CollisionType::HIT,
                               [this](RealEngine::CollisionType collisionType,

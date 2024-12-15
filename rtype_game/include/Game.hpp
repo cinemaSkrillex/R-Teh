@@ -105,6 +105,7 @@ class Game {
 
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _enemies;
+    std::shared_ptr<EyeBomber>                                   _eyeBomber;
     std::unique_ptr<EyeBoss>                                     _bossEye;
     RealEngine::Sprite                                           _upSpaceship;
     RealEngine::Sprite                                           _idleSpaceship;
