@@ -9,7 +9,6 @@
 
 #include "BulletEntity.hpp"
 #include "Engine.hpp"
-#include "EyeBomber.hpp"
 #include "PlayerEntity.hpp"
 #include "SimpleMob.hpp"
 
