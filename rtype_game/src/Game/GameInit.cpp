@@ -134,31 +134,37 @@ void Game::add_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _controlSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _aiSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _rotationSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _collisionSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _movementSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _radiusSystem.update(registry);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _healthSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _drawSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _controlSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _collisionSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _aiSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _rotationSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _radiusSystem.update(registry);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _healthSystem.update(registry, deltaTime);
-    });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destructibleSystem.update(registry, deltaTime);
     });
