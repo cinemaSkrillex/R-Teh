@@ -15,20 +15,6 @@ Sprite::Sprite(const std::shared_ptr<sf::Texture> texture) {
     _flipped = false;
 }
 
-Sprite::Sprite(const std::shared_ptr<sf::Texture> texture, sf::IntRect textureRect) {
-    if (!texture) {
-        std::cerr << "Error: Null texture passed to Sprite constructor!" << std::endl;
-        return;
-    }
-    _texture = texture;
-    _sprite.setTexture(*texture);
-    _sprite.setTextureRect(textureRect);
-    _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
-    setPosition(0, 0);
-    setColor(sf::Color::White);
-    _flipped = false;
-}
-
 Sprite::~Sprite() {}
 
 void Sprite::loadImage(sf::Image image) {

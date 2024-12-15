@@ -14,7 +14,6 @@ class Sprite : public IRender {
     ~Sprite();
     void       draw(sf::RenderWindow& window);
     void       loadFile(const std::string filePath);
-    void       loadFile(const std::string filePath, const sf::IntRect textureRect);
     void       loadImage(sf::Image image);
     void       reloadSprite();
     void       disappear() override;

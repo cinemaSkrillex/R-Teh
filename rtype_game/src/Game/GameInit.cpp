@@ -73,14 +73,37 @@ void Game::init_controls() {
 void Game::init_systems() { add_systems(); }
 
 void Game::init_textures() {
-    _textures["spaceship"] = std::make_shared<sf::Texture>();
-    if (!_textures["spaceship"]->loadFromFile("../../assets/spaceship.png")) {
+    _textures["spaceship_up"] = std::make_shared<sf::Texture>();
+    if (!_textures["spaceship_up"]->loadFromFile("../../assets/spaceship.png",
+                                                 sf::IntRect{0, 0, 32 * 2, 15})) {
         std::cerr << "Error: Could not load spaceship texture!" << std::endl;
-        _textures["spaceship"].reset(); // Explicitly nullify the pointer
+        _textures["spaceship_up"].reset();  // Explicitly nullify the pointer
+    }
+
+    _textures["spaceship_idle"] = std::make_shared<sf::Texture>();
+    if (!_textures["spaceship_idle"]->loadFromFile("../../assets/spaceship.png",
+                                                   sf::IntRect{0, 15, 32, 15})) {
+        std::cerr << "Error: Could not load spaceship texture!" << std::endl;
+        _textures["spaceship_idle"].reset();  // Explicitly nullify the pointer
+    }
+
+    _textures["spaceship_down"] = std::make_shared<sf::Texture>();
+    if (!_textures["spaceship_down"]->loadFromFile("../../assets/spaceship.png",
+                                                   sf::IntRect{0, 15 * 2, 33 * 2, 15})) {
+        std::cerr << "Error: Could not load spaceship texture!" << std::endl;
+        _textures["spaceship_down"].reset();  // Explicitly nullify the pointer
+    }
+
+    _textures["spaceship"] = std::make_shared<sf::Texture>();
+    if (!_textures["spaceship"]->loadFromFile("../../assets/spaceship.png",
+                                              sf::IntRect{0, 15, 32, 15})) {
+        std::cerr << "Error: Could not load spaceship texture!" << std::endl;
+        _textures["spaceship"].reset();
     }
 
     _textures["background"] = std::make_shared<sf::Texture>();
-    if (!_textures["background"]->loadFromFile("../../assets/r-type_background_front_line_base_4.png")) {
+    if (!_textures["background"]->loadFromFile(
+            "../../assets/r-type_background_front_line_base_4.png")) {
         std::cerr << "Error: Could not load background texture!" << std::endl;
         _textures["background"].reset();
     }
@@ -99,11 +122,10 @@ void Game::init_textures() {
 }
 
 void Game::init_sprites() {
-    _upSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 0, 32 * 2, 15});
-    _idleSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15, 32, 15});
-    _downSpaceship =
-        RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15 * 2, 33 * 2, 15});
-    _otherPlayer = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15, 32, 15});
+    _upSpaceship      = RealEngine::Sprite(_textures["spaceship_up"]);
+    _idleSpaceship    = RealEngine::Sprite(_textures["spaceship_idle"]);
+    _downSpaceship    = RealEngine::Sprite(_textures["spaceship_down"]);
+    _otherPlayer      = RealEngine::Sprite(_textures["spaceship"]);
     _backgroundSprite = RealEngine::Sprite(_textures["background"]);
     set_sprite_scales();
     set_sprite_opacity();
