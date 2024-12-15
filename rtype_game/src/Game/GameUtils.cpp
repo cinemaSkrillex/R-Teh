@@ -90,7 +90,7 @@ void rtype::Game::createVelocityComponent(const std::string&                  va
 
 void rtype::Game::createSpriteComponent(const std::string&                  value,
                                         std::shared_ptr<RealEngine::Entity> entity) {
-    auto sprite = RealEngine::Sprite{value};
+    auto sprite = RealEngine::Sprite{_textures["spaceship"]};
     _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
 }
 

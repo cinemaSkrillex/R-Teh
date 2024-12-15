@@ -26,63 +26,12 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _healthSystem(),
       _reappearingSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
-      _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
-      _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-      _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
-      _otherPlayer("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-      _groundSprite("../../assets/r-type_front_line_base_obstacle_1.png"),
-      _backgroundSprite("../../assets/r-type_background_front_line_base_4.png"),
-      _eyeBomberSprite("../../assets/sprites/the_eye/bomber.png"),
-      _eyeMinionSprite("../../assets/sprites/the_eye/minion.png"),
       _entity2(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
 
-    _backgroundSprite.setScale(5.f, 5.f);
     float spriteWidth = 192.f * 5.f;
-
-    std::shared_ptr<RealEngine::Entity> backgroundBlock1 = _registry.spawn_entity();
-    _registry.add_components(backgroundBlock1, RealEngine::Position{0.f, 0.f},
-                             RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
-                             RealEngine::Reappearing{100.f, 900.f, spriteWidth},
-                             RealEngine::Drawable{});
-    _registry.add_component(backgroundBlock1, RealEngine::SpriteComponent{_backgroundSprite});
-    _backgroundEntities.push_back(backgroundBlock1);
-
-    std::shared_ptr<RealEngine::Entity> backgroundBlock2 = _registry.spawn_entity();
-    _registry.add_components(backgroundBlock2, RealEngine::Position{spriteWidth, 0.f},
-                             RealEngine::Velocity{-100.f, 0.f, {100.f, 0.f}},
-                             RealEngine::Reappearing{100.f, 900.f, spriteWidth},
-                             RealEngine::Drawable{});
-    _registry.add_component(backgroundBlock2, RealEngine::SpriteComponent{_backgroundSprite});
-    _backgroundEntities.push_back(backgroundBlock2);
-
-    // _backgroundSprite.setScale(3.f, 3.f);
-
-    // float spriteWidth2 = 192.f * 3.f;
-
-    // std::shared_ptr<RealEngine::Entity> backgroundBlock3 = _registry.spawn_entity();
-    // _registry.add_components(
-    //     backgroundBlock3,
-    //     RealEngine::Position{0.f, 0.f},
-    //     RealEngine::Velocity{-50.f, 0.f, {100.f, 0.f}},
-    //     RealEngine::Reappearing{25.f, 900.f, spriteWidth2},
-    //     RealEngine::Drawable{}
-    // );
-    // _registry.add_component(backgroundBlock3, RealEngine::SpriteComponent{_backgroundSprite});
-    // _backgroundEntities.push_back(backgroundBlock3);
-
-    // std::shared_ptr<RealEngine::Entity> backgroundBlock4 = _registry.spawn_entity();
-    // _registry.add_components(
-    //     backgroundBlock4,
-    //     RealEngine::Position{spriteWidth2, 0.f},
-    //     RealEngine::Velocity{-50.f, 0.f, {100.f, 0.f}},
-    //     RealEngine::Reappearing{25.f, 900.f , spriteWidth2},
-    //     RealEngine::Drawable{}
-    // );
-    // _registry.add_component(backgroundBlock4, RealEngine::SpriteComponent{_backgroundSprite});
-    // _backgroundEntities.push_back(backgroundBlock4);
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
@@ -102,21 +51,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                   player_collision_handler(collisionType, registry, collider);
                               }});
     _registry.add_component(_entity2, RealEngine::Health{100, 200});
-
-    for (int i = 0; i < 50; i++) {
-        std::shared_ptr<RealEngine::Entity> groundBlock = _registry.spawn_entity();
-        _registry.add_components(groundBlock,
-                                 RealEngine::Position{0.f + i * (48.f * GAME_SCALE),
-                                                      i % 2 ? 540.f : (460.f + 39.f * GAME_SCALE)},
-                                 RealEngine::Drawable{});
-        _groundBlocksEntities.push_back(groundBlock);
-        _registry.add_component(groundBlock, RealEngine::SpriteComponent{_groundSprite});
-        _registry.add_component(
-            groundBlock, RealEngine::Collision{{0.f, 0.f, 48.f * GAME_SCALE, 39.f * GAME_SCALE},
-                                               "ground",
-                                               false,
-                                               RealEngine::CollisionType::SOLID});
-    }
 }
 
 Game::~Game() {}
@@ -137,7 +71,27 @@ void Game::init_controls() {
 
 void Game::init_systems() { add_systems(); }
 
+void Game::init_textures() {
+    //spaceship
+    _textures.emplace("spaceship", std::make_shared<sf::Texture>());
+    _textures["spaceship"]->loadFromFile("../../assets/spaceship.png");
+
+    //background
+    _textures.emplace("background", std::make_shared<sf::Texture>());
+    _textures["background"]->loadFromFile("../../assets/r-type_background_front_line_base_4.png");
+
+    //simple enemy
+    _textures.emplace("enemy", std::make_shared<sf::Texture>());
+    _textures["enemy"]->loadFromFile("../../assets/sprites/the_eye/bomber.png");
+}
+
 void Game::init_sprites() {
+    _upSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 0, 32 * 2, 15});
+    _idleSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15, 32, 15});
+    _downSpaceship =
+        RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15 * 2, 33 * 2, 15});
+    _otherPlayer = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15, 32, 15});
+    _backgroundSprite = RealEngine::Sprite(_textures["background"]);
     set_sprite_scales();
     set_sprite_opacity();
     populate_sprite_sheet();
@@ -241,8 +195,8 @@ void Game::set_sprite_scales() {
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
-    _groundSprite.setScale(GAME_SCALE, GAME_SCALE);
     _otherPlayer.setScale(GAME_SCALE, GAME_SCALE);
+    _backgroundSprite.setScale(GAME_SCALE, GAME_SCALE);
 }
 
 void Game::set_sprite_opacity() { _otherPlayer.setOpacity(90); }

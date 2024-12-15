@@ -9,7 +9,6 @@
 
 #include "BulletEntity.hpp"
 #include "Engine.hpp"
-#include "EyeBomber.hpp"
 #include "PlayerEntity.hpp"
 #include "SimpleMob.hpp"
 
@@ -19,6 +18,7 @@ class GameInstance {
     void init_components();
     void init_systems();
     void init_mobs();
+    void init_textures();
 
     void handleSignal(const std::string& message);
 
@@ -53,6 +53,7 @@ class GameInstance {
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _ennemies;
+    std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
     RealEngine::Sprite                                                _eyeBomberSprite;
     RealEngine::Sprite                                                _bulletSprite;
     RealEngine::Sprite                                                _simpleMobSprite;
