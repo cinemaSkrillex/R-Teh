@@ -21,7 +21,7 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(
         _entity,
         RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                              "bullet",
+                              "mob",
                               false,
                               RealEngine::CollisionType::OTHER,
                               [this](RealEngine::CollisionType collisionType,
@@ -31,14 +31,14 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
-    std::cout << "Bullet created id: " << *_entity << std::endl;
+    std::cout << "Mob created id: " << *_entity << std::endl;
 }
 
 SimpleMob::~SimpleMob() {}
 
 void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
                                       RealEngine::Registry& registry, RealEngine::Entity collider) {
-    std::cout << "Bullet collided" << std::endl;
+    std::cout << "Mob collided" << std::endl;
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
