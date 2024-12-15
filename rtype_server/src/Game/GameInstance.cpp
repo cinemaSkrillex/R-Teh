@@ -73,9 +73,12 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     p
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(long int     uuid,
                                                                   sf::Vector2f position) {
-    auto eyeBomber = rtype::EyeBomber(_registry, position, _eyeBomberSprite);
-    auto entity    = eyeBomber.getEntity();
-    _ennemies.emplace(uuid, entity);
+    // auto eyeBomber = rtype::EyeBomber(_registry, position, _eyeBomberSprite);
+    // auto entity    = eyeBomber.getEntity();
+    // _ennemies.emplace(uuid, entity);
+    // return entity;
+    auto entity = _registry.spawn_entity();
+    _simpleMobs.push_back(entity);
     return entity;
 }
 
