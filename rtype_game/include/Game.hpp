@@ -63,8 +63,6 @@ class Game {
     void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
     void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
-    void handleNewMob(std::unordered_map<std::string, std::string> parsedPacket);
-    void handleMobPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);
     //
 

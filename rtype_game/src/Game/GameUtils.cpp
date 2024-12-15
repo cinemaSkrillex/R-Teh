@@ -24,12 +24,6 @@ void rtype::Game::handleSignal(std::string signal) {
         if (event == "Player_position") {
             handlePlayerPosition(parsedPacket);
         }
-        if (event == "New_mob") {
-            handleNewMob(parsedPacket);
-        }
-        if (event == "Mob_position") {
-            handleMobPosition(parsedPacket);
-        }
         if (event == "New_entity") {
             handleNewEntity(parsedPacket);
         }
@@ -40,12 +34,6 @@ void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> p
     const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
     add_player(uuid, position);
-}
-
-void rtype::Game::handleNewMob(std::unordered_map<std::string, std::string> parsedPacket) {
-    const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
-    const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-    add_mob(uuid, position);
 }
 
 void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket) {
@@ -74,27 +62,6 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
     // Update the position component of the player
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
-    if (!positionComponent && !interpolationComponent) return;
-    positionComponent->x                 = interpolationComponent->end.x;
-    positionComponent->y                 = interpolationComponent->end.y;
-    interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    interpolationComponent->end          = position;
-    interpolationComponent->step         = 1.f / step;
-    interpolationComponent->current_step = 0.f;
-    interpolationComponent->reset        = true;
-}
-
-void rtype::Game::handleMobPosition(std::unordered_map<std::string, std::string> parsedPacket) {
-    const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-    const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
-    float              step     = std::stof(parsedPacket.at("Step"));
-    auto               it       = _enemies.find(uuid);
-
-    if (it == _enemies.end()) return;
-    std::shared_ptr<RealEngine::Entity> enemy = it->second;
-    // Update the position component of the player
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(enemy);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(enemy);
     if (!positionComponent && !interpolationComponent) return;
     positionComponent->x                 = interpolationComponent->end.x;
     positionComponent->y                 = interpolationComponent->end.y;
