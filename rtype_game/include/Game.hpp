@@ -44,6 +44,7 @@ class Game {
     void init_registry();
     void init_controls();
     void init_systems();
+    void init_textures();
     void init_sprites();
 
     void player_collision_handler(RealEngine::CollisionType collisionType,
@@ -100,18 +101,16 @@ class Game {
     RealEngine::ReappearingSystem     _reappearingSystem;
     rtype::Controls                   _controls;
 
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _enemies;
-    RealEngine::Sprite                                           _upSpaceship;
-    RealEngine::Sprite                                           _idleSpaceship;
-    RealEngine::Sprite                                           _downSpaceship;
-    RealEngine::Sprite                                           _otherPlayer;
-    RealEngine::Sprite                                           _eyeBomberSprite;
-    RealEngine::Sprite                                           _eyeMinionSprite;
-    std::unordered_map<std::string, RealEngine::Sprite>          _spaceshipSheet;
-    RealEngine::Sprite                                           _groundSprite;
-    RealEngine::Sprite                                           _backgroundSprite;
-    std::shared_ptr<RealEngine::Entity>                          _entity2;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _players;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _enemies;
+    std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
+    RealEngine::Sprite                                            _upSpaceship;
+    RealEngine::Sprite                                            _idleSpaceship;
+    RealEngine::Sprite                                            _downSpaceship;
+    RealEngine::Sprite                                            _otherPlayer;
+    RealEngine::Sprite                                            _backgroundSprite;
+    std::unordered_map<std::string, RealEngine::Sprite>           _spaceshipSheet;
+    std::shared_ptr<RealEngine::Entity>                           _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
     std::vector<std::shared_ptr<RealEngine::Entity>> _groundBlocksEntities;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
