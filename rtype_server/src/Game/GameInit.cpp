@@ -33,6 +33,7 @@ GameInstance::GameInstance()
     _spaceshipSheet.emplace("down", _downSpaceship);
     init_components();
     init_systems();
+    init_mobs();
     std::cout << "GameInstance created" << std::endl;
 }
 
@@ -86,4 +87,9 @@ void GameInstance::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _netvarSystem.update(registry, deltaTime);
     });
+}
+
+void GameInstance::init_mobs() {
+    _simpleMobs.push_back(addAndGetSimpleMob({1000, 100}, {-1, 0}, 50));
+    _simpleMobs.push_back(addAndGetSimpleMob({1000, 200}, {-1, 0}, 50));
 }

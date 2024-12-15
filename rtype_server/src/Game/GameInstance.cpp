@@ -41,6 +41,20 @@ void GameInstance::run(float deltaTime) {
             _movementSystem.update(_registry, bullet, deltaTime);
         }
     }
+    if (!_simpleMobs.empty()) {
+        for (auto& mob : _simpleMobs) {
+            if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {
+                _simpleMobs.erase(std::remove(_simpleMobs.begin(), _simpleMobs.end(), mob),
+                                  _simpleMobs.end());
+                // std::cout << "Mob destroyed in movment check" << std::endl;
+                // this allow to remove the bullet from the vector cause even if we use
+                // shared_pointer when the bullet is destroyed the pointer is still in the vector
+                // and the move update segfault
+                continue;
+            }
+            _movementSystem.update(_registry, mob, deltaTime);
+        }
+    }
 };
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     playerUuid,
@@ -72,6 +86,15 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
         std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
     _bullets.push_back(bullet->getEntity());
     return bullet->getEntity();
+}
+
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2f position,
+                                                                     sf::Vector2f direction,
+                                                                     float        speed) {
+    std::shared_ptr<rtype::SimpleMob> mob =
+        std::make_shared<rtype::SimpleMob>(_registry, position, direction, speed, _simpleMobSprite);
+    _simpleMobs.push_back(mob->getEntity());
+    return mob->getEntity();
 }
 
 void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
