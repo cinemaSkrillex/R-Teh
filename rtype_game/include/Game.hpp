@@ -109,7 +109,6 @@ class Game {
     std::unordered_map<std::string, RealEngine::Sprite>           _spaceshipSheet;
     std::shared_ptr<RealEngine::Entity>                           _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _groundBlocksEntities;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
     long int                                         _localPlayerUUID;
     std::chrono::steady_clock::time_point            _startTime;
