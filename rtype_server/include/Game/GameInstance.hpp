@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "SimpleMob.hpp"
 #include "BulletEntity.hpp"
 #include "Engine.hpp"
 #include "EyeBomber.hpp"
 #include "PlayerEntity.hpp"
+#include "SimpleMob.hpp"
 
 class GameInstance {
    public:
@@ -26,8 +26,8 @@ class GameInstance {
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(long int uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
                                                         sf::Vector2f direction, float speed);
-    std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position, sf::Vector2f direction,
-                                                           float speed);
+    std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position,
+                                                           sf::Vector2f direction, float speed);
     void movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
@@ -35,6 +35,8 @@ class GameInstance {
 
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
+
+    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _simpleMobs; }
 
    private:
     sf::Clock                      _clock;

@@ -6,15 +6,22 @@ DestructibleSystem::DestructibleSystem() {}
 
 void DestructibleSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<AutoDestructible>();
-
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* destructible = registry.get_component<AutoDestructible>(entity);
+        if (!destructible) {
+            continue;
+        }
         if (destructible->lifeTime > 0) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
-                std::cout << "Entity " << entity << " destroyed" << std::endl; //TODO: remove
-                registry.kill_entity(entity);
-                continue;
+                std::cout << "Entity " << entity << " destroyed" << std::endl;  // TODO: remove
+                if (registry.is_valid(entity)) {
+                    registry.kill_entity(entity);
+                    continue;
+                }
             }
         }
         // if (destructible->killCondition()) {
@@ -22,4 +29,4 @@ void DestructibleSystem::update(Registry& registry, float deltaTime) {
         // }
     }
 }
-} // namespace RealEngine
+}  // namespace RealEngine

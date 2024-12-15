@@ -40,6 +40,25 @@ void RtypeServer::initCallbacks() {
         }
         message += "]";
         _server->send_reliable_packet(message, sender);
+
+        // Send all the entities to the new client, so it can synchronize and move
+        for (const auto& mob : _game_instance->getSimpleMobs()) {
+            if (!mob) continue;
+            auto* position =
+                _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
+            if (!position) continue;
+            std::string MobMessage = "Event:New_entity ";
+            MobMessage += "Type:mob ";
+            MobMessage += "Sprite:../../assets/sprites/the_eye/bomber.png ";
+            MobMessage += "Position:(" + std::to_string(position->x) + "," +
+                          std::to_string(position->y) + ") ";
+            MobMessage += "Velocity:(-250,0,{1000,500},0) ";
+            MobMessage += "Collision:(0,0,16,8,mob,false,OTHER) ";
+            MobMessage += "AutoDestructible:5 ";
+            MobMessage += "Drawable:true ";
+            _server->send_reliable_packet(MobMessage, sender);
+        }
+
         long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
                                 std::chrono::steady_clock::now() - _startTime)
                                 .count();
