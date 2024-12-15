@@ -52,7 +52,7 @@ void RtypeServer::initCallbacks() {
             MobMessage += " Type:mob";
             MobMessage += " Sprite:../../assets/sprites/the_eye/bomber.png";
             MobMessage += " Position:(" + std::to_string(position->x) + "," +
-                          std::to_string(position->y);
+                          std::to_string(position->y) + ")";
             MobMessage += " Velocity:(-250,0,{1000,500},0)";
             MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
             MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
