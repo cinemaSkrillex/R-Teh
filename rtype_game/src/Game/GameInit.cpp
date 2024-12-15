@@ -117,12 +117,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                false,
                                                RealEngine::CollisionType::SOLID});
     }
-
-    _bossEye = std::make_unique<EyeBoss>(_registry);
-    _bossEye->setTarget(_entity2);
-    auto eyeBomber = EyeBomber(_registry, {400.f, 400.f}, _eyeBomberSprite);
-    _eyeBomber     = std::make_shared<EyeBomber>(eyeBomber);
-    _enemies[1]    = eyeBomber.getEntity();
 }
 
 Game::~Game() {}

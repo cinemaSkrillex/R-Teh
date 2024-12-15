@@ -58,7 +58,6 @@ class Game {
     void set_sprite_scales();
     void set_sprite_opacity();
     void populate_sprite_sheet();
-    //
 
     // GameSignals
     void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
@@ -105,8 +104,6 @@ class Game {
 
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>> _enemies;
-    std::shared_ptr<EyeBomber>                                   _eyeBomber;
-    std::unique_ptr<EyeBoss>                                     _bossEye;
     RealEngine::Sprite                                           _upSpaceship;
     RealEngine::Sprite                                           _idleSpaceship;
     RealEngine::Sprite                                           _downSpaceship;
@@ -118,7 +115,6 @@ class Game {
     RealEngine::Sprite                                           _backgroundSprite;
     std::shared_ptr<RealEngine::Entity>                          _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
-    std::vector<std::unique_ptr<EyeBomber>>          _eyeMinions;
     std::vector<std::shared_ptr<RealEngine::Entity>> _groundBlocksEntities;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
     long int                                         _localPlayerUUID;
