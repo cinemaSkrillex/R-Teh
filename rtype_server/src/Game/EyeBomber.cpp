@@ -112,22 +112,22 @@ void EyeBomber::aimAtTarget(RealEngine::Position* targetPosition, RealEngine::Re
 }
 
 void EyeBomber::simpleBehavior(RealEngine::Registry& registry, float deltaTime) {
-    // auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(_eyeEntity);
-    // auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(_eyeEntity);
-    // auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
+    auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(_eyeEntity);
+    auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(_eyeEntity);
+    auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
 
-    // eyeVelocity->vx += eyeAcceleration->ax * deltaTime;
-    // eyeVelocity->vy += eyeAcceleration->ay * deltaTime;
-    // _directionTimer -= deltaTime;
-    // if (_directionTimer <= 0.0f) {
-    //     eyeVelocity->vx     = 0.0f;
-    //     eyeVelocity->vy     = 0.0f;
-    //     eyeAcceleration->ax = -eyeAcceleration->ax;
-    //     eyeAcceleration->ay = -eyeAcceleration->ay;
-    //     _goLeft             = !_goLeft;
-    //     eyeRotation->angle += 180.0f;
-    //     _directionTimer = 1.8f;
-    // }
+    eyeVelocity->vx += eyeAcceleration->ax * deltaTime;
+    eyeVelocity->vy += eyeAcceleration->ay * deltaTime;
+    _directionTimer -= deltaTime;
+    if (_directionTimer <= 0.0f) {
+        eyeVelocity->vx     = 0.0f;
+        eyeVelocity->vy     = 0.0f;
+        eyeAcceleration->ax = -eyeAcceleration->ax;
+        eyeAcceleration->ay = -eyeAcceleration->ay;
+        _goLeft             = !_goLeft;
+        eyeRotation->angle += 180.0f;
+        _directionTimer = 1.8f;
+    }
 }
 
 void EyeBomber::collisionBehaviour(RealEngine::CollisionType collisionType,
