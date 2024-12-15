@@ -18,11 +18,14 @@ GameInstance::GameInstance()
       _radiusSystem(),
       _healthSystem(),
       _netvarSystem() {
-    //   _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
-    //   _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-    //   _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
-    //   _eyeBomberSprite("../../assets/sprites/the_eye/bomber.png"),
-    //   _bulletSprite("../../assets/spaceship_bullet.png")
+    init_components();
+    init_systems();
+    init_mobs();
+    init_textures();
+    _upSpaceship   = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 0, 32 * 2, 15});
+    _idleSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15, 32, 15});
+    _downSpaceship = RealEngine::Sprite(_textures["spaceship"], sf::IntRect{0, 15 * 2, 33 * 2, 15});
+    _bulletSprite  = RealEngine::Sprite(_textures["spaceship_bullet"]);
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
@@ -31,10 +34,6 @@ GameInstance::GameInstance()
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
-    init_components();
-    init_systems();
-    init_mobs();
-    init_textures();
     std::cout << "GameInstance created" << std::endl;
 }
 

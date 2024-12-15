@@ -90,6 +90,12 @@ void Game::init_textures() {
         std::cerr << "Error: Could not load enemy texture!" << std::endl;
         _textures["enemy"].reset();
     }
+
+    _textures["bullet"] = std::make_shared<sf::Texture>();
+    if (!_textures["bullet"]->loadFromFile("../../assets/spaceship_bullet.png")) {
+        std::cerr << "Error: Could not load bullet texture!" << std::endl;
+        _textures["bullet"].reset();
+    }
 }
 
 void Game::init_sprites() {

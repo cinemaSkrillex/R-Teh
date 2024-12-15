@@ -65,6 +65,8 @@ void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
         } else if (spritesheet) {
             auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
 
+            std::cout << "Sprite index: " << spritesheet->spriteIndex << std::endl;
+            std::cout << "Sprite: " << &sprite << std::endl;
             handleSpriteSheetAnimation(*spritesheet, sprite);
             sprite.setPosition(position->x, position->y);
         }

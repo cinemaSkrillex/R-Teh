@@ -90,7 +90,9 @@ void rtype::Game::createVelocityComponent(const std::string&                  va
 
 void rtype::Game::createSpriteComponent(const std::string&                  value,
                                         std::shared_ptr<RealEngine::Entity> entity) {
-    auto sprite = RealEngine::Sprite{_textures["spaceship"]};
+    if (_textures.find(value) == _textures.end())
+        std::cerr << "Texture not found for sprite: " << value << std::endl;
+    auto sprite = RealEngine::Sprite{_textures[value]};
     _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
 }
 

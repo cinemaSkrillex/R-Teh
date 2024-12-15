@@ -62,7 +62,7 @@ void RtypeServer::initCallbacks() {
                 "}," + std::to_string(velocity->airFrictionForce);
             std::string MobMessage = "Event:New_entity";
             MobMessage += " Type:mob";
-            MobMessage += " Sprite:../../assets/sprites/the_eye/bomber.png";
+            MobMessage += " Sprite:enemy";
             MobMessage += " Position:(" + std::to_string(position->x) + "," +
                           std::to_string(position->y) + ")";
             MobMessage += " Velocity:(" + velocityStr + ")";

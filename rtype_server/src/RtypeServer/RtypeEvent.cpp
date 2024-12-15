@@ -28,7 +28,7 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         // creation. Should store returned addAndGetBullet and use it's value.
         std::string message = "Event:New_entity ";
         message += "Type:bullet ";
-        message += "Sprite:../../assets/spaceship_bullet.png ";
+        message += "Sprite:bullet ";
         message += "Position:(" + std::to_string(player.getPosition().x) + "," +
                    std::to_string(player.getPosition().y) + ") ";
         message += "Velocity:(500,0,{500,500},0) ";

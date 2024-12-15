@@ -33,7 +33,7 @@ Sprite::~Sprite() {}
 
 void Sprite::loadImage(sf::Image image) {
     _texture->loadFromImage(image);
-    _sprite.setTexture(*_texture.get());
+    _sprite.setTexture(*_texture);
 }
 
 void Sprite::draw(sf::RenderWindow& window) { window.draw(_sprite); }
@@ -99,6 +99,8 @@ void Sprite::scaleFromSize(const float width, const float height) {
 
 bool Sprite::isTextureOfBounds() {
     sf::IntRect  rect = _sprite.getTextureRect();
+    if (!_texture)
+        std::cerr << "Error: Null texture in Sprite!" << std::endl;
     sf::Vector2u size = _texture->getSize();
 
     // std::cout << "Texture size: " << size.x << "x" << size.y << std::endl;
