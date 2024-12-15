@@ -133,9 +133,10 @@ void EyeBomber::aimAtTarget(RealEngine::Position* targetPosition, RealEngine::Re
 }
 
 void EyeBomber::simpleBehavior(RealEngine::Registry& registry, float deltaTime) {
-    auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(_eyeEntity);
-    auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(_eyeEntity);
-    auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
+    auto& eyeEntityRef    = *_eyeEntity;
+    auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(eyeEntityRef);
+    auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(eyeEntityRef);
+    auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(eyeEntityRef);
 
     if (!eyeRotation || !eyeVelocity || !eyeAcceleration)
         std::cout << "Error: EyeBomber components not found!" << std::endl;

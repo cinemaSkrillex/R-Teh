@@ -130,31 +130,18 @@ class Registry {
 
     template <typename Component>
     Component* get_component(std::shared_ptr<Entity> entity) {
-        std::cout << "check if entity is null" << std::endl;
         if (!entity) {
-            std::cerr << "Error: Entity is null!" << std::endl;
             return nullptr;
         }
-        std::cout << "get_component(std::shared_ptr<Entity>)" << std::endl;
-        auto& sparseArray = get_components<Component>();
-        std::cout << "cast entity to std::size_t" << std::endl;
-        std::size_t index = static_cast<std::size_t>(*entity);
+        auto&       sparseArray = get_components<Component>();
+        std::size_t index       = static_cast<std::size_t>(*entity);
 
-        std::cerr << "Debug: Entity index is " << index << std::endl;
-
-        if (index >= sparseArray.size()) {
-            std::cerr << "Error: Index out of bounds! Index: " << index
-                      << ", Size: " << sparseArray.size() << std::endl;
+        if (index >= sparseArray.size() || !sparseArray[index]) {
             return nullptr;
         }
-
-        if (!sparseArray[index]) {
-            std::cerr << "Error: Component at index " << index << " is null!" << std::endl;
-            return nullptr;
-        }
-
         return &(*sparseArray[index]);
     }
+
     template <typename Component>
     Component* get_component(Entity const& entity) {
         if (!is_valid(entity)) {
