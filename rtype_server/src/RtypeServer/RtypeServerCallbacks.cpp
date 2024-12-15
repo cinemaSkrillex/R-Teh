@@ -47,15 +47,16 @@ void RtypeServer::initCallbacks() {
             auto* position =
                 _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
             if (!position) continue;
-            std::string MobMessage = "Event:New_entity ";
-            MobMessage += "Type:mob ";
-            MobMessage += "Sprite:../../assets/sprites/the_eye/bomber.png ";
-            MobMessage += "Position:(" + std::to_string(position->x) + "," +
-                          std::to_string(position->y) + ") ";
-            MobMessage += "Velocity:(-250,0,{1000,500},0) ";
-            MobMessage += "Collision:(0,0,16,8,mob,false,OTHER) ";
-            MobMessage += "AutoDestructible:5 ";
-            MobMessage += "Drawable:true ";
+            auto *destructible = _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
+            std::string MobMessage = "Event:New_entity";
+            MobMessage += " Type:mob";
+            MobMessage += " Sprite:../../assets/sprites/the_eye/bomber.png";
+            MobMessage += " Position:(" + std::to_string(position->x) + "," +
+                          std::to_string(position->y);
+            MobMessage += " Velocity:(-250,0,{1000,500},0)";
+            MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
+            MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
+            MobMessage += " Drawable:true";
             _server->send_reliable_packet(MobMessage, sender);
         }
 
