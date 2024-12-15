@@ -32,7 +32,6 @@
 #include "ECS/Components/Interpolation.hpp"
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
-#include "ECS/Components/Reappearing.hpp"
 #include "ECS/Components/Rotation.hpp"
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
@@ -55,7 +54,6 @@
 #include "ECS/Systems/LagCompensationSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
-#include "ECS/Systems/ReappearingSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
 // Media
 #include "Media/Audio/Music.hpp"

@@ -119,10 +119,10 @@ void Game::init_textures() {
 }
 
 void Game::init_sprites() {
-    _upSpaceship      = RealEngine::Sprite(_textures["spaceship_up"]);
-    _idleSpaceship    = RealEngine::Sprite(_textures["spaceship_idle"]);
-    _downSpaceship    = RealEngine::Sprite(_textures["spaceship_down"]);
-    _otherPlayer      = RealEngine::Sprite(_textures["spaceship"]);
+    _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
+    _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
+    _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
+    _otherPlayer   = RealEngine::Sprite(_textures["spaceship"]);
     set_sprite_scales();
     set_sprite_opacity();
     populate_sprite_sheet();
@@ -181,7 +181,6 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Target>();
     _registry.register_component<RealEngine::AutoDestructible>();
     _registry.register_component<RealEngine::Damage>();
-    _registry.register_component<RealEngine::Reappearing>();
 }
 
 void Game::bind_keys() {
