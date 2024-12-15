@@ -8,11 +8,11 @@
 #include "ECS/Systems/ParallaxSystem.hpp"
 
 namespace RealEngine {
-    void ParallaxSystem::update(Registry& registry, float deltaTime) {
-        auto entities = registry.view<Parallax>();
+void ParallaxSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Parallax>();
 
-        if (entities.empty()) {
-            return;
-        }
+    if (entities.empty()) {
+        return;
     }
+}
 }  // namespace RealEngine

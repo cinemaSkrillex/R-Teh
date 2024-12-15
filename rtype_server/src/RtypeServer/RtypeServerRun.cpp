@@ -11,7 +11,8 @@ void RtypeServer::run() {
     auto log = std::make_shared<Log>("RtypeServer.log");
 
     while (true) {
-        if (_clock.getElapsedTime().asMilliseconds() > 1000 / SERVER_TICK) {
+        int server_tick = _server_config.getConfigItem<int>("SERVER_TICK");
+        if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
 
@@ -32,7 +33,8 @@ void RtypeServer::run() {
 
             _game_instance->run(_deltaTime);
         }
-        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / SERVER_BROADCAST_TICK) {
+        int server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
+        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (const auto& player : _players) {
                 broadcastPlayerState(player.second);
