@@ -3,8 +3,12 @@
 namespace RealEngine {
 
 Sprite::Sprite(const std::shared_ptr<sf::Texture> texture) {
+    if (!texture) {
+        std::cerr << "Error: Null texture passed to Sprite constructor!" << std::endl;
+        return;
+    }
     _texture = texture;
-    _sprite.setTexture(*_texture.get());
+    _sprite.setTexture(*texture);
     centerOrigin();
     setPosition(0, 0);
     setColor(sf::Color::White);
@@ -12,8 +16,12 @@ Sprite::Sprite(const std::shared_ptr<sf::Texture> texture) {
 }
 
 Sprite::Sprite(const std::shared_ptr<sf::Texture> texture, sf::IntRect textureRect) {
+    if (!texture) {
+        std::cerr << "Error: Null texture passed to Sprite constructor!" << std::endl;
+        return;
+    }
     _texture = texture;
-    _sprite.setTexture(*_texture.get());
+    _sprite.setTexture(*texture);
     _sprite.setTextureRect(textureRect);
     _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
     setPosition(0, 0);
