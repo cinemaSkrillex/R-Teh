@@ -24,14 +24,11 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
-      _reappearingSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _entity2(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-
-    float spriteWidth = 192.f * 5.f;
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
@@ -126,7 +123,6 @@ void Game::init_sprites() {
     _idleSpaceship    = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship    = RealEngine::Sprite(_textures["spaceship_down"]);
     _otherPlayer      = RealEngine::Sprite(_textures["spaceship"]);
-    _backgroundSprite = RealEngine::Sprite(_textures["background"]);
     set_sprite_scales();
     set_sprite_opacity();
     populate_sprite_sheet();
@@ -165,9 +161,6 @@ void Game::add_systems() {
     });
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destructibleSystem.update(registry, deltaTime);
-    });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _reappearingSystem.update(registry, deltaTime);
     });
 }
 
@@ -231,7 +224,6 @@ void Game::set_sprite_scales() {
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _otherPlayer.setScale(GAME_SCALE, GAME_SCALE);
-    _backgroundSprite.setScale(GAME_SCALE, GAME_SCALE);
 }
 
 void Game::set_sprite_opacity() { _otherPlayer.setOpacity(90); }

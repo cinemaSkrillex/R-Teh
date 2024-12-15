@@ -95,7 +95,6 @@ class Game {
     RealEngine::RadiusSystem          _radiusSystem;
     RealEngine::DestructibleSystem    _destructibleSystem;
     RealEngine::HealthSystem          _healthSystem;
-    RealEngine::ReappearingSystem     _reappearingSystem;
     rtype::Controls                   _controls;
 
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _players;
@@ -105,7 +104,6 @@ class Game {
     RealEngine::Sprite                                            _idleSpaceship;
     RealEngine::Sprite                                            _downSpaceship;
     RealEngine::Sprite                                            _otherPlayer;
-    RealEngine::Sprite                                            _backgroundSprite;
     std::unordered_map<std::string, RealEngine::Sprite>           _spaceshipSheet;
     std::shared_ptr<RealEngine::Entity>                           _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
