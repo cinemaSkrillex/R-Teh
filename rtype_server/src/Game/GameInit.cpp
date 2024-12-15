@@ -17,12 +17,12 @@ GameInstance::GameInstance()
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
-      _netvarSystem(),
-      _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
-      _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
-      _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
-      _eyeBomberSprite("../../assets/sprites/the_eye/bomber.png"),
-      _bulletSprite("../../assets/spaceship_bullet.png") {
+      _netvarSystem() {
+    //   _upSpaceship("../../assets/spaceship.png", sf::IntRect{0, 0, 32 * 2, 15}),
+    //   _idleSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15, 32, 15}),
+    //   _downSpaceship("../../assets/spaceship.png", sf::IntRect{0, 15 * 2, 33 * 2, 15}),
+    //   _eyeBomberSprite("../../assets/sprites/the_eye/bomber.png"),
+    //   _bulletSprite("../../assets/spaceship_bullet.png")
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
@@ -34,6 +34,7 @@ GameInstance::GameInstance()
     init_components();
     init_systems();
     init_mobs();
+    init_textures();
     std::cout << "GameInstance created" << std::endl;
 }
 
@@ -92,4 +93,15 @@ void GameInstance::init_systems() {
 void GameInstance::init_mobs() {
     _simpleMobs.push_back(addAndGetSimpleMob({1000, 100}, {-1, 0}, 50));
     _simpleMobs.push_back(addAndGetSimpleMob({1000, 200}, {-1, 0}, 50));
+}
+
+void GameInstance::init_textures() {
+    _textures.emplace("spaceship", std::make_shared<sf::Texture>());
+    _textures["spaceship"]->loadFromFile("../../assets/spaceship.png");
+
+    _textures.emplace("spaceship_bullet", std::make_shared<sf::Texture>());
+    _textures["spaceship_bullet"]->loadFromFile("../../assets/spaceship_bullet.png");
+
+    _textures.emplace("eye_bomber", std::make_shared<sf::Texture>());
+    _textures["eye_bomber"]->loadFromFile("../../assets/sprites/the_eye/bomber.png");
 }
