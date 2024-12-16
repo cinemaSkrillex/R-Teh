@@ -62,6 +62,7 @@ class Game {
     void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleEntityPosition(std::unordered_map<std::string, std::string> parsedPacket);
     //
 
     // ComponentFunctions
@@ -97,15 +98,15 @@ class Game {
     RealEngine::HealthSystem          _healthSystem;
     rtype::Controls                   _controls;
 
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _players;
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _enemies;
-    std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
-    RealEngine::Sprite                                            _upSpaceship;
-    RealEngine::Sprite                                            _idleSpaceship;
-    RealEngine::Sprite                                            _downSpaceship;
-    RealEngine::Sprite                                            _otherPlayer;
-    std::unordered_map<std::string, RealEngine::Sprite>           _spaceshipSheet;
-    std::shared_ptr<RealEngine::Entity>                           _entity2;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>      _players;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
+    RealEngine::Sprite                                                _upSpaceship;
+    RealEngine::Sprite                                                _idleSpaceship;
+    RealEngine::Sprite                                                _downSpaceship;
+    RealEngine::Sprite                                                _otherPlayer;
+    std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
+    std::shared_ptr<RealEngine::Entity>                               _entity2;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
     long int                                         _localPlayerUUID;

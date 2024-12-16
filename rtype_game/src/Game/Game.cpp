@@ -29,8 +29,8 @@ std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vecto
     // _enemies.emplace(enemy_uuid, enemyEntity);
     // return _enemies.at(enemy_uuid);
     auto entity = _registry.spawn_entity();
-    _enemies.emplace(enemy_uuid, entity);
-    return _enemies.at(enemy_uuid);
+    _entities.emplace(enemy_uuid, entity);
+    return _entities.at(enemy_uuid);
 }
 
 sf::Vector2f Game::getPlayerNormalizedDirection() {

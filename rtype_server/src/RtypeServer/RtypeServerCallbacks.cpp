@@ -43,6 +43,7 @@ void RtypeServer::initCallbacks() {
 
         // Send all the entities to the new client, so it can synchronize and move
         for (const auto& mob : _game_instance->getSimpleMobs()) {
+            std::cout << "Mob found" << std::endl;
             if (!mob) continue;
             auto* position =
                 _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
@@ -56,11 +57,13 @@ void RtypeServer::initCallbacks() {
 
             std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
             std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            std::cout << "Mob uuid: " << *mob << std::endl;
             std::string velocityStr =
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
                 "}," + std::to_string(velocity->airFrictionForce);
             std::string MobMessage = "Event:New_entity";
+            MobMessage += " Uuid:" + *mob;
             MobMessage += " Type:mob";
             MobMessage += " Sprite:enemy";
             MobMessage += " Position:(" + std::to_string(position->x) + "," +

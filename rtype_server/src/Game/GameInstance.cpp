@@ -97,7 +97,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2
     std::shared_ptr<rtype::SimpleMob> mob =
         std::make_shared<rtype::SimpleMob>(_registry, position, direction, speed, _simpleMobSprite);
     _simpleMobs.push_back(mob->getEntity());
-    return mob->getEntity();
+    return _simpleMobs.back();
 }
 
 void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
