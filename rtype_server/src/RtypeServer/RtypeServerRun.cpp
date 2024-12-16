@@ -32,7 +32,7 @@ void RtypeServer::run() {
             }
             auto destroyedEntities = _game_instance->run(_deltaTime);
             if (!destroyedEntities.empty()) {
-                std::string message = "Event:Destroy_entity [";
+                std::string message = "Event:Destroy_entity ids:[";
                 for (auto entity : destroyedEntities) {
                     message += std::to_string(entity) + ",";
                 }

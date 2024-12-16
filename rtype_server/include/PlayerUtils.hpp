@@ -31,6 +31,7 @@ const sf::Vector2f                           parseVector2Const(const std::string
 std::vector<PlayerData>                      parsePlayerList(const std::string& playerList);
 std::unordered_map<std::string, std::string> parseMessage(const std::string& message);
 std::vector<float>                           parseVelocity(const std::string& velocity);
+std::vector<long int>                        parseIds(const std::string& ids);
 
 }  // namespace PeterParser
 

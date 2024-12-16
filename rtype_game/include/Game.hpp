@@ -64,6 +64,7 @@ class Game {
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);
     void handleEntityPosition(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket);
     //
 
     // ComponentFunctions

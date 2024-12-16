@@ -97,6 +97,7 @@ void GameInstance::init_systems() {
 
 void GameInstance::init_mobs() {
     addAndGetSimpleMob({1000, 100}, {-1, 0}, 50);
+    addAndGetSimpleMob({1050, 100}, {-1, 0}, 50);
     addAndGetSimpleMob({1000, 200}, {-1, 0}, 35);
 }
 

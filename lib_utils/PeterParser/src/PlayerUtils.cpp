@@ -125,4 +125,19 @@ std::vector<float> parseVelocity(const std::string& velocity) {
     return values;
 }
 
+std::vector<long int> parseIds(const std::string& ids) {
+    // ex: [1,2,3,4]
+    std::string cleanedIds = ids;
+    cleanedIds.erase(std::remove(cleanedIds.begin(), cleanedIds.end(), '['), cleanedIds.end());
+    cleanedIds.erase(std::remove(cleanedIds.begin(), cleanedIds.end(), ']'), cleanedIds.end());
+    std::replace(cleanedIds.begin(), cleanedIds.end(), ',', ' ');
+    std::istringstream stream(cleanedIds);
+    std::vector<long int> values;
+    long int              value;
+    while (stream >> value) {
+        values.push_back(value);
+    }
+    return values;
+}
+
 }  // namespace PeterParser

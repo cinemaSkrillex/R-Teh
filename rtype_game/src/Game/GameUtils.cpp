@@ -11,8 +11,8 @@ void rtype::Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
     // if signal contains "Event:Player_position" don't print it
-    if (signal.find("Event:Player_position") == std::string::npos)
-        std::cout << "[" << signal << "]" << std::endl;
+    // if (signal.find("Event:Player_position") == std::string::npos)
+    //     std::cout << "[" << signal << "]" << std::endl;
     std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
 
     if (parsedPacket.find("Event") != parsedPacket.end()) {
@@ -31,6 +31,9 @@ void rtype::Game::handleSignal(std::string signal) {
         }
         if (event == "Entity_position") {
             handleEntityPosition(parsedPacket);
+        }
+        if (event == "Destroy_entity") {
+            handleDestroyEntity(parsedPacket);
         }
     }
 }
@@ -159,5 +162,24 @@ void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> p
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception occurred: " << e.what() << std::endl;
+    }
+}
+
+void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket) {
+    // std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    for (auto& [key, value] : parsedPacket) {
+        if (key == "ids") {
+            std::vector<long int> ids = PeterParser::parseIds(value);
+            //delete entities with ids
+            for (long int id : ids) {
+                std::cout << "Deleting entity with id: " << id << std::endl;
+                auto it = _entities.find(id);
+                if (it != _entities.end()) {
+                    _registry.remove_entity(*it->second);
+                    _entities.erase(it);
+                }
+            }
+            break;
+        }
     }
 }
