@@ -18,7 +18,7 @@ std::vector<Entity> DestructibleSystem::update(Registry& registry, float deltaTi
         if (destructible->lifeTime > 0) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
-                std::cout << "Entity " << entity << " destroyed" << std::endl;  // TODO: remove
+                // std::cout << "Entity " << entity << " destroyed" << std::endl;  // TODO: remove
                 if (registry.is_valid(entity)) {
                     destroyedEntities.push_back(entity);
                     registry.kill_entity(entity);

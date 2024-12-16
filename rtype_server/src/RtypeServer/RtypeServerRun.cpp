@@ -30,7 +30,17 @@ void RtypeServer::run() {
                     }
                 }
             }
-            _game_instance->run(_deltaTime);
+            auto destroyedEntities = _game_instance->run(_deltaTime);
+            if (!destroyedEntities.empty()) {
+                std::string message = "Event:Destroy_entity [";
+                for (auto entity : destroyedEntities) {
+                    message += std::to_string(entity) + ",";
+                }
+                message.pop_back();
+                message += "]";
+                std::cout << message << std::endl;
+                broadCastAll(message);
+            }
         }
         int server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {

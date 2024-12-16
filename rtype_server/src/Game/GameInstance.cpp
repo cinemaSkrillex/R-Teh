@@ -12,7 +12,7 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
     _movementSystem.update(_registry, entity, deltaTime);
 };
 
-void GameInstance::run(float deltaTime) {
+std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
@@ -29,9 +29,9 @@ void GameInstance::run(float deltaTime) {
     destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
                              destroyedHealth.end());
     
-    for (auto entity : destroyedEntities) {
-        std::cout << "Entity " << entity << " destroyed" << std::endl;
-    }
+    // for (auto entity : destroyedEntities) {
+    //     std::cout << "Entity " << entity << " destroyed" << std::endl;
+    // }
     
     _netvarSystem.update(_registry, deltaTime);
     // for (auto& mob : _simpleMobs) {
@@ -73,6 +73,7 @@ void GameInstance::run(float deltaTime) {
     //     }
     //     _movementSystem.update(_registry, bullet, deltaTime);
     // }
+    return destroyedEntities;
 };
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     playerUuid,

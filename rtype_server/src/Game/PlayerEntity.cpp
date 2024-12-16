@@ -49,7 +49,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
             }});
 }
 
-Player::~Player() { std::cout << "Player destroyed" << std::endl; }
+Player::~Player() {}
 
 void Player::player_collision_handler(RealEngine::CollisionType collisionType,
                                       RealEngine::Registry& registry, RealEngine::Entity collider,
