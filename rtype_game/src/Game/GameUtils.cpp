@@ -41,6 +41,7 @@ void rtype::Game::handleSignal(std::string signal) {
 void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> parsedPacket) {
     const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+    if (_players.find(uuid) != _players.end()) return;
     add_player(uuid, position);
 }
 
