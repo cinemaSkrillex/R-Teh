@@ -119,7 +119,8 @@ void Game::init_textures() {
     _textures["background"]->setRepeated(true);
 
     _textures["enemy"] = std::make_shared<sf::Texture>();
-    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/the_eye/bomber.png")) {
+    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/the_eye/bomber.png",
+                                          {0, 0, 15, 10})) {
         std::cerr << "Error: Could not load enemy texture!" << std::endl;
         _textures["enemy"].reset();
     }

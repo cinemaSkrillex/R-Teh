@@ -125,6 +125,7 @@ void rtype::Game::createSpriteComponent(const std::string&                  valu
     if (_textures.find(value) == _textures.end())
         std::cerr << "Texture not found for sprite: " << value << std::endl;
     auto sprite = RealEngine::Sprite{_textures[value]};
+    sprite.setScale(GAME_SCALE, GAME_SCALE);
     _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
 }
 
@@ -170,7 +171,7 @@ void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::strin
     for (auto& [key, value] : parsedPacket) {
         if (key == "ids") {
             std::vector<long int> ids = PeterParser::parseIds(value);
-            //delete entities with ids
+            // delete entities with ids
             for (long int id : ids) {
                 std::cout << "Deleting entity with id: " << id << std::endl;
                 auto it = _entities.find(id);
