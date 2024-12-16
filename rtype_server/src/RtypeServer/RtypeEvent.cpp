@@ -23,7 +23,7 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         }
         netvar->value = 0.1f;
 
-        const sf::Vector2f bullet_position = player.getPosition() + (sf::Vector2f){32.5f, 7.5f};
+        const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
 
         // _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500);
         auto bullet = _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500);
