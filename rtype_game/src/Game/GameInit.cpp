@@ -57,7 +57,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     auto backgroundSprite = RealEngine::Sprite{_textures["background"]};
     backgroundSprite.setOrigin(0, 0.5f);
     _registry.add_component(_background, RealEngine::SpriteComponent{backgroundSprite});
-    _registry.add_component(_background, RealEngine::Parallax{-200.f, (sf::Vector2f){800.0f, 600.0f}});
+    _registry.add_component(_background,
+                            RealEngine::Parallax{-200.f, sf::Vector2f(800.0f, 600.0f)});
     _registry.add_component(_background, RealEngine::Drawable{});
 }
 
