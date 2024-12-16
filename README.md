@@ -62,12 +62,12 @@ cmake --preset windows
 cd build/default
 
 # Build debug mode (g3 flag)
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Debug .
 # Build release mode (O3 flag)
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release .
 
-# Build the cmake and build the project with 8 threads
-cmake . && cmake --build . -j 8
+# Build the cmake and build the project with 20 threads
+cmake . && cmake --build . -j 20
 
 ```
 

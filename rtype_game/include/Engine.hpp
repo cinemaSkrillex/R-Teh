@@ -55,6 +55,7 @@
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
+#include "ECS/Systems/ParallaxSystem.hpp"
 // Media
 #include "Media/Audio/Music.hpp"
 #include "Media/Audio/Sound.hpp"

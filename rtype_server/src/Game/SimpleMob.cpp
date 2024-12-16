@@ -23,11 +23,19 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
         RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
                               "mob",
                               false,
-                              RealEngine::CollisionType::OTHER,
+                              RealEngine::CollisionType::HIT,
                               [this](RealEngine::CollisionType collisionType,
                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
                                   mob_collision_handler(collisionType, registry, collider);
                               }});
+    // registry.add_component(_bulletEntity, RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+    //                                                            "bullet",
+    //                                                            false,
+    //                                                            RealEngine::CollisionType::OTHER,
+    //                                                            [this](RealEngine::CollisionType collisionType,
+    //                                                                   RealEngine::Registry& registry, RealEngine::Entity collider) {
+    //                                                                bullet_collision_handler(collisionType, registry, collider);
+    //                                                            }});
     registry.add_component(_entity, RealEngine::AutoDestructible{10});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
@@ -45,9 +53,11 @@ void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::SOLID:
             break;
         case RealEngine::CollisionType::HIT:
-            mob_take_damage(registry, collider);
             break;
         case RealEngine::CollisionType::PICKABLE:
+            break;
+        case RealEngine::CollisionType::OTHER:
+            mob_take_damage(registry, collider);
             break;
         default:
             break;

@@ -20,6 +20,8 @@ target_include_directories(r_type_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config
+    ${CMAKE_BINARY_DIR}/rtype_server/Config
 )
 
 # Link lib to binary (r_type_server is linked to rtype_server)
@@ -45,12 +47,24 @@ add_custom_target(copy_headers_server_lagcompensation ALL
     ${CMAKE_SOURCE_DIR}/rtype_server/include
 )
 
+add_custom_target(copy_config ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/rtype_server/Config
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_SOURCE_DIR}/rtype_server/Config/server.config
+    ${CMAKE_BINARY_DIR}/rtype_server/Config/server.config
+    )
+
+# add_compile_definitions(CONFIG_FILE_PATH=\"$<TARGET_FILE_DIR:r_type_server>/Config/server.config\")
+set(CONFIG_FILE_PATH "${CMAKE_BINARY_DIR}/rtype_server/Config/server.config")
+
+configure_file(${CMAKE_SOURCE_DIR}/rtype_server/Config/configpath.h.in ${CMAKE_BINARY_DIR}/rtype_server/Config/configpath.h)
+
 
 # Ensure the headers are copied before building rtype_game
 add_dependencies(r_type copy_headers_engine_for_server)
 add_dependencies(r_type copy_headers_server_parser)
 add_dependencies(r_type copy_headers_server_lagcompensation)
-# add_dependencies(r_type copy_config)
+add_dependencies(r_type copy_config)
 # add_dependencies(r_type copy_assets_server)
 
 

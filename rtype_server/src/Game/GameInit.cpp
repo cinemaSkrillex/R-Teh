@@ -95,8 +95,8 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::init_mobs() {
-    _simpleMobs.push_back(addAndGetSimpleMob({800, 100}, {-1, 0}, 50));
-    _simpleMobs.push_back(addAndGetSimpleMob({800, 200}, {-1, 0}, 35));
+    _simpleMobs.push_back(addAndGetSimpleMob({1000, 100}, {-1, 0}, 50));
+    _simpleMobs.push_back(addAndGetSimpleMob({1000, 200}, {-1, 0}, 35));
 }
 
 void GameInstance::init_textures() {

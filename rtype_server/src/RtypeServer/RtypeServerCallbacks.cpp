@@ -14,21 +14,24 @@ void RtypeServer::initCallbacks() {
         UUIDGenerator uuid_generator;
         long int      uuid = uuid_generator.generate_long();
         std::cout << "Generated UUID: " << uuid << std::endl;
+        sf::Vector2f player_start_position =
+            _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
             if (client != sender) {
+                // std::cout << "Player start position: " << PLAYER_START_POSITION.x << std::endl;
                 const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) +
                                             " Position:(" +
-                                            std::to_string(PLAYER_START_POSITION.x) + "," +
-                                            std::to_string(PLAYER_START_POSITION.y) + ")";
+                                            std::to_string(player_start_position.x) + "," +
+                                            std::to_string(player_start_position.y) + ")";
                 _server->send_reliable_packet(message, client);
             }
         }
         // Create the uuid for each new client
         std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) +
                               " Clock:" + formatTimestamp(_startTime) + " Position:(" +
-                              std::to_string(PLAYER_START_POSITION.x) + "," +
-                              std::to_string(PLAYER_START_POSITION.y) + ") Players:[";
+                              std::to_string(player_start_position.x) + "," +
+                              std::to_string(player_start_position.y) + ") Players:[";
         bool first = true;
         for (const auto& player_pair : _players) {
             if (!first) message += "|";
@@ -79,7 +82,7 @@ void RtypeServer::initCallbacks() {
                                 std::chrono::steady_clock::now() - _startTime)
                                 .count();
         auto player =
-            Player(uuid, elapsed_time, _game_instance->addAndGetPlayer(uuid, PLAYER_START_POSITION),
+            Player(uuid, elapsed_time, _game_instance->addAndGetPlayer(uuid, player_start_position),
                    _game_instance->getRegistry());
         _players[sender] = player;
     });
