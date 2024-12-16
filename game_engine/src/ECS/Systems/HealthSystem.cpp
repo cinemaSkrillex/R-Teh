@@ -10,11 +10,13 @@
 namespace RealEngine {
 HealthSystem::HealthSystem() {}
 
-void HealthSystem::update(Registry& registry, float deltaTime) {
+// void HealthSystem::update(Registry& registry, float deltaTime) {
+std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
+    std::vector<Entity> destroyedEntities;
     auto entities = registry.view<Health>();
 
     if (entities.empty()) {
-        return;
+        return destroyedEntities;
     }
     for (auto entity : entities) {
         auto* health = registry.get_component<Health>(entity);
@@ -37,8 +39,10 @@ void HealthSystem::update(Registry& registry, float deltaTime) {
             health->regenerationTime -= deltaTime;
         }
         if (health->amount <= 0) {
+            destroyedEntities.push_back(entity);
             registry.kill_entity(entity);
         }
     }
+    return destroyedEntities;
 }
 }  // namespace RealEngine

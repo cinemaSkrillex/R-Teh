@@ -18,9 +18,21 @@ void GameInstance::run(float deltaTime) {
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
-    _destructibleSystem.update(_registry, deltaTime);
+    // _destructibleSystem.update(_registry, deltaTime);
+    // get returned std::vector<RealEngine::Entity> of destroyed entities
+    auto destroyedEntities = _destructibleSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
-    _healthSystem.update(_registry, deltaTime);
+    // _healthSystem.update(_registry, deltaTime);
+    // add returned std::vector<RealEngine::Entity> of health to destroyedEntities
+    auto destroyedHealth = _healthSystem.update(_registry, deltaTime);
+
+    destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
+                             destroyedHealth.end());
+    
+    for (auto entity : destroyedEntities) {
+        std::cout << "Entity " << entity << " destroyed" << std::endl;
+    }
+    
     _netvarSystem.update(_registry, deltaTime);
     // for (auto& mob : _simpleMobs) {
     //     if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {

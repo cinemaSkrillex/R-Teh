@@ -8,6 +8,6 @@ class DestructibleSystem {
    public:
     DestructibleSystem();
     ~DestructibleSystem() = default;
-    void update(Registry& registry, float deltaTime);
+    std::vector<Entity> update(Registry& registry, float deltaTime);
 };
 }  // namespace RealEngine
