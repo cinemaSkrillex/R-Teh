@@ -80,24 +80,27 @@ void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::stri
 void rtype::Game::handleEntityPosition(std::unordered_map<std::string, std::string> parsedPacket) {
     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
     const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
-    float              step     = std::stof(parsedPacket.at("Step"));
-    auto               it       = _entities.find(uuid);
+    // float              step     = std::stof(parsedPacket.at("Step"));
+    auto it = _entities.find(uuid);
 
-    std::cout << "Searching for entity:" << uuid << std::endl;
     if (it == _entities.end()) return;
-    std::cout << "Entity found" << std::endl;
     std::shared_ptr<RealEngine::Entity> entity = it->second;
     // Update the position component of the entity
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
-    if (!positionComponent && !interpolationComponent) return;
-    positionComponent->x                 = interpolationComponent->end.x;
-    positionComponent->y                 = interpolationComponent->end.y;
-    interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    interpolationComponent->end          = position;
-    interpolationComponent->step         = 1.f / step;
-    interpolationComponent->current_step = 0.f;
-    interpolationComponent->reset        = true;
+    auto* positionComponent = _registry.get_component<RealEngine::Position>(entity);
+    // auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
+    if (!positionComponent)
+        // && !interpolationComponent)
+        return;
+
+    positionComponent->x = position.x;
+    positionComponent->y = position.y;
+    // positionComponent->x                 = interpolationComponent->end.x;
+    // positionComponent->y                 = interpolationComponent->end.y;
+    // interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+    // interpolationComponent->end          = position;
+    // interpolationComponent->step         = 1.f / step;
+    // interpolationComponent->current_step = 0.f;
+    // interpolationComponent->reset        = true;
 }
 
 void rtype::Game::createPositionComponent(const std::string&                  value,
@@ -150,6 +153,7 @@ void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> p
                       << std::endl;
             long int uuid = std::stol(parsedPacket.at("Uuid"));
             _entities.emplace(uuid, newEntity);
+            std::cout << "Entity added to entities" << _entities.size() << std::endl;
         } else {
             std::cerr << "Uuid not found in parsedPacket" << std::endl;
         }

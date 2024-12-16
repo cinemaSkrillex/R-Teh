@@ -30,19 +30,19 @@ void GameInstance::run(float deltaTime) {
     //     }
     //     _movementSystem.update(_registry, mob, deltaTime);
     // }
-    _simpleMobs.erase(
-        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
-                    [&](const auto& mob) {
-                        return _registry.get_component<RealEngine::Health>(mob) == nullptr;
-                    }),
-        _simpleMobs.end());
+    _simpleMobs.erase(std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
+                                     [&](const auto& mob) {
+                                         return _registry.get_component<RealEngine::Health>(mob) ==
+                                                nullptr;
+                                     }),
+                      _simpleMobs.end());
 
-    _bullets.erase(
-        std::remove_if(_bullets.begin(), _bullets.end(),
-                    [&](const auto& bullet) {
-                        return _registry.get_component<RealEngine::Health>(bullet) == nullptr;
-                    }),
-        _bullets.end());
+    _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
+                                  [&](const auto& bullet) {
+                                      return _registry.get_component<RealEngine::Health>(bullet) ==
+                                             nullptr;
+                                  }),
+                   _bullets.end());
 
     // Then update remaining mobs
     for (auto& mob : _simpleMobs) {
@@ -118,10 +118,11 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float
     if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
     if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
     if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
+
     velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
     velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {
-    // Do something
+    // Do somethin
 }
