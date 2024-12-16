@@ -31,7 +31,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    std::cout << "after init all game" << std::endl;
 
     _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});

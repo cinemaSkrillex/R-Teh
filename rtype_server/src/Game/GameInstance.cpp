@@ -127,6 +127,8 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     auto* velocity     = _registry.get_component<RealEngine::Velocity>(player);
     auto* position     = _registry.get_component<RealEngine::Position>(player);
 
+    if (!acceleration || !velocity || !position) return;
+
     if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
     if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
     if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
