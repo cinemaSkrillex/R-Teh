@@ -126,10 +126,14 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     auto* velocity     = _registry.get_component<RealEngine::Velocity>(player);
     auto* position     = _registry.get_component<RealEngine::Position>(player);
 
-    // if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
-    // if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
-    // if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
-    // if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
+    if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
+    if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
+    if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
+    if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
+    if (direction.top > 0) velocity->vx += (acceleration->ax * 3 * deltaTime);
+    if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
+    if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
+    if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
     // velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
     // velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
