@@ -57,8 +57,8 @@ void RtypeServer::initCallbacks() {
                 _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
             if (!velocity) continue;
 
-            std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
-            std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            // std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
+            // std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
             std::string velocityStr =
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +

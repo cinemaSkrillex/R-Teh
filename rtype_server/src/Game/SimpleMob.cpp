@@ -23,10 +23,10 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
         RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
                               "mob",
                               false,
-                              RealEngine::CollisionType::HIT,
+                              RealEngine::CollisionType::ENEMY,
                               [this](RealEngine::CollisionType collisionType,
-                                     RealEngine::Registry& registry, RealEngine::Entity collider) {
-                                  mob_collision_handler(collisionType, registry, collider);
+                                     RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
+                                  mob_collision_handler(collisionType, registry, collider, entity);
                               }});
     // registry.add_component(_bulletEntity, RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
     //                                                            "bullet",
@@ -36,7 +36,7 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     //                                                                   RealEngine::Registry& registry, RealEngine::Entity collider) {
     //                                                                bullet_collision_handler(collisionType, registry, collider);
     //                                                            }});
-    registry.add_component(_entity, RealEngine::AutoDestructible{10});
+    registry.add_component(_entity, RealEngine::AutoDestructible{30});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
     std::cout << "Mob created id: " << *_entity << std::endl;
@@ -45,30 +45,46 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
 SimpleMob::~SimpleMob() {}
 
 void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
-                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
-    std::cout << "Mob collided" << std::endl;
+                                      RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
         case RealEngine::CollisionType::SOLID:
             break;
-        case RealEngine::CollisionType::HIT:
-            break;
         case RealEngine::CollisionType::PICKABLE:
             break;
         case RealEngine::CollisionType::OTHER:
-            mob_take_damage(registry, collider);
+            break;
+        case RealEngine::CollisionType::PLAYER:
+            mob_take_damage(registry, collider, entity);
+            break;
+        case RealEngine::CollisionType::ALLY_BULLET:
+            mob_take_damage(registry, collider, entity);
+            break;
+        case RealEngine::CollisionType::ENEMY_BULLET:
             break;
         default:
             break;
     }
 }
 
-void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider) {
-    auto* health = registry.get_component<RealEngine::Health>(_entity);
+void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
+    // std::cout << "Mob take damage" << std::endl;
+    // if (*_entity == nullptr) {
+    //     std::cout << "Mob entity is null" << std::endl;
+    //     return;
+    // }
+    // std::cout << "Mob entity: " << *_entity << " take damage" << std::endl;
+    // auto* health = registry.get_component<RealEngine::Health>(*_entity);
+    auto* health = registry.get_component<RealEngine::Health>(entity);
+    auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
 
     if (health) {
         health->damage += 10;
     }
+    if (bulletHealth) {
+        bulletHealth->damage += 10;
+    }
+    std::cout << "Mob took damage" << std::endl;
 }
 }  // namespace rtype
