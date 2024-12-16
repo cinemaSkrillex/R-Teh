@@ -84,22 +84,15 @@ void Sprite::scaleFromSize(const float width, const float height) {
 }
 
 bool Sprite::isTextureOfBounds() {
-    sf::IntRect  rect = _sprite.getTextureRect();
-    if (!_texture)
-        std::cerr << "Error: Null texture in Sprite!" << std::endl;
+    sf::IntRect rect = _sprite.getTextureRect();
+    if (!_texture) std::cerr << "Error: Null texture in Sprite!" << std::endl;
     sf::Vector2u size = _texture->getSize();
-
-    // std::cout << "Texture size: " << size.x << "x" << size.y << std::endl;
-    // std::cout << "Texture rect: " << rect.left << "," << rect.top << "," << rect.width << ","
-    //           << rect.height << std::endl;
 
     // Check if the texture coordinates go out of bounds
     if (rect.left < 0 || rect.top < 0 || rect.left + rect.width >= size.x ||
         rect.top + rect.height > size.y) {
         return true;
     }
-
     return false;
 }
-
 }  // namespace RealEngine

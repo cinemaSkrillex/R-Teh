@@ -38,19 +38,11 @@ target_include_directories(rtype_server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 # Link pthread for Linux
 if(UNIX)
     target_link_libraries(rtype_server pthread)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
-    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server and dl for dynamic loading on Linux   
-    add_executable(testing_rtype_client TestingClientMain.cpp)
-    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client and dl for dynamic loading on Linux
 endif()
 
 # Link ws2_32 for Windows
 if(WIN32)
     target_link_libraries(rtype_server ws2_32)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
-    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server on Windows
-    add_executable(testing_rtype_client TestingClientMain.cpp)
-    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client on Windows
 endif()
 
 # Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server and ../game_engine

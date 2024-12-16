@@ -36,7 +36,6 @@ packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int e
     pkt.start_sequence_nb = start_sequence_nb;
     pkt.end_sequence_nb   = end_sequence_nb;
     pkt.packet_size       = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
-    // std::cout << "Packet size: " << pkt.packet_size << std::endl;
 
     size_t start_idx = sequence_nb * BUFFER_SIZE;
     size_t end_idx   = start_idx + pkt.packet_size;
@@ -49,9 +48,6 @@ packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int e
     }
     pkt.data.assign(message.begin() + start_idx,
                     message.begin() + std::min(end_idx, message.size()));
-
-    // std::cout << "Packet data: " << std::string(pkt.data.begin(), pkt.data.end()) << std::endl;
-    // std::cout << "Packet original data: " << message << std::endl;
 
     pkt.flag     = flag;
     pkt.endpoint = endpoint;
@@ -97,7 +93,6 @@ void PacketManager::retry() {
         {
             std::lock_guard<std::mutex> lock(_retry_queue_mutex);
             for (const auto& pkt : _retry_queue) {
-                // std::cout << "Retrying packet seq nb: " << pkt.sequence_nb << std::endl;
                 send_packet(pkt);
             }
         }
@@ -109,7 +104,6 @@ void PacketManager::retry() {
 void PacketManager::handle_receive(std::size_t bytes_recvd) {
     auto   message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
     packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
-    // std::cout << "Received packet: " << pkt.sequence_nb << std::endl;
 
     switch (pkt.flag) {
         case ACK:
@@ -137,7 +131,6 @@ void PacketManager::handle_ack(const std::string& ack_message) {
     SEQUENCE_TYPE sequence_start  = 0;
     SEQUENCE_TYPE sequence_number = 0;
 
-    // std::cout << "Received ACK message: " << ack_message << std::endl;
     if (ack_message.size() < 4) {
         std::cerr << "Invalid ACK message size" << std::endl;
         return;
@@ -157,7 +150,6 @@ void PacketManager::handle_ack(const std::string& ack_message) {
         for (auto it = _retry_queue.begin(); it != _retry_queue.end();) {
             if (it->sequence_nb == sequence_number && it->start_sequence_nb == sequence_start) {
                 _retry_queue.erase(it);
-                // std::cout << "Retry queue size: " << _retry_queue.size() << std::endl;
                 break;
             }
             ++it;
@@ -178,14 +170,12 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
         // check that the packet is not already in the map
         std::vector<packet> temp_vector = _received_packets[pkt.start_sequence_nb];
         if (std::find(temp_vector.begin(), temp_vector.end(), pkt) != temp_vector.end()) {
-            // std::cout << "Packet already received: " << pkt.sequence_nb << std::endl;
         } else {
             _received_packets[pkt.start_sequence_nb].push_back(pkt);
         }
 
         int final_size    = pkt.end_sequence_nb - pkt.start_sequence_nb + 1;
         int received_size = _received_packets[pkt.start_sequence_nb].size();
-        // std::cout << "Got " << received_size << "/" << final_size << std::endl;
 
         if (received_size == final_size) {
             all_packets_received = true;
@@ -193,7 +183,6 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
     }
 
     if (all_packets_received) {
-        // std::cout << "Reassembling message" << std::endl;
         std::vector<char> complete_data;
         {
             std::lock_guard<std::mutex> lock(_received_packets_mutex);
@@ -207,9 +196,6 @@ void PacketManager::handle_reliable_packet(const packet& pkt) {
                 complete_data.insert(complete_data.end(), packet.data.begin(), packet.data.end());
             }
             _received_packets.erase(pkt.start_sequence_nb);
-            // std::cout << "Reassembled message: "
-            //   << std::string(complete_data.begin(), complete_data.end()) << std::endl;
-            // TODO: handle data
             const std::string message = std::string(complete_data.begin(), complete_data.end());
 
             // Process the message content
@@ -233,7 +219,6 @@ void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endp
     if (_known_clients.find(client_endpoint) != _known_clients.end()) return;
 
     _known_clients.insert(client_endpoint);
-    // std::cout << "New client connected: " << client_endpoint << std::endl;
     // here we used to send test message. TODO test flag to trigger the test
 
     if (_new_client_callback) _new_client_callback(client_endpoint);
@@ -271,7 +256,6 @@ static std::string testPacketManager() {
 
 void PacketManager::handle_test(const asio::ip::udp::endpoint& endpoint) {
     // send reliable packet to the client with message testPacketManager()
-    // std::cout << "Sending test message" << std::endl;
     send_reliable_packet(testPacketManager(), endpoint);
 }
 
@@ -289,10 +273,7 @@ void PacketManager::send_ack(SEQUENCE_TYPE start_sequence_number, SEQUENCE_TYPE 
             "ACK:" + std::to_string(start_sequence_number) + "," + std::to_string(sequence_number);
     }
 
-    // std::cout << "Sending ACK message: " << ack_message << std::endl;
     packet pkt = build_packet(0, 0, 0, ACK, endpoint_, ack_message);
-    // std::cout << "Sending ACK message: " << std::string(pkt.data.begin(), pkt.data.end()) <<
-    // std::endl;
     queue_packet_for_sending(pkt);
 }
 
@@ -302,9 +283,7 @@ void PacketManager::queue_packet_for_sending(const packet& pkt) {
         if (_send_queue_set.find(pkt) == _send_queue_set.end()) {
             _send_queue.emplace_back(pkt);
             _send_queue_set.insert(pkt);
-            // std::cout << "Queued packet for sending seq_nb: " << pkt.sequence_nb << std::endl;
         } else {
-            // std::cout << "Packet already in send queue: " << pkt.sequence_nb << std::endl;
         }
     }
     _send_queue_cv.notify_one();
@@ -312,9 +291,7 @@ void PacketManager::queue_packet_for_sending(const packet& pkt) {
 
 void PacketManager::send_packet(const packet& pkt) {
     const auto buffer = std::make_shared<std::vector<char>>(serialize_packet(pkt));
-    // could work better using sleep_for
     std::this_thread::sleep_for(std::chrono::nanoseconds(100000));
-    // std::cout << "Sending packet seq_nb: " << pkt.sequence_nb << std::endl;
     socket_.async_send_to(asio::buffer(*buffer), pkt.endpoint,
                           [this, buffer](std::error_code ec, std::size_t bytes_sent) {
                               if (ec) {
@@ -327,8 +304,6 @@ void PacketManager::send_packet(const packet& pkt) {
 void PacketManager::send_reliable_packet(const std::string&             message,
                                          const asio::ip::udp::endpoint& endpoint) {
     int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
-    // std::cout << "Sending " << total_packets << " packets" << " size: " << message.size()
-    //   << std::endl;
 
     int start_sequence_nb;
     int end_sequence_nb;

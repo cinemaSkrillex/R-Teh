@@ -51,7 +51,6 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
     registry.add_component(_entity, RealEngine::Rotation{180.f});
-    std::cout << "Mob created id: " << *_entity << std::endl;
 }
 
 SimpleMob::~SimpleMob() {}
@@ -83,13 +82,6 @@ void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
 
 void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                                 RealEngine::Entity entity) {
-    // std::cout << "Mob take damage" << std::endl;
-    // if (*_entity == nullptr) {
-    //     std::cout << "Mob entity is null" << std::endl;
-    //     return;
-    // }
-    // std::cout << "Mob entity: " << *_entity << " take damage" << std::endl;
-    // auto* health = registry.get_component<RealEngine::Health>(*_entity);
     auto* health       = registry.get_component<RealEngine::Health>(entity);
     auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
 
@@ -99,6 +91,5 @@ void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Enti
     if (bulletHealth) {
         bulletHealth->damage += 10;
     }
-    std::cout << "Mob took damage" << std::endl;
 }
 }  // namespace rtype

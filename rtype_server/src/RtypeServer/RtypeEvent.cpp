@@ -17,7 +17,6 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         if (netvar == nullptr) {
             return;
         }
-        // std::cout << "Shoot cooldown: " << std::any_cast<float>(netvar->value) << std::endl;
         if (std::any_cast<float>(netvar->value) > 0) {
             return;
         }

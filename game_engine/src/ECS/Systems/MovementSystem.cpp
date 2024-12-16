@@ -26,8 +26,6 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
         if (velocity->airFrictionForce > 0.0f) {
             applyFriction(*velocity, deltaTime);
         }
-        // std::cout << entity << " Position: " << position->x << " " << position->y
-        //           << " DeltaTime: " << deltaTime << std::endl;
     }
 }
 
@@ -41,9 +39,6 @@ void MovementSystem::update(Registry& registry, std::shared_ptr<Entity> entity, 
     if (!position || !velocity) {
         return;
     }
-    // std::cout << "Updating entity " << entity << std::endl;
-    // std::cout << "Position: " << position->x << " " << position->y << std::endl;
-    // std::cout << "Velocity: " << velocity->vx << " " << velocity->vy << std::endl;
     limitSpeed(*velocity);
     if (position && velocity) {
         position->x += velocity->vx * deltaTime;
@@ -52,8 +47,6 @@ void MovementSystem::update(Registry& registry, std::shared_ptr<Entity> entity, 
     if (velocity->airFrictionForce > 0.0f) {
         applyFriction(*velocity, deltaTime);
     }
-    // std::cout << entity << " Position: " << position->x << " " << position->y
-    //           << " DeltaTime: " << deltaTime << std::endl;
 }
 
 void MovementSystem::limitSpeed(Velocity& velocity) {

@@ -12,7 +12,6 @@ void rtype::Game::handleSignal(std::string signal) {
 
     // if signal contains "Event:Player_position" don't print it
     if (signal.find("Event:Entity_position") == std::string::npos) {
-        std::cout << "[" << signal << "]" << std::endl;
     }
     std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
 
@@ -151,19 +150,13 @@ void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> p
     try {
         auto newEntity = _registry.spawn_entity();
         for (auto& [key, value] : parsedPacket) {
-            std::cout << key << " : " << value << std::endl;
             if (_componentFunctions.find(key) != _componentFunctions.end()) {
                 _componentFunctions[key](value, newEntity);
-            } else {
-                std::cout << "No component found for key: " << key << std::endl;
             }
         }
         if (parsedPacket.find("Uuid") != parsedPacket.end()) {
-            std::cout << "[" << "Uuid found in parsedPacket:" << parsedPacket.at("Uuid") << "]"
-                      << std::endl;
             long int uuid = std::stol(parsedPacket.at("Uuid"));
             _entities.emplace(uuid, newEntity);
-            std::cout << "Entity added to entities" << _entities.size() << std::endl;
         } else {
             std::cerr << "Uuid not found in parsedPacket" << std::endl;
         }
@@ -179,7 +172,6 @@ void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::strin
             std::vector<long int> ids = PeterParser::parseIds(value);
             // delete entities with ids
             for (long int id : ids) {
-                std::cout << "Deleting entity with id: " << id << std::endl;
                 auto it = _entities.find(id);
                 if (it != _entities.end()) {
                     _registry.remove_entity(*it->second);

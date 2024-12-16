@@ -17,7 +17,7 @@
 
 class PacketQueueManager {
   public:
-    ~PacketQueueManager() { std::cout << "deleting PacketQueueManager" << std::endl; }
+    ~PacketQueueManager() {}
     void enqueue(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
     std::pair<packet, asio::ip::udp::endpoint> dequeue();
     bool                                       empty();

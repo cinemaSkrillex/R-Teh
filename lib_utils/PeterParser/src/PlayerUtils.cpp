@@ -69,8 +69,6 @@ std::vector<PlayerData> parsePlayerList(const std::string& playerList) {
                 PlayerData player = parsePlayerData(match);
                 // sanitizing the UUID is done inside "parsePlayerData"
                 players.push_back(player);
-                std::cout << "Parsed player - UUID: " << player.uuid << ", Position: ("
-                          << player.position.x << ", " << player.position.y << ")" << std::endl;
             } else {
                 std::cerr << "Malformed player data: " << match.str() << std::endl;
             }
@@ -131,7 +129,7 @@ std::vector<long int> parseIds(const std::string& ids) {
     cleanedIds.erase(std::remove(cleanedIds.begin(), cleanedIds.end(), '['), cleanedIds.end());
     cleanedIds.erase(std::remove(cleanedIds.begin(), cleanedIds.end(), ']'), cleanedIds.end());
     std::replace(cleanedIds.begin(), cleanedIds.end(), ',', ' ');
-    std::istringstream stream(cleanedIds);
+    std::istringstream    stream(cleanedIds);
     std::vector<long int> values;
     long int              value;
     while (stream >> value) {

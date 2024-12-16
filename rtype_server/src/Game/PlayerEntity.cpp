@@ -101,8 +101,6 @@ void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Enti
     if (playerHealth) {
         if (colliderDamage) {
             playerHealth->damage += colliderDamage->amount;
-            std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;
-            std::cout << "Player health: " << playerHealth->amount << std::endl;
         }
     }
 }

@@ -18,7 +18,6 @@ TCPPacketManager::TCPPacketManager(Role role)
 void TCPPacketManager::start_server(unsigned short port) {
     auto acceptor = std::make_shared<asio::ip::tcp::acceptor>(
         _io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
-    std::cout << "Server listening on port " << port << std::endl;
 
     accept_clients(acceptor);
     _io_thread = std::thread([this]() { _io_context.run(); });
@@ -29,8 +28,6 @@ void TCPPacketManager::start_client(const std::string& host, short port) {
     asio::ip::tcp::resolver resolver(_io_context);
     auto                    endpoints = resolver.resolve(host, std::to_string(port));
     asio::connect(*_socket, endpoints);
-
-    std::cout << "Connected to server at " << host << ":" << port << std::endl;
 
     _io_thread = std::thread([this]() { _io_context.run(); });
     _io_thread.detach();
@@ -103,12 +100,7 @@ void TCPPacketManager::send_packet(std::shared_ptr<asio::ip::tcp::socket> socket
         asio::async_write(
             *socket, asio::buffer(*buffer),
             [this, buffer](const asio::error_code& ec, std::size_t bytes_transferred) {
-                if (!ec) {
-                    std::cout << "Successfully sent " << bytes_transferred << " bytes."
-                              << std::endl;
-                } else {
-                    std::cerr << "Failed to send packet: " << ec.message() << std::endl;
-                }
+                if (ec) std::cerr << "Failed to send packet: " << ec.message() << std::endl;
             });
     } catch (const std::exception& e) {
         std::cerr << "Failed to send packet: " << e.what() << std::endl;
@@ -120,16 +112,12 @@ void TCPPacketManager::send_message_to_server(const std::string& message) {
         std::cerr << "Socket is not open, cannot send message." << std::endl;
         return;
     }
-    std::cout << "socket endpoint: " << _socket->remote_endpoint() << std::endl;
     auto message_ptr = std::make_shared<std::string>(message);
     // TODO: send a message in a PACKET (BUILD PACKET TODO)
     asio::async_write(*_socket, asio::buffer(*message_ptr),
                       [message_ptr](asio::error_code ec, std::size_t /*length*/) {
-                          if (!ec) {
-                              std::cout << "Message sent successfully." << std::endl;
-                          } else {
+                          if (ec)
                               std::cerr << "Failed to send message: " << ec.message() << std::endl;
-                          }
                       });
 }
 
@@ -151,7 +139,6 @@ void TCPPacketManager::listen_for_server_data() {
 }
 
 void TCPPacketManager::handle_receive(std::size_t bytes_recvd) {
-    std::cout << "Received " << bytes_recvd << " bytes." << std::endl;
     if (bytes_recvd == 0) {
         std::cerr << "Received 0 bytes." << std::endl;
         return;
@@ -171,8 +158,6 @@ void TCPPacketManager::listen_for_client_data(
         asio::buffer(*buffer),
         [this, client_socket, buffer](asio::error_code ec, std::size_t length) {
             if (!ec) {
-                std::cout << "Received from client: " << std::string(buffer->data(), length)
-                          << std::endl;
                 listen_for_client_data(client_socket);
             } else {
                 if (ec != asio::error::eof)
@@ -190,7 +175,6 @@ void TCPPacketManager::listen_for_client_data(
 void TCPPacketManager::close() {
     if (_socket->is_open()) {
         _socket->close();
-        std::cout << "Socket closed." << std::endl;
     } else {
         std::cerr << "Socket was already closed." << std::endl;
     }
