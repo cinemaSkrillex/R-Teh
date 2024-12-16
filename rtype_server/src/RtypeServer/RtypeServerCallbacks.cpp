@@ -57,14 +57,16 @@ void RtypeServer::initCallbacks() {
                 _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
             if (!velocity) continue;
 
-            // std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
-            // std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
+            std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            std::cout << "Mob uuid: " << *mob << std::endl;
             std::string velocityStr =
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
                 "}," + std::to_string(velocity->airFrictionForce);
             std::string MobMessage = "Event:New_entity";
             MobMessage += " Type:mob";
+            MobMessage += " Uuid:" + std::to_string(*mob);
             MobMessage += " Sprite:enemy";
             MobMessage += " Position:(" + std::to_string(position->x) + "," +
                           std::to_string(position->y) + ")";

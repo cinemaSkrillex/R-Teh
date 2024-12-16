@@ -30,7 +30,6 @@ void RtypeServer::run() {
                     }
                 }
             }
-
             _game_instance->run(_deltaTime);
         }
         int server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
@@ -38,9 +37,9 @@ void RtypeServer::run() {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (const auto& player : _players) {
                 broadcastPlayerState(player.second);
-                // for (const auto entity : _server_entities) {
-                //     broadcastEntityState(entity.first, entity.second);
-                // }
+                for (const auto& mob : _game_instance->getSimpleMobs()) {
+                    broadcastEntityState(*mob, mob);
+                }
             }
         }
     }

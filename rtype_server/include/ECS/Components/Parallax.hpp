@@ -12,8 +12,9 @@
 namespace RealEngine {
 struct Parallax {
     // set speed multiplier for parallax effect
-    float        speed;
+    float speed;
     // base size of the parallax object before scaling
     sf::Vector2f size;
+    bool         initialized = false;
 };
 }  // namespace RealEngine

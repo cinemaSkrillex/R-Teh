@@ -30,19 +30,19 @@ void GameInstance::run(float deltaTime) {
     //     }
     //     _movementSystem.update(_registry, mob, deltaTime);
     // }
-    _simpleMobs.erase(
-        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
-                    [&](const auto& mob) {
-                        return _registry.get_component<RealEngine::Health>(mob) == nullptr;
-                    }),
-        _simpleMobs.end());
+    _simpleMobs.erase(std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
+                                     [&](const auto& mob) {
+                                         return _registry.get_component<RealEngine::Health>(mob) ==
+                                                nullptr;
+                                     }),
+                      _simpleMobs.end());
 
-    _bullets.erase(
-        std::remove_if(_bullets.begin(), _bullets.end(),
-                    [&](const auto& bullet) {
-                        return _registry.get_component<RealEngine::Health>(bullet) == nullptr;
-                    }),
-        _bullets.end());
+    _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
+                                  [&](const auto& bullet) {
+                                      return _registry.get_component<RealEngine::Health>(bullet) ==
+                                             nullptr;
+                                  }),
+                   _bullets.end());
 
     // Then update remaining mobs
     for (auto& mob : _simpleMobs) {
@@ -103,10 +103,10 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2
     std::shared_ptr<rtype::SimpleMob> mob =
         std::make_shared<rtype::SimpleMob>(_registry, position, direction, speed, _simpleMobSprite);
     _simpleMobs.push_back(mob->getEntity());
-    return mob->getEntity();
+    return _simpleMobs.back();
 }
 
-void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
+void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
@@ -114,14 +114,14 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float
     auto* velocity     = _registry.get_component<RealEngine::Velocity>(player);
     auto* position     = _registry.get_component<RealEngine::Position>(player);
 
-    if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
-    if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
-    if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
-    if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
-    velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
-    velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
+    // if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
+    // if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
+    // if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
+    // if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
+    // velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
+    // velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {
-    // Do something
+    // Do somethin
 }

@@ -7,6 +7,9 @@ project(rtype_project)
 if (UNIX)
     set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
+    # You can add all of the standard flags here
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic -pedantic-errors -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 endif()
 
 if (WIN32)

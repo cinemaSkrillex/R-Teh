@@ -30,7 +30,7 @@ class Game {
     void                                handleSignal(std::string signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
-    sf::Vector2f                        getPlayerNormalizedDirection();
+    sf::IntRect                         getPlayerNormalizedDirection();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;
@@ -63,6 +63,7 @@ class Game {
     void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleEntityPosition(std::unordered_map<std::string, std::string> parsedPacket);
     //
 
     // ComponentFunctions
@@ -96,18 +97,19 @@ class Game {
     RealEngine::RadiusSystem          _radiusSystem;
     RealEngine::DestructibleSystem    _destructibleSystem;
     RealEngine::HealthSystem          _healthSystem;
+    RealEngine::ParallaxSystem        _parallaxSystem;
     rtype::Controls                   _controls;
 
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _players;
-    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _enemies;
-    std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
-    RealEngine::Sprite                                            _upSpaceship;
-    RealEngine::Sprite                                            _idleSpaceship;
-    RealEngine::Sprite                                            _downSpaceship;
-    RealEngine::Sprite                                            _otherPlayer;
-    std::unordered_map<std::string, RealEngine::Sprite>           _spaceshipSheet;
-    std::shared_ptr<RealEngine::Entity>                           _entity2;
-    std::shared_ptr<RealEngine::Entity>                           _background;
+    std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>      _players;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
+    RealEngine::Sprite                                                _upSpaceship;
+    RealEngine::Sprite                                                _idleSpaceship;
+    RealEngine::Sprite                                                _downSpaceship;
+    RealEngine::Sprite                                                _otherPlayer;
+    std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
+    std::shared_ptr<RealEngine::Entity>                               _entity2;
+    std::shared_ptr<RealEngine::Entity>                               _background;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
     long int                                         _localPlayerUUID;

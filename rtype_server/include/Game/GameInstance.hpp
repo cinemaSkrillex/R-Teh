@@ -28,7 +28,7 @@ class GameInstance {
                                                         sf::Vector2f direction, float speed);
     std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position,
                                                            sf::Vector2f direction, float speed);
-    void movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime);
+    void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
     void run(float deltaTime);
