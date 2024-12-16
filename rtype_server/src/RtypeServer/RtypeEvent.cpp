@@ -21,7 +21,7 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         if (std::any_cast<float>(netvar->value) > 0) {
             return;
         }
-        netvar->value = 0.1f;
+        netvar->value = 0.5f;
 
         const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
 

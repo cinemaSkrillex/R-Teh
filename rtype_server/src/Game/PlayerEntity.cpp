@@ -29,9 +29,9 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_playerEntity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
     registry.add_component(_playerEntity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_playerEntity, RealEngine::Controllable{});
-    registry.add_component(_playerEntity, RealEngine::Health{10, 200});
+    registry.add_component(_playerEntity, RealEngine::Health{50, 200});
     registry.add_component(_playerEntity,
-                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
+                           RealEngine::Netvar{"PLAYER", "shootCooldown", 0.5f, updateCooldown});
     registry.add_component(
         _playerEntity,
         RealEngine::SpriteSheet{
@@ -69,7 +69,6 @@ void Player::player_collision_handler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::OTHER:
             break;
         case RealEngine::CollisionType::ENEMY:
-            player_take_damage(registry, collider, entity);
             break;
         case RealEngine::CollisionType::ALLY_BULLET:
             break;
@@ -100,10 +99,10 @@ void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Enti
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth) {
-        std::cout << "Player took damage" << std::endl;
         if (colliderDamage) {
             playerHealth->damage += colliderDamage->amount;
             std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;
+            std::cout << "Player health: " << playerHealth->amount << std::endl;
         }
     }
 }
