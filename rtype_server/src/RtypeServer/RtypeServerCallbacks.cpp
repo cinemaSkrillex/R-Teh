@@ -56,10 +56,11 @@ void RtypeServer::initCallbacks() {
             auto* velocity =
                 _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
             if (!velocity) continue;
+            std::cout << "CC JE SUIS LA" << std::endl;
 
-            std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
-            std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
-            std::cout << "Mob uuid: " << *mob << std::endl;
+            // std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
+            // std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
+            // std::cout << "Mob uuid: " << *mob << std::endl;
             std::string velocityStr =
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
@@ -74,7 +75,7 @@ void RtypeServer::initCallbacks() {
             MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
             MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
             MobMessage += " Drawable:true";
-            _server->send_unreliable_packet(MobMessage, sender);
+            _server->send_reliable_packet(MobMessage, sender);
         }
 
         long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(

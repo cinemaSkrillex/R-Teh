@@ -11,8 +11,9 @@ void rtype::Game::handleSignal(std::string signal) {
     if (signal.empty()) return;
 
     // if signal contains "Event:Player_position" don't print it
-    // if (signal.find("Event:Player_position") == std::string::npos)
-    //     std::cout << "[" << signal << "]" << std::endl;
+    if (signal.find("Event:Entity_position") == std::string::npos) {
+        std::cout << "[" << signal << "]" << std::endl;
+    }
     std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
 
     if (parsedPacket.find("Event") != parsedPacket.end()) {
