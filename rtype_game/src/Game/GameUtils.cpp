@@ -184,6 +184,17 @@ void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::strin
                 if (it != _entities.end()) {
                     _registry.remove_entity(*it->second);
                     _entities.erase(it);
+                    continue;
+                }
+                // if not found try to find it inside the players
+                auto playerIt = _players.find(id);
+                if (playerIt != _players.end()) {
+                    _registry.remove_entity(*playerIt->second);
+                    _players.erase(playerIt);
+                }
+                if (_localPlayerUUID == id) {
+                    _registry.remove_entity(*_entity2);
+                    _entity2.reset();
                 }
             }
             break;
