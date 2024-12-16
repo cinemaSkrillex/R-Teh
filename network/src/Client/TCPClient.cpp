@@ -13,7 +13,6 @@ TCPClient::TCPClient(const std::string& host, unsigned short port)
 }
 
 TCPClient::~TCPClient() {
-    std::cout << "closing packet manager" << std::endl;
     _packet_manager->close();
 }
 

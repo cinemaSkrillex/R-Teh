@@ -33,7 +33,6 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
     registry.add_component(_bulletEntity, RealEngine::AutoDestructible{5});
     registry.add_component(_bulletEntity, RealEngine::Damage{10});
     registry.add_component(_bulletEntity, RealEngine::Health{10, 20});
-    std::cout << "Bullet created id: " << *_bulletEntity << std::endl;
 }
 
 Bullet::~Bullet() {}
@@ -68,18 +67,10 @@ void Bullet::bullet_collision_handler(RealEngine::CollisionType collisionType,
 
 void Bullet::bullet_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                                 RealEngine::Entity entity) {
-    // std::cout << "Bullet take damage" << std::endl;
-    // if (_bulletEntity == nullptr) {
-    //     std::cout << "Bullet entity is null" << std::endl;
-    //     return;
-    // }
-    // std::cout << "Bullet entity: " << *_bulletEntity << " take damage" << std::endl;
-    // auto* health = registry.get_component<RealEngine::Health>(*_bulletEntity);
     auto* health = registry.get_component<RealEngine::Health>(entity);
 
     if (health) {
         health->damage += 10;
     }
-    std::cout << "Bullet took damage" << std::endl;
 }
 }  // namespace rtype

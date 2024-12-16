@@ -9,11 +9,6 @@
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
-        std::cout << "Callback: New client connected from " << sender.address() << std::endl;
-
-        // UUIDGenerator uuid_generator;
-        // long int      uuid = uuid_generator.generate_long();
-        // std::cout << "Generated UUID: " << uuid << std::endl;
         sf::Vector2f player_start_position =
             _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
         // create Player entity
@@ -26,7 +21,6 @@ void RtypeServer::initCallbacks() {
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
             if (client != sender) {
-                // std::cout << "Player start position: " << PLAYER_START_POSITION.x << std::endl;
                 const std::string message =
                     "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
                     std::to_string(player_start_position.x) + "," +

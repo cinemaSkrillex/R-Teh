@@ -19,7 +19,6 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
 }
 
 UDPClient::~UDPClient() {
-    std::cout << "deleting UDPClient" << std::endl;
     _io_context.stop();
     if (_io_context_thread.joinable()) {
         _io_context_thread.join();

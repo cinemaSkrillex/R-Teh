@@ -63,7 +63,6 @@ class ServerConfig {
             if (std::getline(lineStream, key, '=') && std::getline(lineStream, value)) {
                 key   = trim(key);
                 value = trim(value);
-                std::cout << key << "=" << value << std::endl;
                 _configMap[key] = value;
             }
         }
@@ -87,9 +86,7 @@ template <>
 inline sf::Vector2f ServerConfig::convert<sf::Vector2f>(const std::string& value) const {
     std::istringstream iss(value);
     std::string        xStr, yStr;
-    std::cout << "Value: " << value << std::endl;
     if (std::getline(iss, xStr, ',') && std::getline(iss, yStr)) {
-        std::cout << "X: " << xStr << " Y: " << yStr << std::endl;
         return sf::Vector2f(std::stof(xStr), std::stof(yStr));
     } else {
         throw std::runtime_error("Invalid format for sf::Vector2f: " + value);

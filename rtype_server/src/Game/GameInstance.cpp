@@ -29,19 +29,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
                              destroyedHealth.end());
 
-    // for (auto entity : destroyedEntities) {
-    //     std::cout << "Entity " << entity << " destroyed" << std::endl;
-    // }
-
     _netvarSystem.update(_registry, deltaTime);
-    // for (auto& mob : _simpleMobs) {
-    //     if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {
-    //         _simpleMobs.erase(std::remove(_simpleMobs.begin(), _simpleMobs.end(), mob),
-    //                           _simpleMobs.end());
-    //         continue;
-    //     }
-    //     _movementSystem.update(_registry, mob, deltaTime);
-    // }
     _simpleMobs.erase(std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
                                      [&](const auto& mob) {
                                          return _registry.get_component<RealEngine::Health>(mob) ==
@@ -65,14 +53,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     for (auto& bullet : _bullets) {
         _movementSystem.update(_registry, bullet, deltaTime);
     }
-    // for (auto& bullet : _bullets) {
-    //     if (_registry.get_component<RealEngine::Health>(bullet) == nullptr) {
-    //         _bullets.erase(std::remove(_bullets.begin(), _bullets.end(), bullet),
-    //                        _bullets.end());
-    //         continue;
-    //     }
-    //     _movementSystem.update(_registry, bullet, deltaTime);
-    // }
     return destroyedEntities;
 };
 

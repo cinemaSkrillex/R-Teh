@@ -27,12 +27,6 @@ Entity ManageEntities::entity_from_index(std::size_t idx) { return Entity{idx}; 
 void ManageEntities::kill_entity(Entity const& e) { _dead_entities.push_back(e); }
 
 bool ManageEntities::is_valid(Entity const& e) const {
-    // std::cout << "e: " << e << " next_entity: " << _next_entity << std::endl;
-    // std::cout << "dead_entities: ";
-    // for (auto& dead : _dead_entities) {
-    //     std::cout << dead << " ";
-    // }
-    // std::cout << "end" << std::endl;
     return e < _next_entity &&
            std::find(_dead_entities.begin(), _dead_entities.end(), e) == _dead_entities.end();
 }

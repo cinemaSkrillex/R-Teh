@@ -25,7 +25,6 @@ UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
 }
 
 UDPServer::~UDPServer() {
-    std::cout << "deleting UDPServer";
     _io_context.stop();
     if (_io_context_thread.joinable()) {
         _io_context_thread.join();

@@ -37,7 +37,6 @@ GameInstance::GameInstance()
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
     init_mobs();
-    std::cout << "GameInstance created" << std::endl;
 }
 
 void GameInstance::init_components() {

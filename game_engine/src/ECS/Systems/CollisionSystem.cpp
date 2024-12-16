@@ -19,14 +19,6 @@ bool isCollidingWithOthers(std::optional<Collision> collision, Registry& registr
 
         if (currentCollision->id.compare(collision->id) == 0) continue;
         if (collision->bounds.intersects(currentCollision->bounds)) {
-            std::cout << "Collision: " << collision->id << " with: " << currentCollision->id
-                      << std::endl;
-            // std::cout << "Collision: " << collision->bounds.left << " " << collision->bounds.top
-            //           << " " << collision->bounds.width << " " << collision->bounds.height
-            //           << std::endl;
-            // std::cout << "Collision: " << currentCollision->bounds.left << " "
-            //           << currentCollision->bounds.top << " " << currentCollision->bounds.width
-            //           << " " << currentCollision->bounds.height << std::endl;
             if (collision->collisionActionHandler) {
                 collision->collisionActionHandler(currentCollision->type, registry, other, entity);
             }
@@ -50,8 +42,6 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         if (sprite) collision->bounds = sprite->sprite.getBounds();
         if (spritesheet)
             collision->bounds = spritesheet->sprites.at(spritesheet->spriteIndex).getBounds();
-        // std::cout << "bounds: " << collision->bounds.left << " " << collision->bounds.top << " "
-        //           << collision->bounds.width << " " << collision->bounds.height << std::endl;
         collision->isColliding =
             isCollidingWithOthers(*collision, registry, entity);
     }

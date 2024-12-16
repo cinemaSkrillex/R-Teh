@@ -4,7 +4,6 @@ namespace rtype {
 
 void Game::player_collision_handler(RealEngine::CollisionType collisionType,
                                       RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
-    std::cout << "Player collided" << std::endl;
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -49,7 +48,6 @@ void Game::player_take_damage(RealEngine::Entity collider) {
     if (playerHealth) {
         if (colliderDamage) {
             playerHealth->damage += colliderDamage->amount;
-            std::cout << "Player took " << colliderDamage->amount << " damage" << std::endl;
         }
     }
 }
