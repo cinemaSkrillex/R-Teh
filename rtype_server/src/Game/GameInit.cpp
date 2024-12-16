@@ -29,7 +29,8 @@ GameInstance::GameInstance()
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
-    // _eyeBomberSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _eyeBomberSprite.setScale(GAME_SCALE, GAME_SCALE);
+    _bulletSprite.setScale(GAME_SCALE, GAME_SCALE);
     // _eyeBomberSprite.setOrigin(15, 10);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("up", _upSpaceship);

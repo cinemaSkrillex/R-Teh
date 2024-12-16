@@ -12,10 +12,15 @@ namespace rtype {
 SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
                      float speed, float destructTimer, RealEngine::Sprite& mobSprite)
     : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
+    _mobSpriteSheet.emplace("idle", mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity,
         RealEngine::Velocity{direction.x * speed, direction.y * speed, {500.f, 500.f}, 0.f});
+    // registry.add_component(
+    //     _entity,
+    //     RealEngine::SpriteSheet{_mobSpriteSheet, "idle", 0, {15, 10}, false, true, 100, {11,
+    //     4}});
     registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
@@ -45,6 +50,7 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_entity, RealEngine::AutoDestructible{destructTimer});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
+    registry.add_component(_entity, RealEngine::Rotation{180.f});
     std::cout << "Mob created id: " << *_entity << std::endl;
 }
 

@@ -24,7 +24,8 @@ class SimpleMob {
                          RealEngine::Entity entity);
 
    private:
-    std::shared_ptr<RealEngine::Entity> _entity;
-    RealEngine::Sprite&                 _mobSprite;
+    std::shared_ptr<RealEngine::Entity>                 _entity;
+    RealEngine::Sprite&                                 _mobSprite;
+    std::unordered_map<std::string, RealEngine::Sprite> _mobSpriteSheet;
 };
 }  // namespace rtype
