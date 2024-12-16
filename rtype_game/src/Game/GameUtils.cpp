@@ -152,7 +152,6 @@ void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> p
         if (parsedPacket.find("Uuid") != parsedPacket.end()) {
             long int uuid = std::stol(parsedPacket.at("Uuid"));
             if (_entities.find(uuid) != _entities.end()) {
-                std::cerr << "Entity already exists" << std::endl;
                 return;
             }
             auto newEntity = _registry.spawn_entity();
