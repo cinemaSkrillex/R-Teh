@@ -78,6 +78,8 @@ class Game {
                                  std::shared_ptr<RealEngine::Entity> entity);
     void createAutoDestrcutibleComponent(const std::string&                  value,
                                          std::shared_ptr<RealEngine::Entity> entity);
+    void createRotationComponent(const std::string&                  value,
+                                 std::shared_ptr<RealEngine::Entity> entity);
     void createCollisionComponent(const std::string&                  value,
                                   std::shared_ptr<RealEngine::Entity> entity);
     // don't need more for now but can add more
@@ -101,7 +103,7 @@ class Game {
     RealEngine::ParallaxSystem        _parallaxSystem;
     rtype::Controls                   _controls;
 
-    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>>  _players;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
     RealEngine::Sprite                                                _upSpaceship;
@@ -138,6 +140,10 @@ class Game {
             {"AutoDestructible",
              [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
                  createAutoDestrcutibleComponent(value, entity);
+             }},
+            {"Rotation",
+             [this](const std::string& value, std::shared_ptr<RealEngine::Entity> entity) {
+                 createRotationComponent(value, entity);
              }},
             // {"Collision", [this](const std::string& value, std::shared_ptr<RealEngine::Entity>
             // entity) {

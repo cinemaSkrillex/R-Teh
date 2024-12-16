@@ -56,7 +56,8 @@ void RtypeServer::initCallbacks() {
             auto* velocity =
                 _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
             if (!velocity) continue;
-            std::cout << "CC JE SUIS LA" << std::endl;
+            auto* rotation =
+                _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
 
             // std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
             // std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
@@ -74,7 +75,9 @@ void RtypeServer::initCallbacks() {
             MobMessage += " Velocity:(" + velocityStr + ")";
             MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
             MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
+            if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
             MobMessage += " Drawable:true";
+
             _server->send_reliable_packet(MobMessage, sender);
         }
 

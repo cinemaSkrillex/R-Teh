@@ -140,6 +140,11 @@ void rtype::Game::createAutoDestrcutibleComponent(const std::string&            
     _registry.add_component(entity, RealEngine::AutoDestructible{std::stof(value)});
 }
 
+void rtype::Game::createRotationComponent(const std::string&                  value,
+                                          std::shared_ptr<RealEngine::Entity> entity) {
+    _registry.add_component(entity, RealEngine::Rotation{std::stof(value)});
+}
+
 // TODO: add create collision and type component functions
 
 void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
