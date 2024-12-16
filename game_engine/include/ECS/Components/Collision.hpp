@@ -15,15 +15,15 @@
 
 namespace RealEngine {
 
-enum class CollisionType { INACTIVE, SOLID, HIT, PICKABLE, OTHER };
+enum class CollisionType { INACTIVE, SOLID, PICKABLE, OTHER, PLAYER, ENEMY, ALLY_BULLET, ENEMY_BULLET };
 
 struct Collision {
     sf::FloatRect bounds;
     std::string   id;
     bool          isColliding = false;
     CollisionType type;
-    std::function<void(CollisionType collisionType, Registry& registry, Entity collider)>
-        collisionActionHandler = [](CollisionType, Registry&, Entity) {};
+    std::function<void(CollisionType collisionType, Registry& registry, Entity collider, Entity entity)>
+        collisionActionHandler = [](CollisionType, Registry&, Entity, Entity) {};
     // sf::Vector2f size; for later.
 };
 }  // namespace RealEngine

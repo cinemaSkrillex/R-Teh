@@ -11,12 +11,11 @@ namespace RealEngine {
 
 CollisionSystem::CollisionSystem() {}
 
-bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Collision>& collisions,
-                           Registry& registry) {
+bool isCollidingWithOthers(std::optional<Collision> collision, Registry& registry, Entity entity) {
     auto entities = registry.view<Collision>();
 
-    for (auto entity : entities) {
-        auto* currentCollision = registry.get_component<Collision>(entity);
+    for (auto other : entities) {
+        auto* currentCollision = registry.get_component<Collision>(other);
 
         if (currentCollision->id.compare(collision->id) == 0) continue;
         if (collision->bounds.intersects(currentCollision->bounds)) {
@@ -29,7 +28,7 @@ bool isCollidingWithOthers(std::optional<Collision> collision, SparseArray<Colli
             //           << currentCollision->bounds.top << " " << currentCollision->bounds.width
             //           << " " << currentCollision->bounds.height << std::endl;
             if (collision->collisionActionHandler) {
-                collision->collisionActionHandler(currentCollision->type, registry, entity);
+                collision->collisionActionHandler(currentCollision->type, registry, other, entity);
             }
             return true;
         }
@@ -54,7 +53,7 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         // std::cout << "bounds: " << collision->bounds.left << " " << collision->bounds.top << " "
         //           << collision->bounds.width << " " << collision->bounds.height << std::endl;
         collision->isColliding =
-            isCollidingWithOthers(*collision, registry.get_components<Collision>(), registry);
+            isCollidingWithOthers(*collision, registry, entity);
     }
 }
 }  // namespace RealEngine

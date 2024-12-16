@@ -20,20 +20,21 @@ GameInstance::GameInstance()
       _netvarSystem() {
     init_components();
     init_systems();
-    init_mobs();
     init_textures();
     _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
     _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
     _bulletSprite  = RealEngine::Sprite(_textures["bullet"]);
+    _simpleMobSprite = RealEngine::Sprite(_textures["enemy"]);
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
-    _eyeBomberSprite.setScale(GAME_SCALE, GAME_SCALE);
-    _eyeBomberSprite.setOrigin(15, 10);
+    // _eyeBomberSprite.setScale(GAME_SCALE, GAME_SCALE);
+    // _eyeBomberSprite.setOrigin(15, 10);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
+    init_mobs();
     std::cout << "GameInstance created" << std::endl;
 }
 

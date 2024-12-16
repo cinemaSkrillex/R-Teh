@@ -38,42 +38,54 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
             _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
     registry.add_component(
         _playerEntity,
-        RealEngine::Collision{{0.0f, 0.0f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-                              "spaceship",
-                              false,
-                              RealEngine::CollisionType::OTHER,
-                              [this](RealEngine::CollisionType collisionType,
-                                     RealEngine::Registry& registry, RealEngine::Entity collider) {
-                                  player_collision_handler(collisionType, registry, collider);
-                              }});
+        RealEngine::Collision{
+            {0.0f, 0.0f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+            "spaceship",
+            false,
+            RealEngine::CollisionType::PLAYER,
+            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                   RealEngine::Entity collider, RealEngine::Entity entity) {
+                player_collision_handler(collisionType, registry, collider, entity);
+            }});
 }
 
-Player::~Player() {}
+Player::~Player() { std::cout << "Player destroyed" << std::endl; }
 
 void Player::player_collision_handler(RealEngine::CollisionType collisionType,
-                                      RealEngine::Registry& registry, RealEngine::Entity collider) {
-    std::cout << "Player collided" << std::endl;
+                                      RealEngine::Registry& registry, RealEngine::Entity collider,
+                                      RealEngine::Entity entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
-            return;
             break;
         case RealEngine::CollisionType::SOLID:
-            player_collide_with_ground(registry);
+            player_collide_with_ground(registry, entity);
             break;
-        case RealEngine::CollisionType::HIT:
-            player_take_damage(registry, collider);
-            break;
+        // case RealEngine::CollisionType::HIT:
+        //     player_take_damage(registry, collider);
+        //     break;
         case RealEngine::CollisionType::PICKABLE:
-            return;
+            // handle pickable
+            break;
+        case RealEngine::CollisionType::OTHER:
+            break;
+        case RealEngine::CollisionType::ENEMY:
+            player_take_damage(registry, collider, entity);
+            break;
+        case RealEngine::CollisionType::ALLY_BULLET:
+            break;
+        case RealEngine::CollisionType::ENEMY_BULLET:
+            player_take_damage(registry, collider, entity);
             break;
         default:
             break;
     }
 }
 
-void Player::player_collide_with_ground(RealEngine::Registry& registry) {
-    auto* playerPosition = registry.get_component<RealEngine::Position>(*_playerEntity);
-    auto* playerVelocity = registry.get_component<RealEngine::Velocity>(*_playerEntity);
+void Player::player_collide_with_ground(RealEngine::Registry& registry, RealEngine::Entity entity) {
+    // auto* playerPosition = registry.get_component<RealEngine::Position>(*_playerEntity);
+    // auto* playerVelocity = registry.get_component<RealEngine::Velocity>(*_playerEntity);
+    auto* playerPosition = registry.get_component<RealEngine::Position>(entity);
+    auto* playerVelocity = registry.get_component<RealEngine::Velocity>(entity);
 
     playerVelocity->vy = 0;
     playerVelocity->vx = 0;
@@ -81,8 +93,10 @@ void Player::player_collide_with_ground(RealEngine::Registry& registry) {
     playerPosition->x -= 1;
 }
 
-void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider) {
-    auto* playerHealth   = registry.get_component<RealEngine::Health>(*_playerEntity);
+void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+                                RealEngine::Entity entity) {
+    // auto* playerHealth   = registry.get_component<RealEngine::Health>(*_playerEntity);
+    auto* playerHealth = registry.get_component<RealEngine::Health>(entity);
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth) {

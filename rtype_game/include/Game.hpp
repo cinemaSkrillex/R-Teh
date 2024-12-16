@@ -45,7 +45,8 @@ class Game {
     void init_sprites();
 
     void player_collision_handler(RealEngine::CollisionType collisionType,
-                                  RealEngine::Registry& registry, RealEngine::Entity collider);
+                                  RealEngine::Registry& registry, RealEngine::Entity collider,
+                                  RealEngine::Entity entity);
     void player_collide_with_ground();
     void player_take_damage(RealEngine::Entity collider);
 

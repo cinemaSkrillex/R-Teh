@@ -3,19 +3,29 @@
 namespace rtype {
 
 void Game::player_collision_handler(RealEngine::CollisionType collisionType,
-                                    RealEngine::Registry& registry, RealEngine::Entity collider) {
+                                      RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
+    std::cout << "Player collided" << std::endl;
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
-            return;
             break;
         case RealEngine::CollisionType::SOLID:
             player_collide_with_ground();
             break;
-        case RealEngine::CollisionType::HIT:
+        // case RealEngine::CollisionType::HIT:
+        //     player_take_damage(registry, collider);
+        //     break;
+        case RealEngine::CollisionType::PICKABLE:
+            //handle pickable
+            break;
+        case RealEngine::CollisionType::OTHER:
+            break;
+        case RealEngine::CollisionType::ENEMY:
             player_take_damage(collider);
             break;
-        case RealEngine::CollisionType::PICKABLE:
-            return;
+        case RealEngine::CollisionType::ALLY_BULLET:
+            break;
+        case RealEngine::CollisionType::ENEMY_BULLET:
+            player_take_damage(collider);
             break;
         default:
             break;

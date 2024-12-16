@@ -18,9 +18,10 @@ class Player {
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _playerEntity; }
     void player_collision_handler(RealEngine::CollisionType collisionType,
-                                  RealEngine::Registry& registry, RealEngine::Entity collider);
-    void player_collide_with_ground(RealEngine::Registry& registry);
-    void player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider);
+                                  RealEngine::Registry& registry, RealEngine::Entity collider,
+                                  RealEngine::Entity entity);
+    void player_collide_with_ground(RealEngine::Registry& registry, RealEngine::Entity entity);
+    void player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity);
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _playerEntity;

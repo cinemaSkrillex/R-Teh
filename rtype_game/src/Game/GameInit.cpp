@@ -44,14 +44,15 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
             _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
     _registry.add_component(
         _entity2,
-        RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-                              "spaceship",
-                              false,
-                              RealEngine::CollisionType::OTHER,
-                              [this](RealEngine::CollisionType collisionType,
-                                     RealEngine::Registry& registry, RealEngine::Entity collider) {
-                                  player_collision_handler(collisionType, registry, collider);
-                              }});
+        RealEngine::Collision{
+            {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+            "spaceship",
+            false,
+            RealEngine::CollisionType::OTHER,
+            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                   RealEngine::Entity collider, RealEngine::Entity entity) {
+                player_collision_handler(collisionType, registry, collider, entity);
+            }});
     _registry.add_component(_entity2, RealEngine::Health{100, 200});
     _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
     auto backgroundSprite = RealEngine::Sprite{_textures["background"]};
