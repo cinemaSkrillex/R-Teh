@@ -15,10 +15,6 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 void GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
-    for (auto& [uuid, entity] : _ennemies) {
-        _movementSystem.update(_registry, entity, deltaTime);
-    }
-    // _movementSystem.update(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
@@ -26,35 +22,45 @@ void GameInstance::run(float deltaTime) {
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
-    // update bullet movement
-    if (!_bullets.empty()) {
-        for (auto& bullet : _bullets) {
-            if (_registry.get_component<RealEngine::Health>(bullet) == nullptr) {
-                _bullets.erase(std::remove(_bullets.begin(), _bullets.end(), bullet),
-                               _bullets.end());
-                // std::cout << "Bullet destroyed in movment check" << std::endl;
-                // this allow to remove the bullet from the vector cause even if we use
-                // shared_pointer when the bullet is destroyed the pointer is still in the vector
-                // and the move update segfault
-                continue;
-            }
-            _movementSystem.update(_registry, bullet, deltaTime);
-        }
+    // for (auto& mob : _simpleMobs) {
+    //     if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {
+    //         _simpleMobs.erase(std::remove(_simpleMobs.begin(), _simpleMobs.end(), mob),
+    //                           _simpleMobs.end());
+    //         continue;
+    //     }
+    //     _movementSystem.update(_registry, mob, deltaTime);
+    // }
+    _simpleMobs.erase(
+        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
+                    [&](const auto& mob) {
+                        return _registry.get_component<RealEngine::Health>(mob) == nullptr;
+                    }),
+        _simpleMobs.end());
+
+    _bullets.erase(
+        std::remove_if(_bullets.begin(), _bullets.end(),
+                    [&](const auto& bullet) {
+                        return _registry.get_component<RealEngine::Health>(bullet) == nullptr;
+                    }),
+        _bullets.end());
+
+    // Then update remaining mobs
+    for (auto& mob : _simpleMobs) {
+        _movementSystem.update(_registry, mob, deltaTime);
     }
-    if (!_simpleMobs.empty()) {
-        for (auto& mob : _simpleMobs) {
-            if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {
-                _simpleMobs.erase(std::remove(_simpleMobs.begin(), _simpleMobs.end(), mob),
-                                  _simpleMobs.end());
-                // std::cout << "Mob destroyed in movment check" << std::endl;
-                // this allow to remove the bullet from the vector cause even if we use
-                // shared_pointer when the bullet is destroyed the pointer is still in the vector
-                // and the move update segfault
-                continue;
-            }
-            _movementSystem.update(_registry, mob, deltaTime);
-        }
+
+    // Then update remaining bullets
+    for (auto& bullet : _bullets) {
+        _movementSystem.update(_registry, bullet, deltaTime);
     }
+    // for (auto& bullet : _bullets) {
+    //     if (_registry.get_component<RealEngine::Health>(bullet) == nullptr) {
+    //         _bullets.erase(std::remove(_bullets.begin(), _bullets.end(), bullet),
+    //                        _bullets.end());
+    //         continue;
+    //     }
+    //     _movementSystem.update(_registry, bullet, deltaTime);
+    // }
 };
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     playerUuid,

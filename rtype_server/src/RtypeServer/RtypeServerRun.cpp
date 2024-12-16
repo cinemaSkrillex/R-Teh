@@ -21,7 +21,7 @@ void RtypeServer::run() {
                 // Process all messages from the client
                 for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
                     const auto parsed_data = PeterParser::parseMessage(message);
-                    std::cout << "Received message: " << message << std::endl;
+                    // std::cout << "Received message: " << message << std::endl;
 
                     if (parsed_data.find("Event") != parsed_data.end()) {
                         runEvent(parsed_data, client, _players.at(client));

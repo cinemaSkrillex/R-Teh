@@ -37,6 +37,10 @@ void MovementSystem::update(Registry& registry, std::shared_ptr<Entity> entity, 
     }
     auto* position = registry.get_component<Position>(entity);
     auto* velocity = registry.get_component<Velocity>(entity);
+
+    if (!position || !velocity) {
+        return;
+    }
     // std::cout << "Updating entity " << entity << std::endl;
     // std::cout << "Position: " << position->x << " " << position->y << std::endl;
     // std::cout << "Velocity: " << velocity->vx << " " << velocity->vy << std::endl;
