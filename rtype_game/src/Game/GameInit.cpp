@@ -24,6 +24,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
+      _parallaxSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _entity2(_registry.spawn_entity()),
       _background(_registry.spawn_entity()),
@@ -51,8 +52,10 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                               }});
     _registry.add_component(_entity2, RealEngine::Health{100, 200});
     _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
-    _registry.add_component(_background, RealEngine::SpriteComponent{RealEngine::Sprite{_textures["background"]}});
-    _registry.add_component(_background, RealEngine::Parallax{0.5f, (sf::Vector2f){0.0f, 0.0f}});
+    auto backgroundSprite = RealEngine::Sprite{_textures["background"]};
+    backgroundSprite.setOrigin(0, 0.5f);
+    _registry.add_component(_background, RealEngine::SpriteComponent{backgroundSprite});
+    _registry.add_component(_background, RealEngine::Parallax{-200.f, (sf::Vector2f){800.0f, 600.0f}});
     _registry.add_component(_background, RealEngine::Drawable{});
 }
 
@@ -110,6 +113,7 @@ void Game::init_textures() {
         std::cerr << "Error: Could not load background texture!" << std::endl;
         _textures["background"].reset();
     }
+    _textures["background"]->setRepeated(true);
 
     _textures["enemy"] = std::make_shared<sf::Texture>();
     if (!_textures["enemy"]->loadFromFile("../../assets/sprites/the_eye/bomber.png")) {
@@ -165,6 +169,10 @@ void Game::add_systems() {
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _healthSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {

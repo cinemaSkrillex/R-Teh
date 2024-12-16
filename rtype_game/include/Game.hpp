@@ -95,6 +95,7 @@ class Game {
     RealEngine::RadiusSystem          _radiusSystem;
     RealEngine::DestructibleSystem    _destructibleSystem;
     RealEngine::HealthSystem          _healthSystem;
+    RealEngine::ParallaxSystem        _parallaxSystem;
     rtype::Controls                   _controls;
 
     std::unordered_map<int, std::shared_ptr<RealEngine::Entity>>  _players;
