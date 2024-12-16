@@ -52,6 +52,7 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
     _startTime                       = client_now - std::chrono::milliseconds(_serverTime);
     const std::string positions      = parsedPacket.at("Position");
     sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
+    std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
     const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
     for (PeterParser::PlayerData player : datas) {
@@ -148,14 +149,18 @@ void rtype::Game::createRotationComponent(const std::string&                  va
 
 void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
     try {
-        auto newEntity = _registry.spawn_entity();
-        for (auto& [key, value] : parsedPacket) {
-            if (_componentFunctions.find(key) != _componentFunctions.end()) {
-                _componentFunctions[key](value, newEntity);
-            }
-        }
         if (parsedPacket.find("Uuid") != parsedPacket.end()) {
             long int uuid = std::stol(parsedPacket.at("Uuid"));
+            if (_entities.find(uuid) != _entities.end()) {
+                std::cerr << "Entity already exists" << std::endl;
+                return;
+            }
+            auto newEntity = _registry.spawn_entity();
+            for (auto& [key, value] : parsedPacket) {
+                if (_componentFunctions.find(key) != _componentFunctions.end()) {
+                    _componentFunctions[key](value, newEntity);
+                }
+            }
             _entities.emplace(uuid, newEntity);
         } else {
             std::cerr << "Uuid not found in parsedPacket" << std::endl;
