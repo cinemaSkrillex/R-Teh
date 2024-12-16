@@ -34,7 +34,8 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position,
                            RealEngine::Netvar{"PLAYER", "shootCooldown", 0.f, updateCooldown});
     registry.add_component(
         _playerEntity,
-        RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+        RealEngine::SpriteSheet{
+            _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
     registry.add_component(
         _playerEntity,
         RealEngine::Collision{{0.0f, 0.0f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
