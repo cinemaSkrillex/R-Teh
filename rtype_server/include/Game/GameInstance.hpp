@@ -22,8 +22,8 @@ class GameInstance {
 
     void handleSignal(const std::string& message);
 
-    std::shared_ptr<RealEngine::Entity> addAndGetPlayer(long int playerUuid, sf::Vector2f position);
-    std::shared_ptr<RealEngine::Entity> addAndGetEntity(long int uuid, sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> addAndGetEntity(sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
                                                         sf::Vector2f direction, float speed);
     std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position,

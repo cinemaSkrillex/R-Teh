@@ -11,24 +11,31 @@ void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
         std::cout << "Callback: New client connected from " << sender.address() << std::endl;
 
-        UUIDGenerator uuid_generator;
-        long int      uuid = uuid_generator.generate_long();
-        std::cout << "Generated UUID: " << uuid << std::endl;
+        // UUIDGenerator uuid_generator;
+        // long int      uuid = uuid_generator.generate_long();
+        // std::cout << "Generated UUID: " << uuid << std::endl;
         sf::Vector2f player_start_position =
             _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
+        // create Player entity
+        long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::steady_clock::now() - _startTime)
+                                .count();
+        auto playerEntity = _game_instance->addAndGetPlayer(player_start_position);
+        auto player =
+            Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
             if (client != sender) {
                 // std::cout << "Player start position: " << PLAYER_START_POSITION.x << std::endl;
-                const std::string message = "Event:New_client Uuid:" + std::to_string(uuid) +
-                                            " Position:(" +
-                                            std::to_string(player_start_position.x) + "," +
-                                            std::to_string(player_start_position.y) + ")";
+                const std::string message =
+                    "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
+                    std::to_string(player_start_position.x) + "," +
+                    std::to_string(player_start_position.y) + ")";
                 _server->send_reliable_packet(message, client);
             }
         }
         // Create the uuid for each new client
-        std::string message = "Event:Synchronize Uuid:" + std::to_string(uuid) +
+        std::string message = "Event:Synchronize Uuid:" + std::to_string(*playerEntity) +
                               " Clock:" + formatTimestamp(_startTime) + " Position:(" +
                               std::to_string(player_start_position.x) + "," +
                               std::to_string(player_start_position.y) + ") Players:[";
@@ -59,9 +66,6 @@ void RtypeServer::initCallbacks() {
             auto* rotation =
                 _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
 
-            // std::cout << "Mob life time: " << destructible->lifeTime << std::endl;
-            // std::cout << "Mob position: " << position->x << " " << position->y << std::endl;
-            // std::cout << "Mob uuid: " << *mob << std::endl;
             std::string velocityStr =
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
@@ -80,13 +84,6 @@ void RtypeServer::initCallbacks() {
 
             _server->send_reliable_packet(MobMessage, sender);
         }
-
-        long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                                std::chrono::steady_clock::now() - _startTime)
-                                .count();
-        auto player =
-            Player(uuid, elapsed_time, _game_instance->addAndGetPlayer(uuid, player_start_position),
-                   _game_instance->getRegistry());
         _players[sender] = player;
     });
 }

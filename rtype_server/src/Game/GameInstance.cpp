@@ -76,26 +76,14 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     return destroyedEntities;
 };
 
-std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(long int     playerUuid,
-                                                                  sf::Vector2f position) {
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(sf::Vector2f position) {
     rtype::Player player(_registry, position, _spaceshipSheet);
-    std::cout << position.x << " " << position.y << std::endl;
-    auto playerEntity = player.getEntity();
-    _players.emplace(playerUuid, playerEntity);
-    // RealEngine::Entity player = _registry.spawn_entity();
-    // _registry.add_component(player, RealEngine::Position{position.x, position.y});
-    // _registry.add_component(player, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.f});
-    // _registry.add_component(player, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
-    // _players.emplace(playerUuid, player);
-    return _players.at(playerUuid);
+    auto          playerEntity = player.getEntity();
+    _players.emplace(*playerEntity, playerEntity);
+    return _players.at(*playerEntity);
 }
 
-std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(long int     uuid,
-                                                                  sf::Vector2f position) {
-    // auto eyeBomber = rtype::EyeBomber(_registry, position, _eyeBomberSprite);
-    // auto entity    = eyeBomber.getEntity();
-    // _ennemies.emplace(uuid, entity);
-    // return entity;
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f position) {
     auto entity = _registry.spawn_entity();
     _simpleMobs.push_back(entity);
     return entity;
