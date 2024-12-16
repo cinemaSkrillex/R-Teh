@@ -106,13 +106,13 @@ void GameInstance::init_mobs() {
     addAndGetSimpleMob({1110, 50}, {-1, 0}, 40 * 2, 100);
     addAndGetSimpleMob({1800, 500}, {-1, 0}, 40 * 2, 100);
     addAndGetSimpleMob({1500, 250}, {-1, 0}, 40 * 2, 100);
-    addAndGetSimpleMob({1000, 470}, {-1, 0}, 35 * 2, 100);
-    addAndGetSimpleMob({1710, 170}, {-1, 0}, 35 * 2, 100);
-    addAndGetSimpleMob({1900, 490}, {-1, 0}, 20 * 2, 100);
-    addAndGetSimpleMob({1500, 230}, {-1, 0}, 20 * 2, 100);
-    addAndGetSimpleMob({1600, 70}, {-1, 0}, 42 * 2, 100);
-    addAndGetSimpleMob({1100, 200}, {-1, 0}, 42 * 2, 100);
-    addAndGetSimpleMob({1200, 200}, {-1, 0}, 35 * 2, 100);
+    // addAndGetSimpleMob({1000, 470}, {-1, 0}, 35 * 2, 100);
+    // addAndGetSimpleMob({1710, 170}, {-1, 0}, 35 * 2, 100);
+    // addAndGetSimpleMob({1900, 490}, {-1, 0}, 20 * 2, 100);
+    // addAndGetSimpleMob({1500, 230}, {-1, 0}, 20 * 2, 100);
+    // addAndGetSimpleMob({1600, 70}, {-1, 0}, 42 * 2, 100);
+    // addAndGetSimpleMob({1100, 200}, {-1, 0}, 42 * 2, 100);
+    // addAndGetSimpleMob({1200, 200}, {-1, 0}, 35 * 2, 100);
 }
 
 void GameInstance::init_textures() {
