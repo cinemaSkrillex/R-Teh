@@ -168,7 +168,7 @@ void PacketManager::handle_ack(const std::string& ack_message) {
 void PacketManager::handle_reliable_packet(const packet& pkt) {
     bool all_packets_received = false;
 
-    if (pkt.sequence_nb < 0 || pkt.sequence_nb > pkt.end_sequence_nb) {
+    if (pkt.sequence_nb > pkt.end_sequence_nb) {
         std::cerr << "Invalid sequence number: " << pkt.sequence_nb << std::endl;
         return;
     }
@@ -353,15 +353,10 @@ void PacketManager::send_reliable_packet(const std::string&             message,
             std::cerr << "Server endpoint is unspecified" << std::endl;
             return;
         }
-        if (pkt.sequence_nb < 0 || pkt.sequence_nb > pkt.end_sequence_nb) {
-            if (pkt.sequence_nb < 0) {
-                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
-                          << std::endl;
-            } else {
-                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
-                          << " start_sequence_nb: " << pkt.start_sequence_nb
-                          << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
-            }
+        if (pkt.sequence_nb > pkt.end_sequence_nb) {
+            std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
+                      << " start_sequence_nb: " << pkt.start_sequence_nb
+                      << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
             continue;
         }
         queue_packet_for_sending(pkt);
@@ -372,12 +367,6 @@ void PacketManager::send_reliable_packet(const std::string&             message,
 void PacketManager::send_unreliable_packet(const std::string&             message,
                                            const asio::ip::udp::endpoint& endpoint) {
     packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
-    // pkt.sequence_nb = 0;  // no validation for unreliable packets
-    // pkt.packet_size = message.size();
-    // pkt.flag        = UNRELIABLE;
-    // pkt.data.assign(message.begin(), message.end());
-
-    // Serialize the packet using the serialize_packet method
     queue_packet_for_sending(pkt);
 }
 
@@ -399,33 +388,6 @@ void PacketManager::queue_packet_for_retry(const packet& pkt) {
         _retry_queue.push_back(pkt);
     }
 }
-
-// old did not touch:
-
-// void PacketManager::schedule_retransmissions(const asio::ip::udp::endpoint& endpoint) {
-//     retransmission_timer_.expires_after(std::chrono::milliseconds(300));
-//     retransmission_timer_.async_wait([this, endpoint](const std::error_code& ec) {
-//         if (!ec) {
-//             std::lock_guard<std::mutex> lock(retransmission_queue_mutex_);
-//             for (const auto& pair : retransmission_queue_) {
-//                 if (received_packets_.find(pair.first.sequence_nb) == received_packets_.end()) {
-//                     std::cout << "Retransmitting unacknowledged packet: " <<
-//                     pair.first.sequence_nb
-//                               << std::endl;
-//                     queue_packet_for_retransmission(pair.first, endpoint);
-//                 }
-//             }
-//             if (!retransmission_queue_.empty()) {
-//                 schedule_retransmissions(endpoint);
-//             }
-//         }
-//     });
-// }
-
-// std::queue<packet> PacketManager::get_received_packets() {
-//     std::lock_guard<std::mutex> lock(queue_mutex_);
-//     return packet_queue_;
-// }
 
 std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual>
 PacketManager::getKnownClients() {

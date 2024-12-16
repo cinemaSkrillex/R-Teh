@@ -23,7 +23,7 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         }
         netvar->value = 0.1f;
 
-        const sf::Vector2f position = player.getPosition() + (sf::Vector2f){32.5f, 7.5};
+        const sf::Vector2f position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
 
         _game_instance->addAndGetBullet(position, {1, 0}, 500);
         // WARNING: this used fixed values and need to be updated if updates are made to bullet
@@ -31,8 +31,8 @@ void RtypeServer::runEvent(const std::unordered_map<std::string, std::string>& p
         std::string message = "Event:New_entity ";
         message += "Type:bullet ";
         message += "Sprite:bullet ";
-        message += "Position:(" + std::to_string(position.x) + "," +
-                   std::to_string(position.y) + ") ";
+        message +=
+            "Position:(" + std::to_string(position.x) + "," + std::to_string(position.y) + ") ";
         message += "Velocity:(500,0,{500,500},0) ";
         message += "Collision:(0,0,16,8,bullet,false,OTHER) ";
         message += "AutoDestructible:5 ";

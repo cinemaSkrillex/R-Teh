@@ -39,7 +39,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _registry.add_component(_entity2, RealEngine::Controllable{});
     _registry.add_component(_entity2, RealEngine::Drawable{});
     _registry.add_component(
-        _entity2, RealEngine::SpriteSheet{_spaceshipSheet, "idle", 0, {32, 15}, false, false, 100});
+        _entity2,
+        RealEngine::SpriteSheet{
+            _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
     _registry.add_component(
         _entity2,
         RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
