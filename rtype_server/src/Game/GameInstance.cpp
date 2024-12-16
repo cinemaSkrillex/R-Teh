@@ -28,11 +28,11 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 
     destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
                              destroyedHealth.end());
-    
+
     // for (auto entity : destroyedEntities) {
     //     std::cout << "Entity " << entity << " destroyed" << std::endl;
     // }
-    
+
     _netvarSystem.update(_registry, deltaTime);
     // for (auto& mob : _simpleMobs) {
     //     if (_registry.get_component<RealEngine::Health>(mob) == nullptr) {
@@ -112,9 +112,10 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2f position,
                                                                      sf::Vector2f direction,
-                                                                     float        speed) {
-    std::shared_ptr<rtype::SimpleMob> mob =
-        std::make_shared<rtype::SimpleMob>(_registry, position, direction, speed, _simpleMobSprite);
+                                                                     float        speed,
+                                                                     float        destructTimer) {
+    std::shared_ptr<rtype::SimpleMob> mob = std::make_shared<rtype::SimpleMob>(
+        _registry, position, direction, speed, destructTimer, _simpleMobSprite);
     _simpleMobs.push_back(mob->getEntity());
     return _simpleMobs.back();
 }

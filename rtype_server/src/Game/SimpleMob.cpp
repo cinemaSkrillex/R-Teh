@@ -10,7 +10,7 @@
 namespace rtype {
 
 SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                     float speed, RealEngine::Sprite& mobSprite)
+                     float speed, float destructTimer, RealEngine::Sprite& mobSprite)
     : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
@@ -19,24 +19,30 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
-        _entity,
-        RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                              "mob",
-                              false,
-                              RealEngine::CollisionType::ENEMY,
-                              [this](RealEngine::CollisionType collisionType,
-                                     RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
-                                  mob_collision_handler(collisionType, registry, collider, entity);
-                              }});
-    // registry.add_component(_bulletEntity, RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+        _entity, RealEngine::Collision{
+                     {0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                     "mob",
+                     false,
+                     RealEngine::CollisionType::ENEMY,
+                     [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                            RealEngine::Entity collider, RealEngine::Entity entity) {
+                         mob_collision_handler(collisionType, registry, collider, entity);
+                     }});
+    // registry.add_component(_bulletEntity, RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f
+    // * GAME_SCALE},
     //                                                            "bullet",
     //                                                            false,
     //                                                            RealEngine::CollisionType::OTHER,
-    //                                                            [this](RealEngine::CollisionType collisionType,
-    //                                                                   RealEngine::Registry& registry, RealEngine::Entity collider) {
-    //                                                                bullet_collision_handler(collisionType, registry, collider);
+    //                                                            [this](RealEngine::CollisionType
+    //                                                            collisionType,
+    //                                                                   RealEngine::Registry&
+    //                                                                   registry,
+    //                                                                   RealEngine::Entity
+    //                                                                   collider) {
+    //                                                                bullet_collision_handler(collisionType,
+    //                                                                registry, collider);
     //                                                            }});
-    registry.add_component(_entity, RealEngine::AutoDestructible{30});
+    registry.add_component(_entity, RealEngine::AutoDestructible{destructTimer});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
     std::cout << "Mob created id: " << *_entity << std::endl;
@@ -45,7 +51,8 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
 SimpleMob::~SimpleMob() {}
 
 void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
-                                      RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
+                                      RealEngine::Registry& registry, RealEngine::Entity collider,
+                                      RealEngine::Entity entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -68,7 +75,8 @@ void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
     }
 }
 
-void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity) {
+void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+                                RealEngine::Entity entity) {
     // std::cout << "Mob take damage" << std::endl;
     // if (*_entity == nullptr) {
     //     std::cout << "Mob entity is null" << std::endl;
@@ -76,7 +84,7 @@ void SimpleMob::mob_take_damage(RealEngine::Registry& registry, RealEngine::Enti
     // }
     // std::cout << "Mob entity: " << *_entity << " take damage" << std::endl;
     // auto* health = registry.get_component<RealEngine::Health>(*_entity);
-    auto* health = registry.get_component<RealEngine::Health>(entity);
+    auto* health       = registry.get_component<RealEngine::Health>(entity);
     auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
 
     if (health) {

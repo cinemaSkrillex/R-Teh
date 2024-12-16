@@ -21,10 +21,10 @@ GameInstance::GameInstance()
     init_components();
     init_systems();
     init_textures();
-    _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
-    _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
-    _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
-    _bulletSprite  = RealEngine::Sprite(_textures["bullet"]);
+    _upSpaceship     = RealEngine::Sprite(_textures["spaceship_up"]);
+    _idleSpaceship   = RealEngine::Sprite(_textures["spaceship_idle"]);
+    _downSpaceship   = RealEngine::Sprite(_textures["spaceship_down"]);
+    _bulletSprite    = RealEngine::Sprite(_textures["bullet"]);
     _simpleMobSprite = RealEngine::Sprite(_textures["enemy"]);
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
@@ -96,9 +96,21 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::init_mobs() {
-    addAndGetSimpleMob({1000, 100}, {-1, 0}, 50);
-    addAndGetSimpleMob({1050, 100}, {-1, 0}, 50);
-    addAndGetSimpleMob({1000, 200}, {-1, 0}, 35);
+    addAndGetSimpleMob({1000, 100}, {-1, 0}, 50 * 2, 50);
+    addAndGetSimpleMob({2050, 100}, {-1, 0}, 50 * 2, 50);
+    addAndGetSimpleMob({2100, 200}, {-1, 0}, 35 * 2, 100);
+    addAndGetSimpleMob({1500, 400}, {-1, 0}, 35 * 2, 100);
+    addAndGetSimpleMob({1200, 100}, {-1, 0}, 40 * 2, 100);
+    addAndGetSimpleMob({1110, 50}, {-1, 0}, 40 * 2, 100);
+    addAndGetSimpleMob({1800, 500}, {-1, 0}, 40 * 2, 100);
+    addAndGetSimpleMob({1500, 250}, {-1, 0}, 40 * 2, 100);
+    addAndGetSimpleMob({1000, 470}, {-1, 0}, 35 * 2, 100);
+    addAndGetSimpleMob({1710, 170}, {-1, 0}, 35 * 2, 100);
+    addAndGetSimpleMob({1900, 490}, {-1, 0}, 20 * 2, 100);
+    addAndGetSimpleMob({1500, 230}, {-1, 0}, 20 * 2, 100);
+    addAndGetSimpleMob({1600, 70}, {-1, 0}, 42 * 2, 100);
+    addAndGetSimpleMob({1100, 200}, {-1, 0}, 42 * 2, 100);
+    addAndGetSimpleMob({1200, 200}, {-1, 0}, 35 * 2, 100);
 }
 
 void GameInstance::init_textures() {
