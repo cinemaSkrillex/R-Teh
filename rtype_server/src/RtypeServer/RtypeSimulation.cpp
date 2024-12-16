@@ -9,7 +9,8 @@
 
 void RtypeServer::runSimulation(const std::unordered_map<std::string, std::string>& parsed_data,
                                 asio::ip::udp::endpoint& client, Player& player) {
-    const auto player_direction    = PeterParser::parseVector2f(parsed_data.at("Direction"));
+    const auto player_direction_x  = PeterParser::parseVector2f(parsed_data.at("DirectionX"));
+    const auto player_direction_y  = PeterParser::parseVector2f(parsed_data.at("DirectionY"));
     const auto player_uuid         = std::stol(parsed_data.at("Uuid"));
     const auto timestamp           = std::stol(parsed_data.at("Timestamp"));
     const auto lastTimestamp       = _players.at(client).getLastTimestamp();
@@ -19,6 +20,10 @@ void RtypeServer::runSimulation(const std::unordered_map<std::string, std::strin
     _players.at(client).setLastTimestamp(timestamp);
 
     // Use consistent server delta time for simulation
-    _game_instance->movePlayer(player_uuid, player_direction, client_elapsed_time_seconds);
-    _game_instance->runPlayerSimulation(_players.at(client).getEntity(), client_elapsed_time_seconds);
+    _game_instance->movePlayer(
+        player_uuid,
+        {player_direction_x.x, player_direction_x.y, player_direction_y.x, player_direction_y.y},
+        client_elapsed_time_seconds);
+    _game_instance->runPlayerSimulation(_players.at(client).getEntity(),
+                                        client_elapsed_time_seconds);
 }
