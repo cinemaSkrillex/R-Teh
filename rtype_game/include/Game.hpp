@@ -30,7 +30,7 @@ class Game {
     void                                handleSignal(std::string signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
-    sf::Vector2f                        getPlayerNormalizedDirection();
+    sf::IntRect                         getPlayerNormalizedDirection();
     void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;

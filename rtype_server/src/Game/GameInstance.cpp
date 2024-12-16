@@ -106,7 +106,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2
     return mob->getEntity();
 }
 
-void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float deltaTime) {
+void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
@@ -114,12 +114,12 @@ void GameInstance::movePlayer(long int playerUuid, sf::Vector2f direction, float
     auto* velocity     = _registry.get_component<RealEngine::Velocity>(player);
     auto* position     = _registry.get_component<RealEngine::Position>(player);
 
-    if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
-    if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
-    if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
-    if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
-    velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
-    velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
+    // if (direction.x < 0 && velocity->vx > 50) velocity->vx = 50;
+    // if (direction.x > 0 && velocity->vx < -50) velocity->vx = -50;
+    // if (direction.y < 0 && velocity->vy > 50) velocity->vy = 50;
+    // if (direction.y > 0 && velocity->vy < -50) velocity->vy = -50;
+    // velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
+    // velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {

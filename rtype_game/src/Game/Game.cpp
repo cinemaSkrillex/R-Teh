@@ -33,21 +33,21 @@ std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vecto
     return _enemies.at(enemy_uuid);
 }
 
-sf::Vector2f Game::getPlayerNormalizedDirection() {
-    sf::Vector2f direction(0, 0);
+sf::IntRect Game::getPlayerNormalizedDirection() {
+    sf::IntRect direction(0, 0, 0, 0);
 
     if (_window.isFocused()) {
-        if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
-            direction.y += -1;
-        }
-        if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
-            direction.y += 1;
-        }
         if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {
-            direction.x += -1;
+            direction.left = 1;
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Right)) {
-            direction.x += 1;
+            direction.top = 1;
+        }
+        if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
+            direction.width = 1;
+        }
+        if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
+            direction.height = 1;
         }
     }
     return direction;
