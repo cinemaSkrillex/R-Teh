@@ -30,9 +30,9 @@ void rtype::Game::handleSignal(std::string signal) {
         if (event == "New_entity") {
             handleNewEntity(parsedPacket);
         }
-        if (event == "Entity_position") {
-            handleEntityPosition(parsedPacket);
-        }
+        // if (event == "Entity_position") {
+        //     handleEntityPosition(parsedPacket);
+        // }
         if (event == "Destroy_entity") {
             handleDestroyEntity(parsedPacket);
         }
