@@ -52,6 +52,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _registry.add_component(_entity2, RealEngine::Health{100, 200});
     _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
     _registry.add_component(_background, RealEngine::SpriteComponent{RealEngine::Sprite{_textures["background"]}});
+    _registry.add_component(_background, RealEngine::Parallax{0.5f, (sf::Vector2f){0.0f, 0.0f}});
     _registry.add_component(_background, RealEngine::Drawable{});
 }
 
@@ -192,6 +193,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Target>();
     _registry.register_component<RealEngine::AutoDestructible>();
     _registry.register_component<RealEngine::Damage>();
+    _registry.register_component<RealEngine::Parallax>();
 }
 
 void Game::bind_keys() {
