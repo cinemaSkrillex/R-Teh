@@ -38,16 +38,16 @@ sf::Vector2f Game::getPlayerNormalizedDirection() {
 
     if (_window.isFocused()) {
         if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
-            direction.y = -1;
+            direction.y += -1;
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
-            direction.y = 1;
+            direction.y += 1;
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {
-            direction.x = -1;
+            direction.x += -1;
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Right)) {
-            direction.x = 1;
+            direction.x += 1;
         }
     }
     return direction;
