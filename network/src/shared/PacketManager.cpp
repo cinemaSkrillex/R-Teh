@@ -89,7 +89,9 @@ void PacketManager::send() {
 
 void PacketManager::retry() {
     while (!_stop_processing) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        // 150 ms is the time to wait before retrying to send a packet - Windows may need to disable
+        // firewall
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
         {
             std::lock_guard<std::mutex> lock(_retry_queue_mutex);
             for (const auto& pkt : _retry_queue) {

@@ -98,6 +98,14 @@ Launch the client:
 
 ## Example of the project 📸
 
+IMAGE
+
 ## Have fun! 🎉
 
 More informations in the [documentation](./documentation/repository_structure.md)
+
+
+LICENCE
+
+
+HOW TO CONTRIBUTE

@@ -37,6 +37,27 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Include directories
+
+#IMPORTANT
+#TODO : binary protocol in the rtype_game or rtype_server
+#Important
+
+#TODO : resynchronisation
+#TODO : toto en udp 
+#TODO : Cmake build directory 
+#TODO : macro generique vcpkg
+#TODO : if vcpkg or not
+#TODO : clang format
+#TODO : clang tidy on pipeline (abort build if the clang tidy fail) 
+#TODO : diagramme big picture
+#TODO : diagramme de classe
+#TODO : rtype::ame refacto
+#TODO : site statique documentation
+#TODO : redeploy documentation in CI/CD
+#TODO : technology choices : ECS ? SFML ? ASIO ? 
+#TODO : class Interfaces 
+#TODO : AI / pawn possibility / makes choices, not direct choices
+
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
     set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux)
