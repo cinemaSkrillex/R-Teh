@@ -107,7 +107,7 @@ Launch the client:
 
 ## Documentation 📚
 
-Our documentation is hosted on github.io. You can find it here [website link](https://r-teh.github.io/).
+Our documentation is hosted on github.io. You can find it here [website link](https://cinemaskrillex.github.io/R-Teh/).
 
 ## Example of the project 📸
 
