@@ -53,7 +53,10 @@ cmake --preset linux
 
 On Windows:
 ```bash
-cmake --preset windows
+#Release
+cmake --preset windows-release
+#Debug
+cmake --preset windows-debug
 ```
 
 ## How to build the project 🔨
@@ -96,13 +99,22 @@ Launch the client:
 - [DOC] : Add documentation :book:
 - [TST] : Add tests :microscope:
 
+### Custom commit tags (CI/CD)
+
+- [BUILD] : Build the project 🔨
+- [RELEASE] : Release the project 🚀
+- [DOC] : Deploy documentation online 📘
+
+## Documentation 📚
+
+Our documentation is hosted on github.io. You can find it here [website link](https://r-teh.github.io/).
+
 ## Example of the project 📸
 
 ## TODO : IMAGE
 
 ## Have fun! 🎉
 
-More informations in the [documentation](./documentation/repository_structure.md)
 
 ## TODO : LICENCE
 
