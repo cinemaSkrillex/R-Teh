@@ -98,6 +98,14 @@ Launch the client:
 
 ## Example of the project 📸
 
+IMAGE
+
 ## Have fun! 🎉
 
 More informations in the [documentation](./documentation/r_type_doc.md)
+
+
+LICENCE
+
+
+HOW TO CONTRIBUTE
