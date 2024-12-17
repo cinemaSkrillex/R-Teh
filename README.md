@@ -100,4 +100,4 @@ Launch the client:
 
 ## Have fun! 🎉
 
-More informations in the [documentation](./documentation/r_type_doc.md)
+More informations in the [documentation](./documentation/repository_structure.md)
