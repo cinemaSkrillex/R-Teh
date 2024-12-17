@@ -25,18 +25,18 @@ jobs:
   check-tag:
     runs-on: ubuntu-latest
     outputs:
-      doc: ${{ steps.check_release.outputs.release }}
+      doc: ${{ steps.check-tag.outputs.doc }}
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Check for release keyword
-      id: check_release
+    - name: Check for keywords
+      id: check-tag
       run: |
         if git log -1 --pretty=%B | grep -q "\[DOC\]"; then
-          echo "::set-output name=release::true"
+          echo "::set-output name=doc::true"
         else
-          echo "::set-output name=release::false"
+          echo "::set-output name=doc::false"
         fi
   # Build job
   build-site:
