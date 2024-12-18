@@ -350,25 +350,19 @@ void PacketManager::send_reliable_packet(const std::array<char, BUFFER_SIZE>& me
     }
 }
 
-// void PacketManager::send_unreliable_packet(const std::string&             message,
-//                                            const asio::ip::udp::endpoint& endpoint) {
-//     packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
-//     queue_packet_for_sending(pkt);
-// }
-
 void PacketManager::send_unreliable_packet(const std::array<char, BUFFER_SIZE>& message,
                                            const asio::ip::udp::endpoint&       endpoint) {
     // print the vector of char
-    std::cout << "Sending message: ";
-    for (auto i : message) {
-        std::cout << "{" << i << "}";
-    }
+    // std::cout << "Sending message: ";
+    // for (auto i : message) {
+    //     std::cout << "{" << i << "}";
+    // }
     packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
-    std::cout << "Packet data: ";
-    for (auto i : pkt.data) {
-        std::cout << std::hex << static_cast<unsigned int>(i) << " ";
-    }
-    std::cout << std::endl;
+    // std::cout << "Packet data: ";
+    // for (auto i : pkt.data) {
+    //     std::cout << std::hex << static_cast<unsigned int>(i) << " ";
+    // }
+    // std::cout << std::endl;
     queue_packet_for_sending(pkt);
 }
 
