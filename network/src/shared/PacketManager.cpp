@@ -54,6 +54,32 @@ packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int e
     return pkt;
 }
 
+packet PacketManager::build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb,
+                                   Flags flag, const asio::ip::udp::endpoint& endpoint,
+                                   const std::vector<char>& message) {
+    packet pkt;
+    pkt.sequence_nb       = sequence_nb;
+    pkt.start_sequence_nb = start_sequence_nb;
+    pkt.end_sequence_nb   = end_sequence_nb;
+    pkt.packet_size       = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
+
+    size_t start_idx = sequence_nb * BUFFER_SIZE;
+    size_t end_idx   = start_idx + pkt.packet_size;
+
+    if (start_idx > message.size()) {
+        std::cerr << "Error: Start index out of range!" << std::endl;
+        std::cerr << "Start index: " << start_idx << " Message size: " << message.size()
+                  << std::endl;
+        return {};  // Return an empty packet or handle the error
+    }
+    pkt.data.assign(message.begin() + start_idx,
+                    message.begin() + std::min(end_idx, message.size()));
+
+    pkt.flag     = flag;
+    pkt.endpoint = endpoint;
+    return pkt;
+}
+
 // threads functions
 
 void PacketManager::receive() {
@@ -104,9 +130,11 @@ void PacketManager::retry() {
 // receive functions
 
 void PacketManager::handle_receive(std::size_t bytes_recvd) {
-    auto   message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
-    packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
-
+    // auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
+    // packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
+    auto   message = std::make_shared<std::vector<char>>(recv_buffer_.begin(),
+                                                         recv_buffer_.begin() + bytes_recvd);
+    packet pkt     = deserialize_packet(*message);
     switch (pkt.flag) {
         case ACK:
             handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
@@ -115,7 +143,8 @@ void PacketManager::handle_receive(std::size_t bytes_recvd) {
             handle_reliable_packet(pkt);
             break;
         case UNRELIABLE:
-            handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+            // handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
+            handle_unreliable_packet(pkt.data);
             break;
         case NEW_CLIENT:
             handle_new_client(_endpoint);
@@ -215,6 +244,12 @@ void PacketManager::handle_unreliable_packet(const std::string& message) {
     // Process the message content
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     _unprocessed_unreliable_messages.push_back(std::make_pair(message, _endpoint));
+}
+
+void PacketManager::handle_unreliable_packet(const std::vector<char>& message) {
+    // Process the message content
+    std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_data_mutex);
+    _unprocessed_unreliable_messages_data.push_back(std::make_pair(message, _endpoint));
 }
 
 void PacketManager::handle_new_client(const asio::ip::udp::endpoint& client_endpoint) {
@@ -341,9 +376,63 @@ void PacketManager::send_reliable_packet(const std::string&             message,
     }
 }
 
+void PacketManager::send_reliable_packet(const std::vector<char>&       message,
+                                         const asio::ip::udp::endpoint& endpoint) {
+    int total_packets = (message.size() + BUFFER_SIZE - 1) / BUFFER_SIZE;
+
+    int start_sequence_nb;
+    int end_sequence_nb;
+
+    {
+        std::lock_guard<std::mutex> lock(_message_id_mutex);
+        start_sequence_nb = _message_id;
+        end_sequence_nb   = _message_id + total_packets - 1;
+    }
+
+    for (int i = 0; i < total_packets; ++i) {
+        packet pkt;
+
+        {
+            std::lock_guard<std::mutex> lock(_message_id_mutex);
+            pkt = build_packet(_message_id - start_sequence_nb, start_sequence_nb, end_sequence_nb,
+                               RELIABLE, endpoint, message);
+            _message_id++;
+        }
+
+        if (endpoint.address().is_unspecified()) {
+            std::cerr << "Server endpoint is unspecified" << std::endl;
+            return;
+        }
+        if (pkt.sequence_nb > pkt.end_sequence_nb) {
+            std::cerr << "sending reliable Invalid sequence number: " << pkt.sequence_nb
+                      << " start_sequence_nb: " << pkt.start_sequence_nb
+                      << " end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
+            continue;
+        }
+        queue_packet_for_sending(pkt);
+        queue_packet_for_retry(pkt);
+    }
+}
+
 void PacketManager::send_unreliable_packet(const std::string&             message,
                                            const asio::ip::udp::endpoint& endpoint) {
     packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
+    queue_packet_for_sending(pkt);
+}
+
+void PacketManager::send_unreliable_packet(const std::vector<char>&       message,
+                                           const asio::ip::udp::endpoint& endpoint) {
+    // print the vector of char
+    std::cout << "Sending message: ";
+    for (auto i : message) {
+        std::cout << "{" << i << "}";
+    }
+    packet pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
+    std::cout << "Packet data: ";
+    for (auto i : pkt.data) {
+        std::cout << std::hex << static_cast<unsigned int>(i) << " ";
+    }
+    std::cout << std::endl;
     queue_packet_for_sending(pkt);
 }
 
@@ -379,11 +468,35 @@ const std::string PacketManager::get_last_reliable_packet() {
     return message;
 }
 
+const std::vector<char> PacketManager::get_last_reliable_packet_data() {
+    std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_mutex);
+    if (_unprocessed_reliable_messages.empty()) return {};
+    std::vector<char> message(_unprocessed_reliable_messages.back().first.begin(),
+                              _unprocessed_reliable_messages.back().first.end());
+    _unprocessed_reliable_messages.erase(_unprocessed_reliable_messages.end() - 1);
+    return message;
+}
+
 const std::string PacketManager::get_last_unreliable_packet() {
     std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
     if (_unprocessed_unreliable_messages.empty()) return "";
     std::string message = _unprocessed_unreliable_messages.back().first;
     _unprocessed_unreliable_messages.erase(_unprocessed_unreliable_messages.end() - 1);
+    return message;
+}
+
+const std::vector<char> PacketManager::get_last_unreliable_packet_data() {
+    std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_mutex);
+    if (_unprocessed_unreliable_messages.empty()) return {};
+    std::vector<char> message(_unprocessed_unreliable_messages.back().first.begin(),
+                              _unprocessed_unreliable_messages.back().first.end());
+    _unprocessed_unreliable_messages.erase(_unprocessed_unreliable_messages.end() - 1);
+    // Print the message as integers
+    std::cout << "Unreliable packet data: ";
+    for (char c : message) {
+        std::cout << static_cast<int>(c) << " ";
+    }
+    std::cout << std::endl;
     return message;
 }
 
@@ -403,6 +516,22 @@ std::vector<std::string> PacketManager::get_unreliable_messages_from_endpoint(
     return messages;
 }
 
+std::vector<std::vector<char>> PacketManager::get_unreliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    std::vector<std::vector<char>> messages;
+    std::lock_guard<std::mutex>    lock(_unprocessed_unreliable_messages_mutex);
+    for (auto it = _unprocessed_unreliable_messages.begin();
+         it != _unprocessed_unreliable_messages.end();) {
+        if (it->second == endpoint) {
+            messages.push_back(std::vector<char>(it->first.begin(), it->first.end()));
+            it = _unprocessed_unreliable_messages.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    return messages;
+}
+
 std::vector<std::string> PacketManager::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     std::vector<std::string>    messages;
@@ -411,6 +540,22 @@ std::vector<std::string> PacketManager::get_reliable_messages_from_endpoint(
          it != _unprocessed_reliable_messages.end();) {
         if (it->second == endpoint) {
             messages.push_back(it->first);
+            it = _unprocessed_reliable_messages.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    return messages;
+}
+
+std::vector<std::vector<char>> PacketManager::get_reliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    std::vector<std::vector<char>> messages;
+    std::lock_guard<std::mutex>    lock(_unprocessed_reliable_messages_mutex);
+    for (auto it = _unprocessed_reliable_messages.begin();
+         it != _unprocessed_reliable_messages.end();) {
+        if (it->second == endpoint) {
+            messages.push_back(std::vector<char>(it->first.begin(), it->first.end()));
             it = _unprocessed_reliable_messages.erase(it);
         } else {
             ++it;

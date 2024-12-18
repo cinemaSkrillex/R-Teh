@@ -15,7 +15,6 @@ int main(int argc, char* argv[]) {
 
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
 
-
     try {
         asio::io_context             io_context;
         auto                         server       = std::make_shared<UDPServer>(io_context, port);

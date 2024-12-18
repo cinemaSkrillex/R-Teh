@@ -7,6 +7,42 @@
 
 #include "../../include/RtypeServer.hpp"
 
+std::vector<int> deserialize_int_vector(const std::vector<char>& buffer) {
+    std::vector<int> int_vector;
+    int_vector.reserve(buffer.size() / sizeof(int));
+
+    for (size_t i = 0; i < buffer.size(); i += sizeof(int)) {
+        int value;
+        std::memcpy(&value, buffer.data() + i, sizeof(int));
+        int_vector.push_back(value);
+    }
+
+    return int_vector;
+}
+
+void print_raw_data(const std::vector<char>& data) {
+    std::cout << "Raw data: ";
+    for (char byte : data) {
+        std::cout << std::hex << static_cast<int>(byte) << " ";
+    }
+    std::cout << std::endl;
+}
+
+// std::cout << "New client connected: " << sender << std::endl;
+
+// auto charvector = _server->get_last_unreliable_packet_data();
+
+// // Print raw data received
+// print_raw_data(charvector);
+
+// auto int_vector = deserialize_int_vector(charvector);
+
+// std::cout << "Data: ";
+// for (int value : int_vector) {
+//     std::cout << value << " ";
+// }
+// std::cout << std::endl;
+
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
         sf::Vector2f player_start_position =

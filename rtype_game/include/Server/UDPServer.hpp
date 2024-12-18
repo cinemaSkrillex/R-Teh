@@ -28,6 +28,11 @@ class UDPServer {
                                 const asio::ip::udp::endpoint& endpoint);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
 
+    void send_unreliable_packet(const std::vector<char>&       message,
+                                const asio::ip::udp::endpoint& endpoint);
+    void send_reliable_packet(const std::vector<char>&       message,
+                              const asio::ip::udp::endpoint& endpoint);
+
     void setEndpoint(const asio::ip::udp::endpoint& endpoint);
     void setNewClientCallback(
         const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback);
@@ -40,6 +45,15 @@ class UDPServer {
     std::vector<std::string> get_unreliable_messages_from_endpoint(
         const asio::ip::udp::endpoint& endpoint);
     std::vector<std::string> get_reliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+
+    const std::vector<char> get_last_reliable_packet_data();
+    const std::vector<char> get_last_unreliable_packet_data();
+    const std::vector<char> get_last_unreliable_packet_data(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
         const asio::ip::udp::endpoint& endpoint);
 
    private:

@@ -55,6 +55,14 @@ const std::string UDPServer::getLastUnreliablePacket() {
     return _packet_manager.get_last_unreliable_packet();
 }
 
+const std::vector<char> UDPServer::get_last_reliable_packet_data() {
+    return _packet_manager.get_last_reliable_packet_data();
+}
+
+const std::vector<char> UDPServer::get_last_unreliable_packet_data() {
+    return _packet_manager.get_last_unreliable_packet_data();
+}
+
 /**
  * @brief Sends an unreliable packet to the specified endpoint.
  *
@@ -70,6 +78,12 @@ void UDPServer::send_unreliable_packet(const std::string&             message,
                                        const asio::ip::udp::endpoint& endpoint) {
     _packet_manager.send_unreliable_packet(message, endpoint);
 }
+
+void UDPServer::send_unreliable_packet(const std::vector<char>&       message,
+                                       const asio::ip::udp::endpoint& endpoint) {
+    _packet_manager.send_unreliable_packet(message, endpoint);
+}
+
 /**
  * @brief Sends a reliable packet over UDP.
  *
@@ -85,6 +99,11 @@ void UDPServer::send_reliable_packet(const std::string&             message,
     _packet_manager.send_reliable_packet(message, endpoint);
 }
 
+void UDPServer::send_reliable_packet(const std::vector<char>&       message,
+                                     const asio::ip::udp::endpoint& endpoint) {
+    _packet_manager.send_reliable_packet(message, endpoint);
+}
+
 std::vector<std::string> UDPServer::get_unreliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     return _packet_manager.get_unreliable_messages_from_endpoint(endpoint);
@@ -93,4 +112,14 @@ std::vector<std::string> UDPServer::get_unreliable_messages_from_endpoint(
 std::vector<std::string> UDPServer::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     return _packet_manager.get_reliable_messages_from_endpoint(endpoint);
+}
+
+std::vector<std::vector<char>> UDPServer::get_unreliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_unreliable_messages_from_endpoint_data(endpoint);
+}
+
+std::vector<std::vector<char>> UDPServer::get_reliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_reliable_messages_from_endpoint_data(endpoint);
 }

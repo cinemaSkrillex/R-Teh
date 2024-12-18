@@ -24,6 +24,8 @@ class UDPClient {
 
     void                     send_unreliable_packet(const std::string& message);
     void                     send_reliable_packet(const std::string& message);
+    void                     send_unreliable_packet(const std::vector<char>& message);
+    void                     send_reliable_packet(const std::vector<char>& message);
     void                     send_new_client();
     void                     send_test();
     const std::string        get_last_reliable_packet();
@@ -31,6 +33,14 @@ class UDPClient {
     std::vector<std::string> get_unreliable_messages_from_endpoint(
         const asio::ip::udp::endpoint& endpoint);
     std::vector<std::string> get_reliable_messages_from_endpoint(
+        const asio::ip::udp::endpoint& endpoint);
+
+    const std::vector<char> get_last_reliable_packet_data();
+    const std::vector<char> get_last_unreliable_packet_data();
+
+    std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
+        const asio::ip::udp::endpoint& endpoint);
+    std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
         const asio::ip::udp::endpoint& endpoint);
 
    private:

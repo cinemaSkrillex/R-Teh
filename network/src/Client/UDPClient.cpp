@@ -5,7 +5,7 @@
 ** UDPClient.cpp
 */
 
-#include "UDPClient.hpp"
+#include "../../include/Client/UDPClient.hpp"
 
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
                      const std::string& server_ip, unsigned short server_port)
@@ -37,6 +37,14 @@ void UDPClient::send_reliable_packet(const std::string& message) {
     _packet_manager.send_reliable_packet(message, _server_endpoint);
 }
 
+void UDPClient::send_unreliable_packet(const std::vector<char>& message) {
+    _packet_manager.send_unreliable_packet(message, _server_endpoint);
+}
+
+void UDPClient::send_reliable_packet(const std::vector<char>& message) {
+    _packet_manager.send_reliable_packet(message, _server_endpoint);
+}
+
 const std::string UDPClient::get_last_reliable_packet() {
     return _packet_manager.get_last_reliable_packet();
 }
@@ -53,4 +61,22 @@ std::vector<std::string> UDPClient::get_unreliable_messages_from_endpoint(
 std::vector<std::string> UDPClient::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
     return _packet_manager.get_reliable_messages_from_endpoint(endpoint);
+}
+
+const std::vector<char> UDPClient::get_last_reliable_packet_data() {
+    return _packet_manager.get_last_reliable_packet_data();
+}
+
+const std::vector<char> UDPClient::get_last_unreliable_packet_data() {
+    return _packet_manager.get_last_unreliable_packet_data();
+}
+
+std::vector<std::vector<char>> UDPClient::get_unreliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_unreliable_messages_from_endpoint_data(endpoint);
+}
+
+std::vector<std::vector<char>> UDPClient::get_reliable_messages_from_endpoint_data(
+    const asio::ip::udp::endpoint& endpoint) {
+    return _packet_manager.get_reliable_messages_from_endpoint_data(endpoint);
 }
