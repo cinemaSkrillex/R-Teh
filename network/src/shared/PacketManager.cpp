@@ -374,12 +374,12 @@ void PacketManager::send_unreliable_packet(const std::array<char, BUFFER_SIZE>& 
 
 void PacketManager::send_new_client(const asio::ip::udp::endpoint& endpoint) {
     // packet pkt = build_packet(0, 0, 0, NEW_CLIENT, endpoint, "");
-    queue_packet_for_sending(pkt);
+    // queue_packet_for_sending(pkt);
 }
 
 void PacketManager::send_test(const asio::ip::udp::endpoint& endpoint) {
     // packet pkt = build_packet(0, 0, 0, TEST, endpoint, "");
-    queue_packet_for_sending(pkt);
+    // queue_packet_for_sending(pkt);
 }
 
 // retry functions
