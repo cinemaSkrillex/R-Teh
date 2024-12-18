@@ -35,10 +35,11 @@ class PacketManager {
     void start();
 
     // packet functions
+    // packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
+    //                     const asio::ip::udp::endpoint& endpoint, const std::string& message);
     packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
-                        const asio::ip::udp::endpoint& endpoint, const std::string& message);
-    packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
-                        const asio::ip::udp::endpoint& endpoint, const std::vector<char>& message);
+                        const asio::ip::udp::endpoint&       endpoint,
+                        const std::array<char, BUFFER_SIZE>& message);
 
     // threads function
     void receive();
@@ -60,15 +61,14 @@ class PacketManager {
                   const asio::ip::udp::endpoint& endpoint_);
     void queue_packet_for_sending(const packet& pkt);
     void send_packet(const packet& pkt);
-    void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
-    void send_unreliable_packet(const std::string&             message,
-                                const asio::ip::udp::endpoint& endpoint);
+    void send_unreliable_packet(const std::array<char, BUFFER_SIZE>& message,
+                                const asio::ip::udp::endpoint&       endpoint);
     void send_new_client(const asio::ip::udp::endpoint& endpoint);
     void send_test(const asio::ip::udp::endpoint& endpoint);
 
     // vector char overload
-    void send_reliable_packet(const std::vector<char>&       message,
-                              const asio::ip::udp::endpoint& endpoint);
+    void send_reliable_packet(const std::array<char, BUFFER_SIZE>& message,
+                              const asio::ip::udp::endpoint&       endpoint);
     void send_unreliable_packet(const std::vector<char>&       message,
                                 const asio::ip::udp::endpoint& endpoint);
 
@@ -78,22 +78,27 @@ class PacketManager {
     // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
     // std::queue<packet> get_received_packets();
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
-    const std::string get_last_reliable_packet();
-    const std::string get_last_unreliable_packet();
+    // const std::string get_last_reliable_packet();
+    // const std::string get_last_unreliable_packet();
 
     // overload for vector<char>
-    const std::vector<char> get_last_reliable_packet_data();
-    const std::vector<char> get_last_unreliable_packet_data();
+    const std::array<char, BUFFER_SIZE> get_last_reliable_packet_data();
+    const std::array<char, BUFFER_SIZE> get_last_unreliable_packet_data();
 
-    std::vector<std::string> get_unreliable_messages_from_endpoint(
-        const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::string> get_reliable_messages_from_endpoint(
-        const asio::ip::udp::endpoint& endpoint);
+    // std::vector<std::string> get_unreliable_messages_from_endpoint(
+    //     const asio::ip::udp::endpoint& endpoint);
+    // std::vector<std::string> get_reliable_messages_from_endpoint(
+    //     const asio::ip::udp::endpoint& endpoint);
 
     // overload for vector<char>
-    std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
+    // std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
+    //     const asio::ip::udp::endpoint& endpoint);
+    // std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
+    //     const asio::ip::udp::endpoint& endpoint);
+
+    std::vector<std::array<char, BUFFER_SIZE>> get_unreliable_messages_from_endpoint_data(
         const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
+    std::vector<std::array<char, BUFFER_SIZE>> get_reliable_messages_from_endpoint_data(
         const asio::ip::udp::endpoint& endpoint);
 
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
