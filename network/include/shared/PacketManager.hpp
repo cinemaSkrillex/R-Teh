@@ -52,7 +52,7 @@ class PacketManager {
     void handle_ack(const std::string& ack_message);
     void handle_reliable_packet(const packet& pkt);
     void handle_unreliable_packet(const std::string& message);
-    void handle_unreliable_packet(const std::vector<char>& message);
+    void handle_unreliable_packet(const std::array<char, BUFFER_SIZE>& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
     void handle_test(const asio::ip::udp::endpoint& endpoint);
 
@@ -60,9 +60,10 @@ class PacketManager {
     void send_ack(SEQUENCE_TYPE sequence_start_number, SEQUENCE_TYPE sequence_number,
                   const asio::ip::udp::endpoint& endpoint_);
     void queue_packet_for_sending(const packet& pkt);
+    void send_unreliable_packet(const std::string&             message,
+                                const asio::ip::udp::endpoint& endpoint);
     void send_packet(const packet& pkt);
-    void send_unreliable_packet(const std::array<char, BUFFER_SIZE>& message,
-                                const asio::ip::udp::endpoint&       endpoint);
+    void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
     void send_new_client(const asio::ip::udp::endpoint& endpoint);
     void send_test(const asio::ip::udp::endpoint& endpoint);
 
@@ -72,14 +73,15 @@ class PacketManager {
     void send_unreliable_packet(const std::vector<char>&       message,
                                 const asio::ip::udp::endpoint& endpoint);
 
+    void send_unreliable_packet(const std::array<char, BUFFER_SIZE>& message,
+                                const asio::ip::udp::endpoint&       endpoint);
+
     // retry functions
     void queue_packet_for_retry(const packet& pkt);
 
     // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
     // std::queue<packet> get_received_packets();
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients();
-    // const std::string get_last_reliable_packet();
-    // const std::string get_last_unreliable_packet();
 
     // overload for vector<char>
     const std::array<char, BUFFER_SIZE> get_last_reliable_packet_data();
@@ -141,19 +143,19 @@ class PacketManager {
     std::deque<packet> _retry_queue;
     std::mutex         _retry_queue_mutex;
 
-    // std::stack<std::string> _unprocessed_unreliable_messages;
-    std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_unreliable_messages;
-    std::mutex _unprocessed_unreliable_messages_mutex;
+    // // std::stack<std::string> _unprocessed_unreliable_messages;
+    // std::vector<std::pair<std::string, asio::ip::udp::endpoint>>
+    // _unprocessed_unreliable_messages; std::mutex _unprocessed_unreliable_messages_mutex;
 
-    std::vector<std::pair<std::vector<char>, asio::ip::udp::endpoint>>
+    std::vector<std::pair<std::array<char, BUFFER_SIZE>, asio::ip::udp::endpoint>>
                _unprocessed_unreliable_messages_data;
     std::mutex _unprocessed_unreliable_messages_data_mutex;
 
-    // std::stack<std::string> _unprocessed_reliable_messages;
-    std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
-    std::mutex _unprocessed_reliable_messages_mutex;
+    // // std::stack<std::string> _unprocessed_reliable_messages;
+    // std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
+    // std::mutex _unprocessed_reliable_messages_mutex;
 
-    std::vector<std::pair<std::vector<char>, asio::ip::udp::endpoint>>
+    std::vector<std::pair<std::array<char, BUFFER_SIZE>, asio::ip::udp::endpoint>>
                _unprocessed_reliable_messages_data;
     std::mutex _unprocessed_reliable_messages_data_mutex;
 

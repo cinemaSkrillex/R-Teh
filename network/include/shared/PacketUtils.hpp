@@ -44,13 +44,13 @@ enum Flags {
 };
 
 struct packet {
-    SEQUENCE_TYPE           sequence_nb;
-    SEQUENCE_TYPE           start_sequence_nb;
-    SEQUENCE_TYPE           end_sequence_nb;
-    SEQUENCE_TYPE           packet_size;
-    Flags                   flag;
-    asio::ip::udp::endpoint endpoint;
-    std::vector<char>       data;
+    SEQUENCE_TYPE                 sequence_nb;
+    SEQUENCE_TYPE                 start_sequence_nb;
+    SEQUENCE_TYPE                 end_sequence_nb;
+    SEQUENCE_TYPE                 packet_size;
+    Flags                         flag;
+    asio::ip::udp::endpoint       endpoint;
+    std::array<char, BUFFER_SIZE> data;
 
     bool operator==(const packet& other) const {
         return sequence_nb == other.sequence_nb && start_sequence_nb == other.start_sequence_nb &&
@@ -131,7 +131,56 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
     return buffer;
 }
 
-inline packet deserialize_packet(const std::vector<char>& buffer) {
+// inline packet deserialize_packet(const std::vector<char>& buffer) {
+//     packet pkt;
+//     auto   it = buffer.begin();
+
+//     // Extract sequence_nb
+//     std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));
+//     it += sizeof(pkt.sequence_nb);
+
+//     // Extract start_sequence_nb
+//     std::copy(it, it + sizeof(pkt.start_sequence_nb),
+//               reinterpret_cast<char*>(&pkt.start_sequence_nb));
+//     it += sizeof(pkt.start_sequence_nb);
+
+//     // Extract end_sequence_nb
+//     std::copy(it, it + sizeof(pkt.end_sequence_nb),
+//     reinterpret_cast<char*>(&pkt.end_sequence_nb)); it += sizeof(pkt.end_sequence_nb);
+
+//     // Extract packet_size
+//     std::copy(it, it + sizeof(pkt.packet_size), reinterpret_cast<char*>(&pkt.packet_size));
+//     it += sizeof(pkt.packet_size);
+
+//     // Extract flag
+//     int flag;
+//     std::copy(it, it + sizeof(flag), reinterpret_cast<char*>(&flag));
+//     pkt.flag = static_cast<Flags>(flag);
+//     it += sizeof(flag);
+
+//     // Extract endpoint address length and address
+//     std::size_t address_length;
+//     std::copy(it, it + sizeof(address_length), reinterpret_cast<char*>(&address_length));
+//     it += sizeof(address_length);
+
+//     std::string endpoint_address(it, it + address_length);
+//     it += address_length;
+
+//     // Extract endpoint port
+//     uint16_t endpoint_port;
+//     std::copy(it, it + sizeof(endpoint_port), reinterpret_cast<char*>(&endpoint_port));
+//     it += sizeof(endpoint_port);
+
+//     pkt.endpoint =
+//         asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
+
+//     // Extract data
+//     pkt.data.assign(it, buffer.end());
+
+//     return pkt;
+// }
+
+inline packet deserialize_packet(const std::array<char, BUFFER_SIZE>& buffer) {
     packet pkt;
     auto   it = buffer.begin();
 
@@ -175,7 +224,7 @@ inline packet deserialize_packet(const std::vector<char>& buffer) {
         asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
 
     // Extract data
-    pkt.data.assign(it, buffer.end());
+    std::copy(it, buffer.end(), pkt.data.begin());
 
     return pkt;
 }
