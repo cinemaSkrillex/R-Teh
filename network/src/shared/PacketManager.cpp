@@ -106,6 +106,7 @@ void PacketManager::retry() {
 void PacketManager::handle_receive(std::size_t bytes_recvd) {
     // auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
     // packet pkt     = deserialize_packet(std::vector<char>(message->begin(), message->end()));
+    // probably need to change this to std::array<char, BUFFER_SIZE>
     auto   message = std::make_shared<std::vector<char>>(recv_buffer_.begin(),
                                                          recv_buffer_.begin() + bytes_recvd);
     packet pkt     = deserialize_packet(*message);
