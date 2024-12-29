@@ -26,23 +26,24 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _healthSystem(),
       _parallaxSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
-      _entity2(_registry.spawn_entity()),
+      player_entity(_registry.spawn_entity()),
       _background(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
 
-    _registry.add_component(_entity2, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_entity2, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    _registry.add_component(_entity2, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
-    _registry.add_component(_entity2, RealEngine::Controllable{});
-    _registry.add_component(_entity2, RealEngine::Drawable{});
+    _registry.add_component(player_entity, RealEngine::Position{200.f, 200.f});
+    _registry.add_component(player_entity,
+                            RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    _registry.add_component(player_entity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(player_entity, RealEngine::Controllable{});
+    _registry.add_component(player_entity, RealEngine::Drawable{});
     _registry.add_component(
-        _entity2,
+        player_entity,
         RealEngine::SpriteSheet{
             _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
     _registry.add_component(
-        _entity2,
+        player_entity,
         RealEngine::Collision{
             {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
             "spaceship",
@@ -52,7 +53,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                    RealEngine::Entity collider, RealEngine::Entity entity) {
                 player_collision_handler(collisionType, registry, collider, entity);
             }});
-    _registry.add_component(_entity2, RealEngine::Health{100, 200});
+    _registry.add_component(player_entity, RealEngine::Health{100, 200});
     _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
     auto backgroundSprite = RealEngine::Sprite{_textures["background"]};
     backgroundSprite.setOrigin(0, 0.5f);

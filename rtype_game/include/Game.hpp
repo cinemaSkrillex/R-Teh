@@ -111,7 +111,7 @@ class Game {
     RealEngine::Sprite                                                _downSpaceship;
     RealEngine::Sprite                                                _otherPlayer;
     std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
-    std::shared_ptr<RealEngine::Entity>                               _entity2;
+    std::shared_ptr<RealEngine::Entity>                               player_entity;
     std::shared_ptr<RealEngine::Entity>                               _background;
     // std::unique_ptr<EyeMinion>                          _eyeMinion;
     std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
