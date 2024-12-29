@@ -71,6 +71,19 @@ void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
     }
 }
 
+void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
+    auto particleEmitters = registry.view<ParticleEmitter>();
+    for (auto entity : particleEmitters) {
+        auto* emitter = registry.get_component<ParticleEmitter>(entity);
+        for (const auto& particle : emitter->particles) {
+            sf::CircleShape shape(particle.size);
+            shape.setPosition(particle.position);
+            shape.setFillColor(particle.color);
+            _window->draw(shape);
+        }
+    }
+}
+
 void DrawSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Drawable, Position>();
 
@@ -94,5 +107,7 @@ void DrawSystem::update(Registry& registry, float deltaTime) {
             sprite.draw(*_window);
         }
     }
+
+    updateParticles(registry, deltaTime);
 }
 }  // namespace RealEngine

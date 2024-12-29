@@ -61,6 +61,18 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     _registry.add_component(_background,
                             RealEngine::Parallax{-200.f, sf::Vector2f(800.0f, 600.0f)});
     _registry.add_component(_background, RealEngine::Drawable{});
+
+    // Example usage in game logic
+    auto entity_particle = _registry.spawn_entity();
+    _registry.add_component(entity_particle, RealEngine::ParticleEmitter{{},
+                                                                         {100, 100},
+                                                                         {10, 0},
+                                                                         2.0f,
+                                                                         5.0f,
+                                                                         sf::Color::White,
+                                                                         sf::Color::Transparent,
+                                                                         2.0f,
+                                                                         0.0f});
 }
 
 Game::~Game() {}
@@ -187,6 +199,9 @@ void Game::add_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destructibleSystem.update(registry, deltaTime);
     });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _particleSystem.update(registry, deltaTime);
+    });
 }
 
 void Game::register_components() {
@@ -207,6 +222,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::AutoDestructible>();
     _registry.register_component<RealEngine::Damage>();
     _registry.register_component<RealEngine::Parallax>();
+    _registry.register_component<RealEngine::ParticleEmitter>();
 }
 
 void Game::bind_keys() {

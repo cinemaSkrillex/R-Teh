@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../include/ECS/Components/Drawable.hpp"
+#include "../include/ECS/Components/ParticleEmitter.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
@@ -24,5 +25,7 @@ class DrawSystem {
 
    private:
     sf::RenderWindow* _window;
+
+    void updateParticles(Registry& registry, float deltaTime);
 };
 }  // namespace RealEngine

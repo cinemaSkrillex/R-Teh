@@ -101,6 +101,7 @@ class Game {
     RealEngine::DestructibleSystem    _destructibleSystem;
     RealEngine::HealthSystem          _healthSystem;
     RealEngine::ParallaxSystem        _parallaxSystem;
+    RealEngine::ParticleSystem        _particleSystem;
     rtype::Controls                   _controls;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
