@@ -49,18 +49,6 @@ int main(int argc, char* argv[]) {
 
         client->send_new_client();
 
-        std::vector<int>  int_vector      = {100000, 25848, 3, 4, 5};
-        std::vector<char> serialized_data = serialize_int_vector(int_vector);
-
-        std::cout << "Sending data to server" << std::endl;
-        std::cout << "Data: ";
-        for (int value : int_vector) {
-            std::cout << value << " ";
-        }
-        std::cout << std::endl;
-
-        print_serialized_data(serialized_data);
-
         // Send the serialized data
         // client->send_unreliable_packet(serialized_data);
         // Game loop

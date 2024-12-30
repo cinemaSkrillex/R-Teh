@@ -21,6 +21,7 @@
 #include "GenerateUuid.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
+#include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
 

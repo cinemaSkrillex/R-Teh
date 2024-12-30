@@ -146,6 +146,8 @@ class PacketManager {
         std::copy(recv_buffer_.begin(), recv_buffer_.begin() + bytes_recvd, message->begin());
 
         packet<BUFFER_SIZE> pkt = deserialize_packet(*message);
+        std::cout << "Received packet<BUFFER_SIZE> from " << pkt.endpoint << std::endl;
+        std::cout << "flag: " << pkt.flag << std::endl;
         switch (pkt.flag) {
             case ACK:
                 handle_ack(std::string(pkt.data.begin(), pkt.data.end()));
@@ -306,6 +308,7 @@ class PacketManager {
             ack_message = "ACK:" + std::to_string(start_sequence_number) + "," +
                           std::to_string(sequence_number);
         }
+        std::cout << "Sending ack: " << ack_message << std::endl;
 
         // packet<BUFFER_SIZE> pkt = build_packet(0, 0, 0, ACK, endpoint_, ack_message);
         // queue_packet_for_sending(pkt);
@@ -316,6 +319,7 @@ class PacketManager {
             std::lock_guard<std::mutex> lock(_send_queue_mutex);
             if (_send_queue_set.find(pkt) == _send_queue_set.end()) {
                 _send_queue.emplace_back(pkt);
+                std::cout << "send_queue size: " << _send_queue.size() << std::endl;
                 _send_queue_set.insert(pkt);
             } else {
             }
@@ -382,17 +386,7 @@ class PacketManager {
 
     void send_unreliable_packet(const std::array<char, BUFFER_SIZE>& message,
                                 const asio::ip::udp::endpoint&       endpoint) {
-        // print the vector of char
-        // std::cout << "Sending message: ";
-        // for (auto i : message) {
-        //     std::cout << "{" << i << "}";
-        // }
         packet<BUFFER_SIZE> pkt = build_packet(0, 0, 0, UNRELIABLE, endpoint, message);
-        // std::cout << "Packet data: ";
-        // for (auto i : pkt.data) {
-        //     std::cout << std::hex << static_cast<unsigned int>(i) << " ";
-        // }
-        // std::cout << std::endl;
         queue_packet_for_sending(pkt);
     }
 
@@ -401,6 +395,7 @@ class PacketManager {
         {
             std::lock_guard<std::mutex> lock(_retry_queue_mutex);
             _retry_queue.push_back(pkt);
+            std::cout << "retry_queue size: " << _retry_queue.size() << std::endl;
         }
     }
 
@@ -417,6 +412,8 @@ class PacketManager {
         std::copy(_unprocessed_reliable_messages_data.back().first.begin(),
                   _unprocessed_reliable_messages_data.back().first.end(), message.begin());
         _unprocessed_reliable_messages_data.erase(_unprocessed_reliable_messages_data.end() - 1);
+        std::cout << "size of unprocessed_reliable_messages_data: "
+                  << _unprocessed_reliable_messages_data.size() << std::endl;
         return message;
     }
     const std::array<char, BUFFER_SIZE> get_last_unreliable_packet_data() {

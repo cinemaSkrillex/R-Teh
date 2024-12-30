@@ -59,11 +59,46 @@ void RtypeServer::initCallbacks() {
         for (const auto& client : _server->getClients()) {
             std::cout << "Client: " << client << std::endl;
             if (client != sender) {
-                const std::string message =
-                    "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
-                    std::to_string(player_start_position.x) + "," +
-                    std::to_string(player_start_position.y) + ")";
-                std::cout << "Sending message: " << message << std::endl;
+                // const std::string message =
+                //     "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
+                //     std::to_string(player_start_position.x) + "," +
+                //     std::to_string(player_start_position.y) + ")";
+                // std::cout << "Sending message: " << message << std::endl;
+
+                RTypeProtocol::PlayerMoveMessage newClientMessage;
+                newClientMessage.message_type = RTypeProtocol::NEW_CLIENT;
+                newClientMessage.uuid         = *playerEntity;
+                long player_entity_uuid       = *playerEntity;
+                std::cout << "Player entity uuid: " << player_entity_uuid << std::endl;
+                newClientMessage.x = player_start_position.x;
+                std::cout << "Player start position x: " << player_start_position.x << std::endl;
+                newClientMessage.y = player_start_position.y;
+                std::cout << "Player start position y: " << player_start_position.y << std::endl;
+                newClientMessage.timestamp = elapsed_time;
+                std::cout << "Elapsed time: " << elapsed_time << std::endl;
+                std::cout << "Deserialized new client message:" << std::endl;
+                std::array<char, 1024> serializedMessage = RTypeProtocol::serialize<1024>(
+                    newClientMessage);  // needs to be changed to TEMPLATE BUFFER SIZE
+                                        // Print the serialized data (hexadecimal representation)
+
+                // directly deserialize the message
+                // RTypeProtocol::BaseMessage baseMessage =
+                //     RTypeProtocol::deserialize<1024>(serializedMessage);
+                // std::cout << "Deserialized BaseMessage:" << std::endl;
+                // std::cout << "  Message Type: " << baseMessage.message_type << std::endl;
+
+                // std::cout << "Serialized data: ";
+                // for (const auto& byte : serializedMessage) {
+                //     std::cout << std::hex << (int)byte << " ";  // Print each byte in hexadecimal
+                // }
+                // std::cout << std::dec
+                //           << std::endl;  // Reset back to decimal formatting for subsequent
+                //           outputs
+                std::cout << "Serialized message size: " << serializedMessage.size() << " bytes"
+                          << std::endl;
+
+                _server->send_reliable_packet(serializedMessage, client);
+
                 // _server->send_reliable_packet(message, client);
             }
         }

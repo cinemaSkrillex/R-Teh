@@ -7,34 +7,84 @@
 
 #include "Game.hpp"
 
-void rtype::Game::handleSignal(std::string signal) {
+// void rtype::Game::handleSignal(std::string signal) {
+//     if (signal.empty()) return;
+
+//     // if signal contains "Event:Player_position" don't print it
+//     if (signal.find("Event:Entity_position") == std::string::npos) {
+//     }
+//     std::unordered_map<std::string, std::string> parsedPacket =
+//     PeterParser::parseMessage(signal);
+
+//     if (parsedPacket.find("Event") != parsedPacket.end()) {
+//         const std::string event = parsedPacket.at("Event");
+//         if (event == "New_client") {
+//             handleNewClient(parsedPacket);
+//         }
+//         if (event == "Synchronize") {
+//             handleSynchronize(parsedPacket);
+//         }
+//         if (event == "Player_position") {
+//             handlePlayerPosition(parsedPacket);
+//         }
+//         if (event == "New_entity") {
+//             handleNewEntity(parsedPacket);
+//         }
+//         // if (event == "Entity_position") {
+//         //     handleEntityPosition(parsedPacket);
+//         // }
+//         if (event == "Destroy_entity") {
+//             handleDestroyEntity(parsedPacket);
+//         }
+//     }
+// }
+
+void rtype::Game::handleSignal(std::array<char, 1024> signal) {
+    // Check if signal is empty or corrupted (handle as necessary)
     if (signal.empty()) return;
+    // std::cout << "Raw Signal: ";
+    // for (size_t i = 0; i < signal.size(); ++i) {
+    //     std::cout << std::hex << (int)signal[i] << " ";
+    // }
+    // std::cout << std::dec << std::endl;
 
-    // if signal contains "Event:Player_position" don't print it
-    if (signal.find("Event:Entity_position") == std::string::npos) {
-    }
-    std::unordered_map<std::string, std::string> parsedPacket = PeterParser::parseMessage(signal);
+    // Deserialize the signal into a BaseMessage first
+    RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<1024>(signal);
+    // Print the deserialized BaseMessage
+    std::cout << "Deserialized BaseMessage:" << std::endl;
+    std::cout << "  Message Type: " << baseMessage.message_type << std::endl;
 
-    if (parsedPacket.find("Event") != parsedPacket.end()) {
-        const std::string event = parsedPacket.at("Event");
-        if (event == "New_client") {
-            handleNewClient(parsedPacket);
+    // Check the message type to handle accordingly
+    switch (baseMessage.message_type) {
+        case RTypeProtocol::NEW_CLIENT: {
+            // Deserialize the PlayerMoveMessage (which is used for new client)
+            RTypeProtocol::PlayerMoveMessage newClientMessage =
+                RTypeProtocol::deserializePlayerMove(signal);
+
+            // Handle new client based on the deserialized message
+            std::cout << "New client with UUID " << newClientMessage.uuid
+                      << " has been deserialized and handled." << std::endl;
+            // handleNewClient(newClientMessage);
+            break;
         }
-        if (event == "Synchronize") {
-            handleSynchronize(parsedPacket);
+        case RTypeProtocol::PLAYER_MOVE: {
+            // Deserialize and handle player movement
+            RTypeProtocol::PlayerMoveMessage playerMoveMessage =
+                RTypeProtocol::deserializePlayerMove(signal);
+            // handlePlayerMove(playerMoveMessage);
+            break;
         }
-        if (event == "Player_position") {
-            handlePlayerPosition(parsedPacket);
+        case RTypeProtocol::EVENT_MESSAGE: {
+            // Deserialize and handle event message
+            RTypeProtocol::EventMessage eventMessage =
+                RTypeProtocol::deserializeEventMessage(signal);
+            // handleEventMessage(eventMessage);
+            break;
         }
-        if (event == "New_entity") {
-            handleNewEntity(parsedPacket);
-        }
-        // if (event == "Entity_position") {
-        //     handleEntityPosition(parsedPacket);
-        // }
-        if (event == "Destroy_entity") {
-            handleDestroyEntity(parsedPacket);
-        }
+        default:
+            // Handle unknown or unsupported message types (you can log or handle errors)
+            std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
+            break;
     }
 }
 

@@ -18,7 +18,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "ANetwork.hpp"
+#include "../shared/ANetwork.hpp"
 
 class UDPServer : public ANetwork<1024> {
    public:

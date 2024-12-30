@@ -76,3 +76,20 @@ if (WIN32)
             $<TARGET_FILE_DIR:r_type_server>
     )
 endif()
+
+# Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server and ../game_engine
+# add_custom_target(copy_headers ALL
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+#     ${CMAKE_SOURCE_DIR}/rtype_server/include/Client
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+
+add_custom_target(copy_headers_protocol ALL
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.hpp
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.tpp
+)

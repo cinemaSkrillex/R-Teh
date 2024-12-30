@@ -14,8 +14,8 @@ void rtype::Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.update();
         _window.clear();
-        // handleSignal(_clientUDP->get_last_reliable_packet());
-        // handleSignal(_clientUDP->get_last_unreliable_packet());
+        handleSignal(_clientUDP->get_last_reliable_packet_data());
+        // handleSignal(_clientUDP->get_last_unreliable_packet_data());
         _registry.run_systems(_deltaTime);
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _window.display();
