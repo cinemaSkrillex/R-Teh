@@ -60,7 +60,8 @@ class Game {
     void populate_sprite_sheet();
 
     // GameSignals
-    void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
+    // void handleNewClient(std::unordered_map<std::string, std::string> parsedPacket);
+    void handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket);
     void handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket);
     void handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket);

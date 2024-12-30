@@ -40,20 +40,14 @@
 // }
 
 void rtype::Game::handleSignal(std::array<char, 1024> signal) {
-    // Check if signal is empty or corrupted (handle as necessary)
-    if (signal.empty()) return;
-    // std::cout << "Raw Signal: ";
-    // for (size_t i = 0; i < signal.size(); ++i) {
-    //     std::cout << std::hex << (int)signal[i] << " ";
-    // }
-    // std::cout << std::dec << std::endl;
+    // Check if signal is empty or corrupted (all zeros)
+    if (std::all_of(signal.begin(), signal.end(), [](char c) { return c == 0; })) {
+        return;
+    }
 
     // Deserialize the signal into a BaseMessage first
     RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<1024>(signal);
     // Print the deserialized BaseMessage
-    std::cout << "Deserialized BaseMessage:" << std::endl;
-    std::cout << "  Message Type: " << baseMessage.message_type << std::endl;
-
     // Check the message type to handle accordingly
     switch (baseMessage.message_type) {
         case RTypeProtocol::NEW_CLIENT: {
@@ -64,7 +58,7 @@ void rtype::Game::handleSignal(std::array<char, 1024> signal) {
             // Handle new client based on the deserialized message
             std::cout << "New client with UUID " << newClientMessage.uuid
                       << " has been deserialized and handled." << std::endl;
-            // handleNewClient(newClientMessage);
+            handleNewClient(newClientMessage);
             break;
         }
         case RTypeProtocol::PLAYER_MOVE: {
@@ -88,9 +82,18 @@ void rtype::Game::handleSignal(std::array<char, 1024> signal) {
     }
 }
 
-void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> parsedPacket) {
-    const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
-    const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+// void rtype::Game::handleNewClient(std::unordered_map<std::string, std::string> parsedPacket) {
+//     const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
+//     const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
+//     if (_players.find(uuid) != _players.end()) return;
+//     add_player(uuid, position);
+// }
+
+void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket) {
+    const sf::Vector2f position = {parsedPacket.x, parsedPacket.y};
+    const long int     uuid     = parsedPacket.uuid;
+    std::cout << "Player uuid: " << uuid << std::endl;
+    std::cout << "Player position: (" << position.x << ", " << position.y << ")" << std::endl;
     if (_players.find(uuid) != _players.end()) return;
     add_player(uuid, position);
 }

@@ -50,7 +50,6 @@ int main(int argc, char* argv[]) {
         client->send_new_client();
 
         // Send the serialized data
-        // client->send_unreliable_packet(serialized_data);
         // Game loop
         std::cout << "Starting game loop" << std::endl;
 

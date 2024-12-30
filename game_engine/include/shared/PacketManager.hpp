@@ -171,36 +171,6 @@ class PacketManager {
         }
     }
     // handle messages
-    // void handle_ack(const std::string& ack_message) {
-    //     SEQUENCE_TYPE sequence_start  = 0;
-    //     SEQUENCE_TYPE sequence_number = 0;
-
-    //     if (ack_message.size() < 4) {
-    //         std::cerr << "Invalid ACK message size" << std::endl;
-    //         return;
-    //     }
-    //     if (ack_message.substr(0, 11) == "CLIENT_ACK:") {
-    //         sequence_start  = std::stoi(ack_message.substr(11, ack_message.find(',')));
-    //         sequence_number = std::stoi(ack_message.substr(ack_message.find(',') + 1));
-    //     } else if (ack_message.substr(0, 4) == "ACK:") {
-    //         sequence_start  = std::stoi(ack_message.substr(4, ack_message.find(',')));
-    //         sequence_number = std::stoi(ack_message.substr(ack_message.find(',') + 1));
-    //     } else {
-    //         std::cerr << "Invalid ACK message: " << ack_message << std::endl;
-    //         return;
-    //     }
-    //     {
-    //         std::lock_guard<std::mutex> lock(_retry_queue_mutex);
-    //         for (auto it = _retry_queue.begin(); it != _retry_queue.end();) {
-    //             if (it->sequence_nb == sequence_number && it->start_sequence_nb ==
-    //             sequence_start) {
-    //                 _retry_queue.erase(it);
-    //                 break;
-    //             }
-    //             ++it;
-    //         }
-    //     }
-    // }
     void handle_ack(const packet<BUFFER_SIZE>& pkt) {
         AckMessage ackMessage = deserialize_ack(pkt.data);
 
@@ -212,7 +182,6 @@ class PacketManager {
             for (auto it = _retry_queue.begin(); it != _retry_queue.end();) {
                 if (it->sequence_nb == sequence_number && it->start_sequence_nb == sequence_start) {
                     _retry_queue.erase(it);
-                    std::cout << "Retry queue size: " << _retry_queue.size() << std::endl;
                     break;
                 }
                 ++it;
@@ -318,20 +287,7 @@ class PacketManager {
     // send functions
     void send_ack(SEQUENCE_TYPE start_sequence_number, SEQUENCE_TYPE sequence_number,
                   const asio::ip::udp::endpoint& endpoint_) {
-        // std::string ack_message;
-        // if (role_ == Role::SERVER) {
-        //     ack_message = "CLIENT_ACK:" + std::to_string(start_sequence_number) + "," +
-        //                   std::to_string(sequence_number);
-        // }
-        // if (role_ == Role::CLIENT) {
-        //     ack_message = "ACK:" + std::to_string(start_sequence_number) + "," +
-        //                   std::to_string(sequence_number);
-        // }
-        // std::cout << "Sending ack: " << ack_message << std::endl;
-        // packet<BUFFER_SIZE> pkt = build_packet(0, 0, 0, ACK, endpoint_, ack_message);
-        // queue_packet_for_sending(pkt);
-
-        AckMessage ackMessage = {AckType::ACK, 0, 0};  // Initialize with default values
+        AckMessage ackMessage = {AckType::ACK, 0, 0};
 
         // Set the AckType based on the role
         if (role_ == Role::SERVER) {
@@ -362,7 +318,6 @@ class PacketManager {
             std::lock_guard<std::mutex> lock(_send_queue_mutex);
             if (_send_queue_set.find(pkt) == _send_queue_set.end()) {
                 _send_queue.emplace_back(pkt);
-                std::cout << "send_queue size: " << _send_queue.size() << std::endl;
                 _send_queue_set.insert(pkt);
             } else {
             }
