@@ -15,6 +15,7 @@
 
 #include "PacketUtils.hpp"
 
+template <std::size_t BUFFER_SIZE>
 class INetwork {
    public:
     virtual ~INetwork() = default;

@@ -16,54 +16,39 @@
 #include <asio.hpp>
 #include <iostream>
 #include <unordered_set>
+#include <vector>
 
-#include "../shared/PacketManager.hpp"
+#include "ANetwork.hpp"
 
-class UDPServer {
+class UDPServer : public ANetwork<1024> {  // 1024 is the buffer size
    public:
-    UDPServer(asio::io_context& io_context, unsigned short port);
-    ~UDPServer();
+    // Constructor
+    UDPServer(asio::io_context& io_context, unsigned short port)
+        : ANetwork(io_context, port, Role::SERVER) {}
 
-    void send_unreliable_packet(const std::string&             message,
-                                const asio::ip::udp::endpoint& endpoint);
-    void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
+    // Set endpoint for the client
+    void setEndpoint(const asio::ip::udp::endpoint& endpoint) { _client_endpoint = endpoint; }
 
-    void send_unreliable_packet(const std::vector<char>&       message,
-                                const asio::ip::udp::endpoint& endpoint);
-    void send_reliable_packet(const std::vector<char>&       message,
-                              const asio::ip::udp::endpoint& endpoint);
+    const asio::ip::udp::endpoint& getEndpoint() const { return _client_endpoint; }
 
-    void setEndpoint(const asio::ip::udp::endpoint& endpoint);
-    void setNewClientCallback(
-        const std::function<void(const asio::ip::udp::endpoint& client_endpoint)>& callback);
+    // Get list of known clients
+    const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients() {
+        return _packet_manager.getKnownClients();
+    }
 
-    const asio::ip::udp::endpoint& getEndpoint() const;
-    const std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
-    const std::string        getLastReliablePacket();
-    const std::string        getLastUnreliablePacket();
-    const std::string        getLastUnreliablePacket(const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::string> get_unreliable_messages_from_endpoint(
-        const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::string> get_reliable_messages_from_endpoint(
-        const asio::ip::udp::endpoint& endpoint);
+    // Send reliable and unreliable packets (delegates to ANetwork's PacketManager)
+    void send_unreliable_packet(const std::array<char, 1024>&  message,
+                                const asio::ip::udp::endpoint& endpoint) {
+        ANetwork<1024>::send_unreliable_packet(message, endpoint);  // Call the inherited method
+    }
 
-    const std::vector<char> get_last_reliable_packet_data();
-    const std::vector<char> get_last_unreliable_packet_data();
-    const std::vector<char> get_last_unreliable_packet_data(
-        const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
-        const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
-        const asio::ip::udp::endpoint& endpoint);
+    void send_reliable_packet(const std::array<char, 1024>&  message,
+                              const asio::ip::udp::endpoint& endpoint) {
+        ANetwork<1024>::send_reliable_packet(message, endpoint);  // Call the inherited method
+    }
 
    private:
-    asio::ip::udp::endpoint                                    _client_endpoint;
-    asio::ip::udp::socket                                      _socket;
-    asio::io_context&                                          _io_context;
-    std::thread                                                _io_context_thread;
-    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
-
-    PacketManager _packet_manager;
+    asio::ip::udp::endpoint _client_endpoint;  // Stores the client's endpoint
 };
 
 #endif  // UDPSERVER_HPP

@@ -23,6 +23,7 @@ class ANetwork : public INetwork {
     PacketManager                                              _packet_manager;
     asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
     std::thread                                                _io_context_thread;
+    std::function<void(const asio::ip::udp::endpoint&)>        _new_client_callback;
 
    public:
     ANetwork(asio::io_context& io_context, unsigned short port, Role role)
@@ -39,6 +40,12 @@ class ANetwork : public INetwork {
         if (_io_context_thread.joinable()) {
             _io_context_thread.join();
         }
+    }
+
+    // callbacks
+    void setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
+        _new_client_callback                 = callback;
+        _packet_manager._new_client_callback = callback;
     }
 
     // Send methods
