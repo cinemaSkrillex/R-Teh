@@ -45,6 +45,7 @@ void print_raw_data(const std::vector<char>& data) {
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
+        std::cout << "New client connected: " << sender << std::endl;
         sf::Vector2f player_start_position =
             _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
         // create Player entity
@@ -56,6 +57,7 @@ void RtypeServer::initCallbacks() {
             Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
+            std::cout << "Client: " << client << std::endl;
             if (client != sender) {
                 const std::string message =
                     "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
