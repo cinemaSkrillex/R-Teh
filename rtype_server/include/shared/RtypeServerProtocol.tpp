@@ -92,6 +92,42 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) 
     return buffer;
 }
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    std::size_t                   offset = 0;
+
+    // Serialize base message fields
+    std::memcpy(buffer.data() + offset, &msg.message_type, sizeof(msg.message_type));
+    offset += sizeof(msg.message_type);
+    std::memcpy(buffer.data() + offset, &msg.uuid, sizeof(msg.uuid));
+    offset += sizeof(msg.uuid);
+
+    // Serialize specific fields
+    std::memcpy(buffer.data() + offset, &msg.timestamp, sizeof(msg.timestamp));
+    offset += sizeof(msg.timestamp);
+    std::memcpy(buffer.data() + offset, &msg.x, sizeof(msg.x));
+    offset += sizeof(msg.x);
+    std::memcpy(buffer.data() + offset, &msg.y, sizeof(msg.y));
+    offset += sizeof(msg.y);
+
+    // Serialize player UUID and position list
+    int player_count = static_cast<int>(msg.players.size());
+    std::memcpy(buffer.data() + offset, &player_count, sizeof(player_count));
+    offset += sizeof(player_count);
+    for (const auto& player : msg.players) {
+        std::memcpy(buffer.data() + offset, &player.first, sizeof(player.first));
+        offset += sizeof(player.first);
+        std::memcpy(buffer.data() + offset, &player.second.x, sizeof(player.second.x));
+        offset += sizeof(player.second.x);
+        std::memcpy(buffer.data() + offset, &player.second.y, sizeof(player.second.y));
+        offset += sizeof(player.second.y);
+        if (offset >= BUFFER_SIZE) break;  // Prevent buffer overflow
+    }
+
+    return buffer;
+}
+
 // Deserialize an EventMessage
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::EventMessage RTypeProtocol::deserializeEventMessage(
@@ -112,6 +148,46 @@ RTypeProtocol::EventMessage RTypeProtocol::deserializeEventMessage(
         msg.components.push_back({componentType, componentData});
 
         offset += componentData.size();
+    }
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::SynchronizeMessage RTypeProtocol::deserializeSynchronize(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    SynchronizeMessage msg    = {};
+    std::size_t        offset = 0;
+
+    // Deserialize base message fields
+    std::memcpy(&msg.message_type, buffer.data() + offset, sizeof(msg.message_type));
+    offset += sizeof(msg.message_type);
+    std::memcpy(&msg.uuid, buffer.data() + offset, sizeof(msg.uuid));
+    offset += sizeof(msg.uuid);
+
+    // Deserialize specific fields
+    std::memcpy(&msg.timestamp, buffer.data() + offset, sizeof(msg.timestamp));
+    offset += sizeof(msg.timestamp);
+    std::memcpy(&msg.x, buffer.data() + offset, sizeof(msg.x));
+    offset += sizeof(msg.x);
+    std::memcpy(&msg.y, buffer.data() + offset, sizeof(msg.y));
+    offset += sizeof(msg.y);
+
+    // Deserialize player UUID and position list
+    int player_count = 0;
+    std::memcpy(&player_count, buffer.data() + offset, sizeof(player_count));
+    offset += sizeof(player_count);
+    for (int i = 0; i < player_count; ++i) {
+        if (offset + sizeof(long) + 2 * sizeof(float) > BUFFER_SIZE) break;  // Prevent overflow
+        long         uuid;
+        sf::Vector2f position;
+        std::memcpy(&uuid, buffer.data() + offset, sizeof(uuid));
+        offset += sizeof(uuid);
+        std::memcpy(&position.x, buffer.data() + offset, sizeof(position.x));
+        offset += sizeof(position.x);
+        std::memcpy(&position.y, buffer.data() + offset, sizeof(position.y));
+        offset += sizeof(position.y);
+        msg.players.push_back({uuid, position});
     }
 
     return msg;

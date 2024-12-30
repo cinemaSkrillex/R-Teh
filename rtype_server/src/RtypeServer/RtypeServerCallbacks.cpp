@@ -42,6 +42,22 @@ void print_raw_data(const std::vector<char>& data) {
 //     std::cout << value << " ";
 // }
 // std::cout << std::endl;
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> createSynchronizeMessage(
+    long uuid, long timestamp, float x, float y,
+    const std::vector<std::pair<long, sf::Vector2f>>& activePlayerUUIDs) {
+    // Populate the SynchronizeMessage structure
+    RTypeProtocol::SynchronizeMessage syncMessage;
+    syncMessage.message_type = RTypeProtocol::SYNCHRONIZE;  // Message type
+    syncMessage.uuid         = uuid;                        // Player UUID
+    syncMessage.timestamp    = timestamp;                   // Synchronization timestamp
+    syncMessage.x            = x;                           // Player X position
+    syncMessage.y            = y;                           // Player Y position
+    syncMessage.players      = activePlayerUUIDs;           // List of active player UUIDs
+
+    // Serialize the message
+    return RTypeProtocol::serialize<BUFFER_SIZE>(syncMessage);
+}
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
@@ -76,7 +92,8 @@ void RtypeServer::initCallbacks() {
                               " Clock:" + formatTimestamp(_startTime) + " Position:(" +
                               std::to_string(player_start_position.x) + "," +
                               std::to_string(player_start_position.y) + ") Players:[";
-        bool first = true;
+        bool                                       first = true;
+        std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
         for (const auto& player_pair : _players) {
             if (!first) message += "|";
             first              = false;
@@ -84,9 +101,16 @@ void RtypeServer::initCallbacks() {
             message += std::to_string(player.getUUID()) + ",(" +
                        std::to_string(player.getPosition().x) + "," +
                        std::to_string(player.getPosition().y) + ")";
+            activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
         }
         message += "]";
-        // _server->send_reliable_packet(message, sender);
+        std::array<char, 1024> binaryMessage = createSynchronizeMessage<1024>(
+            *playerEntity,
+            std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
+                .count(),
+            player_start_position.x, player_start_position.y, activePlayerUUIDs);
+
+        _server->send_reliable_packet(binaryMessage, sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         for (const auto& mob : _game_instance->getSimpleMobs()) {

@@ -61,6 +61,26 @@ void rtype::Game::handleSignal(std::array<char, 1024> signal) {
             handleNewClient(newClientMessage);
             break;
         }
+        case RTypeProtocol::SYNCHRONIZE: {
+            RTypeProtocol::SynchronizeMessage syncMessage =
+                RTypeProtocol::deserializeSynchronize(signal);
+
+            std::cout << "Synchronize Message Received:" << std::endl;
+            std::cout << "  UUID: " << syncMessage.uuid << std::endl;
+            std::cout << "  Timestamp: " << syncMessage.timestamp << std::endl;
+            std::cout << "  Position: (" << syncMessage.x << ", " << syncMessage.y << ")"
+                      << std::endl;
+            std::cout << "  Active Players: ";
+            for (const auto& player : syncMessage.players) {
+                std::cout << "uuid: " << player.first << " (" << player.second.x << ", "
+                          << player.second.y << ") ";
+            }
+            std::cout << std::endl;
+            handleSynchronize(syncMessage);
+
+            // Handle synchronization logic here
+            break;
+        }
         case RTypeProtocol::PLAYER_MOVE: {
             // Deserialize and handle player movement
             RTypeProtocol::PlayerMoveMessage playerMoveMessage =
@@ -98,19 +118,32 @@ void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket)
     add_player(uuid, position);
 }
 
-void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket) {
-    _localPlayerUUID                 = std::stol(parsedPacket.at("Uuid"));
-    const std::string players        = parsedPacket.at("Players");
-    _serverTime                      = std::stol(parsedPacket.at("Clock"));
-    auto client_now                  = std::chrono::steady_clock::now();
-    _startTime                       = client_now - std::chrono::milliseconds(_serverTime);
-    const std::string positions      = parsedPacket.at("Position");
-    sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
+// void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string> parsedPacket) {
+//     _localPlayerUUID                 = std::stol(parsedPacket.at("Uuid"));
+//     const std::string players        = parsedPacket.at("Players");
+//     _serverTime                      = std::stol(parsedPacket.at("Clock"));
+//     auto client_now                  = std::chrono::steady_clock::now();
+//     _startTime                       = client_now - std::chrono::milliseconds(_serverTime);
+//     const std::string positions      = parsedPacket.at("Position");
+//     sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
+//     std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
+//     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
+//     const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
+//     for (PeterParser::PlayerData player : datas) {
+//         add_player(std::stol(player.uuid), player.position);
+//     }
+// }
+
+void rtype::Game::handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPacket) {
+    _localPlayerUUID            = parsedPacket.uuid;
+    _serverTime                 = parsedPacket.timestamp;
+    auto client_now             = std::chrono::steady_clock::now();
+    _startTime                  = client_now - std::chrono::milliseconds(_serverTime);
+    sf::Vector2f localPlayerPos = {parsedPacket.x, parsedPacket.y};
     std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
-    const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
-    for (PeterParser::PlayerData player : datas) {
-        add_player(std::stol(player.uuid), player.position);
+    for (const auto& player : parsedPacket.players) {
+        add_player(player.first, player.second);
     }
 }
 
