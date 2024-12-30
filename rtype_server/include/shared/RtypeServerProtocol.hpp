@@ -7,7 +7,12 @@
 namespace RTypeProtocol {
 
 // Enum for message types
-enum MessageType : int { NEW_CLIENT = 0x01, PLAYER_MOVE = 0x02, EVENT_MESSAGE = 0x03 };
+enum MessageType : int {
+    NEW_CLIENT    = 0x01,
+    PLAYER_MOVE   = 0x02,
+    EVENT_MESSAGE = 0x03,
+    SYNCHRONIZE   = 0x04
+};
 
 // Base message structure
 struct BaseMessage {
@@ -19,7 +24,16 @@ struct BaseMessage {
 struct PlayerMoveMessage : BaseMessage {
     float x;
     float y;
+    float step;
     long  timestamp;
+};
+
+// Synchronize message
+struct SynchronizeMessage : BaseMessage {
+    long              timestamp;
+    float             x;
+    float             y;
+    std::vector<long> player_uuids;  // List of currently active player UUIDs
 };
 
 // Event message structure

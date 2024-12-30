@@ -59,12 +59,6 @@ void RtypeServer::initCallbacks() {
         for (const auto& client : _server->getClients()) {
             std::cout << "Client: " << client << std::endl;
             if (client != sender) {
-                // const std::string message =
-                //     "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
-                //     std::to_string(player_start_position.x) + "," +
-                //     std::to_string(player_start_position.y) + ")";
-                // std::cout << "Sending message: " << message << std::endl;
-
                 RTypeProtocol::PlayerMoveMessage newClientMessage;
                 newClientMessage.message_type            = RTypeProtocol::NEW_CLIENT;
                 newClientMessage.uuid                    = *playerEntity;

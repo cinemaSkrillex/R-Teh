@@ -148,6 +148,7 @@ class PacketManager {
         packet<BUFFER_SIZE> pkt = deserialize_packet(*message);
         std::cout << "Received packet<BUFFER_SIZE> from " << pkt.endpoint << std::endl;
         std::cout << "flag: " << pkt.flag << std::endl;
+
         switch (pkt.flag) {
             case ACK:
                 handle_ack(pkt);
@@ -260,7 +261,9 @@ class PacketManager {
                 // _unprocessed_reliable_messages.push_back(std::make_pair(message, _endpoint));
             }
         }
-
+        std::cout << "pkt.sequence_nb: " << pkt.sequence_nb
+                  << " pkt.start_sequence_nb: " << pkt.start_sequence_nb
+                  << " pkt.end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
         send_ack(pkt.start_sequence_nb, pkt.sequence_nb, _endpoint);
     }
 

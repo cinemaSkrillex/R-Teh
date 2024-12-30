@@ -19,6 +19,7 @@ struct BaseMessage {
 struct PlayerMoveMessage : BaseMessage {
     float x;
     float y;
+    float step;
     long  timestamp;
 };
 

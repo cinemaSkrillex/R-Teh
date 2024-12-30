@@ -32,15 +32,15 @@ struct EndpointEqual {
 };
 
 enum Flags {
-    UNRELIABLE    = 0,
-    RELIABLE      = 1,
-    ACK           = 2,
-    CONTROL       = 3,
-    HEARTBEAT     = 4,
-    DATA          = 5,
-    RETRANSMITTED = 6,
-    NEW_CLIENT    = 7,
-    TEST          = 8,
+    UNRELIABLE    = 1,
+    RELIABLE      = 2,
+    ACK           = 3,
+    CONTROL       = 4,
+    HEARTBEAT     = 5,
+    DATA          = 6,
+    RETRANSMITTED = 7,
+    NEW_CLIENT    = 8,
+    TEST          = 9,
 };
 
 enum class AckType { CLIENT_ACK, ACK };

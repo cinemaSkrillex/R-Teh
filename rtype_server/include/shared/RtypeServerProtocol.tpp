@@ -41,8 +41,11 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerMoveMessage& 
     // Serialize the additional fields specific to PlayerMoveMessage
     std::memcpy(buffer.data() + sizeof(BaseMessage), &msg.x, sizeof(msg.x));
     std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.x), &msg.y, sizeof(msg.y));
-    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y), &msg.timestamp,
-                sizeof(msg.timestamp));
+    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y), &msg.step,
+                sizeof(msg.step));
+    std::memcpy(
+        buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y) + sizeof(msg.step),
+        &msg.timestamp, sizeof(msg.timestamp));
 
     return buffer;
 }
@@ -59,8 +62,12 @@ RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
     // Deserialize the specific fields for PlayerMoveMessage
     std::memcpy(&msg.x, buffer.data() + sizeof(BaseMessage), sizeof(msg.x));
     std::memcpy(&msg.y, buffer.data() + sizeof(BaseMessage) + sizeof(msg.x), sizeof(msg.y));
-    std::memcpy(&msg.timestamp, buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y),
-                sizeof(msg.timestamp));
+    std::memcpy(&msg.step, buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y),
+                sizeof(msg.step));
+    std::memcpy(
+        &msg.timestamp,
+        buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y) + sizeof(msg.step),
+        sizeof(msg.timestamp));
 
     return msg;
 }
