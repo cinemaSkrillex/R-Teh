@@ -12,6 +12,8 @@
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
                      const std::string& server_ip, unsigned short server_port)
     : ANetwork<1024>(io_context, port, Role::CLIENT) {
+    _server_endpoint =
+        asio::ip::udp::endpoint(asio::ip::address::from_string(server_ip), server_port);
     // You can add additional constructor logic here
 }
 

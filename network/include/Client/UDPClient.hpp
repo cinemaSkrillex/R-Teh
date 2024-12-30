@@ -42,7 +42,7 @@ class UDPClient : public ANetwork<1024> {
     void send_new_client();
 
    private:
-    asio::ip::udp::endpoint _client_endpoint;  // The client's endpoint
+    asio::ip::udp::endpoint _server_endpoint;  // The client's endpoint
 };
 
 #endif  // UDPCLIENT_HPP
