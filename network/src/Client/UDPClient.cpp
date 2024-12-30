@@ -7,76 +7,52 @@
 
 #include "../../include/Client/UDPClient.hpp"
 
+#include "UDPClient.hpp"
+
 UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
                      const std::string& server_ip, unsigned short server_port)
-    : _socket(io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-      _server_endpoint(asio::ip::address::from_string(server_ip), server_port),
-      _packet_manager(io_context, _socket, Role::CLIENT),
-      _io_context(io_context),
-      _work_guard(asio::make_work_guard(io_context)) {
-    _packet_manager.start();
-    _io_context_thread = std::thread([this]() { _io_context.run(); });
+    : ANetwork<1024>(io_context, port, Role::CLIENT) {
+    // You can add additional constructor logic here
 }
 
-UDPClient::~UDPClient() {
-    _io_context.stop();
-    if (_io_context_thread.joinable()) {
-        _io_context_thread.join();
-    }
+// Callbacks
+void UDPClient::setNewClientCallback(
+    const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
+    _new_client_callback                 = callback;
+    _packet_manager._new_client_callback = callback;
 }
 
-void UDPClient::send_new_client() { _packet_manager.send_new_client(_server_endpoint); }
-
-void UDPClient::send_test() { _packet_manager.send_test(_server_endpoint); }
-
-void UDPClient::send_unreliable_packet(const std::string& message) {
-    _packet_manager.send_unreliable_packet(message, _server_endpoint);
+// Send methods
+void UDPClient::send_unreliable_packet(const std::array<char, 1024>& message) {
+    ANetwork<1024>::send_unreliable_packet(message, _server_endpoint);  // Call the inherited method
 }
 
-void UDPClient::send_reliable_packet(const std::string& message) {
-    _packet_manager.send_reliable_packet(message, _server_endpoint);
+void UDPClient::send_reliable_packet(const std::array<char, 1024>& message) {
+    ANetwork<1024>::send_reliable_packet(message, _server_endpoint);  // Call the inherited method
 }
 
-void UDPClient::send_unreliable_packet(const std::vector<char>& message) {
-    _packet_manager.send_unreliable_packet(message, _server_endpoint);
-}
-
-void UDPClient::send_reliable_packet(const std::vector<char>& message) {
-    _packet_manager.send_reliable_packet(message, _server_endpoint);
-}
-
-const std::string UDPClient::get_last_reliable_packet() {
-    return _packet_manager.get_last_reliable_packet();
-}
-
-const std::string UDPClient::get_last_unreliable_packet() {
-    return _packet_manager.get_last_unreliable_packet();
-}
-
-std::vector<std::string> UDPClient::get_unreliable_messages_from_endpoint(
+// Receive methods
+std::vector<std::array<char, 1024>> UDPClient::get_unreliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return _packet_manager.get_unreliable_messages_from_endpoint(endpoint);
+    return ANetwork<1024>::get_unreliable_messages_from_endpoint(
+        endpoint);  // Call the inherited method
 }
 
-std::vector<std::string> UDPClient::get_reliable_messages_from_endpoint(
+std::vector<std::array<char, 1024>> UDPClient::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return _packet_manager.get_reliable_messages_from_endpoint(endpoint);
+    return ANetwork<1024>::get_reliable_messages_from_endpoint(
+        endpoint);  // Call the inherited method
 }
 
-const std::vector<char> UDPClient::get_last_reliable_packet_data() {
-    return _packet_manager.get_last_reliable_packet_data();
+std::array<char, 1024> UDPClient::get_last_unreliable_packet_data() {
+    return ANetwork<1024>::get_last_unreliable_packet_data();  // Call the inherited method
 }
 
-const std::vector<char> UDPClient::get_last_unreliable_packet_data() {
-    return _packet_manager.get_last_unreliable_packet_data();
+std::array<char, 1024> UDPClient::get_last_reliable_packet_data() {
+    return ANetwork<1024>::get_last_reliable_packet_data();  // Call the inherited method
 }
 
-std::vector<std::vector<char>> UDPClient::get_unreliable_messages_from_endpoint_data(
-    const asio::ip::udp::endpoint& endpoint) {
-    return _packet_manager.get_unreliable_messages_from_endpoint_data(endpoint);
-}
-
-std::vector<std::vector<char>> UDPClient::get_reliable_messages_from_endpoint_data(
-    const asio::ip::udp::endpoint& endpoint) {
-    return _packet_manager.get_reliable_messages_from_endpoint_data(endpoint);
+// Miscellaneous methods
+void UDPClient::send_new_client() {
+    ANetwork<1024>::send_new_client(_server_endpoint);  // Call the inherited method
 }

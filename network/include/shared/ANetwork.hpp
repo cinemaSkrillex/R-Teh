@@ -77,6 +77,11 @@ class ANetwork : public INetwork {
     std::array<char, BUFFER_SIZE> get_last_reliable_packet_data() override {
         return _packet_manager.get_last_reliable_packet_data();
     }
+
+    // miscalleneous
+    void send_new_client(const asio::ip::udp::endpoint& endpoint) {
+        _packet_manager.send_new_client(endpoint);
+    }
 };
 
 #endif /* !ANETWORK_HPP_ */
