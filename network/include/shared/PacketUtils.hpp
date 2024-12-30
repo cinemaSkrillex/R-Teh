@@ -43,6 +43,48 @@ enum Flags {
     TEST          = 8,
 };
 
+enum class AckType { CLIENT_ACK, ACK };
+
+struct AckMessage {
+    AckType  ack_type;
+    uint64_t start_sequence_number;
+    uint64_t sequence_number;
+};
+
+template <std::size_t BUFFER_SIZE>
+void serialize_ack(const AckMessage& ack, std::array<char, BUFFER_SIZE>& buffer) {
+    // Ensure the buffer is large enough to hold the serialized data
+    static_assert(
+        sizeof(ack.ack_type) + sizeof(ack.start_sequence_number) + sizeof(ack.sequence_number) <=
+            BUFFER_SIZE,
+        "Buffer size is too small for AckMessage serialization");
+
+    // Copy the AckType enum value to the buffer
+    buffer[0] = static_cast<char>(ack.ack_type);  // Save AckType as a byte
+
+    // Copy the sequence numbers to the buffer (in a platform-independent way)
+    std::memcpy(buffer.data() + 1, &ack.start_sequence_number, sizeof(ack.start_sequence_number));
+    std::memcpy(buffer.data() + 1 + sizeof(ack.start_sequence_number), &ack.sequence_number,
+                sizeof(ack.sequence_number));
+}
+
+template <std::size_t BUFFER_SIZE>
+AckMessage deserialize_ack(const std::array<char, BUFFER_SIZE>& buffer) {
+    AckMessage ackMessage;
+
+    // Deserialize the AckType (first byte)
+    ackMessage.ack_type = static_cast<AckType>(buffer[0]);
+
+    // Deserialize the sequence numbers
+    std::memcpy(&ackMessage.start_sequence_number, buffer.data() + 1,
+                sizeof(ackMessage.start_sequence_number));
+    std::memcpy(&ackMessage.sequence_number,
+                buffer.data() + 1 + sizeof(ackMessage.start_sequence_number),
+                sizeof(ackMessage.sequence_number));
+
+    return ackMessage;
+}
+
 template <std::size_t BUFFER_SIZE>
 struct packet {
     SEQUENCE_TYPE                 sequence_nb;

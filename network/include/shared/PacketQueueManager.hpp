@@ -8,15 +8,16 @@
 #ifndef PACKETQUEUEMANAGER_HPP
 #define PACKETQUEUEMANAGER_HPP
 
-#include <queue>
-#include <mutex>
-#include <condition_variable>
 #include <asio.hpp>
+#include <condition_variable>
 #include <iostream>
+#include <mutex>
+#include <queue>
+
 #include "PacketUtils.hpp"
 
 class PacketQueueManager {
-  public:
+   public:
     ~PacketQueueManager() {}
     void enqueue(const packet& pkt, const asio::ip::udp::endpoint& endpoint);
     std::pair<packet, asio::ip::udp::endpoint> dequeue();
@@ -48,11 +49,11 @@ class PacketQueueManager {
 
     bool stop_retransmissions_ = false;
 
-  private:
+   private:
     std::deque<std::pair<packet, asio::ip::udp::endpoint>> queue_;
     std::mutex                                             queue_mutex_;
     std::mutex                                             mutex_;
     std::condition_variable                                cv_;
 };
 
-#endif // PACKETQUEUEMANAGER_HPP
+#endif  // PACKETQUEUEMANAGER_HPP
