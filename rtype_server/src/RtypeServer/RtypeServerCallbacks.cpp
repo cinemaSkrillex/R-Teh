@@ -61,7 +61,8 @@ void RtypeServer::initCallbacks() {
                     "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
                     std::to_string(player_start_position.x) + "," +
                     std::to_string(player_start_position.y) + ")";
-                _server->send_reliable_packet(message, client);
+                std::cout << "Sending message: " << message << std::endl;
+                // _server->send_reliable_packet(message, client);
             }
         }
         // Create the uuid for each new client
@@ -79,7 +80,7 @@ void RtypeServer::initCallbacks() {
                        std::to_string(player.getPosition().y) + ")";
         }
         message += "]";
-        _server->send_reliable_packet(message, sender);
+        // _server->send_reliable_packet(message, sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         for (const auto& mob : _game_instance->getSimpleMobs()) {
@@ -112,7 +113,7 @@ void RtypeServer::initCallbacks() {
             if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
             MobMessage += " Drawable:true";
 
-            _server->send_reliable_packet(MobMessage, sender);
+            // _server->send_reliable_packet(MobMessage, sender);
         }
         _players[sender] = player;
     });

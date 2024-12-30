@@ -22,7 +22,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
                               " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
                               std::to_string(position->x) + "," + std::to_string(position->y) + ")";
         for (auto client : _server->getClients()) {
-            _server->send_unreliable_packet(message, client);
+            // _server->send_unreliable_packet(message, client);
         }
     }
 }
@@ -34,13 +34,13 @@ void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngin
                               " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
                               std::to_string(position->x) + "," + std::to_string(position->y) + ")";
         for (auto client : _server->getClients()) {
-            _server->send_unreliable_packet(message, client);
+            // _server->send_unreliable_packet(message, client);
         }
     }
 }
 
 void RtypeServer::broadCastAll(std::string message) {
     for (auto client : _server->getClients()) {
-        _server->send_reliable_packet(message, client);
+        // _server->send_reliable_packet(message, client);
     }
 }

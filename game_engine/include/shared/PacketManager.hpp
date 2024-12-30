@@ -27,6 +27,7 @@
 // Custom hash and equality for asio::ip::udp::endpoint
 // we need it in order to know if we have already seen a client (kind of a select in C)
 
+template <std::size_t BUFFER_SIZE>
 class PacketManager {
    public:
     PacketManager(asio::io_context& io_context, asio::ip::udp::socket& socket, Role role);
@@ -37,9 +38,9 @@ class PacketManager {
     // packet functions
     // packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
     //                     const asio::ip::udp::endpoint& endpoint, const std::string& message);
-    packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
-                        const asio::ip::udp::endpoint&       endpoint,
-                        const std::array<char, BUFFER_SIZE>& message);
+    packet<BUFFER_SIZE> build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb,
+                                     Flags flag, const asio::ip::udp::endpoint& endpoint,
+                                     const std::array<char, BUFFER_SIZE>& message);
 
     // threads function
     void receive();
@@ -50,7 +51,7 @@ class PacketManager {
     void handle_receive(std::size_t bytes_recvd);
     // handle messages
     void handle_ack(const std::string& ack_message);
-    void handle_reliable_packet(const packet& pkt);
+    void handle_reliable_packet(const packet<BUFFER_SIZE>& pkt);
     void handle_unreliable_packet(const std::string& message);
     void handle_unreliable_packet(const std::array<char, BUFFER_SIZE>& message);
     void handle_new_client(const asio::ip::udp::endpoint& client_endpoint);
@@ -59,10 +60,10 @@ class PacketManager {
     // send functions
     void send_ack(SEQUENCE_TYPE sequence_start_number, SEQUENCE_TYPE sequence_number,
                   const asio::ip::udp::endpoint& endpoint_);
-    void queue_packet_for_sending(const packet& pkt);
+    void queue_packet_for_sending(const packet<BUFFER_SIZE>& pkt);
     void send_unreliable_packet(const std::string&             message,
                                 const asio::ip::udp::endpoint& endpoint);
-    void send_packet(const packet& pkt);
+    void send_packet(const packet<BUFFER_SIZE>& pkt);
     void send_reliable_packet(const std::string& message, const asio::ip::udp::endpoint& endpoint);
     void send_new_client(const asio::ip::udp::endpoint& endpoint);
     void send_test(const asio::ip::udp::endpoint& endpoint);
@@ -77,7 +78,7 @@ class PacketManager {
                                 const asio::ip::udp::endpoint&       endpoint);
 
     // retry functions
-    void queue_packet_for_retry(const packet& pkt);
+    void queue_packet_for_retry(const packet<BUFFER_SIZE>& pkt);
 
     // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
     // std::queue<packet> get_received_packets();
@@ -105,7 +106,7 @@ class PacketManager {
 
     // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
     // endpoint);
-    void print_packet(const packet& pkt);
+    void print_packet(const packet<BUFFER_SIZE>& pkt);
 
     std::function<void(const asio::ip::udp::endpoint& client_endpoint)> _new_client_callback;
 
@@ -130,18 +131,18 @@ class PacketManager {
     SEQUENCE_TYPE _message_id;  // start at 0 and increment of (packet number) for each message
     std::mutex    _message_id_mutex;
 
-    std::unordered_map<int, std::vector<packet>> _received_packets;
-    std::mutex                                   _received_packets_mutex;
+    std::unordered_map<int, std::vector<packet<BUFFER_SIZE>>> _received_packets;
+    std::mutex                                                _received_packets_mutex;
 
     // send packets variables
-    std::deque<packet>         _send_queue;
-    std::mutex                 _send_queue_mutex;
-    std::condition_variable    _send_queue_cv;
-    std::unordered_set<packet> _send_queue_set;
+    std::deque<packet<BUFFER_SIZE>>         _send_queue;
+    std::mutex                              _send_queue_mutex;
+    std::condition_variable                 _send_queue_cv;
+    std::unordered_set<packet<BUFFER_SIZE>> _send_queue_set;
 
     // retry packets variables
-    std::deque<packet> _retry_queue;
-    std::mutex         _retry_queue_mutex;
+    std::deque<packet<BUFFER_SIZE>> _retry_queue;
+    std::mutex                      _retry_queue_mutex;
 
     // // std::stack<std::string> _unprocessed_unreliable_messages;
     // std::vector<std::pair<std::string, asio::ip::udp::endpoint>>

@@ -14,7 +14,6 @@
 #include <queue>
 #include <string>
 
-#include "../shared/PacketManager.hpp"
 #include "ANetwork.hpp"
 
 class UDPClient : public ANetwork<1024> {

@@ -48,6 +48,7 @@ class UDPServer : public ANetwork<1024> {
 
     // Miscellaneous methods
     void send_new_client(const asio::ip::udp::endpoint& endpoint);
+    std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
 
    private:
     asio::ip::udp::endpoint _client_endpoint;  // The client's endpoint

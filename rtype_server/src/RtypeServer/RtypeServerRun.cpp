@@ -20,15 +20,16 @@ void RtypeServer::run() {
             // Do server work
             for (auto client : _server->getClients()) {
                 // Process all messages from the client
-                for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
-                    const auto parsed_data = PeterParser::parseMessage(message);
+                // for (const auto& message :
+                // _server->get_unreliable_messages_from_endpoint(client)) {
+                //     const auto parsed_data = PeterParser::parseMessage(message);
 
-                    if (parsed_data.find("Event") != parsed_data.end()) {
-                        runEvent(parsed_data, client, _players.at(client));
-                    } else {
-                        runSimulation(parsed_data, client, _players.at(client));
-                    }
-                }
+                //     if (parsed_data.find("Event") != parsed_data.end()) {
+                //         runEvent(parsed_data, client, _players.at(client));
+                //     } else {
+                //         runSimulation(parsed_data, client, _players.at(client));
+                //     }
+                // }
             }
             auto destroyedEntities = _game_instance->run(_deltaTime);
             if (!destroyedEntities.empty()) {

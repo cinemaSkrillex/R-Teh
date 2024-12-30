@@ -14,7 +14,7 @@
 #include <system_error>
 #endif
 
-#include "UDPServer.hpp"
+#include "../../include/Server/UDPServer.hpp"
 
 UDPServer::UDPServer(asio::io_context& io_context, unsigned short port)
     : ANetwork<1024>(io_context, port, Role::SERVER) {
@@ -30,8 +30,7 @@ const asio::ip::udp::endpoint& UDPServer::getEndpoint() const { return _client_e
 // Callbacks
 void UDPServer::setNewClientCallback(
     const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
-    _new_client_callback                 = callback;
-    _packet_manager._new_client_callback = callback;
+    ANetwork<1024>::setNewClientCallback(callback);  // Call the inherited method
 }
 
 // Send methods
@@ -69,4 +68,8 @@ std::array<char, 1024> UDPServer::get_last_reliable_packet_data() {
 // Miscellaneous methods
 void UDPServer::send_new_client(const asio::ip::udp::endpoint& endpoint) {
     ANetwork<1024>::send_new_client(endpoint);  // Call the inherited method
+}
+
+std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> UDPServer::getClients() {
+    return ANetwork<1024>::getClients();
 }

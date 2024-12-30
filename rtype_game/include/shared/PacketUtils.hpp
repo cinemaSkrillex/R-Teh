@@ -13,7 +13,7 @@
 #include <vector>
 
 #define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
-#define BUFFER_SIZE 800
+// #define BUFFER_SIZE 800
 
 enum class Role { SERVER, CLIENT };
 
@@ -43,6 +43,7 @@ enum Flags {
     TEST          = 8,
 };
 
+template <std::size_t BUFFER_SIZE>
 struct packet {
     SEQUENCE_TYPE                 sequence_nb;
     SEQUENCE_TYPE                 start_sequence_nb;
@@ -60,9 +61,9 @@ struct packet {
 };
 
 namespace std {
-template <>
-struct hash<packet> {
-    std::size_t operator()(const packet& pkt) const {
+template <std::size_t BUFFER_SIZE>
+struct hash<packet<BUFFER_SIZE>> {
+    std::size_t operator()(const packet<BUFFER_SIZE>& pkt) const {
         return ((std::hash<int>()(pkt.sequence_nb) ^
                  (std::hash<int>()(pkt.start_sequence_nb) << 1)) >>
                 1) ^
@@ -71,7 +72,8 @@ struct hash<packet> {
 };
 }  // namespace std
 
-inline std::vector<char> serialize_packet(const packet& pkt) {
+template <std::size_t BUFFER_SIZE>
+inline std::vector<char> serialize_packet(const packet<BUFFER_SIZE>& pkt) {
     std::string endpoint_address = pkt.endpoint.address().to_string();
     uint16_t    endpoint_port    = pkt.endpoint.port();
 
@@ -180,9 +182,10 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
 //     return pkt;
 // }
 
-inline packet deserialize_packet(const std::array<char, BUFFER_SIZE>& buffer) {
-    packet pkt;
-    auto   it = buffer.begin();
+template <std::size_t BUFFER_SIZE>
+inline packet<BUFFER_SIZE> deserialize_packet(const std::array<char, BUFFER_SIZE>& buffer) {
+    packet<BUFFER_SIZE> pkt;
+    auto                it = buffer.begin();
 
     // Extract sequence_nb
     std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));

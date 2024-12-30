@@ -14,8 +14,8 @@ void rtype::Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.update();
         _window.clear();
-        handleSignal(_clientUDP->get_last_reliable_packet());
-        handleSignal(_clientUDP->get_last_unreliable_packet());
+        // handleSignal(_clientUDP->get_last_reliable_packet());
+        // handleSignal(_clientUDP->get_last_unreliable_packet());
         _registry.run_systems(_deltaTime);
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _window.display();
@@ -29,7 +29,7 @@ void rtype::Game::run() {
                                     std::to_string(direction.top) + ") DirectionY:(" +
                                     std::to_string(direction.width) + "," +
                                     std::to_string(direction.height) + ")";
-        _clientUDP->send_unreliable_packet(message);
+        // _clientUDP->send_unreliable_packet(message);
     }
     exit(0);
 }

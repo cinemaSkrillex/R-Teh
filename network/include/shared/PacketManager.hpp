@@ -131,8 +131,8 @@ class PacketManager {
     SEQUENCE_TYPE _message_id;  // start at 0 and increment of (packet number) for each message
     std::mutex    _message_id_mutex;
 
-    std::unordered_map<int, std::vector<packet>> _received_packets;
-    std::mutex                                   _received_packets_mutex;
+    std::unordered_map<int, std::vector<packet<BUFFER_SIZE>>> _received_packets;
+    std::mutex                                                _received_packets_mutex;
 
     // send packets variables
     std::deque<packet<BUFFER_SIZE>>         _send_queue;

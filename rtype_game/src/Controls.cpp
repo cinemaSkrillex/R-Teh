@@ -35,6 +35,6 @@ void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleratio
 
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
-    _client->send_unreliable_packet("Event:Shoot");
+    // _client->send_unreliable_packet("Event:Shoot");
 }
 }  // namespace rtype

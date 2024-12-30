@@ -42,7 +42,9 @@ packet<BUFFER_SIZE> PacketManager<BUFFER_SIZE>::build_packet(
     pkt.end_sequence_nb   = end_sequence_nb;
 
     // Calculate packet<BUFFER_SIZE> size, ensuring it doesn't exceed BUFFER_SIZE
-    pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size()));
+    // pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size())); error via the new
+    // buffer_size
+    pkt.packet_size = std::min(static_cast<std::size_t>(BUFFER_SIZE), message.size());
 
     size_t start_idx = sequence_nb * BUFFER_SIZE;
     size_t end_idx   = start_idx + pkt.packet_size;
@@ -227,11 +229,9 @@ void PacketManager<BUFFER_SIZE>::handle_reliable_packet(const packet<BUFFER_SIZE
             // }
             // _received_packets.erase(pkt.start_sequence_nb);
             // const std::string message = std::string(complete_data.begin(), complete_data.end());
-            for (const auto& packet<BUFFER_SIZE> : _received_packets[pkt.start_sequence_nb]) {
-                size_t data_size =
-                    std::min(packet<BUFFER_SIZE>.data.size(), BUFFER_SIZE - current_index);
-                std::copy(packet<BUFFER_SIZE>.data.begin(),
-                          packet<BUFFER_SIZE>.data.begin() + data_size,
+            for (const auto& packet : _received_packets[pkt.start_sequence_nb]) {
+                size_t data_size = std::min(packet.data.size(), BUFFER_SIZE - current_index);
+                std::copy(packet.data.begin(), packet.data.begin() + data_size,
                           complete_data.begin() + current_index);
                 current_index += data_size;
 
