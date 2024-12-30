@@ -39,7 +39,9 @@ class PacketManager {
           socket_(socket),
           role_(role),
           _stop_processing(false),
-          work_guard_(asio::make_work_guard(io_context)) {}
+          work_guard_(asio::make_work_guard(io_context)) {
+        std::cout << "PacketManager constructor" << std::endl;
+    }
     ~PacketManager() {
         _stop_processing = true;
         if (_send_packet_thread.joinable()) _send_packet_thread.join();
@@ -284,6 +286,7 @@ class PacketManager {
         if (_known_clients.find(client_endpoint) != _known_clients.end()) return;
 
         _known_clients.insert(client_endpoint);
+        std::cout << "New client: " << client_endpoint << std::endl;
         // here we used to send test message. TODO test flag to trigger the test
 
         if (_new_client_callback) _new_client_callback(client_endpoint);
