@@ -22,6 +22,9 @@
 
 #include "PacketUtils.hpp"
 
+// Templates need to have their implementation in the header file see the following link for more
+// https://stackoverflow.com/a/1353981
+
 // enum class Role { SERVER, CLIENT };
 
 // Custom hash and equality for asio::ip::udp::endpoint
