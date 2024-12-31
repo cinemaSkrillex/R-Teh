@@ -1,6 +1,7 @@
 #ifndef RTYPESERVERPROTOCOL_HPP_
 #define RTYPESERVERPROTOCOL_HPP_
 
+#include <SFML/System/Vector2.hpp>
 #include <array>
 #include <vector>
 
