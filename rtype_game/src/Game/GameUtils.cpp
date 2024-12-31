@@ -54,7 +54,7 @@ void rtype::Game::handleSynchronize(std::unordered_map<std::string, std::string>
     const std::string positions      = parsedPacket.at("Position");
     sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
     std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
-    _registry.add_component(player_entity,
+    _registry.add_component(_player_entity,
                             RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
     const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
     for (PeterParser::PlayerData player : datas) {
@@ -191,8 +191,8 @@ void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::strin
                     _players.erase(playerIt);
                 }
                 if (_localPlayerUUID == id) {
-                    _registry.remove_entity(*player_entity);
-                    player_entity.reset();
+                    _registry.remove_entity(*_player_entity);
+                    _player_entity.reset();
                 }
             }
             break;

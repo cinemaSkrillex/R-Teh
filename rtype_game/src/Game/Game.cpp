@@ -44,10 +44,15 @@ sf::IntRect Game::getPlayerNormalizedDirection() {
             direction.top = 1;
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
-            direction.width = 1;
+            direction.width                                                               = 1;
+            _registry.get_component<RealEngine::SpriteSheet>(_player_entity)->spriteIndex = "up";
         }
         if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
-            direction.height = 1;
+            direction.height                                                              = 1;
+            _registry.get_component<RealEngine::SpriteSheet>(_player_entity)->spriteIndex = "down";
+        }
+        if (direction.width == direction.height) {
+            _registry.get_component<RealEngine::SpriteSheet>(_player_entity)->spriteIndex = "idle";
         }
     }
     return direction;
