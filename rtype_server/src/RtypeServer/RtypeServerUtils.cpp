@@ -44,8 +44,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
         playerMoveMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
 
         // Serialize the PlayerMoveMessage
-        std::array<char, 1024> serializedMessage =
-            RTypeProtocol::serialize<1024>(playerMoveMessage);
+        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(playerMoveMessage);
 
         // Broadcast the serialized message to all clients
         for (const auto& client : _server->getClients()) {

@@ -73,14 +73,14 @@ void RtypeServer::initCallbacks() {
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
             if (client != sender) {
-                RTypeProtocol::PlayerMoveMessage newClientMessage;
-                newClientMessage.message_type            = RTypeProtocol::NEW_CLIENT;
-                newClientMessage.uuid                    = *playerEntity;
-                long player_entity_uuid                  = *playerEntity;
-                newClientMessage.x                       = player_start_position.x;
-                newClientMessage.y                       = player_start_position.y;
-                newClientMessage.timestamp               = elapsed_time;
-                std::array<char, 1024> serializedMessage = RTypeProtocol::serialize<1024>(
+                RTypeProtocol::PlayerMoveMessage newClientMessage = {};
+                newClientMessage.message_type                     = RTypeProtocol::NEW_CLIENT;
+                newClientMessage.uuid                             = *playerEntity;
+                long player_entity_uuid                           = *playerEntity;
+                newClientMessage.x                                = player_start_position.x;
+                newClientMessage.y                                = player_start_position.y;
+                newClientMessage.timestamp                        = elapsed_time;
+                std::array<char, 800> serializedMessage           = RTypeProtocol::serialize<800>(
                     newClientMessage);  // needs to be changed to TEMPLATE BUFFER SIZE
                 _server->send_reliable_packet(serializedMessage, client);
             }
@@ -102,7 +102,7 @@ void RtypeServer::initCallbacks() {
             activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
         }
         message += "]";
-        std::array<char, 1024> synchronizeMessage = createSynchronizeMessage<1024>(
+        std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
             *playerEntity,
             std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
                 .count(),

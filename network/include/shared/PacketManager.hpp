@@ -246,9 +246,6 @@ class PacketManager {
                 // _endpoint));
             }
         }
-        std::cout << "pkt.sequence_nb: " << pkt.sequence_nb
-                  << " pkt.start_sequence_nb: " << pkt.start_sequence_nb
-                  << " pkt.end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
         send_ack(pkt.start_sequence_nb, pkt.sequence_nb, _endpoint);
     }
 
@@ -461,8 +458,8 @@ class PacketManager {
 
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _known_clients;
 
-    bool                   _stop_processing;
-    std::array<char, 1024> recv_buffer_;
+    bool                  _stop_processing;
+    std::array<char, 800> recv_buffer_;
 
     asio::ip::udp::endpoint _endpoint;  // the endpoint that sent the last message
 

@@ -39,14 +39,14 @@
 //     }
 // }
 
-void rtype::Game::handleSignal(std::array<char, 1024> signal) {
+void rtype::Game::handleSignal(std::array<char, 800> signal) {
     // Check if signal is empty or corrupted (all zeros)
     if (std::all_of(signal.begin(), signal.end(), [](char c) { return c == 0; })) {
         return;
     }
 
     // Deserialize the signal into a BaseMessage first
-    RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<1024>(signal);
+    RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<800>(signal);
     // Print the deserialized BaseMessage
     // Check the message type to handle accordingly
     switch (baseMessage.message_type) {

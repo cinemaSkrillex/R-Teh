@@ -22,14 +22,7 @@ void rtype::Game::run() {
         auto client_now = std::chrono::steady_clock::now();
         long client_elapsed_time =
             std::chrono::duration_cast<std::chrono::milliseconds>(client_now - _startTime).count();
-        long              delta_time = client_elapsed_time - _serverTime;
-        const std::string message    = "Uuid:" + std::to_string(_localPlayerUUID) +
-                                    " Timestamp:" + std::to_string(delta_time) + " DirectionX:(" +
-                                    std::to_string(direction.left) + "," +
-                                    std::to_string(direction.top) + ") DirectionY:(" +
-                                    std::to_string(direction.width) + "," +
-                                    std::to_string(direction.height) + ")";
-
+        long delta_time = client_elapsed_time - _serverTime;
         // Create a PlayerDirectionMessage
         RTypeProtocol::PlayerDirectionMessage playerDirectionMessage;
         playerDirectionMessage.message_type = RTypeProtocol::PLAYER_DIRECTION;
@@ -38,8 +31,8 @@ void rtype::Game::run() {
         playerDirectionMessage.timestamp    = delta_time;
 
         // Serialize the PlayerDirectionMessage
-        std::array<char, 1024> serializedPlayerDirectionMessage =
-            RTypeProtocol::serialize<1024>(playerDirectionMessage);
+        std::array<char, 800> serializedPlayerDirectionMessage =
+            RTypeProtocol::serialize<800>(playerDirectionMessage);
 
         _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
     }

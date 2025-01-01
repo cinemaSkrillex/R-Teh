@@ -153,7 +153,7 @@ void TCPPacketManager::listen_for_client_data(
         std::cerr << "Client socket is not open." << std::endl;
         return;
     }
-    auto buffer = std::make_shared<std::array<char, 1024>>();
+    auto buffer = std::make_shared<std::array<char, 800>>();
     client_socket->async_read_some(
         asio::buffer(*buffer),
         [this, client_socket, buffer](asio::error_code ec, std::size_t length) {

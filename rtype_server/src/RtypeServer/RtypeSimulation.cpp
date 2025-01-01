@@ -31,11 +31,11 @@
 //                                         client_elapsed_time_seconds);
 // }
 
-void RtypeServer::runSimulation(const std::array<char, 1024>& buffer,
+void RtypeServer::runSimulation(const std::array<char, 800>& buffer,
                                 asio::ip::udp::endpoint& client, Player& player) {
     // Deserialize the PlayerDirectionMessage
     RTypeProtocol::PlayerDirectionMessage playerDirectionMessage =
-        RTypeProtocol::deserializePlayerDirection<1024>(buffer);
+        RTypeProtocol::deserializePlayerDirection<800>(buffer);
     const auto player_uuid                 = playerDirectionMessage.uuid;
     const auto timestamp                   = playerDirectionMessage.timestamp;
     const auto lastTimestamp               = _players.at(client).getLastTimestamp();

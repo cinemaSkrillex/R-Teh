@@ -30,7 +30,7 @@ while True:
         sock.sendto(b'ping', (HOST, PORT))
         SENT += 1
         sock.settimeout(0.001)  # 1 ms timeout for receiving pong
-        data, _ = sock.recvfrom(1024)
+        data, _ = sock.recvfrom(800)
         if data == b'pong':
             RECEIVED += 1
     except socket.timeout:

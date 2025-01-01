@@ -28,7 +28,7 @@ class Game {
     void                                run();
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     RealEngine::Entity                  createEntity();
-    void                                handleSignal(std::array<char, 1024> signal);
+    void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::IntRect                         getPlayerNormalizedDirection();

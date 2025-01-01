@@ -24,11 +24,7 @@
 
 // Templates need to have their implementation in the header file see the following link for more
 // https://stackoverflow.com/a/1353981
-
-// enum class Role { SERVER, CLIENT };
-
-// Custom hash and equality for asio::ip::udp::endpoint
-// we need it in order to know if we have already seen a client (kind of a select in C)
+// You can also use .tpp files to store the implementation and include them in the header file
 
 template <std::size_t BUFFER_SIZE>
 class PacketManager {
@@ -54,8 +50,6 @@ class PacketManager {
     }
 
     // packet functions
-    // packet build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb, Flags flag,
-    //                     const asio::ip::udp::endpoint& endpoint, const std::string& message);
     packet<BUFFER_SIZE> build_packet(int sequence_nb, int start_sequence_nb, int end_sequence_nb,
                                      Flags flag, const asio::ip::udp::endpoint& endpoint,
                                      const std::array<char, BUFFER_SIZE>& message) {
@@ -65,8 +59,6 @@ class PacketManager {
         pkt.end_sequence_nb   = end_sequence_nb;
 
         // Calculate packet<BUFFER_SIZE> size, ensuring it doesn't exceed BUFFER_SIZE
-        // pkt.packet_size = std::min(BUFFER_SIZE, static_cast<int>(message.size())); error via the
-        // new buffer_size
         pkt.packet_size = std::min(static_cast<std::size_t>(BUFFER_SIZE), message.size());
 
         size_t start_idx = sequence_nb * BUFFER_SIZE;
@@ -136,12 +128,6 @@ class PacketManager {
 
     // receive functions
     void handle_receive(std::size_t bytes_recvd) {
-        // auto message = std::make_shared<std::string>(recv_buffer_.data(), bytes_recvd);
-        // packet<BUFFER_SIZE> pkt     = deserialize_packet(std::vector<char>(message->begin(),
-        // message->end())); probably need to change this to std::array<char, BUFFER_SIZE> auto
-        // message = std::make_shared<std::vector<char>>(recv_buffer_.begin(),
-        //                                                      recv_buffer_.begin() + bytes_recvd);
-        // packet<BUFFER_SIZE> pkt     = deserialize_packet(*message);
         auto message = std::make_shared<std::array<char, BUFFER_SIZE>>();
         std::copy(recv_buffer_.begin(), recv_buffer_.begin() + bytes_recvd, message->begin());
 
@@ -255,12 +241,11 @@ class PacketManager {
                 // std::lock_guard<std::mutex>
                 // unprocessed_lock(_unprocessed_reliable_messages_mutex);
                 // // For now: we will push with the last _endpoint. Can cause issues in the future
-                // _unprocessed_reliable_messages.push_back(std::make_pair(message, _endpoint));
+                // DON'T REMOVE
+                // _unprocessed_reliable_messages.push_back(std::make_pair(message,
+                // _endpoint));
             }
         }
-        std::cout << "pkt.sequence_nb: " << pkt.sequence_nb
-                  << " pkt.start_sequence_nb: " << pkt.start_sequence_nb
-                  << " pkt.end_sequence_nb: " << pkt.end_sequence_nb << std::endl;
         send_ack(pkt.start_sequence_nb, pkt.sequence_nb, _endpoint);
     }
 
@@ -287,7 +272,8 @@ class PacketManager {
     // send functions
     void send_ack(SEQUENCE_TYPE start_sequence_number, SEQUENCE_TYPE sequence_number,
                   const asio::ip::udp::endpoint& endpoint_) {
-        AckMessage ackMessage = {AckType::ACK, 0, 0};
+        AckMessage                    ackMessage = {AckType::ACK, 0, 0};
+        std::array<char, BUFFER_SIZE> buffer;
 
         // Set the AckType based on the role
         if (role_ == Role::SERVER) {
@@ -300,16 +286,12 @@ class PacketManager {
         ackMessage.start_sequence_number = start_sequence_number;
         ackMessage.sequence_number       = sequence_number;
 
-        // Serialize the ackMessage
-        std::array<char, BUFFER_SIZE> buffer;
-
         // Serialize the AckMessage into the buffer
         serialize_ack(ackMessage, buffer);
 
         // build packet
         packet<BUFFER_SIZE> pkt = build_packet(0, 0, 0, ACK, endpoint_, buffer);
 
-        // Send the buffer over the network using your packet manager or UDP socket
         queue_packet_for_sending(pkt);
     }
 
@@ -393,12 +375,9 @@ class PacketManager {
         {
             std::lock_guard<std::mutex> lock(_retry_queue_mutex);
             _retry_queue.push_back(pkt);
-            std::cout << "retry_queue size: " << _retry_queue.size() << std::endl;
         }
     }
 
-    // void schedule_retransmissions(const asio::ip::udp::endpoint& endpoint);
-    // std::queue<packet> get_received_packets();
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getKnownClients() {
         return _known_clients;
     }
@@ -410,8 +389,6 @@ class PacketManager {
         std::copy(_unprocessed_reliable_messages_data.back().first.begin(),
                   _unprocessed_reliable_messages_data.back().first.end(), message.begin());
         _unprocessed_reliable_messages_data.erase(_unprocessed_reliable_messages_data.end() - 1);
-        std::cout << "size of unprocessed_reliable_messages_data: "
-                  << _unprocessed_reliable_messages_data.size() << std::endl;
         return message;
     }
     const std::array<char, BUFFER_SIZE> get_last_unreliable_packet_data() {
@@ -424,17 +401,6 @@ class PacketManager {
                                                     1);
         return message;
     }
-
-    // std::vector<std::string> get_unreliable_messages_from_endpoint(
-    //     const asio::ip::udp::endpoint& endpoint);
-    // std::vector<std::string> get_reliable_messages_from_endpoint(
-    //     const asio::ip::udp::endpoint& endpoint);
-
-    // overload for vector<char>
-    // std::vector<std::vector<char>> get_unreliable_messages_from_endpoint_data(
-    //     const asio::ip::udp::endpoint& endpoint);
-    // std::vector<std::vector<char>> get_reliable_messages_from_endpoint_data(
-    //     const asio::ip::udp::endpoint& endpoint);
 
     std::vector<std::array<char, BUFFER_SIZE>> get_unreliable_messages_from_endpoint_data(
         const asio::ip::udp::endpoint& endpoint) {
@@ -492,8 +458,8 @@ class PacketManager {
 
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _known_clients;
 
-    bool                   _stop_processing;
-    std::array<char, 1024> recv_buffer_;
+    bool                  _stop_processing;
+    std::array<char, 800> recv_buffer_;
 
     asio::ip::udp::endpoint _endpoint;  // the endpoint that sent the last message
 

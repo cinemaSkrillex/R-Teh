@@ -22,7 +22,6 @@ std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::V
     _registry.add_component(player, RealEngine::SpriteComponent{_otherPlayer});
 
     _players.emplace(player_uuid, player);
-    std::cout << "Player added with uuid: " << player_uuid << std::endl;
     return _players.at(player_uuid);
 }
 

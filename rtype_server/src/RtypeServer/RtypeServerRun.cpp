@@ -24,7 +24,7 @@ void RtypeServer::run() {
                 for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
                     // const auto parsed_data = PeterParser::parseMessage(message);
                     RTypeProtocol::BaseMessage baseMessage =
-                        RTypeProtocol::deserialize<1024>(message);
+                        RTypeProtocol::deserialize<800>(message);
 
                     if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
                         runSimulation(message, client, _players.at(client));

@@ -65,7 +65,7 @@ class TCPPacketManager : public std::enable_shared_from_this<TCPPacketManager> {
     std::vector<std::shared_ptr<asio::ip::tcp::socket>> _client_sockets;
     std::thread                                         _io_thread;
 
-    std::array<char, 1024> recv_buffer_;
+    std::array<char, 800> recv_buffer_;
 
     Role           _role;
     std::string    _server_ip;

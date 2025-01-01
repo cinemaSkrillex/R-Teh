@@ -49,9 +49,7 @@ int main(int argc, char* argv[]) {
 
         client->send_new_client();
 
-        // Send the serialized data
         // Game loop
-        std::cout << "Starting game loop" << std::endl;
 
         game.run();
 
