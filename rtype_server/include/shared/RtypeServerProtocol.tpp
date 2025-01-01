@@ -13,19 +13,34 @@
 
 #include "RtypeServerProtocol.hpp"
 
-// Serialize the BaseMessage, which is common across all message types
+// Helper: write any POD type to buffer and advance pointer
+template <typename T>
+inline void writeToBuffer(char*& dest, const T& value) {
+    std::memcpy(dest, &value, sizeof(T));
+    dest += sizeof(T);
+}
+
+// Helper: read any POD type from buffer and advance pointer
+template <typename T>
+inline void readFromBuffer(const char*& src, T& value) {
+    std::memcpy(&value, src, sizeof(T));
+    src += sizeof(T);
+}
+
 template <std::size_t BUFFER_SIZE, typename T>
 std::array<char, BUFFER_SIZE> serializeBaseMessage(const T& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
-    std::memcpy(buffer.data(), &msg, sizeof(msg));
+    char*                         it     = buffer.data();
+    writeToBuffer(it, msg);
     return buffer;
 }
 
 // Deserialize a BaseMessage from the buffer
 template <std::size_t BUFFER_SIZE, typename T>
 T deserializeBaseMessage(const std::array<char, BUFFER_SIZE>& buffer) {
-    T msg;
-    std::memcpy(&msg, buffer.data(), sizeof(msg));
+    T           msg;
+    const char* it = buffer.data();
+    readFromBuffer(it, msg);
     return msg;
 }
 
