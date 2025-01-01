@@ -15,7 +15,7 @@ void rtype::Game::run() {
         _window.update();
         _window.clear();
         handleSignal(_clientUDP->get_last_reliable_packet_data());
-        // handleSignal(_clientUDP->get_last_unreliable_packet_data());
+        handleSignal(_clientUDP->get_last_unreliable_packet_data());
         _registry.run_systems(_deltaTime);
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _window.display();
@@ -29,7 +29,19 @@ void rtype::Game::run() {
                                     std::to_string(direction.top) + ") DirectionY:(" +
                                     std::to_string(direction.width) + "," +
                                     std::to_string(direction.height) + ")";
-        // _clientUDP->send_unreliable_packet(message);
+
+        // Create a PlayerDirectionMessage
+        RTypeProtocol::PlayerDirectionMessage playerDirectionMessage;
+        playerDirectionMessage.message_type = RTypeProtocol::PLAYER_DIRECTION;
+        playerDirectionMessage.uuid         = _localPlayerUUID;
+        playerDirectionMessage.direction    = direction;
+        playerDirectionMessage.timestamp    = delta_time;
+
+        // Serialize the PlayerDirectionMessage
+        std::array<char, 1024> serializedPlayerDirectionMessage =
+            RTypeProtocol::serialize<1024>(playerDirectionMessage);
+
+        _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
     }
     exit(0);
 }

@@ -17,6 +17,8 @@
 
 enum class Role { SERVER, CLIENT };
 
+// Custom hash and equality for asio::ip::udp::endpoint
+// we need it in order to know if we have already seen a client (kind of a select in C)
 struct EndpointHash {
     std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
         std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());

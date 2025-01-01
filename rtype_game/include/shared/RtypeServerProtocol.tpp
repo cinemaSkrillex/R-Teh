@@ -50,6 +50,38 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerMoveMessage& 
     return buffer;
 }
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerDirectionMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+
+    // Serialize the base message
+    std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
+    std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
+
+    // Serialize the additional fields specific to PlayerDirectionMessage
+    std::memcpy(buffer.data() + sizeof(BaseMessage), &msg.direction, sizeof(msg.direction));
+    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.direction), &msg.timestamp,
+                sizeof(msg.timestamp));
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::PlayerDirectionMessage RTypeProtocol::deserializePlayerDirection(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    PlayerDirectionMessage msg;
+
+    // Deserialize the base message first
+    msg = deserializeBaseMessage<BUFFER_SIZE, PlayerDirectionMessage>(buffer);
+
+    // Deserialize the specific fields for PlayerDirectionMessage
+    std::memcpy(&msg.direction, buffer.data() + sizeof(BaseMessage), sizeof(msg.direction));
+    std::memcpy(&msg.timestamp, buffer.data() + sizeof(BaseMessage) + sizeof(msg.direction),
+                sizeof(msg.timestamp));
+
+    return msg;
+}
+
 // Helper function to deserialize a PlayerMoveMessage
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(

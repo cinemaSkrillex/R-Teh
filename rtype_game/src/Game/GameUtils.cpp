@@ -55,30 +55,13 @@ void rtype::Game::handleSignal(std::array<char, 1024> signal) {
             RTypeProtocol::PlayerMoveMessage newClientMessage =
                 RTypeProtocol::deserializePlayerMove(signal);
 
-            // Handle new client based on the deserialized message
-            std::cout << "New client with UUID " << newClientMessage.uuid
-                      << " has been deserialized and handled." << std::endl;
             handleNewClient(newClientMessage);
             break;
         }
         case RTypeProtocol::SYNCHRONIZE: {
             RTypeProtocol::SynchronizeMessage syncMessage =
                 RTypeProtocol::deserializeSynchronize(signal);
-
-            std::cout << "Synchronize Message Received:" << std::endl;
-            std::cout << "  UUID: " << syncMessage.uuid << std::endl;
-            std::cout << "  Timestamp: " << syncMessage.timestamp << std::endl;
-            std::cout << "  Position: (" << syncMessage.x << ", " << syncMessage.y << ")"
-                      << std::endl;
-            std::cout << "  Active Players: ";
-            for (const auto& player : syncMessage.players) {
-                std::cout << "uuid: " << player.first << " (" << player.second.x << ", "
-                          << player.second.y << ") ";
-            }
-            std::cout << std::endl;
             handleSynchronize(syncMessage);
-
-            // Handle synchronization logic here
             break;
         }
         case RTypeProtocol::PLAYER_MOVE: {
@@ -112,8 +95,6 @@ void rtype::Game::handleSignal(std::array<char, 1024> signal) {
 void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket) {
     const sf::Vector2f position = {parsedPacket.x, parsedPacket.y};
     const long int     uuid     = parsedPacket.uuid;
-    std::cout << "Player uuid: " << uuid << std::endl;
-    std::cout << "Player position: (" << position.x << ", " << position.y << ")" << std::endl;
     if (_players.find(uuid) != _players.end()) return;
     add_player(uuid, position);
 }
@@ -140,7 +121,6 @@ void rtype::Game::handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPack
     auto client_now             = std::chrono::steady_clock::now();
     _startTime                  = client_now - std::chrono::milliseconds(_serverTime);
     sf::Vector2f localPlayerPos = {parsedPacket.x, parsedPacket.y};
-    std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
     for (const auto& player : parsedPacket.players) {
         add_player(player.first, player.second);

@@ -146,8 +146,6 @@ class PacketManager {
         std::copy(recv_buffer_.begin(), recv_buffer_.begin() + bytes_recvd, message->begin());
 
         packet<BUFFER_SIZE> pkt = deserialize_packet(*message);
-        std::cout << "Received packet<BUFFER_SIZE> from " << pkt.endpoint << std::endl;
-        std::cout << "flag: " << pkt.flag << std::endl;
 
         switch (pkt.flag) {
             case ACK:
@@ -157,7 +155,6 @@ class PacketManager {
                 handle_reliable_packet(pkt);
                 break;
             case UNRELIABLE:
-                // handle_unreliable_packet(std::string(pkt.data.begin(), pkt.data.end()));
                 handle_unreliable_packet(pkt.data);
                 break;
             case NEW_CLIENT:

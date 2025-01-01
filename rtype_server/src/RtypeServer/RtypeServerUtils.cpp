@@ -37,6 +37,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
         // Create a PlayerMoveMessage
         RTypeProtocol::PlayerMoveMessage playerMoveMessage;
         playerMoveMessage.message_type = RTypeProtocol::PLAYER_MOVE;
+        playerMoveMessage.uuid         = player.getUUID();
         playerMoveMessage.x            = position->x;
         playerMoveMessage.y            = position->y;
         playerMoveMessage.step         = _deltaTimeBroadcast;
@@ -48,7 +49,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
 
         // Broadcast the serialized message to all clients
         for (const auto& client : _server->getClients()) {
-            // _server->send_unreliable_packet(serializedMessage, client);
+            _server->send_unreliable_packet(serializedMessage, client);
         }
     }
 }

@@ -61,7 +61,6 @@ std::array<char, BUFFER_SIZE> createSynchronizeMessage(
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
-        std::cout << "New client connected: " << sender << std::endl;
         sf::Vector2f player_start_position =
             _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
         // create Player entity
@@ -73,7 +72,6 @@ void RtypeServer::initCallbacks() {
             Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
-            std::cout << "Client: " << client << std::endl;
             if (client != sender) {
                 RTypeProtocol::PlayerMoveMessage newClientMessage;
                 newClientMessage.message_type            = RTypeProtocol::NEW_CLIENT;
@@ -104,13 +102,13 @@ void RtypeServer::initCallbacks() {
             activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
         }
         message += "]";
-        std::array<char, 1024> binaryMessage = createSynchronizeMessage<1024>(
+        std::array<char, 1024> synchronizeMessage = createSynchronizeMessage<1024>(
             *playerEntity,
             std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
                 .count(),
             player_start_position.x, player_start_position.y, activePlayerUUIDs);
 
-        _server->send_reliable_packet(binaryMessage, sender);
+        _server->send_reliable_packet(synchronizeMessage, sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         for (const auto& mob : _game_instance->getSimpleMobs()) {

@@ -6,6 +6,7 @@
 */
 
 #include "../../include/RtypeServer.hpp"
+#include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
     auto log                   = std::make_shared<Log>("RtypeServer.log");
@@ -20,16 +21,28 @@ void RtypeServer::run() {
             // Do server work
             for (auto client : _server->getClients()) {
                 // Process all messages from the client
-                // for (const auto& message :
-                // _server->get_unreliable_messages_from_endpoint(client)) {
-                //     const auto parsed_data = PeterParser::parseMessage(message);
+                for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
+                    // const auto parsed_data = PeterParser::parseMessage(message);
+                    RTypeProtocol::BaseMessage baseMessage =
+                        RTypeProtocol::deserialize<1024>(message);
 
-                //     if (parsed_data.find("Event") != parsed_data.end()) {
-                //         runEvent(parsed_data, client, _players.at(client));
-                //     } else {
-                //         runSimulation(parsed_data, client, _players.at(client));
-                //     }
-                // }
+                    if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
+                        runSimulation(message, client, _players.at(client));
+                    } else {
+                        // Handle unknown or unsupported message types (you can log or handle
+                        // errors)
+                        std::cout << "Unknown message type: " << baseMessage.message_type
+                                  << std::endl;
+                        break;
+                    }
+
+                    // event is only used for shooting right now so we will just run a simulation
+                    // for now. if (parsed_data.find("Event") != parsed_data.end()) {
+                    // runEvent(parsed_data, client, _players.at(client));
+                    // } else {
+                    // runSimulation(parsed_data, client, _players.at(client));
+                    // }
+                }
             }
             auto destroyedEntities = _game_instance->run(_deltaTime);
             if (!destroyedEntities.empty()) {
