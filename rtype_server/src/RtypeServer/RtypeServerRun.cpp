@@ -28,6 +28,8 @@ void RtypeServer::run() {
 
                     if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
                         runSimulation(message, client, _players.at(client));
+                    } else if (baseMessage.message_type == RTypeProtocol::EVENT_MESSAGE) {
+                        runEvent(message, client, _players.at(client));
                     } else {
                         // Handle unknown or unsupported message types (you can log or handle
                         // errors)
@@ -36,8 +38,8 @@ void RtypeServer::run() {
                         break;
                     }
 
-                    // event is only used for shooting right now so we will just run a simulation
-                    // for now. if (parsed_data.find("Event") != parsed_data.end()) {
+                    // event is only used for shooting right now so we will just run a
+                    // simulation for now. if (parsed_data.find("Event") != parsed_data.end()) {
                     // runEvent(parsed_data, client, _players.at(client));
                     // } else {
                     // runSimulation(parsed_data, client, _players.at(client));

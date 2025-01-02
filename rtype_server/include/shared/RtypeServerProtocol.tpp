@@ -111,38 +111,25 @@ RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
 
     return msg;
 }
-// Serialize an EventMessage
-// template <std::size_t BUFFER_SIZE>
-// std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) {
-//     std::array<char, BUFFER_SIZE> buffer = {};
 
-//     // Serialize the base message
-//     std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
-//     std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
-
-//     // Serialize the components
-//     size_t offset = sizeof(BaseMessage);
-//     for (const auto& component : msg.components) {
-//         buffer[offset++] = static_cast<char>(component.first);  // Store the component type
-//         std::memcpy(&buffer[offset], component.second.data(), component.second.size());
-//         offset += component.second.size();
-//     }
-
-//     return buffer;
-// }
 template <std::size_t BUFFER_SIZE>
-std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(
-    const EventMessage& msg) {  // might not work as expected, use the commented code above
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
     char*                         it     = buffer.data();
 
     // Serialize the base message
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
+    // Serialize the event type
+    writeToBuffer(it, msg.event_type);
+
     // Serialize the components
     for (const auto& component : msg.components) {
-        // Store the component type as a single byte
-        writeToBuffer<char>(it, static_cast<char>(component.first));
+        // Store the component type as an integer
+        writeToBuffer(it, static_cast<int>(component.first));
+        // Store the length of the component data
+        int dataLength = static_cast<int>(component.second.size());
+        writeToBuffer(it, dataLength);
         // Copy component data (variable size)
         std::memcpy(it, component.second.data(), component.second.size());
         it += component.second.size();
@@ -188,21 +175,33 @@ template <std::size_t BUFFER_SIZE>
 RTypeProtocol::EventMessage RTypeProtocol::deserializeEventMessage(
     const std::array<char, BUFFER_SIZE>& buffer) {
     EventMessage msg;
+    const char*  it = buffer.data();
 
     // Deserialize the base message
-    msg = deserializeBaseMessage<BUFFER_SIZE, EventMessage>(buffer);
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
 
-    // Deserialize the components
-    size_t offset = sizeof(BaseMessage);
-    while (offset < BUFFER_SIZE && buffer[offset] != '\0') {
-        int componentType = static_cast<int>(buffer[offset]);
-        offset++;  // Move past the component type byte
+    // Deserialize the event type
+    readFromBuffer(it, msg.event_type);
 
-        // Find the component's payload size by checking until the end
-        std::vector<char> componentData(buffer.begin() + offset, buffer.end());
-        msg.components.push_back({componentType, componentData});
+    // Deserialize each component by reading [componentType, dataLength, rawData]
+    while (it + sizeof(int) + sizeof(int) <= buffer.data() + BUFFER_SIZE) {
+        ComponentList compType;
+        int           dataLength = 0;
 
-        offset += componentData.size();
+        // Read the component type and the length of the data
+        readFromBuffer(it, compType);
+        readFromBuffer(it, dataLength);
+
+        // Prevent overflows or invalid lengths
+        if (dataLength <= 0 || it + dataLength > buffer.data() + BUFFER_SIZE) {
+            break;
+        }
+
+        // Copy the raw bytes
+        std::vector<char> componentData(it, it + dataLength);
+        it += dataLength;
+
+        msg.components.push_back({compType, componentData});
     }
 
     return msg;

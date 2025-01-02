@@ -17,6 +17,20 @@ enum MessageType : int {
     PLAYER_DIRECTION = 0x05,
 };
 
+enum EventType : int {
+    SHOOT = 0x01,
+};
+
+enum ComponentList : int {
+    POSITION          = 0x01,
+    VELOCITY          = 0x02,
+    ROTATION          = 0x03,
+    COLLISION         = 0x04,
+    AUTO_DESTRUCTIBLE = 0x05,
+    DRAWABLE          = 0x06,
+    SPRITE            = 0x07,
+};
+
 // Base message structure (common across all message types)
 struct BaseMessage {
     int  message_type;
@@ -47,7 +61,9 @@ struct SynchronizeMessage : BaseMessage {
 
 // Event message structure
 struct EventMessage : BaseMessage {
-    std::vector<std::pair<int, std::vector<char>>> components;  // Component-based payload
+    EventType event_type;
+    std::vector<std::pair<ComponentList, std::vector<char>>>
+        components;  // Component ID and serialized data
 };
 
 // Unified serialize/deserialize functions with templated buffer size
@@ -86,4 +102,5 @@ SynchronizeMessage deserializeSynchronize(const std::array<char, BUFFER_SIZE>& b
 }  // namespace RTypeProtocol
 
 #include "RtypeServerProtocol.tpp"
+
 #endif /* !RTYPESERVERPROTOCOL_HPP_ */
