@@ -27,13 +27,6 @@ inline void readFromBuffer(const char*& src, T& value) {
     src += sizeof(T);
 }
 
-// Serialize the BaseMessage, which is common across all message types
-// template <std::size_t BUFFER_SIZE, typename T>
-// std::array<char, BUFFER_SIZE> serializeBaseMessage(const T& msg) {
-//     std::array<char, BUFFER_SIZE> buffer = {};
-//     std::memcpy(buffer.data(), &msg, sizeof(msg));
-//     return buffer;
-// }
 template <std::size_t BUFFER_SIZE, typename T>
 std::array<char, BUFFER_SIZE> serializeBaseMessage(const T& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
@@ -50,23 +43,21 @@ T deserializeBaseMessage(const std::array<char, BUFFER_SIZE>& buffer) {
     readFromBuffer(it, msg);
     return msg;
 }
+
 // Helper function to serialize a PlayerMoveMessage
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerMoveMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
 
     // Serialize the base message
-    std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
-    std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
-    // Serialize the additional fields specific to PlayerMoveMessage
-    std::memcpy(buffer.data() + sizeof(BaseMessage), &msg.x, sizeof(msg.x));
-    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.x), &msg.y, sizeof(msg.y));
-    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y), &msg.step,
-                sizeof(msg.step));
-    std::memcpy(
-        buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y) + sizeof(msg.step),
-        &msg.timestamp, sizeof(msg.timestamp));
+    // Serialize the additional fields
+    writeToBuffer(it, msg.x);
+    writeToBuffer(it, msg.y);
+    writeToBuffer(it, msg.step);
+    writeToBuffer(it, msg.timestamp);
 
     return buffer;
 }
@@ -74,15 +65,14 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerMoveMessage& 
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerDirectionMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
 
     // Serialize the base message
-    std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
-    std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
-    // Serialize the additional fields specific to PlayerDirectionMessage
-    std::memcpy(buffer.data() + sizeof(BaseMessage), &msg.direction, sizeof(msg.direction));
-    std::memcpy(buffer.data() + sizeof(BaseMessage) + sizeof(msg.direction), &msg.timestamp,
-                sizeof(msg.timestamp));
+    // Serialize the additional fields
+    writeToBuffer(it, msg.direction);
+    writeToBuffer(it, msg.timestamp);
 
     return buffer;
 }
@@ -91,14 +81,14 @@ template <std::size_t BUFFER_SIZE>
 RTypeProtocol::PlayerDirectionMessage RTypeProtocol::deserializePlayerDirection(
     const std::array<char, BUFFER_SIZE>& buffer) {
     PlayerDirectionMessage msg;
+    const char*            it = buffer.data();
 
-    // Deserialize the base message first
-    msg = deserializeBaseMessage<BUFFER_SIZE, PlayerDirectionMessage>(buffer);
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
 
-    // Deserialize the specific fields for PlayerDirectionMessage
-    std::memcpy(&msg.direction, buffer.data() + sizeof(BaseMessage), sizeof(msg.direction));
-    std::memcpy(&msg.timestamp, buffer.data() + sizeof(BaseMessage) + sizeof(msg.direction),
-                sizeof(msg.timestamp));
+    // Deserialize the additional fields
+    readFromBuffer(it, msg.direction);
+    readFromBuffer(it, msg.timestamp);
 
     return msg;
 }
@@ -108,38 +98,54 @@ template <std::size_t BUFFER_SIZE>
 RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
     const std::array<char, BUFFER_SIZE>& buffer) {
     PlayerMoveMessage msg;
+    const char*       it = buffer.data();
 
-    // Deserialize the base message first
-    msg = deserializeBaseMessage<BUFFER_SIZE, PlayerMoveMessage>(buffer);
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
 
-    // Deserialize the specific fields for PlayerMoveMessage
-    std::memcpy(&msg.x, buffer.data() + sizeof(BaseMessage), sizeof(msg.x));
-    std::memcpy(&msg.y, buffer.data() + sizeof(BaseMessage) + sizeof(msg.x), sizeof(msg.y));
-    std::memcpy(&msg.step, buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y),
-                sizeof(msg.step));
-    std::memcpy(
-        &msg.timestamp,
-        buffer.data() + sizeof(BaseMessage) + sizeof(msg.x) + sizeof(msg.y) + sizeof(msg.step),
-        sizeof(msg.timestamp));
+    // Deserialize the additional fields
+    readFromBuffer(it, msg.x);
+    readFromBuffer(it, msg.y);
+    readFromBuffer(it, msg.step);
+    readFromBuffer(it, msg.timestamp);
 
     return msg;
 }
-
 // Serialize an EventMessage
+// template <std::size_t BUFFER_SIZE>
+// std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) {
+//     std::array<char, BUFFER_SIZE> buffer = {};
+
+//     // Serialize the base message
+//     std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
+//     std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
+
+//     // Serialize the components
+//     size_t offset = sizeof(BaseMessage);
+//     for (const auto& component : msg.components) {
+//         buffer[offset++] = static_cast<char>(component.first);  // Store the component type
+//         std::memcpy(&buffer[offset], component.second.data(), component.second.size());
+//         offset += component.second.size();
+//     }
+
+//     return buffer;
+// }
 template <std::size_t BUFFER_SIZE>
-std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) {
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(
+    const EventMessage& msg) {  // might not work as expected, use the commented code above
     std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
 
     // Serialize the base message
-    std::array<char, BUFFER_SIZE> baseBuffer = serializeBaseMessage<BUFFER_SIZE>(msg);
-    std::memcpy(buffer.data(), baseBuffer.data(), sizeof(BaseMessage));
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
     // Serialize the components
-    size_t offset = sizeof(BaseMessage);
     for (const auto& component : msg.components) {
-        buffer[offset++] = static_cast<char>(component.first);  // Store the component type
-        std::memcpy(&buffer[offset], component.second.data(), component.second.size());
-        offset += component.second.size();
+        // Store the component type as a single byte
+        writeToBuffer<char>(it, static_cast<char>(component.first));
+        // Copy component data (variable size)
+        std::memcpy(it, component.second.data(), component.second.size());
+        it += component.second.size();
     }
 
     return buffer;
@@ -148,34 +154,30 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) 
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
-    std::size_t                   offset = 0;
+    char*                         it     = buffer.data();
 
     // Serialize base message fields
-    std::memcpy(buffer.data() + offset, &msg.message_type, sizeof(msg.message_type));
-    offset += sizeof(msg.message_type);
-    std::memcpy(buffer.data() + offset, &msg.uuid, sizeof(msg.uuid));
-    offset += sizeof(msg.uuid);
+    writeToBuffer(it, msg.message_type);
+    writeToBuffer(it, msg.uuid);
 
     // Serialize specific fields
-    std::memcpy(buffer.data() + offset, &msg.timestamp, sizeof(msg.timestamp));
-    offset += sizeof(msg.timestamp);
-    std::memcpy(buffer.data() + offset, &msg.x, sizeof(msg.x));
-    offset += sizeof(msg.x);
-    std::memcpy(buffer.data() + offset, &msg.y, sizeof(msg.y));
-    offset += sizeof(msg.y);
+    writeToBuffer(it, msg.timestamp);
+    writeToBuffer(it, msg.x);
+    writeToBuffer(it, msg.y);
 
     // Serialize player UUID and position list
     int player_count = static_cast<int>(msg.players.size());
-    std::memcpy(buffer.data() + offset, &player_count, sizeof(player_count));
-    offset += sizeof(player_count);
+    writeToBuffer(it, player_count);
+
     for (const auto& player : msg.players) {
-        std::memcpy(buffer.data() + offset, &player.first, sizeof(player.first));
-        offset += sizeof(player.first);
-        std::memcpy(buffer.data() + offset, &player.second.x, sizeof(player.second.x));
-        offset += sizeof(player.second.x);
-        std::memcpy(buffer.data() + offset, &player.second.y, sizeof(player.second.y));
-        offset += sizeof(player.second.y);
-        if (offset >= BUFFER_SIZE) break;  // Prevent buffer overflow
+        writeToBuffer(it, player.first);
+        writeToBuffer(it, player.second.x);
+        writeToBuffer(it, player.second.y);
+
+        // Prevent buffer overflow
+        if (static_cast<size_t>(it - buffer.data()) >= BUFFER_SIZE) {
+            break;
+        }
     }
 
     return buffer;
@@ -209,37 +211,34 @@ RTypeProtocol::EventMessage RTypeProtocol::deserializeEventMessage(
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::SynchronizeMessage RTypeProtocol::deserializeSynchronize(
     const std::array<char, BUFFER_SIZE>& buffer) {
-    SynchronizeMessage msg    = {};
-    std::size_t        offset = 0;
+    SynchronizeMessage msg = {};
+    const char*        it  = buffer.data();
 
     // Deserialize base message fields
-    std::memcpy(&msg.message_type, buffer.data() + offset, sizeof(msg.message_type));
-    offset += sizeof(msg.message_type);
-    std::memcpy(&msg.uuid, buffer.data() + offset, sizeof(msg.uuid));
-    offset += sizeof(msg.uuid);
+    readFromBuffer(it, msg.message_type);
+    readFromBuffer(it, msg.uuid);
 
     // Deserialize specific fields
-    std::memcpy(&msg.timestamp, buffer.data() + offset, sizeof(msg.timestamp));
-    offset += sizeof(msg.timestamp);
-    std::memcpy(&msg.x, buffer.data() + offset, sizeof(msg.x));
-    offset += sizeof(msg.x);
-    std::memcpy(&msg.y, buffer.data() + offset, sizeof(msg.y));
-    offset += sizeof(msg.y);
+    readFromBuffer(it, msg.timestamp);
+    readFromBuffer(it, msg.x);
+    readFromBuffer(it, msg.y);
 
     // Deserialize player UUID and position list
     int player_count = 0;
-    std::memcpy(&player_count, buffer.data() + offset, sizeof(player_count));
-    offset += sizeof(player_count);
+    readFromBuffer(it, player_count);
+
     for (int i = 0; i < player_count; ++i) {
-        if (offset + sizeof(long) + 2 * sizeof(float) > BUFFER_SIZE) break;  // Prevent overflow
+        // Prevent overflow
+        if (static_cast<size_t>(it - buffer.data()) + sizeof(long) + 2 * sizeof(float) >
+            BUFFER_SIZE)
+            break;
+
         long         uuid;
         sf::Vector2f position;
-        std::memcpy(&uuid, buffer.data() + offset, sizeof(uuid));
-        offset += sizeof(uuid);
-        std::memcpy(&position.x, buffer.data() + offset, sizeof(position.x));
-        offset += sizeof(position.x);
-        std::memcpy(&position.y, buffer.data() + offset, sizeof(position.y));
-        offset += sizeof(position.y);
+        readFromBuffer(it, uuid);
+        readFromBuffer(it, position.x);
+        readFromBuffer(it, position.y);
+
         msg.players.push_back({uuid, position});
     }
 
