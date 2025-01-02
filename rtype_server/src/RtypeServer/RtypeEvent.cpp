@@ -86,19 +86,31 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
         eventMessage.components.push_back({RTypeProtocol::ComponentList::POSITION, positionData});
 
         // Serialize velocity component
-        sf::Vector2f      velocity = {500.f, 0.f};
-        std::vector<char> velocityData(sizeof(sf::Vector2f));
-        std::memcpy(velocityData.data(), &velocity, sizeof(sf::Vector2f));
+        RealEngine::Velocity velocity = {500.f, 0.f, {500.f, 500.f}, 0.f};
+        std::vector<char>    velocityData(sizeof(RealEngine::Velocity));
+        std::memcpy(velocityData.data(), &velocity, sizeof(RealEngine::Velocity));
         eventMessage.components.push_back({RTypeProtocol::ComponentList::VELOCITY, velocityData});
 
         // Serialize collision component
-        sf::IntRect       collision = {0, 0, 16, 8};
-        std::vector<char> collisionData(sizeof(sf::IntRect));
-        std::memcpy(collisionData.data(), &collision, sizeof(sf::IntRect));
+        sf::FloatRect             bounds      = {0, 0, 16, 8};
+        std::string               id          = "bullet";
+        bool                      isColliding = false;
+        RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+        std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                        sizeof(type));
+        char*             collisionPtr = collisionData.data();
+        std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+        collisionPtr += sizeof(bounds);
+        std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+        collisionPtr += id.size() + 1;
+        std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+        collisionPtr += sizeof(isColliding);
+        std::memcpy(collisionPtr, &type, sizeof(type));
         eventMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
 
         // Serialize auto destructible component
-        int               autoDestructible = 5;
+        float             autoDestructible = 5.f;
         std::vector<char> autoDestructibleData(sizeof(int));
         std::memcpy(autoDestructibleData.data(), &autoDestructible, sizeof(int));
         eventMessage.components.push_back(
@@ -109,6 +121,7 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
         std::vector<char> drawableData(sizeof(bool));
         std::memcpy(drawableData.data(), &drawable, sizeof(bool));
         eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, drawableData});
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, {}});
 
         // Serialize sprite component
         std::string       sprite = "bullet";
@@ -116,54 +129,7 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
         eventMessage.components.push_back({RTypeProtocol::ComponentList::SPRITE, spriteData});
 
         std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
-        // broadcastAll(serializedEventMessage);
-        RTypeProtocol::EventMessage deserializedEventMessage =
-            RTypeProtocol::deserializeEventMessage(serializedEventMessage);
-
-        for (const auto& component : deserializedEventMessage.components) {
-            switch (component.first) {
-                case RTypeProtocol::ComponentList::POSITION: {
-                    sf::Vector2f position;
-                    std::memcpy(&position, component.second.data(), sizeof(position));
-                    std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
-                    break;
-                }
-                case RTypeProtocol::ComponentList::VELOCITY: {
-                    sf::Vector2f velocity;
-                    std::memcpy(&velocity, component.second.data(), sizeof(velocity));
-                    std::cout << "Velocity: (" << velocity.x << ", " << velocity.y << ")\n";
-                    break;
-                }
-                case RTypeProtocol::ComponentList::COLLISION: {
-                    sf::IntRect collision;
-                    std::memcpy(&collision, component.second.data(), sizeof(collision));
-                    std::cout << "Collision: (" << collision.left << ", " << collision.top << ", "
-                              << collision.width << ", " << collision.height << ")\n";
-                    break;
-                }
-                case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
-                    int autoDestructible;
-                    std::memcpy(&autoDestructible, component.second.data(),
-                                sizeof(autoDestructible));
-                    std::cout << "AutoDestructible: " << autoDestructible << "\n";
-                    break;
-                }
-                case RTypeProtocol::ComponentList::DRAWABLE: {
-                    bool drawable;
-                    std::memcpy(&drawable, component.second.data(), sizeof(drawable));
-                    std::cout << "Drawable: " << std::boolalpha << drawable << "\n";
-                    break;
-                }
-                case RTypeProtocol::ComponentList::SPRITE: {
-                    std::string sprite(component.second.begin(), component.second.end());
-                    std::cout << "Sprite: " << sprite << "\n";
-                    break;
-                }
-                default:
-                    std::cout << "Unknown component type: " << component.first << "\n";
-                    break;
-            }
-        }
+        broadCastAll(serializedEventMessage);
 
         // eventMessage.components.push_back
     }

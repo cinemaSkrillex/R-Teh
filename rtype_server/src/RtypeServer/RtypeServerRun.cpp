@@ -54,7 +54,7 @@ void RtypeServer::run() {
                 }
                 message.pop_back();
                 message += "]";
-                broadCastAll(message);
+                // broadCastAll(message);
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {

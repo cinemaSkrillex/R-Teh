@@ -43,6 +43,5 @@ void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& a
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);
-    // _client->send_unreliable_packet("Event:Shoot");
 }
 }  // namespace rtype

@@ -65,8 +65,8 @@ void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngin
     }
 }
 
-void RtypeServer::broadCastAll(std::string message) {
-    for (auto client : _server->getClients()) {
-        // _server->send_reliable_packet(message, client);
+void RtypeServer::broadCastAll(const std::array<char, 800>& message) {
+    for (const auto& client : _server->getClients()) {
+        _server->send_reliable_packet(message, client);
     }
 }

@@ -72,7 +72,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             // Deserialize and handle event message
             RTypeProtocol::EventMessage eventMessage =
                 RTypeProtocol::deserializeEventMessage(signal);
-            // handleEventMessage(eventMessage);
+            handleEvent(eventMessage);
             break;
         }
         default:
@@ -207,25 +207,155 @@ void rtype::Game::createRotationComponent(const std::string&                  va
 
 // TODO: add create collision and type component functions
 
-void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
-    try {
-        if (parsedPacket.find("Uuid") != parsedPacket.end()) {
-            long int uuid = std::stol(parsedPacket.at("Uuid"));
-            if (_entities.find(uuid) != _entities.end()) {
-                return;
+// void rtype::Game::handleNewEntity(std::unordered_map<std::string, std::string> parsedPacket) {
+//     try {
+//         if (parsedPacket.find("Uuid") != parsedPacket.end()) {
+//             long int uuid = std::stol(parsedPacket.at("Uuid"));
+//             if (_entities.find(uuid) != _entities.end()) {
+//                 return;
+//             }
+//             auto newEntity = _registry.spawn_entity();
+//             for (auto& [key, value] : parsedPacket) {
+//                 if (_componentFunctions.find(key) != _componentFunctions.end()) {
+//                     _componentFunctions[key](value, newEntity);
+//                 }
+//             }
+//             _entities.emplace(uuid, newEntity);
+//         } else {
+//             std::cerr << "Uuid not found in parsedPacket" << std::endl;
+//         }
+//     } catch (const std::exception& e) {
+//         std::cerr << "Exception occurred: " << e.what() << std::endl;
+//     }
+// }
+
+// for (const auto& component : parsedPacket.components) {
+//         switch (component.first) {
+//             case RTypeProtocol::ComponentList::POSITION: {
+//                 sf::Vector2f position;
+//                 std::memcpy(&position, component.second.data(), sizeof(position));
+//                 std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+//                 break;
+//             }
+//             case RTypeProtocol::ComponentList::VELOCITY: {
+//                 sf::Vector2f velocity;
+//                 std::memcpy(&velocity, component.second.data(), sizeof(velocity));
+//                 std::cout << "Velocity: (" << velocity.x << ", " << velocity.y << ")\n";
+//                 break;
+//             }
+//             case RTypeProtocol::ComponentList::COLLISION: {
+//                 sf::IntRect collision;
+//                 std::memcpy(&collision, component.second.data(), sizeof(collision));
+//                 std::cout << "Collision: (" << collision.left << ", " << collision.top << ", "
+//                           << collision.width << ", " << collision.height << ")\n";
+//                 break;
+//             }
+//             case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
+//                 int autoDestructible;
+//                 std::memcpy(&autoDestructible, component.second.data(),
+//                 sizeof(autoDestructible)); std::cout << "AutoDestructible: " << autoDestructible
+//                 << "\n"; break;
+//             }
+//             case RTypeProtocol::ComponentList::DRAWABLE: {
+//                 bool drawable;
+//                 std::memcpy(&drawable, component.second.data(), sizeof(drawable));
+//                 std::cout << "Drawable: " << std::boolalpha << drawable << "\n";
+//                 break;
+//             }
+//             case RTypeProtocol::ComponentList::SPRITE: {
+//                 std::string sprite(component.second.begin(), component.second.end());
+//                 std::cout << "Sprite: " << sprite << "\n";
+//                 break;
+//             }
+//             default:
+//                 std::cout << "Unknown component type: " << component.first << "\n";
+//                 break;
+//         }
+//     }
+
+void rtype::Game::handleShootEvent(RTypeProtocol::EventMessage parsedPacket) {
+    auto newEntity = _registry.spawn_entity();
+    for (const auto& component : parsedPacket.components) {
+        switch (component.first) {
+            // <case RTypeProtocol::ComponentList::POSITION: {
+            //     sf::Vector2f position;
+            //     std::memcpy(&position, component.second.data(), sizeof(position));
+            //     std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+
+            //     break;
+            // }>
+            case RTypeProtocol::ComponentList::POSITION: {
+                RealEngine::Position position;
+                std::memcpy(&position, component.second.data(), sizeof(position));
+                std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+                _registry.add_component<RealEngine::Position>(
+                    *newEntity, std::forward<RealEngine::Position>(position));
+                break;
             }
-            auto newEntity = _registry.spawn_entity();
-            for (auto& [key, value] : parsedPacket) {
-                if (_componentFunctions.find(key) != _componentFunctions.end()) {
-                    _componentFunctions[key](value, newEntity);
-                }
+            case RTypeProtocol::ComponentList::VELOCITY: {
+                RealEngine::Velocity velocity;
+                std::memcpy(&velocity, component.second.data(), sizeof(velocity));
+                std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << "), MaxSpeed: ("
+                          << velocity.maxSpeed.x << ", " << velocity.maxSpeed.y
+                          << "), AirFrictionForce: " << velocity.airFrictionForce << "\n";
+                // _registry.add_component<RealEngine::Velocity>(*newEntity, velocity);
+                _registry.add_component<RealEngine::Velocity>(
+                    *newEntity, std::forward<RealEngine::Velocity>(velocity));
+
+                // _registry.add_component<RealEngine::Velocity>(*newEntity, std::move(velocity));
+                break;
             }
-            _entities.emplace(uuid, newEntity);
-        } else {
-            std::cerr << "Uuid not found in parsedPacket" << std::endl;
+            case RTypeProtocol::ComponentList::SPRITE: {
+                std::string sprite(component.second.begin(), component.second.end());
+                std::cout << "Sprite: " << sprite << "\n";
+                _registry.add_component<RealEngine::Sprite>(*newEntity,
+                                                            RealEngine::Sprite{_textures[sprite]});
+                break;
+            }
+            // case RTypeProtocol::ComponentList::COLLISION: {
+            //     sf::IntRect collision;
+            //     std::memcpy(&collision, component.second.data(), sizeof(collision));
+            //     std::cout << "Collision: (" << collision.left << ", " << collision.top << ", "
+            //               << collision.width << ", " << collision.height << ")\n";
+            //     break;
+            // }
+            // case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
+            //     int autoDestructible;
+            //     std::memcpy(&autoDestructible, component.second.data(),
+            //     sizeof(autoDestructible)); std::cout << "AutoDestructible: " << autoDestructible
+            //     << "\n"; break;
+            // }
+            case RTypeProtocol::ComponentList::DRAWABLE: {
+                std::cout << "Drawable: " << std::endl;
+                // _registry.add_component<RealEngine::Drawable>(
+                //     *newEntity, std::forward<RealEngine::Drawable>(RealEngine::Drawable{}));
+                break;
+            }
+            // case RTypeProtocol::ComponentList::SPRITE: {
+            //     std::string sprite(component.second.begin(), component.second.end());
+            //     std::cout << "Sprite: " << sprite << "\n";
+            //     break;
+            // }
+            default:
+                std::cout << "Unknown component type: " << component.first << "\n";
+                break;
         }
-    } catch (const std::exception& e) {
-        std::cerr << "Exception occurred: " << e.what() << std::endl;
+    }
+    std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
+    _entities.emplace(parsedPacket.uuid, newEntity);
+}
+
+void rtype::Game::handleEvent(RTypeProtocol::EventMessage parsedPacket) {
+    switch (parsedPacket.event_type) {
+        case RTypeProtocol::EventType::SHOOT: {
+            // Handle shoot event
+            handleShootEvent(parsedPacket);
+            break;
+        }
+        default:
+            // Handle unknown or unsupported event types (you can log or handle errors)
+            std::cout << "Unknown event type: " << parsedPacket.event_type << std::endl;
+            break;
     }
 }
 
