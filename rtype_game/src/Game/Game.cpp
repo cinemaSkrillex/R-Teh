@@ -36,7 +36,7 @@ std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vecto
 sf::IntRect Game::getPlayerNormalizedDirection() {
     sf::IntRect direction(0, 0, 0, 0);
 
-    if (_window.isFocused()) {
+    if (_window.isFocused() && _player_entity != nullptr) {
         if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {
             direction.left = 1;
         }

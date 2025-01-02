@@ -15,8 +15,8 @@ namespace RealEngine {
 struct AI {
     std::function<void(RealEngine::Registry&, RealEngine::Entity, float deltaTime)>
         behaviorOnTarget = [](RealEngine::Registry&, RealEngine::Entity, float) {};
-    std::function<void(RealEngine::Registry&, float deltaTime)> behaviorPassive =
-        [](RealEngine::Registry&, float) {};
-    bool active = false;
+    std::function<void(RealEngine::Registry&, RealEngine::Entity, float deltaTime)>
+         behaviorPassive = [](RealEngine::Registry&, RealEngine::Entity, float) {};
+    bool active          = false;
 };
 }  // namespace RealEngine
