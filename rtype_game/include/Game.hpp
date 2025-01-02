@@ -17,6 +17,7 @@
 #include "Engine.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
+#include "Mobs/SpacePlane.hpp"
 #include "PlayerUtils.hpp"
 
 namespace rtype {
@@ -43,6 +44,7 @@ class Game {
     void init_systems();
     void init_textures();
     void init_sprites();
+    void init_player_entity();
 
     void player_collision_handler(RealEngine::CollisionType collisionType,
                                   RealEngine::Registry& registry, RealEngine::Entity collider,
@@ -107,6 +109,7 @@ class Game {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
+    RealEngine::Sprite                                                _mob_sprite;
     RealEngine::Sprite                                                _upSpaceship;
     RealEngine::Sprite                                                _idleSpaceship;
     RealEngine::Sprite                                                _downSpaceship;
@@ -114,11 +117,10 @@ class Game {
     std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::shared_ptr<RealEngine::Entity>                               _background;
-    // std::unique_ptr<EyeMinion>                          _eyeMinion;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
-    long int                                         _localPlayerUUID;
-    std::chrono::steady_clock::time_point            _startTime;
-    long                                             _serverTime;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _backgroundEntities;
+    long int                                                          _localPlayerUUID;
+    std::chrono::steady_clock::time_point                             _startTime;
+    long                                                              _serverTime;
     std::unordered_map<std::string,
                        std::function<void(const std::string&, std::shared_ptr<RealEngine::Entity>)>>
         _componentFunctions = {

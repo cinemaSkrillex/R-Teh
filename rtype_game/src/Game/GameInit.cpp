@@ -31,29 +31,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-
-    _registry.add_component(_player_entity, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_player_entity,
-                            RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    _registry.add_component(_player_entity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
-    _registry.add_component(_player_entity, RealEngine::Controllable{});
-    _registry.add_component(_player_entity, RealEngine::Drawable{});
-    _registry.add_component(
-        _player_entity,
-        RealEngine::SpriteSheet{
-            _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
-    _registry.add_component(
-        _player_entity,
-        RealEngine::Collision{
-            {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-            "spaceship",
-            false,
-            RealEngine::CollisionType::OTHER,
-            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                   RealEngine::Entity collider, RealEngine::Entity entity) {
-                player_collision_handler(collisionType, registry, collider, entity);
-            }});
-    _registry.add_component(_player_entity, RealEngine::Health{100, 200});
+    init_player_entity();
     _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
     auto backgroundSprite = RealEngine::Sprite{_textures["background"]};
     backgroundSprite.setOrigin(0, 0.5f);
@@ -73,6 +51,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                                          sf::Color::Transparent,
                                                                          2.0f,
                                                                          0.0f});
+    SpacePlane mob(_registry, {1900.f, 100.f}, {1.f, 0.f}, 100.f, _mob_sprite);
+    auto       mob_entity = mob.getEntity();
 }
 
 Game::~Game() {}
@@ -143,9 +123,16 @@ void Game::init_textures() {
         std::cerr << "Error: Could not load bullet texture!" << std::endl;
         _textures["bullet"].reset();
     }
+
+    _textures["space_plane"] = std::make_shared<sf::Texture>();
+    if (!_textures["space_plane"]->loadFromFile("../../assets/sprites/enemies/space_plane.png")) {
+        std::cerr << "Error: Could not load space_plane texture!" << std::endl;
+        _textures["space_plane"].reset();
+    }
 }
 
 void Game::init_sprites() {
+    _mob_sprite    = RealEngine::Sprite(_textures["space_plane"]);
     _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
     _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
@@ -261,6 +248,7 @@ void Game::set_action_handlers() {
 }
 
 void Game::set_sprite_scales() {
+    _mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);
@@ -273,6 +261,31 @@ void Game::populate_sprite_sheet() {
     _spaceshipSheet.emplace("up", _upSpaceship);
     _spaceshipSheet.emplace("idle", _idleSpaceship);
     _spaceshipSheet.emplace("down", _downSpaceship);
+}
+
+void Game::init_player_entity() {
+    _registry.add_component(_player_entity, RealEngine::Position{200.f, 200.f});
+    _registry.add_component(_player_entity,
+                            RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    _registry.add_component(_player_entity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(_player_entity, RealEngine::Controllable{});
+    _registry.add_component(_player_entity, RealEngine::Drawable{});
+    _registry.add_component(
+        _player_entity,
+        RealEngine::SpriteSheet{
+            _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
+    _registry.add_component(
+        _player_entity,
+        RealEngine::Collision{
+            {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+            "spaceship",
+            false,
+            RealEngine::CollisionType::OTHER,
+            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                   RealEngine::Entity collider, RealEngine::Entity entity) {
+                player_collision_handler(collisionType, registry, collider, entity);
+            }});
+    _registry.add_component(_player_entity, RealEngine::Health{100, 200});
 }
 
 }  // namespace rtype
