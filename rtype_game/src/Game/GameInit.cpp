@@ -51,8 +51,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                                          sf::Color::Transparent,
                                                                          2.0f,
                                                                          0.0f});
-    SpacePlane mob(_registry, {1900.f, 100.f}, {1.f, 0.f}, 100.f, _mob_sprite);
-    auto       mob_entity = mob.getEntity();
+    SpaceSphere mob(_registry, {1900.f, 200.f}, {0.f, 0.f}, 0.f, _mob_sprite);
 }
 
 Game::~Game() {}
@@ -129,10 +128,22 @@ void Game::init_textures() {
         std::cerr << "Error: Could not load space_plane texture!" << std::endl;
         _textures["space_plane"].reset();
     }
+
+    _textures["space_drill"] = std::make_shared<sf::Texture>();
+    if (!_textures["space_drill"]->loadFromFile("../../assets/sprites/enemies/space_drill.png")) {
+        std::cerr << "Error: Could not load space_drill texture!" << std::endl;
+        _textures["space_drill"].reset();
+    }
+
+    _textures["space_sphere"] = std::make_shared<sf::Texture>();
+    if (!_textures["space_sphere"]->loadFromFile("../../assets/sprites/enemies/space_sphere.png")) {
+        std::cerr << "Error: Could not load space_sphere texture!" << std::endl;
+        _textures["space_sphere"].reset();
+    }
 }
 
 void Game::init_sprites() {
-    _mob_sprite    = RealEngine::Sprite(_textures["space_plane"]);
+    _mob_sprite    = RealEngine::Sprite(_textures["space_sphere"]);
     _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
     _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);

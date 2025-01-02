@@ -17,7 +17,7 @@
 #include "Engine.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
-#include "Mobs/SpacePlane.hpp"
+#include "Mobs/Mobs.hpp"
 #include "PlayerUtils.hpp"
 
 namespace rtype {

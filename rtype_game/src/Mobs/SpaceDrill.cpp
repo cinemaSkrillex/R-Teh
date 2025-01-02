@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SpacePlane
+** SpaceDrill
 */
 
-#include "Mobs/SpacePlane.hpp"
+#include "Mobs/SpaceDrill.hpp"
 
 namespace rtype {
 
@@ -15,7 +15,7 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
 
     if (position->x > 0) {
-        velocity->vx = -100.0f;
+        velocity->vx = -10000.0f;
     }
 }
 
@@ -24,15 +24,16 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-SpacePlane::SpacePlane(RealEngine::Registry& registry, sf::Vector2f position,
+SpaceDrill::SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position,
                        sf::Vector2f direction, float speed, RealEngine::Sprite& mobSprite)
     : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
     _mobSpriteSheet.emplace("fly", mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.5f});
+    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(
         _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "fly", 0, {21, 23}, false, true, 75, {10, 12}, sf::Clock()});
+                     _mobSpriteSheet, "fly", 0, {32, 22}, false, true, 55, {16, 11}, sf::Clock()});
+    // 55 is the speed of rotation animation
     // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
@@ -52,9 +53,9 @@ SpacePlane::SpacePlane(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_entity, RealEngine::Rotation{0.f});
 }
 
-SpacePlane::~SpacePlane() {}
+SpaceDrill::~SpaceDrill() {}
 
-void SpacePlane::mob_collision_handler(RealEngine::CollisionType collisionType,
+void SpaceDrill::mob_collision_handler(RealEngine::CollisionType collisionType,
                                        RealEngine::Registry& registry, RealEngine::Entity collider,
                                        RealEngine::Entity entity) {
     switch (collisionType) {
@@ -79,7 +80,7 @@ void SpacePlane::mob_collision_handler(RealEngine::CollisionType collisionType,
     }
 }
 
-void SpacePlane::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+void SpaceDrill::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                                  RealEngine::Entity entity) {
     auto* health       = registry.get_component<RealEngine::Health>(entity);
     auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
