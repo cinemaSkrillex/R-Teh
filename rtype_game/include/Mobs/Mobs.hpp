@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "EyeBomber.hpp"
 #include "SpaceDrill.hpp"
 #include "SpacePlane.hpp"
 #include "SpaceSphere.hpp"

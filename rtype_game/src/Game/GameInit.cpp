@@ -51,7 +51,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                                          sf::Color::Transparent,
                                                                          2.0f,
                                                                          0.0f});
-    SpaceSphere mob(_registry, {1900.f, 200.f}, {0.f, 0.f}, 0.f, _mob_sprite);
+    EyeBomber mob(_registry, {1900, 300}, {0, 0}, 0, _mob_sprite);
+    mob.setTarget(_player_entity, _registry);
 }
 
 Game::~Game() {}
@@ -111,7 +112,7 @@ void Game::init_textures() {
     _textures["background"]->setRepeated(true);
 
     _textures["enemy"] = std::make_shared<sf::Texture>();
-    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/enemies/bomber.png",
+    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/enemies/eye_bomber.png",
                                           {0, 0, 15, 10})) {
         std::cerr << "Error: Could not load enemy texture!" << std::endl;
         _textures["enemy"].reset();
@@ -140,10 +141,16 @@ void Game::init_textures() {
         std::cerr << "Error: Could not load space_sphere texture!" << std::endl;
         _textures["space_sphere"].reset();
     }
+
+    _textures["eye_bomber"] = std::make_shared<sf::Texture>();
+    if (!_textures["eye_bomber"]->loadFromFile("../../assets/sprites/enemies/eye_bomber.png")) {
+        std::cerr << "Error: Could not load eye_bomber texture!" << std::endl;
+        _textures["eye_bomber"].reset();
+    }
 }
 
 void Game::init_sprites() {
-    _mob_sprite    = RealEngine::Sprite(_textures["space_sphere"]);
+    _mob_sprite    = RealEngine::Sprite(_textures["eye_bomber"]);
     _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
     _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
