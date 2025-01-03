@@ -58,8 +58,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     second_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     third_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
-    WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
-    mob.setTarget(_player_entity, _registry);
+    // WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
+    // mob.setTarget(_player_entity, _registry);
 }
 
 Game::~Game() {}
