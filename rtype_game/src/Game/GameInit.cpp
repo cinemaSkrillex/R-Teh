@@ -51,7 +51,14 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                                          sf::Color::Transparent,
                                                                          2.0f,
                                                                          0.0f});
-    EyeBomber mob(_registry, {1900, 300}, {0, 0}, 0, _mob_sprite);
+    auto mob_sprite        = RealEngine::Sprite{_textures["turret_canon"]};
+    auto second_mob_sprite = RealEngine::Sprite{_textures["turret_pedestal"]};
+    auto third_mob_sprite  = RealEngine::Sprite{_textures["robot_boss_backward"]};
+    mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
+    second_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
+    third_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
+    // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
+    WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
     mob.setTarget(_player_entity, _registry);
 }
 
@@ -142,15 +149,96 @@ void Game::init_textures() {
         _textures["space_sphere"].reset();
     }
 
+    _textures["turret_canon"] = std::make_shared<sf::Texture>();
+    if (!_textures["turret_canon"]->loadFromFile("../../assets/sprites/enemies/turret_canon.png")) {
+        std::cerr << "Error: Could not load turret canon texture!" << std::endl;
+        _textures["turret_canon"].reset();
+    }
+
+    _textures["turret_pedestal"] = std::make_shared<sf::Texture>();
+    if (!_textures["turret_pedestal"]->loadFromFile(
+            "../../assets/sprites/enemies/turret_pedestal.png")) {
+        std::cerr << "Error: Could not load turret pedestal texture!" << std::endl;
+        _textures["turret_pedestal"].reset();
+    }
+
+    _textures["mob_spawner_ship"] = std::make_shared<sf::Texture>();
+    if (!_textures["mob_spawner_ship"]->loadFromFile(
+            "../../assets/sprites/enemies/mob_spawner.png")) {
+        std::cerr << "Error: Could not load mob_spawner_ship texture!" << std::endl;
+        _textures["mob_spawner_ship"].reset();
+    }
+
+    _textures["mortar_rocket"] = std::make_shared<sf::Texture>();
+    if (!_textures["mortar_rocket"]->loadFromFile(
+            "../../assets/sprites/enemies/mortar_rocket.png")) {
+        std::cerr << "Error: Could not load mortar_rocket texture!" << std::endl;
+        _textures["mortar_rocket"].reset();
+    }
+
+    _textures["robot_boss_minion"] = std::make_shared<sf::Texture>();
+    if (!_textures["robot_boss_minion"]->loadFromFile(
+            "../../assets/sprites/enemies/boss_minion.png")) {
+        std::cerr << "Error: Could not load robot boss minion texture!" << std::endl;
+        _textures["robot_boss_minion"].reset();
+    }
+
+    _textures["robot_boss_shoot"] = std::make_shared<sf::Texture>();
+    if (!_textures["robot_boss_shoot"]->loadFromFile("../../assets/sprites/enemies/mini_boss.png",
+                                                     sf::IntRect{0, 0, 47, 43})) {
+        std::cerr << "Error: Could not load robot boss texture!" << std::endl;
+        _textures["robot_boss_shoot"].reset();
+    }
+
+    _textures["robot_boss_fordward"] = std::make_shared<sf::Texture>();
+    if (!_textures["robot_boss_fordward"]->loadFromFile(
+            "../../assets/sprites/enemies/mini_boss.png", sf::IntRect{0, 43, 56, 54})) {
+        std::cerr << "Error: Could not load robot boss texture!" << std::endl;
+        _textures["robot_boss_fordward"].reset();
+    }
+
+    _textures["robot_boss_backward"] = std::make_shared<sf::Texture>();
+    if (!_textures["robot_boss_backward"]->loadFromFile(
+            "../../assets/sprites/enemies/mini_boss.png", sf::IntRect{0, 97, 49, 50})) {
+        std::cerr << "Error: Could not load robot boss texture!" << std::endl;
+        _textures["robot_boss_backward"].reset();
+    }
+
+    _textures["directional_canon"] = std::make_shared<sf::Texture>();
+    if (!_textures["directional_canon"]->loadFromFile(
+            "../../assets/sprites/enemies/directional_canon.png")) {
+        std::cerr << "Error: Could not load directional canon texture!" << std::endl;
+        _textures["directional_canon"].reset();
+    }
+
     _textures["eye_bomber"] = std::make_shared<sf::Texture>();
     if (!_textures["eye_bomber"]->loadFromFile("../../assets/sprites/enemies/eye_bomber.png")) {
-        std::cerr << "Error: Could not load eye_bomber texture!" << std::endl;
+        std::cerr << "Error: Could not load eye bomber texture!" << std::endl;
         _textures["eye_bomber"].reset();
+    }
+
+    _textures["eye_minion"] = std::make_shared<sf::Texture>();
+    if (!_textures["eye_minion"]->loadFromFile("../../assets/sprites/enemies/eye_minion.png")) {
+        std::cerr << "Error: Could not load eye minion texture!" << std::endl;
+        _textures["eye_minion"].reset();
+    }
+
+    _textures["eye_bigion_normal"] = std::make_shared<sf::Texture>();
+    if (!_textures["eye_bigion_normal"]->loadFromFile("../../assets/sprites/enemies/eye_bigion.png",
+                                                      sf::IntRect{0, 0, 23 * 2, 16})) {
+        std::cerr << "Error: Could not load eye bigion texture!" << std::endl;
+        _textures["eye_bigion_normal"].reset();
+    }
+
+    _textures["eye_bigion_angry"] = std::make_shared<sf::Texture>();
+    if (!_textures["eye_bigion_angry"]->loadFromFile("../../assets/sprites/enemies/eye_bigion.png",
+                                                     sf::IntRect{0, 16, 21 * 2, 16})) {
+        std::cerr << "Error: Could not load eye bigion texture!" << std::endl;
+        _textures["eye_bigion_angry"].reset();
     }
 }
 
 void Game::init_sprites() {
-    _mob_sprite    = RealEngine::Sprite(_textures["eye_bomber"]);
     _upSpaceship   = RealEngine::Sprite(_textures["spaceship_up"]);
     _idleSpaceship = RealEngine::Sprite(_textures["spaceship_idle"]);
     _downSpaceship = RealEngine::Sprite(_textures["spaceship_down"]);
@@ -266,7 +354,6 @@ void Game::set_action_handlers() {
 }
 
 void Game::set_sprite_scales() {
-    _mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     _idleSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _upSpaceship.setScale(GAME_SCALE, GAME_SCALE);
     _downSpaceship.setScale(GAME_SCALE, GAME_SCALE);

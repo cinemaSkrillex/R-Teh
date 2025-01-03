@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SpaceSphere
+** DirectionalCanon
 */
 
-#include "Mobs/SpaceSphere.hpp"
+#include "Mobs/DirectionalCanon.hpp"
 
 namespace rtype {
 
@@ -20,17 +20,17 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
-                         sf::Vector2f direction, float speed, RealEngine::Sprite& mobSprite)
+DirectionalCanon::DirectionalCanon(RealEngine::Registry& registry, sf::Vector2f position,
+                                   sf::Vector2f direction, float speed,
+                                   RealEngine::Sprite& mobSprite)
     : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
-    _mobSpriteSheet.emplace("fly", mobSprite);
+    _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(
-        _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "fly", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
-    // 55 is the speed of rotation animation
-    // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
+        _entity,
+        RealEngine::SpriteSheet{
+            _mobSpriteSheet, "normal", 0, {64, 64}, false, true, 80, {32, 32}, sf::Clock()});
     registry.add_component(_entity, RealEngine::Drawable{});
     // registry.add_component(
     //     _entity, RealEngine::Collision{
@@ -50,6 +50,6 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_entity, RealEngine::Rotation{0.f});
 }
 
-SpaceSphere::~SpaceSphere() {}
+DirectionalCanon::~DirectionalCanon() {}
 
 }  // namespace rtype

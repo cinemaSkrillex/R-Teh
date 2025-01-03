@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** EyeBomber
+** EyeMinion
 */
 
 #pragma once
@@ -11,13 +11,13 @@
 
 namespace rtype {
 
-// this enemy accelerate towards the player and explodes on contact
+// this enemy have some boosts towards the player and shoot projectiles
 
-class EyeBomber {
+class EyeMinion {
    public:
-    EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
+    EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
               float speed, RealEngine::Sprite& mobSprite);
-    ~EyeBomber();
+    ~EyeMinion();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _eyeEntity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
     void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,

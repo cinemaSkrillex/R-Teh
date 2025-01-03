@@ -10,6 +10,10 @@
 #include "Engine.hpp"
 
 namespace rtype {
+
+// this enemy move up and down with some fordward boosts and backwards boosts and shoot towards the
+// player
+
 class SpaceSphere {
    public:
     SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,

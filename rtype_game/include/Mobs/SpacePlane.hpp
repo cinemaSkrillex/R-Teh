@@ -9,6 +9,8 @@
 
 #include "Engine.hpp"
 
+// this enemy has basic movements with different patterns and shoots straight bullets
+
 namespace rtype {
 class SpacePlane {
    public:

@@ -10,6 +10,9 @@
 #include "Engine.hpp"
 
 namespace rtype {
+
+// this enemy move up and down with some fast fordward boosts and return to its base position
+
 class SpaceDrill {
    public:
     SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,

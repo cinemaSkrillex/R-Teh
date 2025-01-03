@@ -151,7 +151,7 @@ void GameInstance::init_textures() {
     }
 
     _textures["enemy"] = std::make_shared<sf::Texture>();
-    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/enemies/bomber.png",
+    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/enemies/eye_bomber.png",
                                           {0, 0, 15, 10})) {
         std::cerr << "Error: Could not load enemy texture!" << std::endl;
         _textures["enemy"].reset();
