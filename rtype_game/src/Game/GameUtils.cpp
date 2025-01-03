@@ -306,12 +306,25 @@ void rtype::Game::handleShootEvent(RTypeProtocol::EventMessage parsedPacket) {
                 break;
             }
             case RTypeProtocol::ComponentList::SPRITE: {
-                std::string sprite(component.second.begin(), component.second.end());
-                std::cout << "Sprite: " << sprite << "\n";
-                _registry.add_component<RealEngine::Sprite>(*newEntity,
-                                                            RealEngine::Sprite{_textures[sprite]});
+                std::string sprite_str(component.second.begin(), component.second.end());
+                std::cout << "Sprite: " << sprite_str << "\n";
+                if (_textures.find(sprite_str) == _textures.end())
+                    std::cerr << "Texture not found for sprite: " << sprite_str << std::endl;
+                auto sprite = RealEngine::Sprite{_textures[sprite_str]};
+                // sprite.setScale(GAME_SCALE, GAME_SCALE);
+                _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
                 break;
             }
+
+            // void rtype::Game::createSpriteComponent(const std::string&                  value,
+            //                                         std::shared_ptr<RealEngine::Entity> entity) {
+            //     if (_textures.find(value) == _textures.end())
+            //         std::cerr << "Texture not found for sprite: " << value << std::endl;
+            //     auto sprite = RealEngine::Sprite{_textures[value]};
+            //     sprite.setScale(GAME_SCALE, GAME_SCALE);
+            //     _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
+            // }
+
             // case RTypeProtocol::ComponentList::COLLISION: {
             //     sf::IntRect collision;
             //     std::memcpy(&collision, component.second.data(), sizeof(collision));
