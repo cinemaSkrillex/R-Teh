@@ -12,16 +12,21 @@ When evaluating build systems for our project, we considered several options, in
 
 ### 1. Cross-Platform Support
 
-- CMake is designed to work across different platforms, including Windows, macOS, and Linux. This ensures that our project can be built and run on a wide range of systems without major modifications.
+- Designed to work on **Windows**, **macOS**, and **Linux**.  
+- Ensures the project can be built and run on a wide range of systems without major modifications.  
 
 ### 2. IDE Integration
 
-- CMake integrates well with popular IDEs like Visual Studio, CLion, and Xcode, providing a seamless development experience for our team members who use different tools.
+- Integrates seamlessly with popular IDEs like **Visual Studio**, **CLion**, and **Xcode**.  
+- Provides a **consistent development experience** for team members using different tools.  
 
 ### 3. Flexibility
 
-- CMake offers a high degree of flexibility in configuring build options, dependencies, and target platforms. This allows us to customize the build process to suit our specific requirements.
+- Offers a **high degree of flexibility** for configuring build options, dependencies, and target platforms.  
+- Enables customization of the build process to meet **specific project requirements**.  
 
 ### 4. Community Support
 
-- CMake has a large and active community that provides extensive documentation, tutorials, and support resources. This makes it easier for our team to troubleshoot issues and leverage best practices.
+- Backed by a **large and active community**.  
+- Provides **extensive documentation**, **tutorials**, and **support resources**.  
+- Simplifies troubleshooting and promotes adoption of **best practices**.  

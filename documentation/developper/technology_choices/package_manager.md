@@ -16,32 +16,50 @@ Table of Contents
 
 ### 1. Installation Requirements
 
-- Conan: Requires Python for installation, which may introduce additional dependencies and potential challenges. It also relies on PIP, which can pose a security risk if not properly managed.
+- **Conan**:  
+  - Requires **Python** for installation, introducing additional dependencies and potential challenges.  
+  - Relies on **PIP**, which can pose a security risk if not properly managed.  
 
-- vcpkg: Only requires a simple git clone, making it more lightweight and easier to set up. This simplicity was a key factor in our decision.
+- **vcpkg**:  
+  - Only requires a simple **git clone**, making it lightweight and easy to set up.  
+  - Simplicity was a key factor in our decision.  
 
 ### 2. Maintained or Backed by a Major Organization
 
-- vcpkg is actively maintained by Microsoft, ensuring strong integration with the Windows ecosystem and providing a level of trust and reliability.
+- **vcpkg**:  
+  - Actively maintained by **Microsoft**, ensuring strong integration with the Windows ecosystem.  
+  - Provides a higher level of **trust and reliability**.  
 
-- While Conan is community-driven and widely respected, the direct backing of Microsoft gave vcpkg an edge for our use case.
+- **Conan**:  
+  - Community-driven and widely respected, but lacks direct backing by a major organization like Microsoft.  
 
 ### 3. Ecosystem Integration
 
-- vcpkg: Seamless integration with Microsoft tools like Visual Studio and MSBuild. This made it highly attractive for our predominantly Windows-based development environment.
+- **vcpkg**:  
+  - Offers **seamless integration** with Microsoft tools like **Visual Studio** and **MSBuild**.  
+  - Highly attractive for our predominantly **Windows-based development environment**.  
 
-- Conan: Offers broad cross-platform support but requires more configuration, particularly for projects relying on Microsoft technologies.
+- **Conan**:  
+  - Provides broad **cross-platform support** but requires more configuration, especially for projects using Microsoft technologies.  
 
 ### 4. Simplicity and Learning Curve
 
-- vcpkg: Straightforward to use, with minimal configuration required for C++ projects. Developers can quickly get started without the need for profiles or extensive setup.
+- **vcpkg**:  
+  - **Straightforward to use**, with minimal configuration required for C++ projects.  
+  - Developers can quickly get started without the need for profiles or extensive setup.  
 
-- Conan: While more flexible, it has a steeper learning curve due to features like profiles and Python-based configurations.
+- **Conan**:  
+  - While more **flexible**, it has a **steeper learning curve** due to features like profiles and Python-based configurations.  
 
 ### 5. Security Considerations
 
-- The reliance of Conan on PIP and Python introduces potential vectors for dependency-related vulnerabilities. vcpkg’s simpler installation process reduces this risk.
+- **Conan**:  
+  - The reliance on **PIP** and **Python** introduces potential vectors for dependency-related vulnerabilities.  
 
-### 6. Our own friends
+- **vcpkg**:  
+  - Simpler installation process reduces potential security risks.  
 
-Our friends making rtype are using vcpkg, and told us it's the easiest to use. We trust them, and we know that they are using it wisely
+### 6. Influence of Our Peers
+
+- Our friends developing **R-Type** are using **vcpkg** and shared that it is the **easiest to use**.  
+- We trust their experience and know they are leveraging it wisely.  
