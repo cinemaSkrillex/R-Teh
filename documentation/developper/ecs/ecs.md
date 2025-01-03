@@ -4,10 +4,6 @@
 
 [Overview](./overview/overview.md)
 
-## Systems
+## Diagram
 
-[Systems](./systems/system.md)
-
-## Components
-
-[Components](./components/components.md)
+[Diagram](./diagram/ecs_diagram.md)
