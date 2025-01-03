@@ -51,12 +51,13 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                                                                          sf::Color::Transparent,
                                                                          2.0f,
                                                                          0.0f});
-    auto mob_sprite        = RealEngine::Sprite{_textures["turret_canon"]};
+    auto mob_sprite        = RealEngine::Sprite{_textures["space_sphere"]};
     auto second_mob_sprite = RealEngine::Sprite{_textures["turret_pedestal"]};
     auto third_mob_sprite  = RealEngine::Sprite{_textures["robot_boss_backward"]};
     mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     second_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
     third_mob_sprite.setScale(GAME_SCALE, GAME_SCALE);
+    SpaceSphere mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite);
     // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
     // WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
     // mob.setTarget(_player_entity, _registry);

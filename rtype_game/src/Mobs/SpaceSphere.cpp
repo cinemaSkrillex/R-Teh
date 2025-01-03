@@ -7,12 +7,25 @@
 
 #include "Mobs/SpaceSphere.hpp"
 
+#include "Mobs/Projectiles/Fireball.hpp"
+
 namespace rtype {
 
 static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                                    float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+    auto* position                           = registry.get_component<RealEngine::Position>(entity);
+    auto* velocity                           = registry.get_component<RealEngine::Velocity>(entity);
+    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
+    auto*                            texture("assets/sprites/enemies/fireball.png");
+    // for (auto& netvar : netvars) {
+    //     if (netvar->name == "shootCooldown") {
+    //         float cooldown = std::any_cast<float>(netvar->value);
+    //         if (cooldown <= 0) {
+    //             Fireball fireball(registry, {position->x, position->y}, 0, 200,
+    //             Game::getSprite());
+    //         }
+    //     }
+    // }
 }
 
 static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -20,15 +33,28 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
+static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
+                           float deltaTime) {
+    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
+    for (auto& netvar : netvars) {
+        float cooldown = std::any_cast<float>(netvar->value);
+        cooldown -= deltaTime;
+        if (cooldown < 0) {
+            cooldown = 0;
+        }
+        netvar->value = cooldown;
+    }
+}
+
 SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
                          sf::Vector2f direction, float speed, RealEngine::Sprite& mobSprite)
     : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
-    _mobSpriteSheet.emplace("fly", mobSprite);
+    _mobSpriteSheet.emplace("normal", mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(
         _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "fly", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+                     _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
     // 55 is the speed of rotation animation
     // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
@@ -48,6 +74,10 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
+    registry.add_component(_entity,
+                           RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
+    // registry.add_component(_entity,
+    //                        RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
 }
 
 SpaceSphere::~SpaceSphere() {}
