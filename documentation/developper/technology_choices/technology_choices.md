@@ -13,7 +13,7 @@
 
 ## Graphics
 
-[SFML](sfml.md)
+[SFML](graphics.md)
 
 ## Networking
 
