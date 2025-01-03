@@ -21,3 +21,7 @@ The project uses the boost library to manage the network. The server and the cli
 ## ECS (Entity Component System) 🕹️
 
 [Entity Component System](./ecs/ecs.md)
+
+## Technology choices 🛠️
+
+- [Technology choices](./technology_choices/technology_choices.md)
