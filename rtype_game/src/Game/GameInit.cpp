@@ -125,6 +125,17 @@ void Game::init_textures() {
     AssetManagerInstance.loadTexture("eye_bigion_angry",
                                      "../../assets/sprites/enemies/eye_bigion.png",
                                      sf::IntRect{0, 16, 21 * 2, 16});
+    AssetManagerInstance.loadTexture("eye_boss_short_range",
+                                     "../../assets/sprites/enemies/the_eye/boss.png",
+                                     sf::IntRect{0, 0, 73 * 3, 55});
+    AssetManagerInstance.loadTexture("eye_boss_mid_range",
+                                     "../../assets/sprites/enemies/the_eye/boss.png",
+                                     sf::IntRect{0, 55, 91 * 3, 55});
+    AssetManagerInstance.loadTexture("eye_boss_long_range",
+                                     "../../assets/sprites/enemies/the_eye/boss.png",
+                                     sf::IntRect{0, 55 * 2, 81 * 3, 55});
+    AssetManagerInstance.loadTexture("eye_laser",
+                                     "../../assets/sprites/enemies/the_eye/laser_shoot.png");
     AssetManagerInstance.loadTexture("fireball", "../../assets/sprites/enemies/fireball.png");
 }
 
@@ -153,6 +164,10 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("eye_minion", "eye_minion");
     AssetManagerInstance.loadSprite("eye_bigion_normal", "eye_bigion_normal");
     AssetManagerInstance.loadSprite("eye_bigion_angry", "eye_bigion_angry");
+    AssetManagerInstance.loadSprite("eye_boss_short_range", "eye_boss_short_range");
+    AssetManagerInstance.loadSprite("eye_boss_mid_range", "eye_boss_mid_range");
+    AssetManagerInstance.loadSprite("eye_boss_long_range", "eye_boss_long_range");
+    AssetManagerInstance.loadSprite("eye_laser", "eye_laser");
     AssetManagerInstance.loadSprite("fireball", "fireball");
     set_sprite_scales();
     set_sprite_opacity();
@@ -288,6 +303,10 @@ void Game::set_sprite_scales() {
     AssetManagerInstance.getSprite("eye_minion")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("eye_bigion_normal")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("eye_bigion_angry")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("eye_boss_short_range")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("eye_boss_mid_range")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("eye_boss_long_range")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("eye_laser")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("fireball")->setScale(GAME_SCALE, GAME_SCALE);
 }
 

@@ -9,59 +9,6 @@
 
 namespace rtype {
 
-static void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPosition,
-                        RealEngine::Registry& registry, float rotationSpeed, float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation = registry.get_component<RealEngine::Rotation>(entity);
-
-    if (position && targetPosition) {
-        float dx          = targetPosition->x - position->x;
-        float dy          = targetPosition->y - position->y;
-        float targetAngle = std::atan2(dy, dx) * 180.0f / M_PI;
-
-        if (rotation) {
-            float currentAngle    = rotation->angle;
-            targetAngle           = std::fmod(targetAngle + 360.0f, 360.0f);
-            currentAngle          = std::fmod(currentAngle + 360.0f, 360.0f);
-            float angleDifference = targetAngle - currentAngle;
-
-            if (angleDifference > 180.0f) {
-                angleDifference -= 360.0f;
-            } else if (angleDifference < -180.0f) {
-                angleDifference += 360.0f;
-            }
-            if (angleDifference > 0.1f) {
-                rotation->angle += rotationSpeed * deltaTime * 100.0f;
-            } else if (angleDifference < -0.1f) {
-                rotation->angle -= rotationSpeed * deltaTime * 100.0f;
-            }
-            rotation->angle = std::fmod(rotation->angle + 360.0f, 360.0f);
-        }
-    }
-}
-
-static void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                              float deltaTime) {
-    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
-    auto* position       = registry.get_component<RealEngine::Position>(entity);
-    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
-    auto* rotation       = registry.get_component<RealEngine::Rotation>(entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
-
-    aimAtTarget(entity, targetPosition, registry, 2.5f, deltaTime);
-    if (position && targetPosition && acceleration) {
-        float dx       = targetPosition->x - position->x;
-        float dy       = targetPosition->y - position->y;
-        float distance = std::sqrt(dx * dx + dy * dy);
-
-        if (distance > 10.0f) {
-            velocity->vx += acceleration->ax * std::cos(rotation->angle * M_PI / 180.0f);
-            velocity->vy += acceleration->ay * std::sin(rotation->angle * M_PI / 180.0f);
-        }
-    }
-}
-
 static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                            float deltaTime) {
     auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(entity);
@@ -99,7 +46,8 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::
                 collisionBehaviour(collisionType, registry, collider, entity);
             }});
     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
-    registry.add_component(_eyeEntity, RealEngine::AI{agressiveBehavior, simpleBehavior, true});
+    registry.add_component(_eyeEntity,
+                           RealEngine::AI{rushTowardsTargetZigzagging, simpleBehavior, true});
     registry.add_component(_eyeEntity, RealEngine::Damage{40});
 }
 
@@ -112,14 +60,6 @@ void EyeBomber::setTarget(std::shared_ptr<RealEngine::Entity> target,
     acceleration->ax = 240.0f;
     acceleration->ay = 240.0f;
     registry.add_component(_eyeEntity, RealEngine::Target{target});
-}
-
-static void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
-    auto* health = registry.get_component<RealEngine::Health>(entity);
-
-    if (health) {
-        health->damage = health->maxHealth;
-    }
 }
 
 void EyeBomber::collisionBehaviour(RealEngine::CollisionType collisionType,
