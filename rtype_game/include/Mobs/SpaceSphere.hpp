@@ -7,7 +7,8 @@
 
 #pragma once
 
-#include "Engine.hpp"
+#include "Mobs/Behaviors.hpp"
+#include "Mobs/Projectiles/Fireball.hpp"
 
 namespace rtype {
 

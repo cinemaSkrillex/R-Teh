@@ -9,11 +9,6 @@
 
 namespace rtype {
 
-static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                               float deltaTime) {
-    // no agressive behavior
-}
-
 Fireball::Fireball(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed)
     : _entity(registry.spawn_entity()),
       _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("fireball"))) {
@@ -32,9 +27,9 @@ Fireball::Fireball(RealEngine::Registry& registry, sf::Vector2f position, float 
                                                  false,
                                                  RealEngine::CollisionType::ENEMY_BULLET,
                                                  destroyOnWallsAndPlayer});
-    registry.add_component(_entity, RealEngine::AI{agressive_behavior, goStraightAngle, true});
+    registry.add_component(_entity, RealEngine::AI{noBehavior, goStraightAngle, true});
     registry.add_component(_entity, RealEngine::Damage{10, true, 3.0f, 1.0f, false});
-    registry.add_component(_entity, RealEngine::Health{40, 40});
+    registry.add_component(_entity, RealEngine::Health{1, 1});
     registry.add_component(_entity, RealEngine::Rotation{angle});
 }
 

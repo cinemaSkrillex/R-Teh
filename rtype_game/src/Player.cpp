@@ -36,11 +36,17 @@ void Game::player_take_damage(RealEngine::Entity collider) {
     auto* playerHealth   = _registry.get_component<RealEngine::Health>(_player_entity);
     auto* colliderDamage = _registry.get_component<RealEngine::Damage>(collider);
 
-    if (playerHealth) {
-        if (colliderDamage) {
+    if (playerHealth && colliderDamage && playerHealth->invincibilityTime <= 0.0f) {
+        std::cout << "Player take damage amount:" << colliderDamage->amount << std::endl;
+        if (colliderDamage->effect) {
+            playerHealth->regenerationRate     = -colliderDamage->amount;
+            playerHealth->regenerationCooldown = colliderDamage->effectInterval;
+            playerHealth->regenerationTimer    = 0.0f;
+            playerHealth->regenerationTime     = colliderDamage->effectDuration;
+        } else {
             playerHealth->damage += colliderDamage->amount;
-            playerHealth->invincibilityTime = 1.5f;
         }
+        playerHealth->invincibilityTime = 1.5f;
     }
 }
 }  // namespace rtype

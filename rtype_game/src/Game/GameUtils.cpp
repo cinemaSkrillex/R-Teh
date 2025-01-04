@@ -125,11 +125,9 @@ void rtype::Game::createVelocityComponent(const std::string&                  va
 
 void rtype::Game::createSpriteComponent(const std::string&                  value,
                                         std::shared_ptr<RealEngine::Entity> entity) {
-    if (_textures.find(value) == _textures.end())
-        std::cerr << "Texture not found for sprite: " << value << std::endl;
-    auto sprite = RealEngine::Sprite{_textures[value]};
-    sprite.setScale(GAME_SCALE, GAME_SCALE);
-    _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
+    _registry.add_component(
+        entity,
+        RealEngine::SpriteComponent{*(RealEngine::AssetManager::getInstance().getSprite(value))});
 }
 
 void rtype::Game::createDrawableComponent(const std::string&                  value,

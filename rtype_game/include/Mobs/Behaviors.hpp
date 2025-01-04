@@ -23,6 +23,8 @@ void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float
 
 // collisions
 
+void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                         RealEngine::Entity collider, RealEngine::Entity entity);
 void destroyOnWallsAndPlayer_TakesDamage(RealEngine::CollisionType collisionType,
                                          RealEngine::Registry&     registry,
                                          RealEngine::Entity collider, RealEngine::Entity entity);

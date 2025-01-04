@@ -109,6 +109,30 @@ void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float
     velocity->vy += acceleration->ay * deltaTime;
 }
 
+void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                         RealEngine::Entity collider, RealEngine::Entity entity) {
+    switch (collisionType) {
+        case RealEngine::CollisionType::INACTIVE:
+            break;
+        case RealEngine::CollisionType::SOLID:
+            break;
+        case RealEngine::CollisionType::PICKABLE:
+            break;
+        case RealEngine::CollisionType::OTHER:
+            break;
+        case RealEngine::CollisionType::PLAYER:
+            break;
+        case RealEngine::CollisionType::ENEMY:
+            break;
+        case RealEngine::CollisionType::ALLY_BULLET:
+            break;
+        case RealEngine::CollisionType::ENEMY_BULLET:
+            break;
+        default:
+            break;
+    }
+}
+
 void destroyOnWallsAndPlayer_TakesDamage(RealEngine::CollisionType collisionType,
                                          RealEngine::Registry&     registry,
                                          RealEngine::Entity collider, RealEngine::Entity entity) {
@@ -200,18 +224,8 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
             health->regenerationCooldown = damage->effectInterval;
             health->regenerationTimer    = 0.0f;
             health->regenerationTime     = damage->effectDuration;
-            if (damage->stealLife) {
-                if (damage->effect) {
-                    health->regenerationRate     = damage->amount / 2;
-                    health->regenerationCooldown = damage->effectInterval;
-                    health->regenerationTimer    = 0.0f;
-                    health->regenerationTime     = damage->effectDuration;
-                } else {
-                    health->damage -= damage->amount / 2;
-                }
-            } else {
-                health->damage += damage->amount;
-            }
+        } else {
+            health->damage += damage->amount;
         }
     }
 }

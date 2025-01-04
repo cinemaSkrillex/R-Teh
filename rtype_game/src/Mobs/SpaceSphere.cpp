@@ -7,8 +7,6 @@
 
 #include "Mobs/SpaceSphere.hpp"
 
-#include "Mobs/Projectiles/Fireball.hpp"
-
 namespace rtype {
 
 static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -26,12 +24,6 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     //         }
     //     }
     // }
-    // Fireball fireball(registry, {position->x, position->y}, 180, 200);
-}
-
-static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                               float deltaTime) {
-    // no agressive behavior
 }
 
 static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -60,19 +52,13 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     // 55 is the speed of rotation animation
     // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
-    // registry.add_component(
-    //     _entity, RealEngine::Collision{
-    //                  {0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-    //                  "mob",
-    //                  false,
-    //                  RealEngine::CollisionType::ENEMY,
-    //                  [this](RealEngine::CollisionType collisionType, RealEngine::Registry&
-    //                  registry,
-    //                         RealEngine::Entity collider, RealEngine::Entity entity) {
-    //                      mob_collision_handler(collisionType, registry, collider, entity);
-    //                  }});
     registry.add_component(_entity,
-                           RealEngine::AI{agressive_behavior, straight_line_behavior, true});
+                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                                                 "mob",
+                                                 false,
+                                                 RealEngine::CollisionType::ENEMY,
+                                                 noCollisionBehavior});
+    registry.add_component(_entity, RealEngine::AI{noBehavior, straight_line_behavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
