@@ -7,5 +7,26 @@ nav_order: 1
 
 # Repository structure diagram
 
-TODO: Add repository structure diagram
- (draw.io)
+## Game engine:
+
+![Game engine](image-5.png)
+
+## Network:
+
+![Network](image-4.png)
+
+## Rtype game:
+
+![Rtype Game](image-3.png)
+
+## Rtype server:
+
+![Rtype Server](image-2.png)
+
+## Script:
+
+![Script](image.png)
+
+## Documentation:
+
+![Documentation](image-1.png)
