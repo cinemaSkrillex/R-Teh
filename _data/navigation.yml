@@ -1,0 +1,22 @@
+main:
+  - title: "Home"
+    url: "/"
+    nav_order: 1
+  - title: "Installation Requirements"
+    url: "/installation-requirements/"
+    nav_order: 2
+  - title: "Maintained or Backed by a Major Organization"
+    url: "/maintained-or-backed-by-a-major-organization/"
+    nav_order: 3
+  - title: "Ecosystem Integration"
+    url: "/ecosystem-integration/"
+    nav_order: 4
+  - title: "Simplicity and Learning Curve"
+    url: "/simplicity-and-learning-curve/"
+    nav_order: 5
+  - title: "Security Considerations"
+    url: "/security-considerations/"
+    nav_order: 6
+  - title: "Our Own Friends"
+    url: "/our-own-friends/"
+    nav_order: 7

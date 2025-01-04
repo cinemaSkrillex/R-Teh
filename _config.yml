@@ -1,0 +1,15 @@
+title: Your Site Title
+theme: just-the-docs
+
+# Enable the sidebar navigation
+just_the_docs:
+  show_sidebar: true
+  collections:
+    docs:
+      output: true
+      permalink: /:collection/:path/
+  nav_order: 1
+  search_enabled: true
+  aux_links:
+    "GitHub Repository":
+      - "https://github.com/your-repo"
