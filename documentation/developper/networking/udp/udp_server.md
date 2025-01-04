@@ -1,3 +1,10 @@
+---
+title: UDP Server
+parent: UDP
+grand_parent: Networking
+nav_order: 1
+---
+
 # UDP Server diagram
 
 ## Overview

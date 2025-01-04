@@ -1,3 +1,10 @@
+---
+title: Udp reliable packets
+parent: UDP
+grand_parent: Networking
+nav_order: 1
+---
+
 # Udp reliable packets documentation
 
 ## Overview

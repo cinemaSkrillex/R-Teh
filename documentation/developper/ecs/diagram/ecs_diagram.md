@@ -1,3 +1,10 @@
+---
+title: ECS Diagram
+parent: ECS
+grand_parent: Developper
+nav_order: 2
+---
+
 # Ecs diagram using Draw.io
 
 The following diagram is a representation of the ECS architecture used in the project.
