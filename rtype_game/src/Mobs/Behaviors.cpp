@@ -9,8 +9,7 @@
 
 namespace rtype {
 
-void noAgressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                         float deltaTime) {
+void noBehavior(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
     (void)registry;
     (void)entity;
     (void)deltaTime;

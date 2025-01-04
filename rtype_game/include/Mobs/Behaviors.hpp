@@ -12,8 +12,7 @@
 namespace rtype {
 // AI
 
-void noAgressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                         float deltaTime);
+void noBehavior(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPosition,
                  RealEngine::Registry& registry, float rotationSpeed, float deltaTime);
 void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
@@ -35,4 +34,4 @@ void takesDamage(RealEngine::CollisionType collisionType, RealEngine::Registry& 
 void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity collider,
                             RealEngine::Entity entity);
 void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity);
-}
+}  // namespace rtype

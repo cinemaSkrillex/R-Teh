@@ -7,13 +7,16 @@
 
 #pragma once
 
+#include "Behaviors.hpp"
 #include "DirectionalCanon.hpp"
 #include "EyeBigion.hpp"
 #include "EyeBomber.hpp"
+#include "EyeBoss.hpp"
 #include "EyeMinion.hpp"
 #include "MobSpawnerShip.hpp"
 #include "Mortar.hpp"
 #include "Projectiles/ExplosiveShoot.hpp"
+#include "Projectiles/EyeLaser.hpp"
 #include "Projectiles/Fireball.hpp"
 #include "Projectiles/MiniBossShoot.hpp"
 #include "Projectiles/MortarRocket.hpp"

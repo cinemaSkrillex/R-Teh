@@ -26,7 +26,7 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     //         }
     //     }
     // }
-    Fireball fireball(registry, {position->x, position->y}, 180, 200);
+    // Fireball fireball(registry, {position->x, position->y}, 180, 200);
 }
 
 static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -80,6 +80,7 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     //                        RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
     // registry.add_component(_entity,
     //                        RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
+    Fireball fireball(registry, {position.x, position.y}, 180, 200);
 }
 
 SpaceSphere::~SpaceSphere() {}
