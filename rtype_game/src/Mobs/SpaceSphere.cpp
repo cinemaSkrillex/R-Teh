@@ -26,6 +26,7 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     //         }
     //     }
     // }
+    Fireball fireball(registry, {position->x, position->y}, 45, 200);
 }
 
 static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
