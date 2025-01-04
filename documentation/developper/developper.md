@@ -1,6 +1,7 @@
 ---
-title: Developper documentation
-parent: Developper
+title: Developper
+has_children: true
+nav_order: 1
 ---
 # Developper documentation 🧑‍💻
 
