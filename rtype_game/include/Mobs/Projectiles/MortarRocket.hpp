@@ -13,8 +13,7 @@ namespace rtype {
 
 class MortarRocket {
    public:
-    MortarRocket(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                 RealEngine::Sprite& projSprite);
+    MortarRocket(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~MortarRocket();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

@@ -17,14 +17,14 @@ namespace rtype {
 class SpaceSphere {
    public:
     SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                float speed, RealEngine::Sprite& mobSprite);
+                float speed);
     ~SpaceSphere();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _entity;
-    RealEngine::Sprite&                                 _mobSprite;
+    RealEngine::Sprite                                  _mobSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _mobSpriteSheet;
 };
 }  // namespace rtype

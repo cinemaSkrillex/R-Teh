@@ -18,6 +18,7 @@
 #include <unordered_map>
 
 // Core
+#include "Core/AssetsManager.hpp"
 #include "Core/View.hpp"
 #include "Core/Window.hpp"
 // Components

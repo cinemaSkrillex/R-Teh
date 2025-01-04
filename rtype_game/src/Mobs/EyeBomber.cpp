@@ -73,9 +73,10 @@ static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity en
 }
 
 EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                     float speed, RealEngine::Sprite& mobSprite)
-    : _eyeEntity(registry.spawn_entity()) {
-    _eyeSheet.emplace("normal", mobSprite);
+                     float speed)
+    : _eyeEntity(registry.spawn_entity()),
+      _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bomber"))) {
+    _eyeSheet.emplace("normal", _eyeSprite);
 
     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     registry.add_components(

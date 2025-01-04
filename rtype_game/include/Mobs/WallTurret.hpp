@@ -12,8 +12,7 @@
 namespace rtype {
 class WallTurret {
    public:
-    WallTurret(RealEngine::Registry& registry, sf::Vector2f position,
-               RealEngine::Sprite& canonSprite, RealEngine::Sprite& pedestalSprite, bool onGround);
+    WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bool onGround);
     ~WallTurret();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _canonEntity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);

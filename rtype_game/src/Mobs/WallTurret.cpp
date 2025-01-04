@@ -53,13 +53,11 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     aimAtTarget(entity, targetPosition, registry, 0.75f, deltaTime);
 }
 
-WallTurret::WallTurret(RealEngine::Registry& registry, sf::Vector2f position,
-                       RealEngine::Sprite& canonSprite, RealEngine::Sprite& pedestalSprite,
-                       bool onGround)
+WallTurret::WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bool onGround)
     : _canonEntity(registry.spawn_entity()),
       _pedestalEntity(registry.spawn_entity()),
-      _canonSprite(canonSprite),
-      _pedestalSprite(pedestalSprite) {
+      _canonSprite(*(RealEngine::AssetManager::getInstance().getSprite("turret_canon"))),
+      _pedestalSprite(*(RealEngine::AssetManager::getInstance().getSprite("turret_pedestal"))) {
     _canonSprite.setOrigin(5, 5);
     registry.add_component(_canonEntity, RealEngine::Position{position.x, position.y});
     registry.add_component(_canonEntity, RealEngine::SpriteComponent{_canonSprite});

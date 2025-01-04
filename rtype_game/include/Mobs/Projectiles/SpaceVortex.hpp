@@ -13,8 +13,7 @@ namespace rtype {
 
 class SpaceVortex {
    public:
-    SpaceVortex(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                RealEngine::Sprite& projSprite);
+    SpaceVortex(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~SpaceVortex();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

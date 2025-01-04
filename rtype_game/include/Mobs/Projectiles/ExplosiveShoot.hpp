@@ -13,8 +13,7 @@ namespace rtype {
 
 class ExplosiveShoot {
    public:
-    ExplosiveShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                   RealEngine::Sprite& projSprite);
+    ExplosiveShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~ExplosiveShoot();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

@@ -21,8 +21,9 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
 }
 
 SimpleShoot::SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle,
-                         float speed, RealEngine::Sprite& projSprite)
-    : _entity(registry.spawn_entity()), _projSprite(projSprite) {
+                         float speed)
+    : _entity(registry.spawn_entity()),
+      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("simple_shoot"))) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});

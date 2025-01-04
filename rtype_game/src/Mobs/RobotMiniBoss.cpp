@@ -25,14 +25,13 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
 }
 
 RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f position,
-                             sf::Vector2f direction, float speed,
-                             RealEngine::Sprite& shootMobSprite,
-                             RealEngine::Sprite& fordwardMobSprite,
-                             RealEngine::Sprite& backwardMobSprite)
+                             sf::Vector2f direction, float speed)
     : _entity(registry.spawn_entity()),
-      _shootMobSprite(shootMobSprite),
-      _fordwardMobSprite(fordwardMobSprite),
-      _backwardMobSprite(backwardMobSprite) {
+      _shootMobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_shoot"))),
+      _fordwardMobSprite(
+          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_fordward"))),
+      _backwardMobSprite(
+          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_backward"))) {
     _mobSpriteSheet.emplace("shoot", _shootMobSprite);
     _mobSpriteSheet.emplace("fordward", _fordwardMobSprite);
     _mobSpriteSheet.emplace("backwards", _backwardMobSprite);

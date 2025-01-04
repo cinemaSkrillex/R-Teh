@@ -16,7 +16,7 @@ namespace rtype {
 class SpaceDrill {
    public:
     SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-               float speed, RealEngine::Sprite& mobSprite);
+               float speed);
     ~SpaceDrill();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

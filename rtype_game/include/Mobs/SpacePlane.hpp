@@ -15,7 +15,7 @@ namespace rtype {
 class SpacePlane {
    public:
     SpacePlane(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-               float speed, RealEngine::Sprite& mobSprite);
+               float speed);
     ~SpacePlane();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
@@ -27,7 +27,7 @@ class SpacePlane {
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _entity;
-    RealEngine::Sprite&                                 _mobSprite;
+    RealEngine::Sprite                                  _mobSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _mobSpriteSheet;
 };
 }  // namespace rtype

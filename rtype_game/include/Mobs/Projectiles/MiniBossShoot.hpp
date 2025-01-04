@@ -13,8 +13,7 @@ namespace rtype {
 
 class MiniBossShoot {
    public:
-    MiniBossShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                  RealEngine::Sprite& projSprite);
+    MiniBossShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~MiniBossShoot();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

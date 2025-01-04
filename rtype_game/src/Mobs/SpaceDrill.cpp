@@ -25,14 +25,16 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
 }
 
 SpaceDrill::SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position,
-                       sf::Vector2f direction, float speed, RealEngine::Sprite& mobSprite)
-    : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
-    _mobSpriteSheet.emplace("fly", mobSprite);
+                       sf::Vector2f direction, float speed)
+    : _entity(registry.spawn_entity()),
+      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_drill"))) {
+    _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(
-        _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "fly", 0, {32, 22}, false, true, 55, {16, 11}, sf::Clock()});
+        _entity,
+        RealEngine::SpriteSheet{
+            _mobSpriteSheet, "normal", 0, {32, 22}, false, true, 55, {16, 11}, sf::Clock()});
     // 55 is the speed of rotation animation
     // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});

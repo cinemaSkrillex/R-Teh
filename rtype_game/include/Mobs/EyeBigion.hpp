@@ -17,7 +17,7 @@ namespace rtype {
 class EyeBigion {
    public:
     EyeBigion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-              float speed, RealEngine::Sprite& normalMobSprite, RealEngine::Sprite& angryMobSprite);
+              float speed);
     ~EyeBigion();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _eyeEntity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
@@ -27,6 +27,7 @@ class EyeBigion {
    private:
     std::shared_ptr<RealEngine::Entity>                 _eyeEntity;
     RealEngine::Sprite                                  _eyeSprite;
+    RealEngine::Sprite                                  _angryEyeSprite;
     std::unordered_map<std::string, RealEngine::Sprite> _eyeSheet;
 };
 }  // namespace rtype

@@ -13,7 +13,7 @@ namespace rtype {
 class RobotBossMinion {
    public:
     RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                    float speed, RealEngine::Sprite& mobSprite);
+                    float speed);
     ~RobotBossMinion();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);

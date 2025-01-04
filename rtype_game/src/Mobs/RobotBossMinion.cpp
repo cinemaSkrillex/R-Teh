@@ -25,9 +25,10 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
 }
 
 RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position,
-                                 sf::Vector2f direction, float speed, RealEngine::Sprite& mobSprite)
-    : _entity(registry.spawn_entity()), _mobSprite(mobSprite) {
-    _mobSpriteSheet.emplace("normal", mobSprite);
+                                 sf::Vector2f direction, float speed)
+    : _entity(registry.spawn_entity()),
+      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
+    _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.5f});
     registry.add_component(

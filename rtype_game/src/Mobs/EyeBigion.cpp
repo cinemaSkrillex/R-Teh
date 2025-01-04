@@ -73,11 +73,12 @@ static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity en
 }
 
 EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                     float speed, RealEngine::Sprite& normalMobSprite,
-                     RealEngine::Sprite& angryMobSprite)
-    : _eyeEntity(registry.spawn_entity()) {
-    _eyeSheet.emplace("normal", normalMobSprite);
-    _eyeSheet.emplace("angry", angryMobSprite);
+                     float speed)
+    : _eyeEntity(registry.spawn_entity()),
+      _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_normal"))),
+      _angryEyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_angry"))) {
+    _eyeSheet.emplace("normal", _eyeSprite);
+    _eyeSheet.emplace("angry", _angryEyeSprite);
 
     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     registry.add_components(

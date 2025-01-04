@@ -13,8 +13,7 @@ namespace rtype {
 
 class SimpleShoot {
    public:
-    SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                RealEngine::Sprite& projSprite);
+    SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~SimpleShoot();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

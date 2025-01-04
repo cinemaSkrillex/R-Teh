@@ -109,6 +109,7 @@ class Game {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
+    RealEngine::Sprite                                                _mob_sprite;
     RealEngine::Sprite                                                _upSpaceship;
     RealEngine::Sprite                                                _idleSpaceship;
     RealEngine::Sprite                                                _downSpaceship;

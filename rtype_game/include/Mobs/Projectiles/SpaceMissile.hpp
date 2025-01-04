@@ -13,8 +13,7 @@ namespace rtype {
 
 class SpaceMissile {
    public:
-    SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed,
-                 RealEngine::Sprite& projSprite);
+    SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
     ~SpaceMissile();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
