@@ -87,8 +87,7 @@ void Game::init_textures() {
                                      sf::IntRect{0, 15, 32, 15});
     AssetManagerInstance.loadTexture("spaceship_down", "../../assets/sprites/spaceship.png",
                                      sf::IntRect{0, 15 * 2, 33 * 2, 15});
-    AssetManagerInstance.loadTexture(
-        "background", "../../assets/sprites/backgrounds/r-type_background_front_line_base_4.png");
+    AssetManagerInstance.loadTexture("background", "../../assets/sprites/backgrounds/stars.png");
     AssetManagerInstance.getTexture("background")->setRepeated(true);
     AssetManagerInstance.loadTexture("enemy", "../../assets/sprites/enemies/eye_bomber.png",
                                      {0, 0, 15, 10});
