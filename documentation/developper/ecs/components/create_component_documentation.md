@@ -1,7 +1,7 @@
 ---
 title: Create a component Documentation
-parent: ECS
-grand_parent: Developper
+parent: Components
+grand_parent: ECS
 nav_order: 3
 ---
 

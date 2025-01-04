@@ -2,6 +2,7 @@
 title: Components
 parent: ECS
 grand_parent: Developper
+has_children: true
 nav_order: 3
 ---
 

@@ -1,3 +1,10 @@
+---
+title: Systems (ECS)
+parent: ECS
+grand_parent: Developper
+has_children: true
+nav_order: 2
+---
 # Systems documentation (ECS) 🕹️
 
 ## Overview

@@ -1,7 +1,7 @@
 ---
 title: Create a system Documentation 🧩
-parent: ECS
-grand_parent: Developper
+parent: Systems (ECS)
+grand_parent: ECS
 nav_order: 2
 ---
 
