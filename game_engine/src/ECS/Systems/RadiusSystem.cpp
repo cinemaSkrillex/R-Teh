@@ -2,8 +2,7 @@
 
 namespace RealEngine {
 
-RadiusSystem::RadiusSystem() {
-}
+RadiusSystem::RadiusSystem() {}
 
 RadiusSystem::~RadiusSystem() {}
 
@@ -11,7 +10,6 @@ void RadiusSystem::update(Registry& registry) {
     auto radius_entities = registry.view<Position, Radius>();  // crash when get redius entities
     auto player_entities = registry.view<Position, Controllable>();
     bool in, outer_max, outer_min = false;
-
 
     if (radius_entities.empty() || player_entities.empty()) {
         return;
@@ -36,42 +34,16 @@ void RadiusSystem::update(Registry& registry) {
             }
         }
         if (outer_min && entity_radius->lastState != RadiusState::OUTER_MIN) {
-            entity_radius->behaviorOuterMin();
+            entity_radius->behaviorOuterMin(registry, entity);
             entity_radius->lastState = RadiusState::OUTER_MIN;
         } else if (in && entity_radius->lastState != RadiusState::INSIDE) {
-            entity_radius->behaviorIn();
+            entity_radius->behaviorIn(registry, entity);
             entity_radius->lastState = RadiusState::INSIDE;
         } else if (outer_max && entity_radius->lastState != RadiusState::OUTER_MAX) {
-            entity_radius->behaviorOuterMax();
+            entity_radius->behaviorOuterMax(registry, entity);
             entity_radius->lastState = RadiusState::OUTER_MAX;
         }
     }
 }
 
-void setBehaviorIn(Entity entity, Registry& registry, std::function<void()> behavior) {
-    auto* radius = registry.get_component<Radius>(entity);
-    if (radius) {
-        radius->behaviorIn = behavior;
-    } else {
-        std::cerr << "Error: Entity does not have a Radius component!" << std::endl;
-    }
-}
-
-void setBehaviorOuterMax(Entity entity, Registry& registry, std::function<void()> behavior) {
-    auto* radius = registry.get_component<Radius>(entity);
-    if (radius) {
-        radius->behaviorOuterMax = behavior;
-    } else {
-        std::cerr << "Error: Entity does not have a Radius component!" << std::endl;
-    }
-}
-
-void setBehaviorOuterMin(Entity entity, Registry& registry, std::function<void()> behavior) {
-    auto* radius = registry.get_component<Radius>(entity);
-    if (radius) {
-        radius->behaviorOuterMin = behavior;
-    } else {
-        std::cerr << "Error: Entity does not have a Radius component!" << std::endl;
-    }
-}
 }  // namespace RealEngine
