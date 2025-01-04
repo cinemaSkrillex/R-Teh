@@ -1,3 +1,9 @@
+---
+title: Technology choices - Networking
+parent: Technology choices
+grand_parent: Developper
+nav_order: 5
+---
 # Technology choices - Networking
 
 When evaluating networking libraries for our project, we considered several options:

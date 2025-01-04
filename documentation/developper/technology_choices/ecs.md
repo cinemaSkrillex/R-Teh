@@ -1,3 +1,9 @@
+---
+title: Entity Component System
+parent: Technology choices
+grand_parent: Developper
+nav_order: 3
+---
 # Technology choices - Entity Component System
 
 ### 1. **Why Choose ECS**

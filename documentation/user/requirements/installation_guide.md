@@ -1,3 +1,10 @@
+---
+title: Installation Guide
+parent: Requirements
+grand_parent: User
+nav_order: 1
+---
+
 # How to use the project
 
 ## Installation

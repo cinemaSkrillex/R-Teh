@@ -1,3 +1,10 @@
+---
+title: Setup Windows VM
+parent: Requirements
+grand_parent: User
+nav_order: 2
+---
+
 # Windows VM requirements
 
 Prepare a windows 11 VM for running the project
@@ -60,30 +67,3 @@ https://www.microsoft.com/fr-fr/software-download/windows11
     ```
 
 6. Quality of life : Spice windows guest tools : https://www.spice-space.org/download.html
-
-## Install vcpkg dependencies
-
-### vcpkg
-```bash
-# LINUX vcpkg:
-# in the root of the repository
-git clone https://github.com/microsoft/vcpkg.git
-```
-
-WINDOWS vcpkg :
-```bash
-#in the root of the repository
-open git CMD
-git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-.\bootstrap-vcpkg.bat
-```
-
-### Install vcpkg dependencies
-```bash
-# In the root of the repository
-#Linux
-cmake --preset linux
-#Windows
-cmake --preset windows
-```

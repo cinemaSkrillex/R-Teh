@@ -29,20 +29,21 @@ A brief description of the component.
 
 ## Signature
 
-```cpp
+CODE BLOCK: 
+
 struct ComponentName {
     // Data members
 };
-```
 
 ## Example
 
-```cpp
+CODE BLOCK:
+
 struct PositionComponent {
     float x;
     float y;
 };
-```
+
 
 ## Usage
 

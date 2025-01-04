@@ -2,7 +2,7 @@
 title: Create a system Documentation 🧩
 parent: ECS
 grand_parent: Developper
-nav_order: 1
+nav_order: 2
 ---
 
 # Create a system Documentation 🧩
@@ -29,9 +29,9 @@ A brief description of the system.
 
 ## Signature
 
-```cpp
+CODE BLOCK : 
 void SystemName::update(float dt);
-```
+
 
 ## Parameters
 
@@ -39,7 +39,7 @@ void SystemName::update(float dt);
 
 ## Example
 
-```cpp
+
 void MovementSystem::update(float dt) {
     for (auto entity : entities) {
         auto& position = registry.get<PositionComponent>(entity);
@@ -49,7 +49,7 @@ void MovementSystem::update(float dt) {
         position.y += velocity.y * dt;
     }
 }
-```
+
 
 ## Usage
 
@@ -58,5 +58,6 @@ How to use the system in the game.
 ## Notes
 
 Any additional notes about the system.
+```
 
 Thanks for contributing! 🎉

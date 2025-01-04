@@ -1,3 +1,8 @@
+---
+title: Technology choices - Package Manager
+parent: Technology choices
+grand_parent: Developper
+nav_order: 1
 # Technology choices - Package Manager
 
 When evaluating package managers for C++ projects, we considered both vcpkg and Conan. Ultimately, we chose vcpkg for several reasons, despite not conducting an extensive test of Conan. Below is a summary of our rationale:
