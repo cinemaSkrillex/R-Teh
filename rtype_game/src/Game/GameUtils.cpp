@@ -75,6 +75,14 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleEvent(eventMessage);
             break;
         }
+        case RTypeProtocol::DESTROY_ENTITY: {
+            // std::cout << "Destroy entity message received" << std::endl;
+            // Deserialize and handle destroy entity message
+            RTypeProtocol::DestroyEntityMessage destroyEntityMessage =
+                RTypeProtocol::deserializeDestroyEntity(signal);
+            handleDestroyEntity(destroyEntityMessage);
+            break;
+        }
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
@@ -277,19 +285,11 @@ void rtype::Game::handleShootEvent(RTypeProtocol::EventMessage parsedPacket) {
     auto newEntity = _registry.spawn_entity();
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
-            // <case RTypeProtocol::ComponentList::POSITION: {
-            //     sf::Vector2f position;
-            //     std::memcpy(&position, component.second.data(), sizeof(position));
-            //     std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
-
-            //     break;
-            // }>
             case RTypeProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
                 std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
-                _registry.add_component<RealEngine::Position>(
-                    *newEntity, std::forward<RealEngine::Position>(position));
+                _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
             case RTypeProtocol::ComponentList::VELOCITY: {
@@ -298,11 +298,9 @@ void rtype::Game::handleShootEvent(RTypeProtocol::EventMessage parsedPacket) {
                 std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << "), MaxSpeed: ("
                           << velocity.maxSpeed.x << ", " << velocity.maxSpeed.y
                           << "), AirFrictionForce: " << velocity.airFrictionForce << "\n";
-                // _registry.add_component<RealEngine::Velocity>(*newEntity, velocity);
-                _registry.add_component<RealEngine::Velocity>(
-                    *newEntity, std::forward<RealEngine::Velocity>(velocity));
-
-                // _registry.add_component<RealEngine::Velocity>(*newEntity, std::move(velocity));
+                _registry.add_component(
+                    newEntity, RealEngine::Velocity{velocity.vx, velocity.vy, velocity.maxSpeed,
+                                                    velocity.airFrictionForce});
                 break;
             }
             case RTypeProtocol::ComponentList::SPRITE: {
@@ -311,44 +309,44 @@ void rtype::Game::handleShootEvent(RTypeProtocol::EventMessage parsedPacket) {
                 if (_textures.find(sprite_str) == _textures.end())
                     std::cerr << "Texture not found for sprite: " << sprite_str << std::endl;
                 auto sprite = RealEngine::Sprite{_textures[sprite_str]};
-                // sprite.setScale(GAME_SCALE, GAME_SCALE);
+                sprite.setScale(GAME_SCALE, GAME_SCALE);
                 _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
                 break;
             }
 
-            // void rtype::Game::createSpriteComponent(const std::string&                  value,
-            //                                         std::shared_ptr<RealEngine::Entity> entity) {
-            //     if (_textures.find(value) == _textures.end())
-            //         std::cerr << "Texture not found for sprite: " << value << std::endl;
-            //     auto sprite = RealEngine::Sprite{_textures[value]};
-            //     sprite.setScale(GAME_SCALE, GAME_SCALE);
-            //     _registry.add_component(entity, RealEngine::SpriteComponent{sprite});
-            // }
+            case RTypeProtocol::ComponentList::ROTATION: {
+                RealEngine::Rotation rotation;
+                std::memcpy(&rotation, component.second.data(), sizeof(rotation));
+                std::cout << "Rotation: " << rotation.angle << "\n";
+                _registry.add_component(newEntity, RealEngine::Rotation{rotation.angle});
+                break;
+            }
 
-            // case RTypeProtocol::ComponentList::COLLISION: {
-            //     sf::IntRect collision;
-            //     std::memcpy(&collision, component.second.data(), sizeof(collision));
-            //     std::cout << "Collision: (" << collision.left << ", " << collision.top << ", "
-            //               << collision.width << ", " << collision.height << ")\n";
-            //     break;
-            // }
-            // case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
-            //     int autoDestructible;
-            //     std::memcpy(&autoDestructible, component.second.data(),
-            //     sizeof(autoDestructible)); std::cout << "AutoDestructible: " << autoDestructible
-            //     << "\n"; break;
-            // }
+                // case RTypeProtocol::ComponentList::COLLISION: {
+                //     sf::IntRect collision;
+                //     std::memcpy(&collision, component.second.data(), sizeof(collision));
+                //     std::cout << "Collision: (" << collision.left << ", " << collision.top << ",
+                //     "
+                //               << collision.width << ", " << collision.height << ")\n";
+                //     break;
+                // }
+
+            case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
+                float autoDestructible;
+                std::memcpy(&autoDestructible, component.second.data(), sizeof(autoDestructible));
+                std::cout << "AutoDestructible: " << autoDestructible << "\n";
+                _registry.add_component<RealEngine::AutoDestructible>(
+                    *newEntity, RealEngine::AutoDestructible{autoDestructible});
+                break;
+            }
             case RTypeProtocol::ComponentList::DRAWABLE: {
                 std::cout << "Drawable: " << std::endl;
                 // _registry.add_component<RealEngine::Drawable>(
                 //     *newEntity, std::forward<RealEngine::Drawable>(RealEngine::Drawable{}));
+                _registry.add_component<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
                 break;
             }
-            // case RTypeProtocol::ComponentList::SPRITE: {
-            //     std::string sprite(component.second.begin(), component.second.end());
-            //     std::cout << "Sprite: " << sprite << "\n";
-            //     break;
-            // }
+
             default:
                 std::cout << "Unknown component type: " << component.first << "\n";
                 break;
@@ -372,31 +370,51 @@ void rtype::Game::handleEvent(RTypeProtocol::EventMessage parsedPacket) {
     }
 }
 
-void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket) {
-    // std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
-    for (auto& [key, value] : parsedPacket) {
-        if (key == "ids") {
-            std::vector<long int> ids = PeterParser::parseIds(value);
-            // delete entities with ids
-            for (long int id : ids) {
-                auto it = _entities.find(id);
-                if (it != _entities.end()) {
-                    _registry.remove_entity(*it->second);
-                    _entities.erase(it);
-                    continue;
-                }
-                // if not found try to find it inside the players
-                auto playerIt = _players.find(id);
-                if (playerIt != _players.end()) {
-                    _registry.remove_entity(*playerIt->second);
-                    _players.erase(playerIt);
-                }
-                if (_localPlayerUUID == id) {
-                    _registry.remove_entity(*_entity2);
-                    _entity2.reset();
-                }
-            }
-            break;
+void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
+    for (const auto& entity_id : parsedPacket.entity_ids) {
+        auto it = _entities.find(entity_id);
+        if (it != _entities.end()) {
+            _registry.remove_entity(*it->second);
+            _entities.erase(it);
+            continue;
+        }
+        auto playerIt = _players.find(entity_id);
+        if (playerIt != _players.end()) {
+            _registry.remove_entity(*playerIt->second);
+            _players.erase(playerIt);
+        }
+        if (_localPlayerUUID == entity_id) {
+            _registry.remove_entity(*_entity2);
+            _entity2.reset();
         }
     }
 }
+
+// void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket) {
+//     // std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+//     for (auto& [key, value] : parsedPacket) {
+//         if (key == "ids") {
+//             std::vector<long int> ids = PeterParser::parseIds(value);
+//             // delete entities with ids
+//             for (long int id : ids) {
+//                 auto it = _entities.find(id);
+//                 if (it != _entities.end()) {
+//                     _registry.remove_entity(*it->second);
+//                     _entities.erase(it);
+//                     continue;
+//                 }
+//                 // if not found try to find it inside the players
+//                 auto playerIt = _players.find(id);
+//                 if (playerIt != _players.end()) {
+//                     _registry.remove_entity(*playerIt->second);
+//                     _players.erase(playerIt);
+//                 }
+//                 if (_localPlayerUUID == id) {
+//                     _registry.remove_entity(*_entity2);
+//                     _entity2.reset();
+//                 }
+//             }
+//             break;
+//         }
+//     }
+// }

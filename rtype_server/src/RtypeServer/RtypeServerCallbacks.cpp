@@ -129,20 +129,135 @@ void RtypeServer::initCallbacks() {
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
                 "}," + std::to_string(velocity->airFrictionForce);
-            std::string MobMessage = "Event:New_entity";
-            MobMessage += " Type:mob";
-            MobMessage += " Uuid:" + std::to_string(*mob);
-            MobMessage += " Sprite:enemy";
-            MobMessage += " Position:(" + std::to_string(position->x) + "," +
-                          std::to_string(position->y) + ")";
-            MobMessage += " Velocity:(" + velocityStr + ")";
-            MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
-            MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
-            if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
-            MobMessage += " Drawable:true";
+            // std::string MobMessage = "Event:New_entity";
+            // MobMessage += " Type:mob";
+            // MobMessage += " Uuid:" + std::to_string(*mob);
+            // MobMessage += " Sprite:enemy";
+            // MobMessage += " Position:(" + std::to_string(position->x) + "," +
+            //               std::to_string(position->y) + ")";
+            // MobMessage += " Velocity:(" + velocityStr + ")";
+            // MobMessage += " Collision:(0,0,16,8,mob,false,OTHER)";
+            // MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
+            // if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
+            // MobMessage += " Drawable:true";
 
             // _server->send_reliable_packet(MobMessage, sender);
+            RTypeProtocol::EventMessage eventMessage;
+            eventMessage.message_type = RTypeProtocol::MessageType::EVENT_MESSAGE;
+            eventMessage.uuid         = *mob;
+            eventMessage.event_type   = RTypeProtocol::EventType::SHOOT; //TODO change to NEW_ENTITY after rework
+
+            // Serialize position component
+            std::vector<char> positionData(sizeof(sf::Vector2f));
+            std::memcpy(positionData.data(), position, sizeof(sf::Vector2f));
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::POSITION, positionData});
+
+            // Serialize velocity component
+            std::vector<char> velocityData(sizeof(RealEngine::Velocity));
+            std::memcpy(velocityData.data(), velocity, sizeof(RealEngine::Velocity));
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::VELOCITY, velocityData});
+
+            // Serialize rotation component
+            if (rotation) {
+                std::vector<char> rotationData(sizeof(RealEngine::Rotation));
+                std::memcpy(rotationData.data(), rotation, sizeof(RealEngine::Rotation));
+                eventMessage.components.push_back({RTypeProtocol::ComponentList::ROTATION, rotationData});
+            }
+
+            // Serialize collision component
+            sf::FloatRect             bounds      = {0, 0, 16, 8};
+            std::string               id          = "mob";
+            bool                      isColliding = false;
+            RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+            std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                            sizeof(type));
+            char*             collisionPtr = collisionData.data();
+            std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+            collisionPtr += sizeof(bounds);
+            std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+            collisionPtr += id.size() + 1;
+            std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+            collisionPtr += sizeof(isColliding);
+            std::memcpy(collisionPtr, &type, sizeof(type));
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
+
+            // Serialize auto destructible component
+            float             autoDestructible = destructible->lifeTime;
+            std::vector<char> autoDestructibleData(sizeof(int));
+            std::memcpy(autoDestructibleData.data(), &autoDestructible, sizeof(int));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, autoDestructibleData});
+            
+            // Serialize drawable component
+            bool              drawable = true;
+            std::vector<char> drawableData(sizeof(bool));
+            std::memcpy(drawableData.data(), &drawable, sizeof(bool));
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, drawableData});
+
+            // Serialize sprite component
+            std::string       sprite = "enemy";
+            std::vector<char> spriteData(sprite.begin(), sprite.end());
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::SPRITE, spriteData});
+
+            std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
+            _server->send_reliable_packet(serializedEventMessage, sender);
         }
         _players[sender] = player;
     });
 }
+
+        // eventMessage.message_type = RTypeProtocol::MessageType::EVENT_MESSAGE;
+        // eventMessage.uuid         = *bullet;
+        // eventMessage.event_type   = RTypeProtocol::EventType::SHOOT;
+
+        // // Serialize position component
+        // std::vector<char> positionData(sizeof(sf::Vector2f));
+        // std::memcpy(positionData.data(), &bullet_position, sizeof(sf::Vector2f));
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::POSITION, positionData});
+
+        // // Serialize velocity component
+        // RealEngine::Velocity velocity = {500.f, 0.f, {500.f, 500.f}, 0.f};
+        // std::vector<char>    velocityData(sizeof(RealEngine::Velocity));
+        // std::memcpy(velocityData.data(), &velocity, sizeof(RealEngine::Velocity));
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::VELOCITY, velocityData});
+
+        // // Serialize collision component
+        // sf::FloatRect             bounds      = {0, 0, 16, 8};
+        // std::string               id          = "bullet";
+        // bool                      isColliding = false;
+        // RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+        // std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+        //                                 sizeof(type));
+        // char*             collisionPtr = collisionData.data();
+        // std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+        // collisionPtr += sizeof(bounds);
+        // std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+        // collisionPtr += id.size() + 1;
+        // std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+        // collisionPtr += sizeof(isColliding);
+        // std::memcpy(collisionPtr, &type, sizeof(type));
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
+
+        // // Serialize auto destructible component
+        // float             autoDestructible = 5.f;
+        // std::vector<char> autoDestructibleData(sizeof(int));
+        // std::memcpy(autoDestructibleData.data(), &autoDestructible, sizeof(int));
+        // eventMessage.components.push_back(
+        //     {RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, autoDestructibleData});
+
+        // // Serialize drawable component
+        // bool              drawable = true;
+        // std::vector<char> drawableData(sizeof(bool));
+        // std::memcpy(drawableData.data(), &drawable, sizeof(bool));
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, drawableData});
+        // // eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, {}});
+
+        // // Serialize sprite component
+        // std::string       sprite = "bullet";
+        // std::vector<char> spriteData(sprite.begin(), sprite.end());
+        // eventMessage.components.push_back({RTypeProtocol::ComponentList::SPRITE, spriteData});
+
+        // std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
+        // broadCastAll(serializedEventMessage);

@@ -25,6 +25,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _radiusSystem(),
       _healthSystem(),
       _parallaxSystem(),
+      _destructibleSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _entity2(_registry.spawn_entity()),
       _background(_registry.spawn_entity()),

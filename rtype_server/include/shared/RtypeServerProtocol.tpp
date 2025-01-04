@@ -78,6 +78,47 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerDirectionMess
 }
 
 template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const DestroyEntityMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the additional fields
+    int entity_count = static_cast<int>(msg.entity_ids.size());
+    writeToBuffer(it, entity_count);
+
+    for (const auto& entity_id : msg.entity_ids) {
+        writeToBuffer(it, entity_id);
+    }
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::DestroyEntityMessage RTypeProtocol::deserializeDestroyEntity(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    DestroyEntityMessage msg;
+    const char*          it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the additional fields
+    int entity_count = 0;
+    readFromBuffer(it, entity_count);
+
+    for (int i = 0; i < entity_count; ++i) {
+        long entity_id;
+        readFromBuffer(it, entity_id);
+        msg.entity_ids.push_back(entity_id);
+    }
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
 RTypeProtocol::PlayerDirectionMessage RTypeProtocol::deserializePlayerDirection(
     const std::array<char, BUFFER_SIZE>& buffer) {
     PlayerDirectionMessage msg;

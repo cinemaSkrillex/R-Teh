@@ -15,6 +15,7 @@ enum MessageType : int {
     EVENT_MESSAGE    = 0x03,
     SYNCHRONIZE      = 0x04,
     PLAYER_DIRECTION = 0x05,
+    DESTROY_ENTITY   = 0x06,
 };
 
 enum EventType : int {
@@ -66,6 +67,10 @@ struct EventMessage : BaseMessage {
         components;  // Component ID and serialized data
 };
 
+struct DestroyEntityMessage : BaseMessage {
+    std::vector<long> entity_ids;
+};
+
 // Unified serialize/deserialize functions with templated buffer size
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
@@ -86,6 +91,9 @@ std::array<char, BUFFER_SIZE> serialize(const SynchronizeMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const PlayerDirectionMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const DestroyEntityMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -98,6 +106,9 @@ PlayerDirectionMessage deserializePlayerDirection(const std::array<char, BUFFER_
 
 template <std::size_t BUFFER_SIZE>
 SynchronizeMessage deserializeSynchronize(const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+DestroyEntityMessage deserializeDestroyEntity(const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 

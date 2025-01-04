@@ -48,13 +48,23 @@ void RtypeServer::run() {
             }
             auto destroyedEntities = _game_instance->run(_deltaTime);
             if (!destroyedEntities.empty()) {
-                std::string message = "Event:Destroy_entity ids:[";
-                for (auto entity : destroyedEntities) {
-                    message += std::to_string(entity) + ",";
-                }
-                message.pop_back();
-                message += "]";
+                // std::string message = "Event:Destroy_entity ids:[";
+                // for (auto entity : destroyedEntities) {
+                //     message += std::to_string(entity) + ",";
+                // }
+                // message.pop_back();
+                // message += "]";
+                // std::cout << message << std::endl;
                 // broadCastAll(message);
+                RTypeProtocol::DestroyEntityMessage destroyMessage;
+                destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
+                destroyMessage.uuid         = 0;
+                for (auto entity : destroyedEntities) {
+                    destroyMessage.entity_ids.push_back(entity);
+                }
+                // auto serializedMessage = RTypeProtocol::serialize(destroyMessage);
+                std::array<char, 800> serializedDestroyMessage = RTypeProtocol::serialize<800>(destroyMessage);
+                broadCastAll(serializedDestroyMessage);
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
