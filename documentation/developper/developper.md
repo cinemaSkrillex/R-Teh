@@ -1,3 +1,7 @@
+---
+title: Developper documentation
+parent: Developper
+---
 # Developper documentation 🧑‍💻
 
 ## Project structure 🏗️
