@@ -15,10 +15,8 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     auto* velocity                           = registry.get_component<RealEngine::Velocity>(entity);
     std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
     for (auto& netvar : netvars) {
-        std::cout << "netvar name: " << netvar->name << std::endl;
         if (netvar->name == "shootCooldown") {
             float cooldown = std::any_cast<float>(netvar->value);
-            std::cout << "cooldown: " << cooldown << std::endl;
             if (cooldown <= 0) {
                 Fireball fireball(registry, {position->x, position->y}, 180, 200);
                 netvar->value = 0.5f;
@@ -31,7 +29,6 @@ static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity en
                            float deltaTime) {
     std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
     for (auto& netvar : netvars) {
-        std::cout << "netvar name: " << netvar->name << std::endl;
         if (netvar->name != "shootCooldown") {
             continue;
         }
