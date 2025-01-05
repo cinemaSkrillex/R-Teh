@@ -230,6 +230,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Parallax>();
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::Netvar>();
+    _registry.register_component<RealEngine::NetvarContainer>();
 }
 
 void Game::bind_keys() {

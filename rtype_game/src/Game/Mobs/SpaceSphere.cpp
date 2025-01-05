@@ -11,34 +11,63 @@ namespace rtype {
 
 static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                                    float deltaTime) {
-    auto* position                           = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity                           = registry.get_component<RealEngine::Velocity>(entity);
-    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
-    for (auto& netvar : netvars) {
-        if (netvar->name == "shootCooldown") {
-            float cooldown = std::any_cast<float>(netvar->value);
-            if (cooldown <= 0) {
-                Fireball fireball(registry, {position->x, position->y}, 180, 200);
-                netvar->value = 0.5f;
-            }
-        }
+    auto* position  = registry.get_component<RealEngine::Position>(entity);
+    auto* velocity  = registry.get_component<RealEngine::Velocity>(entity);
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+
+    float shootCooldown = std::any_cast<float>(container->getNetvar("shootCooldown")->value);
+    if (shootCooldown <= 0) {
+        Fireball fireball(registry, {position->x, position->y}, 180, 200);
+    }
+    bool goUp = std::any_cast<bool>(container->getNetvar("goUp")->value);
+    if (goUp) {
+        velocity->vy = -100.f;
+    } else {
+        velocity->vy = 100.f;
     }
 }
 
-static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
-                           float deltaTime) {
-    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
-    for (auto& netvar : netvars) {
-        if (netvar->name != "shootCooldown") {
-            continue;
-        }
-        float cooldown = std::any_cast<float>(netvar->value);
-        cooldown -= deltaTime;
-        if (cooldown < 0) {
-            cooldown = 0;
-        }
-        netvar->value = cooldown;
+static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                float deltaTime) {
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* netvar    = container->getNetvar("shootCooldown");
+    float cooldown  = std::any_cast<float>(netvar->value);
+
+    if (cooldown <= 0) {
+        cooldown = 0.5f;
     }
+    cooldown -= deltaTime;
+    netvar->value = cooldown;
+}
+
+static void updateDirectionCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                    float deltaTime) {
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* netvar    = container->getNetvar("directionCooldown");
+    float cooldown  = std::any_cast<float>(netvar->value);
+
+    if (cooldown <= 0) {
+        cooldown = 2.0f;
+    }
+    cooldown -= deltaTime;
+    netvar->value = cooldown;
+}
+
+static void updateDirection(RealEngine::Registry& registry, RealEngine::Entity entity,
+                            float deltaTime) {
+    auto* container         = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* velocity          = registry.get_component<RealEngine::Velocity>(entity);
+    auto* cooldownNetvar    = container->getNetvar("directionCooldown");
+    auto* directionNetvar   = container->getNetvar("goUp");
+    float directionCooldown = std::any_cast<float>(cooldownNetvar->value);
+    bool  goUp              = std::any_cast<bool>(directionNetvar->value);
+
+    std::cout << "Direction cooldown: " << directionCooldown << std::endl;
+    if (directionCooldown <= 0) {
+        velocity->vy = 0;
+        goUp         = !goUp;
+    }
+    directionNetvar->value = goUp;
 }
 
 SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
@@ -51,8 +80,6 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(
         _entity, RealEngine::SpriteSheet{
                      _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
-    // 55 is the speed of rotation animation
-    // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
@@ -64,10 +91,22 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
-    registry.add_component(_entity,
-                           RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
+    // registry.add_component(_entity,
+    //                        RealEngine::Netvar{"MOB", "shootCooldown", 0.5f, updateCooldown});
     // registry.add_component(_entity,
     //                        RealEngine::Netvar{"MOB", "changeDirection", 2.0f, updateCooldown});
+    registry.add_component(_entity, RealEngine::NetvarContainer{});
+
+    // Ajout de Netvars dans le conteneur
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(_entity);
+    if (container) {
+        container->addNetvar("shootCooldown", RealEngine::Netvar{"float", "shootCooldown", 0.5f,
+                                                                 updateShootCooldown});
+        container->addNetvar(
+            "directionCooldown",
+            RealEngine::Netvar{"float", "directionCooldown", 2.0f, updateDirectionCooldown});
+        container->addNetvar("goUp", RealEngine::Netvar{"bool", "goUp", false, updateDirection});
+    }
 }
 
 SpaceSphere::~SpaceSphere() {}

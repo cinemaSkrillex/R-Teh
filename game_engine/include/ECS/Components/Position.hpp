@@ -11,4 +11,4 @@ namespace RealEngine {
 struct Position {
     float x, y;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

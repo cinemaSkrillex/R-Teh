@@ -32,6 +32,7 @@
 #include "ECS/Components/Health.hpp"
 #include "ECS/Components/Interpolation.hpp"
 #include "ECS/Components/Netvar.hpp"
+#include "ECS/Components/NetvarContainer.hpp"
 #include "ECS/Components/Particle.hpp"
 #include "ECS/Components/ParticleEmitter.hpp"
 #include "ECS/Components/Position.hpp"
