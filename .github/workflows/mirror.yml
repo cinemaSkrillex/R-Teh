@@ -14,6 +14,10 @@ jobs:
 
     - name: Run check_format script
       run: ./scripts/check_format.sh
+    
+    - name: Display error message on failure
+      if: failure()
+      run: echo "Code formatting issues detected. Please run './scripts/format_all.sh' to fix them."
 
   build:
     runs-on: ubuntu-latest
