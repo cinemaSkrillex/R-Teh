@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <vector>
-#include <queue>
-#include <thread>
+#include <condition_variable>
 #include <functional>
 #include <mutex>
-#include <condition_variable>
+#include <queue>
+#include <thread>
+#include <vector>
 
 class ThreadPool {
-  public:
+   public:
     ThreadPool(size_t num_threads = std::thread::hardware_concurrency());
 
     ~ThreadPool();
@@ -23,7 +23,7 @@ class ThreadPool {
     void                              workerThread();
     std::queue<std::function<void()>> _tasks;
 
-  private:
+   private:
     std::vector<std::thread> _threads;
     std::mutex               _queue_mutex;
     std::condition_variable  _cv;

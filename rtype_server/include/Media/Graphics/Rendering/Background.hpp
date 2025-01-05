@@ -5,7 +5,7 @@
 
 namespace RealEngine {
 class ABackground : public IRender {
-  public:
+   public:
     ABackground()                               = default;
     ~ABackground()                              = default;
     virtual void update(float deltaTime)        = 0;
@@ -17,7 +17,7 @@ class ABackground : public IRender {
 };
 
 class SolidColorBackground : public ABackground {
-  public:
+   public:
     SolidColorBackground(float r, float g, float b, float a);
     void update(float deltaTime) = 0;
     void draw(sf::RenderWindow& window) override;
@@ -27,12 +27,12 @@ class SolidColorBackground : public ABackground {
     void setRotation(float angle) override;
     void setColor(float r, float g, float b, float a);
 
-  private:
+   private:
     sf::RectangleShape _shape;
 };
 
 class ScrollingBackground : public ABackground {
-  public:
+   public:
     ScrollingBackground(sf::Image image);
     void update(float deltaTime) override;
     void draw(sf::RenderWindow& window) override;
@@ -46,7 +46,7 @@ class ScrollingBackground : public ABackground {
     void setDirection(float angle);
     void setColor(float r, float g, float b, float a);
 
-  private:
+   private:
     sf::Texture  _texture;
     sf::Sprite   _sprite;
     sf::IntRect  _rect;
@@ -58,7 +58,7 @@ class ScrollingBackground : public ABackground {
 };
 
 class ImageBackground : public ABackground {
-  public:
+   public:
     ImageBackground(sf::Image image);
     void update(float deltaTime) = 0;
     void draw(sf::RenderWindow& window) override;
@@ -69,7 +69,7 @@ class ImageBackground : public ABackground {
     void setRotation(float angle) override;
     void setColor(float r, float g, float b, float a);
 
-  private:
+   private:
     sf::Texture _texture;
     sf::Sprite  _sprite;
     sf::IntRect _rect;
@@ -77,7 +77,7 @@ class ImageBackground : public ABackground {
 
 // Not correctly implemented
 class ParallaxBackground : public ABackground {
-  public:
+   public:
     ParallaxBackground(sf::Image image, int layers);
     void update(float deltaTime) override;
     void draw(sf::RenderWindow& window) override;
@@ -88,11 +88,11 @@ class ParallaxBackground : public ABackground {
     void setSpeed(int layer, float speed);
     void setDirection(float angle);
 
-  private:
+   private:
     sf::Texture         _texture;
     std::vector<Sprite> _sprites;
     std::vector<float>  _speeds;
     sf::Vector2f        _position;
     float               _angle;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

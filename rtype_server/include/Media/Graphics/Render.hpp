@@ -1,12 +1,12 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <string>
 #include <cmath>
+#include <string>
 
 namespace RealEngine {
 class IRender {
-  public:
+   public:
     IRender()                                  = default;
     ~IRender()                                 = default;
     virtual void disappear()                   = 0;
@@ -14,4 +14,4 @@ class IRender {
     virtual void setScale(float x, float y)    = 0;
     virtual void setRotation(float angle)      = 0;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

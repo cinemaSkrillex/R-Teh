@@ -13,4 +13,4 @@ namespace RealEngine {
 struct SpriteComponent {
     RealEngine::Sprite sprite;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

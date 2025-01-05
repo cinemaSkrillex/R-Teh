@@ -21,7 +21,8 @@ class Player {
                                   RealEngine::Registry& registry, RealEngine::Entity collider,
                                   RealEngine::Entity entity);
     void player_collide_with_ground(RealEngine::Registry& registry, RealEngine::Entity entity);
-    void player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider, RealEngine::Entity entity);
+    void player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+                            RealEngine::Entity entity);
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _playerEntity;

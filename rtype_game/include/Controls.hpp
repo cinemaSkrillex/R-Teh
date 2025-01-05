@@ -2,6 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "Client/UDPClient.hpp"
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/AutoDestructible.hpp"
 #include "ECS/Components/Controllable.hpp"
@@ -11,9 +12,8 @@
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Registry/Registry.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
 #include "Macros.hpp"
-#include "Client/UDPClient.hpp"
+#include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace rtype {
 class Controls {
@@ -32,7 +32,7 @@ class Controls {
                RealEngine::Position& position, float deltaTime);
 
    private:
-    RealEngine::Registry& _registry;
+    RealEngine::Registry&      _registry;
     std::shared_ptr<UDPClient> _client;
 };
 }  // namespace rtype
