@@ -30,17 +30,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    // Example usage in game logic
-    auto entity_particle = _registry.spawn_entity();
-    _registry.add_component(entity_particle, RealEngine::ParticleEmitter{{},
-                                                                         {100, 100},
-                                                                         {10, 0},
-                                                                         2.0f,
-                                                                         5.0f,
-                                                                         sf::Color::White,
-                                                                         sf::Color::Transparent,
-                                                                         2.0f,
-                                                                         0.0f});
     SpaceSphere mob(_registry, {1700, 300}, {0, 0}, 0);
     // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
     // WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);

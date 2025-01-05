@@ -1,5 +1,7 @@
 #include "Game/Player/Player.hpp"
 
+#include "Game/Particles.hpp"
+
 namespace rtype {
 
 static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity collider,
@@ -8,6 +10,7 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth && colliderDamage && playerHealth->invincibilityTime <= 0.0f) {
+        auto* playerPosition = registry.get_component<RealEngine::Position>(entity);
         std::cout << "Player take damage amount:" << colliderDamage->amount << std::endl;
         if (colliderDamage->effect) {
             playerHealth->regenerationRate     = -colliderDamage->amount;
@@ -18,6 +21,7 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
             playerHealth->damage += colliderDamage->amount;
         }
         playerHealth->invincibilityTime = 1.5f;
+        HitEffect hitEffect(registry, {playerPosition->x, playerPosition->y});
     }
 }
 
