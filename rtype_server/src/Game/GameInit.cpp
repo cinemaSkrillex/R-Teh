@@ -56,6 +56,7 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::AutoDestructible>();
     _registry.register_component<RealEngine::Damage>();
     _registry.register_component<RealEngine::Netvar>();
+    _registry.register_component<RealEngine::NetvarContainer>();
 }
 
 void GameInstance::init_systems() {

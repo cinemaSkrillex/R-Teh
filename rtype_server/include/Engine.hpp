@@ -23,6 +23,8 @@
 #include "ECS/Components/Damage.hpp"
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Health.hpp"
+#include "ECS/Components/Netvar.hpp"
+#include "ECS/Components/NetvarContainer.hpp"
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
 #include "ECS/Components/Rotation.hpp"
