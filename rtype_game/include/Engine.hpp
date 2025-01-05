@@ -57,6 +57,7 @@
 #include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/LagCompensationSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/NetvarSystem.hpp"
 #include "ECS/Systems/ParallaxSystem.hpp"
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"

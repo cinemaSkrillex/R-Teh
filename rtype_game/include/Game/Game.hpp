@@ -99,6 +99,7 @@ class Game {
     RealEngine::HealthSystem          _healthSystem;
     RealEngine::ParallaxSystem        _parallaxSystem;
     RealEngine::ParticleSystem        _particleSystem;
+    RealEngine::NetvarSystem          _netvarSystem;
     rtype::Controls                   _controls;
 
     std::shared_ptr<RealEngine::Entity>                               _player_entity;

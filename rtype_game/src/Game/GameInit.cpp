@@ -205,6 +205,9 @@ void Game::add_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _particleSystem.update(registry, deltaTime);
     });
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _netvarSystem.update(registry, deltaTime);
+    });
 }
 
 void Game::register_components() {
