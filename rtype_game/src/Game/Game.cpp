@@ -5,31 +5,26 @@
 ** Game
 */
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 namespace rtype {
 
 std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::Vector2f position) {
-    std::shared_ptr<RealEngine::Entity> player = _registry.spawn_entity();
-    _registry.add_component(player, RealEngine::Position{position.x, position.y});
-    _registry.add_component(player, RealEngine::Drawable{});
+    Player new_player(_registry, position, true);
+    // auto new_player = _registry.spawn_entity();
+    // _registry.add_component(new_player, RealEngine::Position{position.x, position.y});
+    // _registry.add_component(new_player, RealEngine::Drawable{});
+    // _registry.add_component(new_player, RealEngine::Interpolation{{0, 0}, {0, 0}, 0.f, 1.f,
+    // false}); _registry.add_component(
+    //     new_player, RealEngine::SpriteComponent{
+    //                     *((RealEngine::AssetManager::getInstance().getSprite("player_other")))});
 
-    _registry.add_component(player, RealEngine::Interpolation{{0, 0}, {0, 0}, 0.f, 1.f, false});
-
-    _registry.add_component(
-        player, RealEngine::SpriteComponent{
-                    *((RealEngine::AssetManager::getInstance().getSprite("player_other")))});
-
-    _players.emplace(player_uuid, player);
+    _players.emplace(player_uuid, new_player.getEntity());
     return _players.at(player_uuid);
 }
 
 std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vector2f position) {
     // // for now it adds a EyeBomber, maybe do a switch case to add different mobs
-    // auto enemy       = EyeBomber(_registry, position, _eyeBomberSprite);
-    // auto enemyEntity = enemy.getEntity();
-    // _enemies.emplace(enemy_uuid, enemyEntity);
-    // return _enemies.at(enemy_uuid);
     auto entity = _registry.spawn_entity();
     _entities.emplace(enemy_uuid, entity);
     return _entities.at(enemy_uuid);

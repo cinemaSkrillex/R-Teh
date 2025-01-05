@@ -5,7 +5,7 @@
 ** GameRun
 */
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 void rtype::Game::run() {
     while (_window.isOpen()) {

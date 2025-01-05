@@ -19,7 +19,6 @@ std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
     }
     for (auto entity : entities) {
         auto* health = registry.get_component<Health>(entity);
-        std::cout << "Health: " << health->amount << std::endl;
         if (health->invincibilityTime > 0.0f) {
             health->invincibilityTime -= deltaTime;
         } else {
@@ -29,7 +28,6 @@ std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
         }
         if (health->regenerationTime > 0.0f) {
             if (health->regenerationTimer <= 0.0f) {
-                std::cout << "Regeneration" << std::endl;
                 health->amount += health->regenerationRate;
                 // display a text with the amount of health regenerated
                 if (health->amount > health->maxHealth) {

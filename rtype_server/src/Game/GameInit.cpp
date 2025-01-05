@@ -144,8 +144,7 @@ void GameInstance::init_textures() {
     }
 
     _textures["background"] = std::make_shared<sf::Texture>();
-    if (!_textures["background"]->loadFromFile(
-            "../../assets/sprites/backgrounds/r-type_background_front_line_base_4.png")) {
+    if (!_textures["background"]->loadFromFile("../../assets/sprites/backgrounds/stars.png")) {
         std::cerr << "Error: Could not load background texture!" << std::endl;
         _textures["background"].reset();
     }

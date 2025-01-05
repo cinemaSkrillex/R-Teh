@@ -1,7 +1,7 @@
 #include <atomic>
 #include <thread>
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments

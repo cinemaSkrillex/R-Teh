@@ -28,6 +28,7 @@ class AssetManager {
     void loadTexture(const std::string& id, const std::string& filePath) {
         auto texture = std::make_shared<sf::Texture>();
         if (!texture->loadFromFile(filePath)) {
+            std::cout << "Failed to load texture: " << filePath << std::endl;
             throw std::runtime_error("Failed to load texture: " + filePath);
         }
         _textures[id] = texture;
@@ -36,6 +37,7 @@ class AssetManager {
     void loadTexture(const std::string& id, const std::string& filePath, const sf::IntRect& rect) {
         auto texture = std::make_shared<sf::Texture>();
         if (!texture->loadFromFile(filePath, rect)) {
+            std::cout << "Failed to load texture: " << filePath << std::endl;
             throw std::runtime_error("Failed to load texture: " + filePath);
         }
         _textures[id] = texture;
@@ -44,8 +46,8 @@ class AssetManager {
     std::shared_ptr<sf::Texture> getTexture(const std::string& id) {
         auto it = _textures.find(id);
         if (it == _textures.end()) {
+            std::cout << "Texture not found: " << id << std::endl;
             throw std::runtime_error("Texture not found: " + id);
-            return nullptr;
         }
         return it->second;
     }
@@ -63,8 +65,8 @@ class AssetManager {
     std::shared_ptr<Sprite> getSprite(const std::string& id) {
         auto it = _sprites.find(id);
         if (it == _sprites.end()) {
+            std::cout << "Sprite not found: " << id << std::endl;
             throw std::runtime_error("Sprite not found: " + id);
-            return nullptr;
         }
         return it->second;
     }

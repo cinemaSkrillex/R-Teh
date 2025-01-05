@@ -5,7 +5,7 @@
 ** GameUtils
 */
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 void rtype::Game::handleSignal(std::string signal) {
     if (signal.empty()) return;

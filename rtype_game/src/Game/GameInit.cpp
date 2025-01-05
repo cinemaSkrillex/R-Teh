@@ -5,7 +5,7 @@
 ** GameInit
 */
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 namespace rtype {
 
@@ -21,28 +21,15 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),
+      _player_entity(nullptr),
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
       _parallaxSystem(),
       _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
-      _player_entity(_registry.spawn_entity()),
-      _background(_registry.spawn_entity()),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    init_player_entity();
-    _registry.add_component(_background, RealEngine::Position{0.f, 0.f});
-    auto backgroundSprite =
-        RealEngine::Sprite{RealEngine::AssetManager::getInstance().getTexture("background")};
-    backgroundSprite.setOrigin(0, 0.5f);
-    _registry.add_component(
-        _background, RealEngine::SpriteComponent{
-                         *(RealEngine::AssetManager::getInstance().getSprite("background"))});
-    _registry.add_component(_background,
-                            RealEngine::Parallax{-200.f, sf::Vector2f(800.0f, 600.0f)});
-    _registry.add_component(_background, RealEngine::Drawable{});
-
     // Example usage in game logic
     auto entity_particle = _registry.spawn_entity();
     _registry.add_component(entity_particle, RealEngine::ParticleEmitter{{},
@@ -68,6 +55,14 @@ void Game::init_all_game() {
     init_systems();
     init_textures();
     init_sprites();
+    Background background(_registry, -200.f, 3);
+    Background background2(_registry, -100.f, 2);
+    Background background3(_registry, -50.f, 1);
+    _backgroundEntities.push_back(background.getEntity());
+    _backgroundEntities.push_back(background2.getEntity());
+    _backgroundEntities.push_back(background3.getEntity());
+    Player player(_registry, {200, 200}, false);
+    _player_entity = player.getEntity();
 }
 
 void Game::init_registry() { register_components(); }
@@ -87,8 +82,9 @@ void Game::init_textures() {
                                      sf::IntRect{0, 15, 32, 15});
     AssetManagerInstance.loadTexture("spaceship_down", "../../assets/sprites/spaceship.png",
                                      sf::IntRect{0, 15 * 2, 33 * 2, 15});
-    AssetManagerInstance.loadTexture("background", "../../assets/sprites/backgrounds/stars.png");
-    AssetManagerInstance.getTexture("background")->setRepeated(true);
+    AssetManagerInstance.loadTexture("stars_background",
+                                     "../../assets/sprites/backgrounds/stars.png");
+    AssetManagerInstance.getTexture("stars_background")->setRepeated(true);
     AssetManagerInstance.loadTexture("enemy", "../../assets/sprites/enemies/eye_bomber.png",
                                      {0, 0, 15, 10});
     AssetManagerInstance.loadTexture("bullet", "../../assets/sprites/spaceship_bullet.png");
@@ -147,7 +143,7 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("spaceship_other", "spaceship_idle");
     AssetManagerInstance.loadSprite("enemy", "enemy");
     AssetManagerInstance.loadSprite("bullet", "bullet");
-    AssetManagerInstance.loadSprite("background", "background");
+    AssetManagerInstance.loadSprite("stars_background", "stars_background");
     AssetManagerInstance.loadSprite("space_plane", "space_plane");
     AssetManagerInstance.loadSprite("space_drill", "space_drill");
     AssetManagerInstance.loadSprite("space_sphere", "space_sphere");
@@ -171,7 +167,6 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("fireball", "fireball");
     set_sprite_scales();
     set_sprite_opacity();
-    populate_sprite_sheet();
 }
 
 void Game::add_systems() {
@@ -242,6 +237,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Damage>();
     _registry.register_component<RealEngine::Parallax>();
     _registry.register_component<RealEngine::ParticleEmitter>();
+    _registry.register_component<RealEngine::Netvar>();
 }
 
 void Game::bind_keys() {
@@ -312,40 +308,6 @@ void Game::set_sprite_scales() {
 
 void Game::set_sprite_opacity() {
     RealEngine::AssetManager::getInstance().getSprite("spaceship_other")->setOpacity(90);
-}
-
-void Game::populate_sprite_sheet() {
-    _spaceshipSheet.emplace("up",
-                            *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
-    _spaceshipSheet.emplace("idle",
-                            *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
-    _spaceshipSheet.emplace("down",
-                            *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
-}
-
-void Game::init_player_entity() {
-    _registry.add_component(_player_entity, RealEngine::Position{200.f, 200.f});
-    _registry.add_component(_player_entity,
-                            RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    _registry.add_component(_player_entity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
-    _registry.add_component(_player_entity, RealEngine::Controllable{});
-    _registry.add_component(_player_entity, RealEngine::Drawable{});
-    _registry.add_component(
-        _player_entity,
-        RealEngine::SpriteSheet{
-            _spaceshipSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
-    _registry.add_component(
-        _player_entity,
-        RealEngine::Collision{
-            {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-            "spaceship",
-            false,
-            RealEngine::CollisionType::OTHER,
-            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                   RealEngine::Entity collider, RealEngine::Entity entity) {
-                player_collision_handler(collisionType, registry, collider, entity);
-            }});
-    _registry.add_component(_player_entity, RealEngine::Health{100, 200});
 }
 
 }  // namespace rtype
