@@ -6,7 +6,7 @@ nav_order: 2
 ---
 # Technology choices - Build System
 
-When evaluating build systems for our project, we considered several options, including CMake, Meson, and Bazel. After careful evaluation, we decided to use CMake as our build system for the following reasons:
+When evaluating build systems for our project, we considered several options, including CMake, Meson. After careful evaluation, we decided to use CMake as our build system for the following reasons:
 
 ## Table of Contents
 

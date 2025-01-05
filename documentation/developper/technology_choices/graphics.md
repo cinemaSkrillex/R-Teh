@@ -1,9 +1,10 @@
 ---
-title: Technology Choices - Graphics
+title: Graphics
 parent: Technology Choices
 grand_parent: Developper
 nav_order: 4
 ---
+
 # Technology Choices - Graphics
 
 Table of Contents

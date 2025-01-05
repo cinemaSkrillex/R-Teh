@@ -1,5 +1,5 @@
 ---
-title: Technology choices - Networking
+title: Networking
 parent: Technology choices
 grand_parent: Developper
 nav_order: 5

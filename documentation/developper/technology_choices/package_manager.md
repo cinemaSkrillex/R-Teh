@@ -1,8 +1,9 @@
 ---
-title: Technology choices - Package Manager
+title: Package Manager
 parent: Technology choices
 grand_parent: Developper
 nav_order: 1
+---
 # Technology choices - Package Manager
 
 When evaluating package managers for C++ projects, we considered both vcpkg and Conan. Ultimately, we chose vcpkg for several reasons, despite not conducting an extensive test of Conan. Below is a summary of our rationale:
@@ -52,6 +53,7 @@ Table of Contents
 - **vcpkg**:  
   - **Straightforward to use**, with minimal configuration required for C++ projects.  
   - Developers can quickly get started without the need for profiles or extensive setup.  
+  - **Ideal for beginners** or those looking for a simple package manager, because vcpkg uses only CMake for configuration., Conan uses Python.
 
 - **Conan**:  
   - While more **flexible**, it has a **steeper learning curve** due to features like profiles and Python-based configurations.  
@@ -68,3 +70,5 @@ Table of Contents
 
 - Our friends developing **R-Type** are using **vcpkg** and shared that it is the **easiest to use**.  
 - We trust their experience and know they are leveraging it wisely.  
+
+
