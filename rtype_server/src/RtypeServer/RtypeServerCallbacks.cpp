@@ -5,7 +5,7 @@
 ** RtypeServerCallbacks
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 
 std::vector<int> deserialize_int_vector(const std::vector<char>& buffer) {
     std::vector<int> int_vector;

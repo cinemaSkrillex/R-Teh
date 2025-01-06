@@ -5,7 +5,7 @@
 ** RtypeServerRun
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 #include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
