@@ -95,7 +95,7 @@ void Player::player_collide_with_ground(RealEngine::Registry& registry, RealEngi
 void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                                 RealEngine::Entity entity) {
     // auto* playerHealth   = registry.get_component<RealEngine::Health>(*_playerEntity);
-    auto* playerHealth = registry.get_component<RealEngine::Health>(entity);
+    auto* playerHealth   = registry.get_component<RealEngine::Health>(entity);
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth) {

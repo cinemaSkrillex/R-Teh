@@ -390,7 +390,8 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
     }
 }
 
-// void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket) {
+// void rtype::Game::handleDestroyEntity(std::unordered_map<std::string, std::string> parsedPacket)
+// {
 //     // std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
 //     for (auto& [key, value] : parsedPacket) {
 //         if (key == "ids") {

@@ -21,11 +21,11 @@ void AISystem::update(Registry& registry, float deltaTime) {
         if (ai->active) {
             if (target) {
                 if (ai->behaviorOnTarget) {
-                    ai->behaviorOnTarget(registry, *target->target, deltaTime);
+                    ai->behaviorOnTarget(registry, entity, deltaTime);
                 }
             } else {
                 if (ai->behaviorPassive) {
-                    ai->behaviorPassive(registry, deltaTime);
+                    ai->behaviorPassive(registry, entity, deltaTime);
                 }
             }
         }
@@ -33,8 +33,9 @@ void AISystem::update(Registry& registry, float deltaTime) {
 }
 
 void AISystem::attachPassiveBehavior(Registry& registry, Entity entity,
-                                     std::function<void(Registry&, float)> behavior) {
+                                     std::function<void(Registry&, Entity, float)> behavior) {
     auto* ai = registry.get_component<AI>(entity);
+
     if (ai) {
         ai->behaviorPassive = behavior;
     } else {
@@ -43,7 +44,9 @@ void AISystem::attachPassiveBehavior(Registry& registry, Entity entity,
 }
 void AISystem::attachTargetBehavior(Registry& registry, Entity entity,
                                     std::function<void(Registry&, Entity, float)> behavior) {
-    auto* ai = registry.get_component<AI>(entity);
+    auto* ai     = registry.get_component<AI>(entity);
+    auto* target = registry.get_component<Target>(entity);
+
     if (ai) {
         ai->behaviorOnTarget = behavior;
     } else {

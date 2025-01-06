@@ -6,14 +6,15 @@
 */
 
 #pragma once
+#include <limits>
+
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/Reappearing.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
-#include <limits>
 
 namespace RealEngine {
 class ReappearingSystem {
    public:
-    void update(Registry& registry, float deltaTime); // Assurez-vous que la signature correspond
+    void update(Registry& registry, float deltaTime);  // Assurez-vous que la signature correspond
 };
 }  // namespace RealEngine

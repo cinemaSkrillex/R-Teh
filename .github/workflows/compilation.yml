@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, pipeline ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -15,6 +15,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Run check_format script
+      run: ./scripts/check_format.sh
+    
+    - name: Display error message on failure
+      if: failure()
+      run: echo "Code formatting issues detected. Please run './scripts/format_all.sh' to fix them."
 
     - name: Check for release keyword
       id: check_release

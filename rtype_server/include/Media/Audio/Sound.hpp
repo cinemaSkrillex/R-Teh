@@ -4,7 +4,7 @@
 
 namespace RealEngine {
 class Sound : public IAudio {
-  public:
+   public:
     Sound(const std::string filePath);
     ~Sound();
     void play() override;
@@ -13,10 +13,10 @@ class Sound : public IAudio {
     void setVolume(float volume) override;
     void setPitch(float pitch) override;
 
-  private:
+   private:
     sf::Sound       _sound;
     sf::SoundBuffer _buffer;
     float           _volume;
     bool            _isPlaying;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

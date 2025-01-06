@@ -2,8 +2,7 @@
 
 namespace RealEngine {
 
-RadiusSystem::RadiusSystem() {
-}
+RadiusSystem::RadiusSystem() {}
 
 RadiusSystem::~RadiusSystem() {}
 
@@ -11,7 +10,6 @@ void RadiusSystem::update(Registry& registry) {
     auto radius_entities = registry.view<Position, Radius>();  // crash when get redius entities
     auto player_entities = registry.view<Position, Controllable>();
     bool in, outer_max, outer_min = false;
-
 
     if (radius_entities.empty() || player_entities.empty()) {
         return;

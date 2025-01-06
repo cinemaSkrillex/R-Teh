@@ -13,7 +13,7 @@ HealthSystem::HealthSystem() {}
 // void HealthSystem::update(Registry& registry, float deltaTime) {
 std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
     std::vector<Entity> destroyedEntities;
-    auto entities = registry.view<Health>();
+    auto                entities = registry.view<Health>();
 
     if (entities.empty()) {
         return destroyedEntities;

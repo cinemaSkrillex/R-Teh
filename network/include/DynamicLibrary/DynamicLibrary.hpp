@@ -19,7 +19,7 @@
 #endif
 
 class DynamicLibrary {
-  public:
+   public:
     DynamicLibrary(const std::string& path) {
 #if defined(_WIN32) || defined(_WIN64)
         handle_ = LoadLibrary(path.c_str());
@@ -44,14 +44,15 @@ class DynamicLibrary {
         }
     }
 
-    template <typename T> T get_symbol(const std::string& name) {
+    template <typename T>
+    T get_symbol(const std::string& name) {
 #if defined(_WIN32) || defined(_WIN64)
         T symbol = reinterpret_cast<T>(GetProcAddress(static_cast<HMODULE>(handle_), name.c_str()));
         if (!symbol) {
             throw std::runtime_error("Cannot load symbol: " + name);
         }
 #else
-        dlerror(); // Reset errors
+        dlerror();  // Reset errors
         T           symbol      = reinterpret_cast<T>(dlsym(handle_, name.c_str()));
         const char* dlsym_error = dlerror();
         if (dlsym_error) {
@@ -61,8 +62,8 @@ class DynamicLibrary {
         return symbol;
     }
 
-  private:
+   private:
     void* handle_;
 };
 
-#endif // DynamicLibrary_HPP
+#endif  // DynamicLibrary_HPP

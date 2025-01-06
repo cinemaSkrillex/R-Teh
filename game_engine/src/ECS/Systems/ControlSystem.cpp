@@ -71,8 +71,7 @@ sf::Keyboard::Key ControlSystem::getBoundKey(Action action) {
 
 bool ControlSystem::isActionPressed(Action action) {
     for (const auto& [key, act] : keyBindings) {
-        if (act == action && sf::Keyboard::isKeyPressed(key))
-            return true;
+        if (act == action && sf::Keyboard::isKeyPressed(key)) return true;
     }
     return false;
 }

@@ -1,8 +1,18 @@
+---
+title: Repository structure
+parent: Developper
+has_children: true
+nav_order: 1
+---
 # Repository structure deep dive
 
 ## Overview
 
 This document describes the structure of the repository and the purpose of each directory.
+
+## Diagram
+
+You can find the diagram of the repository structure [here](repository_structure_diagram.md).
 
 ## Repository structure
 

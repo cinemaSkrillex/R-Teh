@@ -4,7 +4,7 @@
 
 namespace RealEngine {
 class Clock {
-  public:
+   public:
     Clock();
     ~Clock();
 
@@ -14,7 +14,7 @@ class Clock {
     float getElapsedTimeAsMilliseconds() { return _clock.getElapsedTime().asMilliseconds(); }
     float getElapsedTimeAsMicroseconds() { return _clock.getElapsedTime().asMicroseconds(); }
 
-  private:
+   private:
     sf::Clock _clock;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

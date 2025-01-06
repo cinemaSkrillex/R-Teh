@@ -6,7 +6,7 @@ DestructibleSystem::DestructibleSystem() {}
 
 std::vector<Entity> DestructibleSystem::update(Registry& registry, float deltaTime) {
     std::vector<Entity> destroyedEntities;
-    auto entities = registry.view<AutoDestructible>();
+    auto                entities = registry.view<AutoDestructible>();
     if (entities.empty()) {
         return destroyedEntities;
     }

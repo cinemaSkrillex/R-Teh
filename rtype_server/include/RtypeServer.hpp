@@ -61,7 +61,7 @@ class Player {
 
    public:
     Player(/* args */);
-    Player(long int uuid, long int timestamp, std::shared_ptr<RealEngine::Entity> player_entity,
+    Player(long int uuid, long int timestamp, std::shared_ptr<RealEngine::Entity> _player_entity,
            RealEngine::Registry* registry);
     ~Player();
 };

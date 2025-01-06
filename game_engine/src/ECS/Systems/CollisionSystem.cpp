@@ -42,8 +42,7 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         if (sprite) collision->bounds = sprite->sprite.getBounds();
         if (spritesheet)
             collision->bounds = spritesheet->sprites.at(spritesheet->spriteIndex).getBounds();
-        collision->isColliding =
-            isCollidingWithOthers(*collision, registry, entity);
+        collision->isColliding = isCollidingWithOthers(*collision, registry, entity);
     }
 }
 }  // namespace RealEngine

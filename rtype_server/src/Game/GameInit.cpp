@@ -116,28 +116,28 @@ void GameInstance::init_mobs() {
 
 void GameInstance::init_textures() {
     _textures["spaceship_up"] = std::make_shared<sf::Texture>();
-    if (!_textures["spaceship_up"]->loadFromFile("../../assets/spaceship.png",
+    if (!_textures["spaceship_up"]->loadFromFile("../../assets/sprites/spaceship.png",
                                                  sf::IntRect{0, 0, 32 * 2, 15})) {
         std::cerr << "Error: Could not load spaceship texture!" << std::endl;
         _textures["spaceship_up"].reset();  // Explicitly nullify the pointer
     }
 
     _textures["spaceship_idle"] = std::make_shared<sf::Texture>();
-    if (!_textures["spaceship_idle"]->loadFromFile("../../assets/spaceship.png",
+    if (!_textures["spaceship_idle"]->loadFromFile("../../assets/sprites/spaceship.png",
                                                    sf::IntRect{0, 15, 32, 15})) {
         std::cerr << "Error: Could not load spaceship texture!" << std::endl;
         _textures["spaceship_idle"].reset();  // Explicitly nullify the pointer
     }
 
     _textures["spaceship_down"] = std::make_shared<sf::Texture>();
-    if (!_textures["spaceship_down"]->loadFromFile("../../assets/spaceship.png",
+    if (!_textures["spaceship_down"]->loadFromFile("../../assets/sprites/spaceship.png",
                                                    sf::IntRect{0, 15 * 2, 33 * 2, 15})) {
         std::cerr << "Error: Could not load spaceship texture!" << std::endl;
         _textures["spaceship_down"].reset();  // Explicitly nullify the pointer
     }
 
     _textures["spaceship"] = std::make_shared<sf::Texture>();
-    if (!_textures["spaceship"]->loadFromFile("../../assets/spaceship.png",
+    if (!_textures["spaceship"]->loadFromFile("../../assets/sprites/spaceship.png",
                                               sf::IntRect{0, 15, 32, 15})) {
         std::cerr << "Error: Could not load spaceship texture!" << std::endl;
         _textures["spaceship"].reset();
@@ -145,20 +145,20 @@ void GameInstance::init_textures() {
 
     _textures["background"] = std::make_shared<sf::Texture>();
     if (!_textures["background"]->loadFromFile(
-            "../../assets/r-type_background_front_line_base_4.png")) {
+            "../../assets/sprites/backgrounds/r-type_background_front_line_base_4.png")) {
         std::cerr << "Error: Could not load background texture!" << std::endl;
         _textures["background"].reset();
     }
 
     _textures["enemy"] = std::make_shared<sf::Texture>();
-    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/the_eye/bomber.png",
+    if (!_textures["enemy"]->loadFromFile("../../assets/sprites/enemies/eye_bomber.png",
                                           {0, 0, 15, 10})) {
         std::cerr << "Error: Could not load enemy texture!" << std::endl;
         _textures["enemy"].reset();
     }
 
     _textures["bullet"] = std::make_shared<sf::Texture>();
-    if (!_textures["bullet"]->loadFromFile("../../assets/spaceship_bullet.png")) {
+    if (!_textures["bullet"]->loadFromFile("../../assets/sprites/spaceship_bullet.png")) {
         std::cerr << "Error: Could not load bullet texture!" << std::endl;
         _textures["bullet"].reset();
     }

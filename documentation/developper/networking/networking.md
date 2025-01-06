@@ -1,3 +1,9 @@
+---
+title: Networking
+parent: Developper
+nav_order: 2
+---
+
 # Networking documentation structure 🌐
 
 ## Protocol 📜

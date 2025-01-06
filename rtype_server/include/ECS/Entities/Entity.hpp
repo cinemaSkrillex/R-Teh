@@ -14,10 +14,10 @@ class Registry;
 class ManageEntities;
 
 class Entity {
-  public:
+   public:
     operator std::size_t() const { return _id; }
 
-  private:
+   private:
     // constructor is private to prevent other classes from creating entities
     explicit Entity(std::size_t id) : _id{id} {};
     std::size_t _id;
@@ -26,4 +26,4 @@ class Entity {
     friend class Registry;
     friend class ManageEntities;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

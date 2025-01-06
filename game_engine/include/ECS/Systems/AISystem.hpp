@@ -13,7 +13,7 @@ class AISystem {
 
     void update(Registry& registry, float deltaTime);
     void attachPassiveBehavior(Registry& registry, Entity entity,
-                               std::function<void(Registry&, float)> behavior);
+                               std::function<void(Registry&, Entity, float)> behavior);
     void attachTargetBehavior(Registry& registry, Entity entity,
                               std::function<void(Registry&, Entity, float)> behavior);
     void setActive(Registry& registry, Entity entity, bool active);
