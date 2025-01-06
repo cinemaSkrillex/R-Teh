@@ -102,38 +102,42 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
     }
 }
 
+Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender) {
+    sf::Vector2f player_start_position =
+        _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
+    // create Player entity
+    long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::steady_clock::now() - _startTime)
+                            .count();
+    auto playerEntity = _game_instance->addAndGetPlayer(player_start_position);
+    auto player = Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
+    // Notify all other clients about the new client
+    for (const auto& client : _server->getClients()) {
+        if (client != sender) {
+            std::array<char, 800> serializedMessage = createNewClientMessage<800>(
+                *playerEntity, player_start_position.x, player_start_position.y, elapsed_time);
+            _server->send_reliable_packet(serializedMessage, client);
+        }
+    }
+    // Create the uuid for each new client
+    std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
+    for (const auto& player_pair : _players) {
+        const auto& player = player_pair.second;
+        activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
+    }
+    std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
+        *playerEntity,
+        std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
+            .count(),
+        player_start_position.x, player_start_position.y, activePlayerUUIDs);
+
+    _server->send_reliable_packet(synchronizeMessage, sender);
+    return player;
+}
+
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
-        sf::Vector2f player_start_position =
-            _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
-        // create Player entity
-        long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                                std::chrono::steady_clock::now() - _startTime)
-                                .count();
-        auto playerEntity = _game_instance->addAndGetPlayer(player_start_position);
-        auto player =
-            Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
-        // Notify all other clients about the new client
-        for (const auto& client : _server->getClients()) {
-            if (client != sender) {
-                std::array<char, 800> serializedMessage = createNewClientMessage<800>(
-                    *playerEntity, player_start_position.x, player_start_position.y, elapsed_time);
-                _server->send_reliable_packet(serializedMessage, client);
-            }
-        }
-        // Create the uuid for each new client
-        std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
-        for (const auto& player_pair : _players) {
-            const auto& player = player_pair.second;
-            activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
-        }
-        std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
-            *playerEntity,
-            std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
-                .count(),
-            player_start_position.x, player_start_position.y, activePlayerUUIDs);
-
-        _server->send_reliable_packet(synchronizeMessage, sender);
+        Player player = init_callback_players(sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         init_callback_mobs(sender);

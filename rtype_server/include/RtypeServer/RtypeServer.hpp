@@ -81,12 +81,14 @@ class RtypeServer {
     sf::Clock                                           _broadcastClock;
     std::chrono::steady_clock::time_point               _startTime;
 
-    void initCallbacks();
+    void   initCallbacks();
+    void   init_callback_mobs(const asio::ip::udp::endpoint& client);
+    Player init_callback_players(const asio::ip::udp::endpoint& client);
+
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
-    void init_callback_mobs(const asio::ip::udp::endpoint& client);
 
     void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                     Player& player);
