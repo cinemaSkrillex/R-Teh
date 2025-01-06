@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "Engine.hpp"
+#include "Mobs/Behaviors.hpp"
 
 namespace rtype {
 
 class SpaceLaser {
    public:
-    SpaceLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
+    SpaceLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle);
     ~SpaceLaser();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

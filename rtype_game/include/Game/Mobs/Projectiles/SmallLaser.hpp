@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SpaceVortex
+** SmallLaser
 */
 
 #pragma once
@@ -11,10 +11,10 @@
 
 namespace rtype {
 
-class SpaceVortex {
+class SmallLaser {
    public:
-    SpaceVortex(RealEngine::Registry& registry, sf::Vector2f position);
-    ~SpaceVortex();
+    SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle);
+    ~SmallLaser();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 

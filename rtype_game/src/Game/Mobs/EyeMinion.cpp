@@ -15,8 +15,31 @@ static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity en
     auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(entity);
     auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(entity);
 
-    if (!eyeRotation || !eyeVelocity || !eyeAcceleration)
-        std::cout << "Error: EyeMinion components not found!" << std::endl;
+    eyeVelocity->vx += eyeAcceleration->ax * deltaTime;
+    eyeVelocity->vy += eyeAcceleration->ay * deltaTime;
+    eyeRotation->angle = std::fmod(eyeRotation->angle + 360.0f, 360.0f);
+}
+
+static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                RealEngine::Netvar& currentNetvar, float deltaTime) {
+    auto* target = registry.get_component<RealEngine::Target>(entity);
+    if (!target) return;
+
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.get_component<RealEngine::Position>(entity);
+    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    float cooldown  = std::any_cast<float>(currentNetvar.value);
+
+    if (cooldown <= 0) {
+        if (rand() % 2 == 0) {
+            SmallLaser laser(registry, {position->x, position->y}, rotation->angle);
+            cooldown = 3.5f;
+        } else {
+            cooldown = 1.5f;
+        }
+    }
+    cooldown -= deltaTime;
+    currentNetvar.value = cooldown;
 }
 
 EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
@@ -32,22 +55,23 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::
             _eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock()},
         RealEngine::Drawable{});
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
-    registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
+    registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 30.0f, 0.5f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
+    registry.add_component(_eyeEntity,
+                           RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
+                                                 "mob",
+                                                 false,
+                                                 RealEngine::CollisionType::ENEMY,
+                                                 takesDamage});
+
+    registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
+    registry.add_component(_eyeEntity,
+                           RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
+    registry.add_component(_eyeEntity, RealEngine::Damage{5});
     registry.add_component(
         _eyeEntity,
-        RealEngine::Collision{
-            {0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
-            "mob",
-            false,
-            RealEngine::CollisionType::ENEMY,
-            [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                   RealEngine::Entity collider, RealEngine::Entity entity) {
-                collisionBehaviour(collisionType, registry, collider, entity);
-            }});
-    registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
-    registry.add_component(_eyeEntity, RealEngine::AI{rushTowardsTarget, simpleBehavior, true});
-    registry.add_component(_eyeEntity, RealEngine::Damage{40});
+        RealEngine::NetvarContainer{
+            {{"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}}}});
 }
 
 EyeMinion::~EyeMinion() {}
@@ -59,26 +83,6 @@ void EyeMinion::setTarget(std::shared_ptr<RealEngine::Entity> target,
     acceleration->ax = 240.0f;
     acceleration->ay = 240.0f;
     registry.add_component(_eyeEntity, RealEngine::Target{target});
-}
-
-void EyeMinion::collisionBehaviour(RealEngine::CollisionType collisionType,
-                                   RealEngine::Registry& registry, RealEngine::Entity collider,
-                                   RealEngine::Entity entity) {
-    switch (collisionType) {
-        case RealEngine::CollisionType::INACTIVE:
-            break;
-        case RealEngine::CollisionType::SOLID:
-            break;
-        case RealEngine::CollisionType::ENEMY:
-            break;
-        case RealEngine::CollisionType::PICKABLE:
-            break;
-        case RealEngine::CollisionType::PLAYER:
-            selfDestruct(registry, entity);
-            break;
-        default:
-            break;
-    }
 }
 
 }  // namespace rtype

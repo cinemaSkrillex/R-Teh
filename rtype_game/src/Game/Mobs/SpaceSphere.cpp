@@ -18,13 +18,13 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
     if (container != nullptr) {
         float shootCooldown = std::any_cast<float>(container->getNetvar("shootCooldown")->value);
         if (shootCooldown <= 0) {
-            Fireball fireball(registry, {position->x, position->y}, 180, 200);
+            Fireball fireball(registry, {position->x, position->y}, 180);
         }
         bool goUp = std::any_cast<bool>(container->getNetvar("goUp")->value);
         if (goUp) {
-            velocity->vy = -100.f;
+            velocity->vy = (-10.f * deltaTime) * 100.0f;
         } else {
-            velocity->vy = 100.f;
+            velocity->vy = (10.f * deltaTime) * 100.0f;
         }
     }
 }

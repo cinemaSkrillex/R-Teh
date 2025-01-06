@@ -13,7 +13,7 @@ namespace rtype {
 
 class Fireball {
    public:
-    Fireball(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
+    Fireball(RealEngine::Registry& registry, sf::Vector2f position, float angle);
     ~Fireball();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

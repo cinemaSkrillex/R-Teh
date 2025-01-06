@@ -31,6 +31,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
     SpaceSphere mob(_registry, {1700, 300}, {0, 0}, 0);
+    EyeMinion   mob_eye(_registry, {1700, 300}, {0, 0}, 0);
+    mob_eye.setTarget(_player_entity, _registry);
     // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
     // WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
     // mob.setTarget(_player_entity, _registry);
@@ -121,6 +123,10 @@ void Game::init_textures() {
                                      sf::IntRect{0, 55 * 2, 81 * 3, 55});
     AssetManagerInstance.loadTexture("eye_laser",
                                      "../../assets/sprites/enemies/the_eye/laser_shoot.png");
+    AssetManagerInstance.loadTexture("space_vortex",
+                                     "../../assets/sprites/enemies/space_vortex.png");
+    AssetManagerInstance.loadTexture("space_laser", "../../assets/sprites/enemies/laser_shoot.png");
+    AssetManagerInstance.loadTexture("small_laser", "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadTexture("fireball", "../../assets/sprites/enemies/fireball.png");
 }
 
@@ -153,6 +159,9 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("eye_boss_mid_range", "eye_boss_mid_range");
     AssetManagerInstance.loadSprite("eye_boss_long_range", "eye_boss_long_range");
     AssetManagerInstance.loadSprite("eye_laser", "eye_laser");
+    AssetManagerInstance.loadSprite("space_vortex", "space_vortex");
+    AssetManagerInstance.loadSprite("space_laser", "space_laser");
+    AssetManagerInstance.loadSprite("small_laser", "small_laser");
     AssetManagerInstance.loadSprite("fireball", "fireball");
     set_sprite_scales();
     set_sprite_opacity();
@@ -296,6 +305,9 @@ void Game::set_sprite_scales() {
     AssetManagerInstance.getSprite("eye_boss_mid_range")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("eye_boss_long_range")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("eye_laser")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("space_vortex")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("space_laser")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("small_laser")->setScale(1, 1);
     AssetManagerInstance.getSprite("fireball")->setScale(GAME_SCALE, GAME_SCALE);
 }
 

@@ -47,7 +47,7 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::
             }});
     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
     registry.add_component(_eyeEntity,
-                           RealEngine::AI{rushTowardsTargetZigzagging, simpleBehavior, true});
+                           RealEngine::AI{rushAndAimTowardsTargetZigzagging, simpleBehavior, true});
     registry.add_component(_eyeEntity, RealEngine::Damage{40});
 }
 

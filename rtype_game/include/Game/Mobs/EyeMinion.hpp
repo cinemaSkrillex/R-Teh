@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "Engine.hpp"
 #include "Game/Mobs/Behaviors.hpp"
+#include "Game/Mobs/Projectiles/SmallLaser.hpp"
 
 namespace rtype {
 
@@ -21,8 +21,6 @@ class EyeMinion {
     ~EyeMinion();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _eyeEntity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
-    void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                            RealEngine::Entity collider, RealEngine::Entity entity);
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _eyeEntity;

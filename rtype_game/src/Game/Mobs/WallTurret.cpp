@@ -37,9 +37,9 @@ static void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* target
                 angleDifference += 360.0f;
             }
             if (angleDifference > 0.1f) {
-                rotation->angle += rotationSpeed * deltaTime * 100.0f;
+                rotation->angle += (rotationSpeed * deltaTime) * 100.0f;
             } else if (angleDifference < -0.1f) {
-                rotation->angle -= rotationSpeed * deltaTime * 100.0f;
+                rotation->angle -= (rotationSpeed * deltaTime) * 100.0f;
             }
             rotation->angle = std::fmod(rotation->angle + 360.0f, 360.0f);
         }
