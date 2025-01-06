@@ -49,9 +49,6 @@ void RtypeServer::run() {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (const auto& player : _players) {
                 broadcastPlayerState(player.second);
-                // for (const auto& mob : _game_instance->getSimpleMobs()) {
-                //     broadcastEntityState(*mob, mob);
-                // }
             }
         }
     }
