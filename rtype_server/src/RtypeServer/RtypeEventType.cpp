@@ -60,5 +60,5 @@ void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
     addComponent(bulletMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(bulletMessage);
-    broadCastAll(serializedEventMessage);
+    broadcastAllReliable(serializedEventMessage);
 }

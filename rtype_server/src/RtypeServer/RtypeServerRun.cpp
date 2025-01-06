@@ -44,7 +44,7 @@ void RtypeServer::run() {
                                                  destroyedEntities.end());
                 std::array<char, 800> serializedDestroyMessage =
                     RTypeProtocol::serialize<800>(destroyMessage);
-                broadCastAll(serializedDestroyMessage);
+                broadcastAllReliable(serializedDestroyMessage);
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {

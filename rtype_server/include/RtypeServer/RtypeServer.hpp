@@ -84,8 +84,8 @@ class RtypeServer {
     void initCallbacks();
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
-    // void broadCastAll(std::string message);
-    void broadCastAll(const std::array<char, 800>& message);
+    void broadcastAllReliable(const std::array<char, 800>& message);
+    void broadcastAllUnreliable(const std::array<char, 800>& message);
 
     void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                     Player& player);
