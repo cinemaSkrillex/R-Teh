@@ -37,25 +37,10 @@ void RtypeServer::run() {
                                   << std::endl;
                         break;
                     }
-
-                    // event is only used for shooting right now so we will just run a
-                    // simulation for now. if (parsed_data.find("Event") != parsed_data.end()) {
-                    // runEvent(parsed_data, client, _players.at(client));
-                    // } else {
-                    // runSimulation(parsed_data, client, _players.at(client));
-                    // }
                 }
             }
             auto destroyedEntities = _game_instance->run(_deltaTime);
             if (!destroyedEntities.empty()) {
-                // std::string message = "Event:Destroy_entity ids:[";
-                // for (auto entity : destroyedEntities) {
-                //     message += std::to_string(entity) + ",";
-                // }
-                // message.pop_back();
-                // message += "]";
-                // std::cout << message << std::endl;
-                // broadCastAll(message);
                 RTypeProtocol::DestroyEntityMessage destroyMessage;
                 destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
                 destroyMessage.uuid         = 0;
@@ -72,9 +57,6 @@ void RtypeServer::run() {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             for (const auto& player : _players) {
                 broadcastPlayerState(player.second);
-                // for (const auto& mob : _game_instance->getSimpleMobs()) {
-                //     broadcastEntityState(*mob, mob);
-                // }
             }
         }
     }
