@@ -39,7 +39,6 @@ void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& a
                      RealEngine::Position& position, float deltaTime) {
     RTypeProtocol::BaseMessage eventMessage;
     eventMessage.message_type = RTypeProtocol::MessageType::SHOOT_EVENT;
-    // eventMessage.event_type   = RTypeProtocol::EventType::SHOOT;
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);

@@ -120,7 +120,6 @@ void RtypeServer::initCallbacks() {
             RTypeProtocol::NewEntityMessage eventMessage;
             eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
             eventMessage.uuid         = *mob;
-            // eventMessage.event_type   = RTypeProtocol::EventType::SHOOT; //TODO change to NEW_ENTITY after rework
 
             // Serialize position component
             std::vector<char> positionData(sizeof(sf::Vector2f));

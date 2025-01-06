@@ -19,10 +19,6 @@ enum MessageType : int {
     SHOOT_EVENT      = 0x07,
 };
 
-// enum EventType : int {
-//     SHOOT = 0x01,
-// };
-
 enum ComponentList : int {
     POSITION          = 0x01,
     VELOCITY          = 0x02,

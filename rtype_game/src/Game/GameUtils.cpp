@@ -46,7 +46,6 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             break;
         }
         case RTypeProtocol::DESTROY_ENTITY: {
-            // std::cout << "Destroy entity message received" << std::endl;
             // Deserialize and handle destroy entity message
             RTypeProtocol::DestroyEntityMessage destroyEntityMessage =
                 RTypeProtocol::deserializeDestroyEntity(signal);
@@ -173,20 +172,6 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
     std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
     _entities.emplace(parsedPacket.uuid, newEntity);
 }
-
-// void rtype::Game::handleEvent(RTypeProtocol::EventMessage parsedPacket) {
-//     switch (parsedPacket.event_type) {
-//         case RTypeProtocol::EventType::SHOOT: {
-//             // Handle shoot event
-//             handleShootEvent(parsedPacket);
-//             break;
-//         }
-//         default:
-//             // Handle unknown or unsupported event types (you can log or handle errors)
-//             std::cout << "Unknown event type: " << parsedPacket.event_type << std::endl;
-//             break;
-//     }
-// }
 
 void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
     for (const auto& entity_id : parsedPacket.entity_ids) {
