@@ -87,6 +87,9 @@ class RtypeServer {
     // void broadCastAll(std::string message);
     void broadCastAll(const std::array<char, 800>& message);
 
+    void shootEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
+                    Player& player);
+
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
    public:
