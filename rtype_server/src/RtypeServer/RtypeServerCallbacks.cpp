@@ -71,7 +71,7 @@ void RtypeServer::initCallbacks() {
             MobMessage += " Position:(" + std::to_string(position->x) + "," +
                           std::to_string(position->y) + ")";
             MobMessage += " Velocity:(" + velocityStr + ")";
-            MobMessage += " Collision:(0,0,38,24,mob,false,OTHER)";
+            MobMessage += " Collision:(0,0,16,8,mob,false,ENEMY)";
             MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
             if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
             MobMessage += " Drawable:true";
