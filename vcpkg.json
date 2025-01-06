@@ -1,10 +1,11 @@
 {
-    "name": "r-type",
-    "version": "1.0.0",
-    "dependencies": [
-      "sfml",
-      "asio",
-      "sol2",
-      "lua"
-    ]
-  }
+  "name": "r-type",
+  "version": "1.0.0",
+  "dependencies": [
+    "sfml",
+    "asio",
+    "sol2",
+    "lua",
+    "lz4"
+  ]
+}
