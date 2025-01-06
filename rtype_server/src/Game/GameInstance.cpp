@@ -57,8 +57,8 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 };
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(sf::Vector2f position) {
-    rtype::Player player(_registry, position, _spaceshipSheet);
-    auto          playerEntity = player.getEntity();
+    rtype::PlayerEntity player(_registry, position);
+    auto                playerEntity = player.getEntity();
     _players.emplace(*playerEntity, playerEntity);
     return _players.at(*playerEntity);
 }
@@ -72,10 +72,11 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f p
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
                                                                   sf::Vector2f direction,
                                                                   float        speed) {
-    std::shared_ptr<rtype::Bullet> bullet =
-        std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
-    _bullets.push_back(bullet->getEntity());
-    return bullet->getEntity();
+    // std::shared_ptr<rtype::Bullet> bullet =
+    //     std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
+    rtype::Bullet bullet(_registry, position, speed, 0);
+    _bullets.push_back(bullet.getEntity());
+    return bullet.getEntity();
 }
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2f position,
@@ -83,7 +84,8 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2
                                                                      float        speed,
                                                                      float        destructTimer) {
     std::shared_ptr<rtype::SimpleMob> mob = std::make_shared<rtype::SimpleMob>(
-        _registry, position, direction, speed, destructTimer, _simpleMobSprite);
+        _registry, position, direction, speed, destructTimer,
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_bomber")));
     _simpleMobs.push_back(mob->getEntity());
     return _simpleMobs.back();
 }
@@ -106,8 +108,6 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
     if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
     if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
-    // velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
-    // velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {

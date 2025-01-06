@@ -5,7 +5,7 @@
 ** SimpleMob
 */
 
-#include "../include/Game/SimpleMob.hpp"
+#include "../include/Game/Mobs/SimpleMob.hpp"
 
 namespace rtype {
 

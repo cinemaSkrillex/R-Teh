@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include "BulletEntity.hpp"
 #include "Engine.hpp"
-#include "PlayerEntity.hpp"
-#include "SimpleMob.hpp"
+#include "Game/Player/Bullet.hpp"
+#include "Game/Player/Player.hpp"
+#include "Mobs/Mobs.hpp"
 
 class GameInstance {
    public:
@@ -19,6 +19,8 @@ class GameInstance {
     void init_systems();
     void init_mobs();
     void init_textures();
+    void init_sprites();
+    void set_sprite_scales();
 
     void handleSignal(const std::string& message);
 
@@ -55,15 +57,6 @@ class GameInstance {
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _ennemies;
-    std::unordered_map<std::string, std::shared_ptr<sf::Texture>>     _textures;
-    RealEngine::Sprite                                                _eyeBomberSprite;
-    RealEngine::Sprite                                                _bulletSprite;
-    RealEngine::Sprite                                                _simpleMobSprite;
-    RealEngine::Sprite                                                _upSpaceship;
-    RealEngine::Sprite                                                _idleSpaceship;
-    RealEngine::Sprite                                                _downSpaceship;
-    std::unordered_map<std::string, RealEngine::Sprite>               _spaceshipSheet;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _groundBlocksEntities;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _simpleMobs;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };

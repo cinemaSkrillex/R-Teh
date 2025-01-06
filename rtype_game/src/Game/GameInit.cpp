@@ -30,9 +30,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    SpaceSphere mob(_registry, {1700, 300}, {0, 0}, 0);
-    EyeMinion   mob_eye(_registry, {1700, 300}, {0, 0}, 0);
-    mob_eye.setTarget(_player_entity, _registry);
+    // SpaceSphere mob(_registry, {1700, 300}, {0, 0}, 0);
+    // EyeMinion   mob_eye(_registry, {1700, 300}, {0, 0}, 0);
+    // mob_eye.setTarget(_player_entity, _registry);
     // DirectionalCanon mob(_registry, {1700, 300}, {0, 0}, 0, mob_sprite, true);
     // WallTurret mob(_registry, {1700, 300}, mob_sprite, second_mob_sprite, false);
     // mob.setTarget(_player_entity, _registry);
@@ -76,8 +76,6 @@ void Game::init_textures() {
     AssetManagerInstance.loadTexture("stars_background",
                                      "../../assets/sprites/backgrounds/stars.png");
     AssetManagerInstance.getTexture("stars_background")->setRepeated(true);
-    AssetManagerInstance.loadTexture("enemy", "../../assets/sprites/enemies/eye_bomber.png",
-                                     {0, 0, 15, 10});
     AssetManagerInstance.loadTexture("bullet", "../../assets/sprites/spaceship_bullet.png");
     AssetManagerInstance.loadTexture("space_plane", "../../assets/sprites/enemies/space_plane.png");
     AssetManagerInstance.loadTexture("space_drill", "../../assets/sprites/enemies/space_drill.png");
@@ -136,7 +134,6 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("spaceship_idle", "spaceship_idle");
     AssetManagerInstance.loadSprite("spaceship_down", "spaceship_down");
     AssetManagerInstance.loadSprite("spaceship_other", "spaceship_idle");
-    AssetManagerInstance.loadSprite("enemy", "enemy");
     AssetManagerInstance.loadSprite("bullet", "bullet");
     AssetManagerInstance.loadSprite("stars_background", "stars_background");
     AssetManagerInstance.loadSprite("space_plane", "space_plane");
@@ -283,7 +280,6 @@ void Game::set_sprite_scales() {
     AssetManagerInstance.getSprite("spaceship_idle")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("spaceship_down")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("spaceship_other")->setScale(GAME_SCALE, GAME_SCALE);
-    AssetManagerInstance.getSprite("enemy")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("bullet")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("space_plane")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("space_drill")->setScale(GAME_SCALE, GAME_SCALE);
