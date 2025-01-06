@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
         client->send_new_client();
 
         // Game loop
+
         game.run();
 
         running.store(false);

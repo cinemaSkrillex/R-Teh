@@ -13,10 +13,12 @@
 #include <vector>
 
 #define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
-#define BUFFER_SIZE 800
+// #define BUFFER_SIZE 800 // TOOD CHANGE TO TEMPLATE
 
 enum class Role { SERVER, CLIENT };
 
+// Custom hash and equality for asio::ip::udp::endpoint
+// we need it in order to know if we have already seen a client (kind of a select in C)
 struct EndpointHash {
     std::size_t operator()(const asio::ip::udp::endpoint& endpoint) const {
         std::size_t h1 = std::hash<std::string>()(endpoint.address().to_string());
@@ -32,25 +34,26 @@ struct EndpointEqual {
 };
 
 enum Flags {
-    UNRELIABLE    = 0,
-    RELIABLE      = 1,
-    ACK           = 2,
-    CONTROL       = 3,
-    HEARTBEAT     = 4,
-    DATA          = 5,
-    RETRANSMITTED = 6,
-    NEW_CLIENT    = 7,
-    TEST          = 8,
+    UNRELIABLE    = 1,
+    RELIABLE      = 2,
+    ACK           = 3,
+    CONTROL       = 4,
+    HEARTBEAT     = 5,
+    DATA          = 6,
+    RETRANSMITTED = 7,
+    NEW_CLIENT    = 8,
+    TEST          = 9,
 };
 
+template <std::size_t BUFFER_SIZE>
 struct packet {
-    SEQUENCE_TYPE           sequence_nb;
-    SEQUENCE_TYPE           start_sequence_nb;
-    SEQUENCE_TYPE           end_sequence_nb;
-    SEQUENCE_TYPE           packet_size;
-    Flags                   flag;
-    asio::ip::udp::endpoint endpoint;
-    std::vector<char>       data;
+    SEQUENCE_TYPE                 sequence_nb;
+    SEQUENCE_TYPE                 start_sequence_nb;
+    SEQUENCE_TYPE                 end_sequence_nb;
+    SEQUENCE_TYPE                 packet_size;
+    Flags                         flag;
+    asio::ip::udp::endpoint       endpoint;
+    std::array<char, BUFFER_SIZE> data;
 
     bool operator==(const packet& other) const {
         return sequence_nb == other.sequence_nb && start_sequence_nb == other.start_sequence_nb &&
@@ -60,9 +63,9 @@ struct packet {
 };
 
 namespace std {
-template <>
-struct hash<packet> {
-    std::size_t operator()(const packet& pkt) const {
+template <std::size_t BUFFER_SIZE>
+struct hash<packet<BUFFER_SIZE>> {
+    std::size_t operator()(const packet<BUFFER_SIZE>& pkt) const {
         return ((std::hash<int>()(pkt.sequence_nb) ^
                  (std::hash<int>()(pkt.start_sequence_nb) << 1)) >>
                 1) ^
@@ -71,7 +74,8 @@ struct hash<packet> {
 };
 }  // namespace std
 
-inline std::vector<char> serialize_packet(const packet& pkt) {
+template <std::size_t BUFFER_SIZE>
+inline std::vector<char> serialize_packet(const packet<BUFFER_SIZE>& pkt) {
     std::string endpoint_address = pkt.endpoint.address().to_string();
     uint16_t    endpoint_port    = pkt.endpoint.port();
 
@@ -131,9 +135,10 @@ inline std::vector<char> serialize_packet(const packet& pkt) {
     return buffer;
 }
 
-inline packet deserialize_packet(const std::vector<char>& buffer) {
-    packet pkt;
-    auto   it = buffer.begin();
+template <std::size_t BUFFER_SIZE>
+inline packet<BUFFER_SIZE> deserialize_packet(const std::array<char, BUFFER_SIZE>& buffer) {
+    packet<BUFFER_SIZE> pkt;
+    auto                it = buffer.begin();
 
     // Extract sequence_nb
     std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));
@@ -175,9 +180,53 @@ inline packet deserialize_packet(const std::vector<char>& buffer) {
         asio::ip::udp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
 
     // Extract data
-    pkt.data.assign(it, buffer.end());
+    std::copy(it, buffer.end(), pkt.data.begin());
 
     return pkt;
+}
+
+// Ack packet
+
+enum class AckType { CLIENT_ACK, ACK };
+
+struct AckMessage {
+    AckType  ack_type;
+    uint64_t start_sequence_number;
+    uint64_t sequence_number;
+};
+
+template <std::size_t BUFFER_SIZE>
+void serialize_ack(const AckMessage& ack, std::array<char, BUFFER_SIZE>& buffer) {
+    // Ensure the buffer is large enough to hold the serialized data
+    static_assert(
+        sizeof(ack.ack_type) + sizeof(ack.start_sequence_number) + sizeof(ack.sequence_number) <=
+            BUFFER_SIZE,
+        "Buffer size is too small for AckMessage serialization");
+
+    // Copy the AckType enum value to the buffer
+    buffer[0] = static_cast<char>(ack.ack_type);  // Save AckType as a byte
+
+    // Copy the sequence numbers to the buffer (in a platform-independent way)
+    std::memcpy(buffer.data() + 1, &ack.start_sequence_number, sizeof(ack.start_sequence_number));
+    std::memcpy(buffer.data() + 1 + sizeof(ack.start_sequence_number), &ack.sequence_number,
+                sizeof(ack.sequence_number));
+}
+
+template <std::size_t BUFFER_SIZE>
+AckMessage deserialize_ack(const std::array<char, BUFFER_SIZE>& buffer) {
+    AckMessage ackMessage;
+
+    // Deserialize the AckType (first byte)
+    ackMessage.ack_type = static_cast<AckType>(buffer[0]);
+
+    // Deserialize the sequence numbers
+    std::memcpy(&ackMessage.start_sequence_number, buffer.data() + 1,
+                sizeof(ackMessage.start_sequence_number));
+    std::memcpy(&ackMessage.sequence_number,
+                buffer.data() + 1 + sizeof(ackMessage.start_sequence_number),
+                sizeof(ackMessage.sequence_number));
+
+    return ackMessage;
 }
 
 #endif  // PACKETUTILS_HPP

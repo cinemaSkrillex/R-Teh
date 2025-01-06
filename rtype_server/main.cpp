@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "RtypeServer.hpp"
+#include "RtypeServer/RtypeServer.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -14,7 +14,6 @@ int main(int argc, char* argv[]) {
     }
 
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
-
 
     try {
         asio::io_context             io_context;

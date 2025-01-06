@@ -5,7 +5,45 @@
 ** RtypeServerCallbacks
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
+
+std::vector<int> deserialize_int_vector(const std::vector<char>& buffer) {
+    std::vector<int> int_vector;
+    int_vector.reserve(buffer.size() / sizeof(int));
+
+    for (size_t i = 0; i < buffer.size(); i += sizeof(int)) {
+        int value;
+        std::memcpy(&value, buffer.data() + i, sizeof(int));
+        int_vector.push_back(value);
+    }
+
+    return int_vector;
+}
+
+void print_raw_data(const std::vector<char>& data) {
+    std::cout << "Raw data: ";
+    for (char byte : data) {
+        std::cout << std::hex << static_cast<int>(byte) << " ";
+    }
+    std::cout << std::endl;
+}
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> createSynchronizeMessage(
+    long uuid, long timestamp, float x, float y,
+    const std::vector<std::pair<long, sf::Vector2f>>& activePlayerUUIDs) {
+    // Populate the SynchronizeMessage structure
+    RTypeProtocol::SynchronizeMessage syncMessage;
+    syncMessage.message_type = RTypeProtocol::SYNCHRONISE;  // Message type
+    syncMessage.uuid         = uuid;                        // Player UUID
+    syncMessage.timestamp    = timestamp;                   // Synchronization timestamp
+    syncMessage.x            = x;                           // Player X position
+    syncMessage.y            = y;                           // Player Y position
+    syncMessage.players      = activePlayerUUIDs;           // List of active player UUIDs
+
+    // Serialize the message
+    return RTypeProtocol::serialize<BUFFER_SIZE>(syncMessage);
+}
 
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
@@ -21,11 +59,16 @@ void RtypeServer::initCallbacks() {
         // Notify all other clients about the new client
         for (const auto& client : _server->getClients()) {
             if (client != sender) {
-                const std::string message =
-                    "Event:New_client Uuid:" + std::to_string(*playerEntity) + " Position:(" +
-                    std::to_string(player_start_position.x) + "," +
-                    std::to_string(player_start_position.y) + ")";
-                _server->send_reliable_packet(message, client);
+                RTypeProtocol::PlayerMoveMessage newClientMessage = {};
+                newClientMessage.message_type                     = RTypeProtocol::NEW_CLIENT;
+                newClientMessage.uuid                             = *playerEntity;
+                long player_entity_uuid                           = *playerEntity;
+                newClientMessage.x                                = player_start_position.x;
+                newClientMessage.y                                = player_start_position.y;
+                newClientMessage.timestamp                        = elapsed_time;
+                std::array<char, 800> serializedMessage           = RTypeProtocol::serialize<800>(
+                    newClientMessage);  // needs to be changed to TEMPLATE BUFFER SIZE
+                _server->send_reliable_packet(serializedMessage, client);
             }
         }
         // Create the uuid for each new client
@@ -33,7 +76,8 @@ void RtypeServer::initCallbacks() {
                               " Clock:" + formatTimestamp(_startTime) + " Position:(" +
                               std::to_string(player_start_position.x) + "," +
                               std::to_string(player_start_position.y) + ") Players:[";
-        bool first = true;
+        bool                                       first = true;
+        std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
         for (const auto& player_pair : _players) {
             if (!first) message += "|";
             first              = false;
@@ -41,9 +85,16 @@ void RtypeServer::initCallbacks() {
             message += std::to_string(player.getUUID()) + ",(" +
                        std::to_string(player.getPosition().x) + "," +
                        std::to_string(player.getPosition().y) + ")";
+            activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
         }
         message += "]";
-        _server->send_reliable_packet(message, sender);
+        std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
+            *playerEntity,
+            std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
+                .count(),
+            player_start_position.x, player_start_position.y, activePlayerUUIDs);
+
+        _server->send_reliable_packet(synchronizeMessage, sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         for (const auto& mob : _game_instance->getSimpleMobs()) {
@@ -64,19 +115,73 @@ void RtypeServer::initCallbacks() {
                 std::to_string(velocity->vx) + "," + std::to_string(velocity->vy) + ",{" +
                 std::to_string(velocity->maxSpeed.x) + "," + std::to_string(velocity->maxSpeed.y) +
                 "}," + std::to_string(velocity->airFrictionForce);
-            std::string MobMessage = "Event:New_entity";
-            MobMessage += " Type:mob";
-            MobMessage += " Uuid:" + std::to_string(*mob);
-            MobMessage += " Sprite:eye_bomber";
-            MobMessage += " Position:(" + std::to_string(position->x) + "," +
-                          std::to_string(position->y) + ")";
-            MobMessage += " Velocity:(" + velocityStr + ")";
-            MobMessage += " Collision:(0,0,16,8,mob,false,ENEMY)";
-            MobMessage += " AutoDestructible:" + std::to_string(destructible->lifeTime);
-            if (rotation) MobMessage += " Rotation:" + std::to_string(rotation->angle);
-            MobMessage += " Drawable:true";
 
-            _server->send_reliable_packet(MobMessage, sender);
+            // _server->send_reliable_packet(MobMessage, sender);
+            RTypeProtocol::NewEntityMessage eventMessage;
+            eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+            eventMessage.uuid         = *mob;
+
+            // Serialize position component
+            std::vector<char> positionData(sizeof(sf::Vector2f));
+            std::memcpy(positionData.data(), position, sizeof(sf::Vector2f));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::POSITION, positionData});
+
+            // Serialize velocity component
+            std::vector<char> velocityData(sizeof(RealEngine::Velocity));
+            std::memcpy(velocityData.data(), velocity, sizeof(RealEngine::Velocity));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::VELOCITY, velocityData});
+
+            // Serialize rotation component
+            if (rotation) {
+                std::vector<char> rotationData(sizeof(RealEngine::Rotation));
+                std::memcpy(rotationData.data(), rotation, sizeof(RealEngine::Rotation));
+                eventMessage.components.push_back(
+                    {RTypeProtocol::ComponentList::ROTATION, rotationData});
+            }
+
+            // Serialize collision component
+            sf::FloatRect             bounds      = {0, 0, 16, 8};
+            std::string               id          = "mob";
+            bool                      isColliding = false;
+            RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+            std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                            sizeof(type));
+            char*             collisionPtr = collisionData.data();
+            std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+            collisionPtr += sizeof(bounds);
+            std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+            collisionPtr += id.size() + 1;
+            std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+            collisionPtr += sizeof(isColliding);
+            std::memcpy(collisionPtr, &type, sizeof(type));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::COLLISION, collisionData});
+
+            // Serialize auto destructible component
+            float             autoDestructible = destructible->lifeTime;
+            std::vector<char> autoDestructibleData(sizeof(int));
+            std::memcpy(autoDestructibleData.data(), &autoDestructible, sizeof(int));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, autoDestructibleData});
+
+            // Serialize drawable component
+            bool              drawable = true;
+            std::vector<char> drawableData(sizeof(bool));
+            std::memcpy(drawableData.data(), &drawable, sizeof(bool));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::DRAWABLE, drawableData});
+
+            // Serialize sprite component
+            std::string       sprite = "eye_bomber";
+            std::vector<char> spriteData(sprite.begin(), sprite.end());
+            eventMessage.components.push_back({RTypeProtocol::ComponentList::SPRITE, spriteData});
+
+            std::array<char, 800> serializedEventMessage =
+                RTypeProtocol::serialize<800>(eventMessage);
+            _server->send_reliable_packet(serializedEventMessage, sender);
         }
         _players[sender] = player;
     });

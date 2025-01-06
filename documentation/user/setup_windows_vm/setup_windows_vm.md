@@ -1,3 +1,10 @@
+---
+title: Setup Windows VM
+parent: Requirements
+grand_parent: User
+nav_order: 2
+---
+
 # Windows VM requirements
 
 Prepare a windows 11 VM for running the project
@@ -48,11 +55,19 @@ https://www.microsoft.com/fr-fr/software-download/windows11
     choco install ninja -y
     ```
 
+3. (optional) Run the script to install the dependencies
+    ```bash
+    **Powershell admin**
+    .\scripts\requirements.ps1
+    ```
+
 4. Install visual studio, and in the visual studio installer, add the c++ dependencies
     ```bash
     https://visualstudio.microsoft.com/fr/
     ```
-    In the visual studio installer, add c++, vcpkg, msvc v141 (2017) for x64 and x86
+    In the visual studio installer, choose **"import configuration"** and import the configuration file found [here](vsconfig)
+
+    **Or manually**, add c++, vcpkg, msvc v141 (2017) for x64 and x86
 
 5. Install windows sdk
     ```bash
@@ -60,30 +75,3 @@ https://www.microsoft.com/fr-fr/software-download/windows11
     ```
 
 6. Quality of life : Spice windows guest tools : https://www.spice-space.org/download.html
-
-## Install vcpkg dependencies
-
-### vcpkg
-```bash
-# LINUX vcpkg:
-# in the root of the repository
-git clone https://github.com/microsoft/vcpkg.git
-```
-
-WINDOWS vcpkg :
-```bash
-#in the root of the repository
-open git CMD
-git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-.\bootstrap-vcpkg.bat
-```
-
-### Install vcpkg dependencies
-```bash
-# In the root of the repository
-#Linux
-cmake --preset linux
-#Windows
-cmake --preset windows
-```

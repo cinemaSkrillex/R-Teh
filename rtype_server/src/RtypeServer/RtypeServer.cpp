@@ -5,7 +5,7 @@
 ** RtypeServer
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 
 RtypeServer::RtypeServer(std::shared_ptr<UDPServer> server)
     : _server(server),

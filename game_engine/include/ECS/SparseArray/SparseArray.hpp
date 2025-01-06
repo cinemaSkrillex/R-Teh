@@ -8,19 +8,19 @@
 #pragma once
 
 #include <cstddef>
-#include <vector>
-#include <optional>
 #include <memory>
+#include <optional>
+#include <vector>
 
 namespace RealEngine {
 template <typename Component>
 
 class SparseArray {
-  public:
-    using value_type           = std::optional<Component>; // Optional component type
+   public:
+    using value_type           = std::optional<Component>;  // Optional component type
     using reference_type       = value_type&;
     using const_reference_type = const value_type&;
-    using container_t    = std::vector<value_type>; // Optionally add your allocator template here.
+    using container_t    = std::vector<value_type>;  // Optionally add your allocator template here.
     using size_type      = typename container_t::size_type;
     using iterator       = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
@@ -52,14 +52,15 @@ class SparseArray {
     const_iterator end() const { return _data.end(); }
     const_iterator cend() const { return _data.cend(); }
 
-    size_type                                 size() const { return _data.size(); }
-    reference_type                            insert_at(size_type pos, const Component& component);
-    reference_type                            insert_at(size_type pos, Component&& component);
-    template <class... Params> reference_type emplace_at(size_type pos, Params&&... params);
-    void                                      erase(size_type pos);
-    size_type                                 get_index(const value_type& component) const;
+    size_type      size() const { return _data.size(); }
+    reference_type insert_at(size_type pos, const Component& component);
+    reference_type insert_at(size_type pos, Component&& component);
+    template <class... Params>
+    reference_type emplace_at(size_type pos, Params&&... params);
+    void           erase(size_type pos);
+    size_type      get_index(const value_type& component) const;
 
-  private:
+   private:
     container_t _data;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

@@ -4,7 +4,7 @@
 
 namespace RealEngine {
 class Text : public IRender {
-  public:
+   public:
     Text(const std::string text, const std::string fontPath);
     ~Text();
     void draw(sf::RenderWindow& window);
@@ -22,8 +22,8 @@ class Text : public IRender {
     void setString(const std::string text);
     void setCharacterSize(int size);
 
-  private:
+   private:
     sf::Text _text;
     sf::Font _font;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

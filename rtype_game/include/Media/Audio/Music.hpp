@@ -4,7 +4,7 @@
 
 namespace RealEngine {
 class Music : public IAudio {
-  public:
+   public:
     Music(const std::string filePath);
     ~Music();
     void update();
@@ -19,7 +19,7 @@ class Music : public IAudio {
     void setPitch(float pitch) override;
     void setLoop(bool loop);
 
-  private:
+   private:
     sf::Music _music;
     sf::Time  _replayPoint;
     float     _volume;
@@ -28,4 +28,4 @@ class Music : public IAudio {
     bool      _stopped;
     bool      _isPlaying;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

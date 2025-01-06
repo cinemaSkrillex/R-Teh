@@ -7,10 +7,8 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocola
 
 # Install dependencies using Chocolatey
 choco install -y cmake
-choco install -y autoconf
-choco install -y automake
-choco install -y libtool
 choco install -y git
+choco install -y ninja
 
 # git clone vcpkg
 

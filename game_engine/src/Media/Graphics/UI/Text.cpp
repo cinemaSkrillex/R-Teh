@@ -52,4 +52,4 @@ void Text::setString(const std::string text) {
 }
 
 void Text::setCharacterSize(int size) { _text.setCharacterSize(size); }
-} // namespace RealEngine
+}  // namespace RealEngine

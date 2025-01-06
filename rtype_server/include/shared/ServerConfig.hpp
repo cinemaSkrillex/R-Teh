@@ -61,8 +61,8 @@ class ServerConfig {
             std::istringstream lineStream(line);
             std::string        key, value;
             if (std::getline(lineStream, key, '=') && std::getline(lineStream, value)) {
-                key   = trim(key);
-                value = trim(value);
+                key             = trim(key);
+                value           = trim(value);
                 _configMap[key] = value;
             }
         }

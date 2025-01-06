@@ -79,7 +79,9 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
     } else {
         registry.add_component(_entity, RealEngine::Position{position.x, position.y});
         registry.add_component(_entity, RealEngine::Drawable{});
-        registry.add_component(_entity, RealEngine::Interpolation{{0, 0}, {0, 0}, 0.f, 1.f, false});
+        registry.add_component(
+            _entity, RealEngine::Interpolation{
+                         {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
         registry.add_component(
             _entity, RealEngine::SpriteComponent{*(
                          (RealEngine::AssetManager::getInstance().getSprite("spaceship_other")))});

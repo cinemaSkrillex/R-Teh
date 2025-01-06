@@ -1,5 +1,7 @@
 #include "Controls.hpp"
 
+#include <RtypeServerProtocol.hpp>
+
 #include "ECS/Registry/Registry.hpp"
 
 namespace rtype {
@@ -35,6 +37,10 @@ void Controls::moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleratio
 
 void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                      RealEngine::Position& position, float deltaTime) {
-    _client->send_unreliable_packet("Event:Shoot");
+    RTypeProtocol::BaseMessage eventMessage;
+    eventMessage.message_type = RTypeProtocol::MessageType::SHOOT_EVENT;
+
+    std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
+    _client->send_unreliable_packet(serializedEventMessage);
 }
 }  // namespace rtype

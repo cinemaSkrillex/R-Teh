@@ -89,8 +89,8 @@ bool Sprite::isTextureOfBounds() {
     sf::Vector2u size = _texture->getSize();
 
     // Check if the texture coordinates go out of bounds
-    if (rect.left < 0 || rect.top < 0 || rect.left + rect.width >= size.x ||
-        rect.top + rect.height > size.y) {
+    if (rect.left < 0 || rect.top < 0 || rect.left + rect.width >= static_cast<int>(size.x) ||
+        rect.top + rect.height > static_cast<int>(size.y)) {
         return true;
     }
     return false;

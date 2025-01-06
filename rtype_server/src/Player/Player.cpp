@@ -5,7 +5,7 @@
 ** Player
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 
 Player::Player(/* args */) {}
 

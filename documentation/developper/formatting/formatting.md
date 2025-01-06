@@ -1,3 +1,8 @@
+---
+title: Formatting
+parent: Developper
+nav_order: 1
+---
 # Code formatting
 
 ## Clang-format

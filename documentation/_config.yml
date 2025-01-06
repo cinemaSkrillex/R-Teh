@@ -1,0 +1,22 @@
+title: R-Type Documentation
+remote_theme: pmarsceill/just-the-docs
+
+# Enable the sidebar navigation
+just_the_docs:
+  show_sidebar: true
+  collections:
+    docs:
+      output: true
+      permalink: /:collection/:path/
+  nav_order: 1
+  search_enabled: true
+  aux_links:
+    "R-Type Repository":
+      - "https://github.com/EpitechPromo2027/B-CPP-500-MPL-5-2-rtype-quentin1.duval"
+  navigation:
+    - title: Developper
+      url: /docs/developper/
+      nav_order: 1
+    - title: User
+      url: /docs/user/
+      nav_order: 2

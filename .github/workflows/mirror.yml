@@ -6,8 +6,22 @@ on:
       - main
 
 jobs:
+  check-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run check_format script
+      run: ./scripts/check_format.sh
+    
+    - name: Display error message on failure
+      if: failure()
+      run: echo "Code formatting issues detected. Please run './scripts/format_all.sh' to fix them."
+
   build:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
+    needs: check-format # If the check-format job fails, the build mirror job will not run
     steps:
       - uses: actions/checkout@v3
         with:

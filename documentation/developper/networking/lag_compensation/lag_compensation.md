@@ -1,3 +1,9 @@
+---
+title: Lag Compensation
+parent: Networking
+grand_parent: Developper
+nav_order: 3
+---
 ## Synchronized Movement
 
 ### Overview
@@ -108,47 +114,8 @@ The server broadcasts the updated positions of players to all clients. The clien
 
 #### Player Position Broadcast
 
-The server broadcasts the player positions in the [RtypeServer::broadcastPlayerState](../../../../rtype_server/src/RtypeServer/RtypeServerUtils.cpp) method:
-
-```cpp
-void RtypeServer::broadcastPlayerState(const Player& player) {
-    // Get the player's position
-    RealEngine::Entity* entity = player.getEntity();
-    auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
-    if (position) {
-        std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +
-                              " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
-                              std::to_string(position->x) + "," + std::to_string(position->y) + ")";
-        for (auto client : _server->getClients()) {
-            _server->send_unreliable_packet(message, client);
-        }
-    }
-}
-```
+TODO: with protocol
 
 ### Game position handling
 
-The client handles the player position updates in the [Game::handlePlayerPosition](../../../../rtype_game/src/Game/GameUtils.cpp) method:
-
-```cpp
-void rtype::Game::handlePlayerPosition(std::unordered_map<std::string, std::string> parsedPacket) {
-    const long int     uuid     = std::stol(parsedPacket.at("Uuid"));
-    const sf::Vector2f position = PeterParser::parseVector2f(parsedPacket.at("Position"));
-    float              step     = std::stof(parsedPacket.at("Step"));
-    auto               it       = _players.find(uuid);
-
-    if (it == _players.end()) return;
-    RealEngine::Entity player = it->second;
-    // Update the position component of the player
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
-    if (!positionComponent && !interpolationComponent) return;
-    positionComponent->x                 = interpolationComponent->end.x;
-    positionComponent->y                 = interpolationComponent->end.y;
-    interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    interpolationComponent->end          = position;
-    interpolationComponent->step         = 1.f / step;
-    interpolationComponent->current_step = 0.f;
-    interpolationComponent->reset        = true;
-}
-```
+TODO: with protocol

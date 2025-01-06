@@ -5,7 +5,7 @@
 
 namespace RealEngine {
 class IAudio {
-  public:
+   public:
     IAudio()                                          = default;
     ~IAudio()                                         = default;
     virtual void play()                               = 0;
@@ -14,4 +14,4 @@ class IAudio {
     virtual void setVolume(float volume)              = 0;
     virtual void setPitch(float pitch)                = 0;
 };
-} // namespace RealEngine
+}  // namespace RealEngine

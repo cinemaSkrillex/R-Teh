@@ -53,10 +53,8 @@ void ScrollingBackground::update(float deltaTime) {
     position.x += 800 / 2;
     position.y += 600 / 2;
 
-    if (position.x <= -_textureSize.x || position.x >= _textureSize.x)
-        reinitPosition(true, false);
-    if (position.y <= -_textureSize.y || position.y >= _textureSize.y)
-        reinitPosition(false, true);
+    if (position.x <= -_textureSize.x || position.x >= _textureSize.x) reinitPosition(true, false);
+    if (position.y <= -_textureSize.y || position.y >= _textureSize.y) reinitPosition(false, true);
 }
 
 void ScrollingBackground::draw(sf::RenderWindow& window) { window.draw(_sprite); }
@@ -70,8 +68,7 @@ void ScrollingBackground::setSize(float x, float y) {
 }
 
 void ScrollingBackground::setScale(float x, float y) {
-    if (x == 0 || y == 0)
-        return;
+    if (x == 0 || y == 0) return;
     setSpriteRect(0, 0, 800 * 2 * 1 / x, 600 * 2 * 1 / y);
     _sprite.setTexture(_texture);
     _textureSize.x = _texture.getSize().x * x;
@@ -144,8 +141,7 @@ void ImageBackground::setColor(float r, float g, float b, float a) {
 }
 
 ParallaxBackground::ParallaxBackground(sf::Image image, int layers) {
-    if (layers == 0)
-        return;
+    if (layers == 0) return;
     _texture.loadFromImage(image);
     _texture.setSmooth(true);
 }
@@ -182,11 +178,10 @@ void ParallaxBackground::setRotation(float angle) {
 }
 
 void ParallaxBackground::setSpeed(int layer, float speed) {
-    if (layer < 0 || layer > (int)(_sprites.size()))
-        return;
+    if (layer < 0 || layer > (int)(_sprites.size())) return;
     _speeds[layer] = speed;
 }
 
 void ParallaxBackground::setDirection(float angle) { _angle = angle; }
 
-} // namespace RealEngine
+}  // namespace RealEngine

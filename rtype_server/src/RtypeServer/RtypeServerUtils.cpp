@@ -5,7 +5,7 @@
 ** RtypeServerUtils
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 
 std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_point& start_time) {
     auto now     = std::chrono::steady_clock::now();
@@ -13,16 +13,42 @@ std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_p
     return std::to_string(elapsed);  // in milliseconds
 }
 
+// void RtypeServer::broadcastPlayerState(const Player& player) {
+//     // Get the player's position
+//     std::shared_ptr<RealEngine::Entity> entity = player.getEntity();
+//     auto* position =
+//     _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity); if (position)
+//     {
+//         std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +
+//                               " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
+//                               std::to_string(position->x) + "," + std::to_string(position->y) +
+//                               ")";
+//         for (auto client : _server->getClients()) {
+//             // _server->send_unreliable_packet(message, client);
+//         }
+//     }
+// }
+
 void RtypeServer::broadcastPlayerState(const Player& player) {
     // Get the player's position
     std::shared_ptr<RealEngine::Entity> entity = player.getEntity();
     auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
     if (position) {
-        std::string message = "Event:Player_position Uuid:" + std::to_string(player.getUUID()) +
-                              " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
-                              std::to_string(position->x) + "," + std::to_string(position->y) + ")";
-        for (auto client : _server->getClients()) {
-            _server->send_unreliable_packet(message, client);
+        // Create a PlayerMoveMessage
+        RTypeProtocol::PlayerMoveMessage playerMoveMessage;
+        playerMoveMessage.message_type = RTypeProtocol::PLAYER_MOVE;
+        playerMoveMessage.uuid         = player.getUUID();
+        playerMoveMessage.x            = position->x;
+        playerMoveMessage.y            = position->y;
+        playerMoveMessage.step         = _deltaTimeBroadcast;
+        playerMoveMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
+
+        // Serialize the PlayerMoveMessage
+        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(playerMoveMessage);
+
+        // Broadcast the serialized message to all clients
+        for (const auto& client : _server->getClients()) {
+            _server->send_unreliable_packet(serializedMessage, client);
         }
     }
 }
@@ -34,13 +60,13 @@ void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngin
                               " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
                               std::to_string(position->x) + "," + std::to_string(position->y) + ")";
         for (auto client : _server->getClients()) {
-            _server->send_unreliable_packet(message, client);
+            // _server->send_unreliable_packet(message, client);
         }
     }
 }
 
-void RtypeServer::broadCastAll(std::string message) {
-    for (auto client : _server->getClients()) {
+void RtypeServer::broadCastAll(const std::array<char, 800>& message) {
+    for (const auto& client : _server->getClients()) {
         _server->send_reliable_packet(message, client);
     }
 }
