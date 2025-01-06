@@ -15,8 +15,9 @@
 
 namespace RealEngine {
 
-#define NETVAR_UPDATE_CALLBACK_TYPE \
-    std::function<void(Registry & registry, Entity & entity, float deltaTime)>
+#define NETVAR_UPDATE_CALLBACK_TYPE                                                  \
+    std::function<void(Registry & registry, Entity & entity, Netvar & currentNetvar, \
+                       float deltaTime)>
 
 struct Netvar {
     std::string                 type;

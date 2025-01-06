@@ -10,14 +10,10 @@
 #include "../include/ECS/Registry/Registry.hpp"
 
 static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& entity,
-                           float deltaTime) {
-    std::vector<RealEngine::Netvar*> netvars = registry.get_components<RealEngine::Netvar>(entity);
-    for (auto& netvar : netvars) {
-        if (netvar->name != "shootCooldown") continue;
-        netvar->value = std::any_cast<float>(netvar->value) - deltaTime;
-        if (std::any_cast<float>(netvar->value) < 0) {
-            netvar->value = 0.f;
-        }
+                           RealEngine::Netvar& currentNetvar, float deltaTime) {
+    currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
+    if (std::any_cast<float>(currentNetvar.value) < 0) {
+        currentNetvar.value = 0.f;
     }
 }
 
