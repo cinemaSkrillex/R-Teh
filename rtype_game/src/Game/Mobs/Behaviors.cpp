@@ -24,6 +24,7 @@ void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPositio
         float dx          = targetPosition->x - position->x;
         float dy          = targetPosition->y - position->y;
         float targetAngle = std::atan2(dy, dx) * 180.0f / M_PI;
+        float maxRotation = rotationSpeed * deltaTime * 100.0f;
 
         if (rotation) {
             float currentAngle    = rotation->angle;
@@ -36,17 +37,20 @@ void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPositio
             } else if (angleDifference < -180.0f) {
                 angleDifference += 360.0f;
             }
-            if (angleDifference > 0.1f) {
-                rotation->angle += rotationSpeed * deltaTime * 100.0f;
-            } else if (angleDifference < -0.1f) {
-                rotation->angle -= rotationSpeed * deltaTime * 100.0f;
+
+            if (std::abs(angleDifference) < maxRotation) {
+                rotation->angle = targetAngle;
+            } else {
+                rotation->angle += (angleDifference > 0 ? 1 : -1) * maxRotation;
             }
+
             rotation->angle = std::fmod(rotation->angle + 360.0f, 360.0f);
         }
     }
 }
 
-void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
+void rushAndAimTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity,
+                             float deltaTime) {
     auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
     auto* position       = registry.get_component<RealEngine::Position>(entity);
     auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
@@ -63,14 +67,14 @@ void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity
         if (distance > 10.0f) {
             float accelerationX = dx / distance * 6.0f;
             float accelerationY = dy / distance * 6.0f;
-            velocity->vx += accelerationX * deltaTime;
-            velocity->vy += accelerationY * deltaTime;
+            velocity->vx += accelerationX * (deltaTime * 100.0f);
+            velocity->vy += accelerationY * (deltaTime * 100.0f);
         }
     }
 }
 
-void rushTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Entity entity,
-                                 float deltaTime) {
+void rushAndAimTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                       float deltaTime) {
     auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
     auto* position       = registry.get_component<RealEngine::Position>(entity);
     auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
@@ -91,22 +95,46 @@ void rushTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Ent
     }
 }
 
+void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
+    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
+    auto* position       = registry.get_component<RealEngine::Position>(entity);
+    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
+    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
+    auto* rotation       = registry.get_component<RealEngine::Rotation>(entity);
+    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
+
+    if (position && targetPosition && acceleration) {
+        float dx       = targetPosition->x - position->x;
+        float dy       = targetPosition->y - position->y;
+        float distance = std::sqrt(dx * dx + dy * dy);
+
+        if (distance > 10.0f) {
+            float accelerationX = dx / distance * 6.0f;
+            float accelerationY = dy / distance * 6.0f;
+            velocity->vx += accelerationX * (deltaTime * 100.0f);
+            velocity->vy += accelerationY * (deltaTime * 100.0f);
+        }
+    }
+}
+
 void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
     auto* rotation     = registry.get_component<RealEngine::Rotation>(entity);
     auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
     auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
 
-    float angleRad = rotation->angle * (M_PI / 180.0f);
-    velocity->vx += (std::cos(angleRad) * acceleration->ax) * deltaTime;
-    velocity->vy += (std::sin(angleRad) * acceleration->ay) * deltaTime;
+    float angleRad       = rotation->angle * (M_PI / 180.0f);
+    float new_velocity_x = acceleration->ax * (deltaTime * 100.0f);
+    float new_velocity_y = acceleration->ay * (deltaTime * 100.0f);
+    velocity->vx += std::cos(angleRad) * new_velocity_x;
+    velocity->vy += std::sin(angleRad) * new_velocity_y;
 }
 
 void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
     auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
     auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
 
-    velocity->vx += acceleration->ax * deltaTime;
-    velocity->vy += acceleration->ay * deltaTime;
+    velocity->vx += acceleration->ax * (deltaTime * 100.0f);
+    velocity->vy += acceleration->ay * (deltaTime * 100.0f);
 }
 
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,

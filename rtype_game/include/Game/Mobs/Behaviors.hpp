@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <cmath>
+
 #include "Engine.hpp"
 
 namespace rtype {
@@ -15,9 +17,12 @@ namespace rtype {
 void noBehavior(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPosition,
                  RealEngine::Registry& registry, float rotationSpeed, float deltaTime);
+void rushAndAimTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity,
+                             float deltaTime);
+void rushAndAimTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                       float deltaTime);
 void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
-void rushTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Entity entity,
-                                 float deltaTime);
+
 void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 
