@@ -32,7 +32,7 @@ To install the vcpkg dependencies, you can use the following command:
 #On linux
 cmake --preset linux
 #On windows
-cmake --preset windows-static
+cmake --preset windows-release (or windows-debug)
 ```
 
 To build the project, you can use the following command:

@@ -29,5 +29,5 @@ cd vcpkg
 #Linux
 cmake --preset linux
 #Windows
-cmake --preset windows
+cmake --preset windows-release (or windows-debug)
 ```
