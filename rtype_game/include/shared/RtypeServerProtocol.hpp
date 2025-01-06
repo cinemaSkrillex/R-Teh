@@ -13,7 +13,7 @@ enum MessageType : int {
     NEW_CLIENT       = 0x01,
     PLAYER_MOVE      = 0x02,
     EVENT_MESSAGE    = 0x03,
-    SYNCHRONIZE      = 0x04,
+    SYNCHRONISE      = 0x04,
     PLAYER_DIRECTION = 0x05,
     DESTROY_ENTITY   = 0x06,
 };

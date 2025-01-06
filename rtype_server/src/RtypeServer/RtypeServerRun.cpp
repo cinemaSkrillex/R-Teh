@@ -63,7 +63,8 @@ void RtypeServer::run() {
                     destroyMessage.entity_ids.push_back(entity);
                 }
                 // auto serializedMessage = RTypeProtocol::serialize(destroyMessage);
-                std::array<char, 800> serializedDestroyMessage = RTypeProtocol::serialize<800>(destroyMessage);
+                std::array<char, 800> serializedDestroyMessage =
+                    RTypeProtocol::serialize<800>(destroyMessage);
                 broadCastAll(serializedDestroyMessage);
             }
         }

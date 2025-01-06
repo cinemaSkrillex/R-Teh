@@ -55,7 +55,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleNewClient(newClientMessage);
             break;
         }
-        case RTypeProtocol::SYNCHRONIZE: {
+        case RTypeProtocol::SYNCHRONISE: {
             RTypeProtocol::SynchronizeMessage syncMessage =
                 RTypeProtocol::deserializeSynchronize(signal);
             handleSynchronize(syncMessage);
