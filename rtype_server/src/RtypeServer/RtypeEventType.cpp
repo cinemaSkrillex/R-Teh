@@ -9,24 +9,17 @@
 
 void RtypeServer::shootEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
                              Player& player) {
-    // check player entity netvar shootCooldown
-    // auto* component = registry.get_component<Component>(entity);
     auto* netvar =
         _game_instance->getRegistry()->get_component<RealEngine::Netvar>(player.getEntity());
-    if (netvar == nullptr) {
-        return;
-    }
-    if (std::any_cast<float>(netvar->value) > 0) {
+    if (netvar == nullptr || std::any_cast<float>(netvar->value) > 0) {
         return;
     }
     netvar->value = 0.5f;
 
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-
-    auto bullet = _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500);
+    auto               bullet = _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500);
 
     RTypeProtocol::NewEntityMessage bulletMessage;
-
     bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     bulletMessage.uuid         = *bullet;
 

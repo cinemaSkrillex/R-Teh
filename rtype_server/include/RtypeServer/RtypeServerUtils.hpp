@@ -10,10 +10,6 @@
 
 #include "RtypeServerProtocol.hpp"
 
-RTypeProtocol::NewEntityMessage addDrawableComponent(RTypeProtocol::NewEntityMessage& message);
-RTypeProtocol::NewEntityMessage addAutoDestructibleComponent(
-    RTypeProtocol::NewEntityMessage& message, float autoDestructibleTime);
-
 template <typename T>
 void addComponent(RTypeProtocol::NewEntityMessage& message,
                   RTypeProtocol::ComponentList componentType, const T& componentData) {
