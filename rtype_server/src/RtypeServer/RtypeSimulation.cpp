@@ -7,8 +7,8 @@
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
 
-void RtypeServer::runSimulation(const std::array<char, 800>& buffer,
-                                asio::ip::udp::endpoint& client, Player& player) {
+void RtypeServer::runSimulation(const std::array<char, 800>&   buffer,
+                                const asio::ip::udp::endpoint& client, Player& player) {
     // Deserialize the PlayerDirectionMessage
     RTypeProtocol::PlayerDirectionMessage playerDirectionMessage =
         RTypeProtocol::deserializePlayerDirection<800>(buffer);

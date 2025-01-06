@@ -7,8 +7,8 @@
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
 
-void RtypeServer::shootEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
-                             Player& player) {
+void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
+                             const asio::ip::udp::endpoint& client, Player& player) {
     auto* netvar =
         _game_instance->getRegistry()->get_component<RealEngine::Netvar>(player.getEntity());
     if (netvar == nullptr || std::any_cast<float>(netvar->value) > 0) {
