@@ -55,11 +55,19 @@ https://www.microsoft.com/fr-fr/software-download/windows11
     choco install ninja -y
     ```
 
+3. (optional) Run the script to install the dependencies
+    ```bash
+    **Powershell admin**
+    .\scripts\requirements.ps1
+    ```
+
 4. Install visual studio, and in the visual studio installer, add the c++ dependencies
     ```bash
     https://visualstudio.microsoft.com/fr/
     ```
-    In the visual studio installer, add c++, vcpkg, msvc v141 (2017) for x64 and x86
+    In the visual studio installer, choose **"import configuration"** and import the configuration file found [here](vsconfig)
+
+    **Or manually**, add c++, vcpkg, msvc v141 (2017) for x64 and x86
 
 5. Install windows sdk
     ```bash

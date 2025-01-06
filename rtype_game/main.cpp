@@ -3,27 +3,6 @@
 
 #include "Game.hpp"
 
-std::vector<char> serialize_int_vector(const std::vector<int>& int_vector) {
-    std::vector<char> buffer;
-    buffer.reserve(int_vector.size() * sizeof(int));
-
-    for (int value : int_vector) {
-        char data[sizeof(int)];
-        std::memcpy(data, &value, sizeof(int));
-        buffer.insert(buffer.end(), data, data + sizeof(int));
-    }
-
-    return buffer;
-}
-
-void print_serialized_data(const std::vector<char>& data) {
-    std::cout << "Serialized data: ";
-    for (unsigned char byte : data) {
-        std::cout << std::hex << static_cast<unsigned int>(byte) << " ";
-    }
-    std::cout << std::endl;
-}
-
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments
     if (argc != 4) {
