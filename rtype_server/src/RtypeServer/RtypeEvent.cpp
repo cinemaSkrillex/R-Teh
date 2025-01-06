@@ -92,10 +92,6 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
         // Serialize position component
         std::vector<char> positionData(sizeof(sf::Vector2f));
         std::memcpy(positionData.data(), &bullet_position, sizeof(sf::Vector2f));
-        sf::Vector2f copiedPosition;
-        std::memcpy(&copiedPosition, positionData.data(), sizeof(sf::Vector2f));
-        std::cout << "Copied Position: (" << copiedPosition.x << ", " << copiedPosition.y << ")\n";
-
         eventMessage.components.push_back({RTypeProtocol::ComponentList::POSITION, positionData});
 
         // Serialize velocity component
