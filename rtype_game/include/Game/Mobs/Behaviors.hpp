@@ -25,11 +25,16 @@ void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity
 
 void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
+void goStraightConstant(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
+void goStraightConstantAngle(RealEngine::Registry& registry, RealEngine::Entity entity,
+                             float deltaTime);
 
 // collisions
 
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                          RealEngine::Entity collider, RealEngine::Entity entity);
+void destroyOnWalls(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                    RealEngine::Entity collider, RealEngine::Entity entity);
 void destroyOnWallsAndPlayer_TakesDamage(RealEngine::CollisionType collisionType,
                                          RealEngine::Registry&     registry,
                                          RealEngine::Entity collider, RealEngine::Entity entity);
