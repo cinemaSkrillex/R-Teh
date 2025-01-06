@@ -154,7 +154,7 @@ RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
 }
 
 template <std::size_t BUFFER_SIZE>
-std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) {
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const NewEntityMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
     char*                         it     = buffer.data();
 
@@ -162,7 +162,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EventMessage& msg) 
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
     // Serialize the event type
-    writeToBuffer(it, msg.event_type);
+    // writeToBuffer(it, msg.event_type);
 
     // Serialize the components
     for (const auto& component : msg.components) {
@@ -213,16 +213,16 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage&
 
 // Deserialize an EventMessage
 template <std::size_t BUFFER_SIZE>
-RTypeProtocol::EventMessage RTypeProtocol::deserializeEventMessage(
+RTypeProtocol::NewEntityMessage RTypeProtocol::deserializeNewEntityMessage(
     const std::array<char, BUFFER_SIZE>& buffer) {
-    EventMessage msg;
+    NewEntityMessage msg;
     const char*  it = buffer.data();
 
     // Deserialize the base message
     readFromBuffer(it, static_cast<BaseMessage&>(msg));
 
     // Deserialize the event type
-    readFromBuffer(it, msg.event_type);
+    // readFromBuffer(it, msg.event_type);
 
     // Deserialize each component by reading [componentType, dataLength, rawData]
     while (it + sizeof(int) + sizeof(int) <= buffer.data() + BUFFER_SIZE) {

@@ -28,14 +28,8 @@ void RtypeServer::run() {
 
                     if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
                         runSimulation(message, client, _players.at(client));
-                    } else if (baseMessage.message_type == RTypeProtocol::EVENT_MESSAGE) {
-                        runEvent(message, client, _players.at(client));
                     } else {
-                        // Handle unknown or unsupported message types (you can log or handle
-                        // errors)
-                        std::cout << "Unknown message type: " << baseMessage.message_type
-                                  << std::endl;
-                        break;
+                        runEvent(message, client, _players.at(client));
                     }
 
                     // event is only used for shooting right now so we will just run a

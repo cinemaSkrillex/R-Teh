@@ -12,15 +12,16 @@ namespace RTypeProtocol {
 enum MessageType : int {
     NEW_CLIENT       = 0x01,
     PLAYER_MOVE      = 0x02,
-    EVENT_MESSAGE    = 0x03,
+    NEW_ENTITY       = 0x03,
     SYNCHRONIZE      = 0x04,
     PLAYER_DIRECTION = 0x05,
     DESTROY_ENTITY   = 0x06,
+    SHOOT_EVENT      = 0x07,
 };
 
-enum EventType : int {
-    SHOOT = 0x01,
-};
+// enum EventType : int {
+//     SHOOT = 0x01,
+// };
 
 enum ComponentList : int {
     POSITION          = 0x01,
@@ -61,8 +62,7 @@ struct SynchronizeMessage : BaseMessage {
 };
 
 // Event message structure
-struct EventMessage : BaseMessage {
-    EventType event_type;
+struct NewEntityMessage : BaseMessage {
     std::vector<std::pair<ComponentList, std::vector<char>>>
         components;  // Component ID and serialized data
 };
@@ -83,7 +83,7 @@ template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const PlayerMoveMessage& msg);
 
 template <std::size_t BUFFER_SIZE>
-std::array<char, BUFFER_SIZE> serialize(const EventMessage& msg);
+std::array<char, BUFFER_SIZE> serialize(const NewEntityMessage& msg);
 
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const SynchronizeMessage& msg);
@@ -99,7 +99,7 @@ template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
 
 template <std::size_t BUFFER_SIZE>
-EventMessage deserializeEventMessage(const std::array<char, BUFFER_SIZE>& buffer);
+NewEntityMessage deserializeNewEntityMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 template <std::size_t BUFFER_SIZE>
 PlayerDirectionMessage deserializePlayerDirection(const std::array<char, BUFFER_SIZE>& buffer);
