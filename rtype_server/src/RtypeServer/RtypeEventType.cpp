@@ -49,7 +49,7 @@ void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
     bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
 
     // Serialize auto destructible component
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 5.f);
+    addComponent(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
 
     // Serialize drawable component
     addComponent(bulletMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
