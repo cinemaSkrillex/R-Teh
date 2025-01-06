@@ -19,20 +19,6 @@ void RtypeServer::run() {
             _deltaTime = _clock.restart().asSeconds();
 
             // Do server work
-            // for (auto client : _server->getClients()) {
-            //     // Process all messages from the client
-            //     for (const auto& message :
-            //     _server->get_unreliable_messages_from_endpoint(client)) {
-            //         RTypeProtocol::BaseMessage baseMessage =
-            //             RTypeProtocol::deserialize<800>(message);
-
-            //         if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
-            //             runSimulation(message, client, _players.at(client));
-            //         } else {
-            //             runEvent(message, client, _players.at(client));
-            //         }
-            //     }
-            // }
             for (const auto& client : _server->getClients()) {  // Use reference to avoid copying
                 auto& player = _players.at(client);  // Store reference to avoid repeated lookups
                 const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
