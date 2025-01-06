@@ -113,9 +113,9 @@ void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket)
 //     const std::string positions      = parsedPacket.at("Position");
 //     sf::Vector2f      localPlayerPos = PeterParser::parseVector2f(positions);
 //     std::cout << "Player uuid: " << _localPlayerUUID << std::endl;
-//     _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
-//     const std::vector<PeterParser::PlayerData> datas = PeterParser::parsePlayerList(players);
-//     for (PeterParser::PlayerData player : datas) {
+//     _registry.add_component(_player_entity, RealEngine::Position{localPlayerPos.x,
+//     localPlayerPos.y}); const std::vector<PeterParser::PlayerData> datas =
+//     PeterParser::parsePlayerList(players); for (PeterParser::PlayerData player : datas) {
 //         add_player(std::stol(player.uuid), player.position);
 //     }
 // }
@@ -126,7 +126,8 @@ void rtype::Game::handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPack
     auto client_now             = std::chrono::steady_clock::now();
     _startTime                  = client_now - std::chrono::milliseconds(_serverTime);
     sf::Vector2f localPlayerPos = {parsedPacket.x, parsedPacket.y};
-    _registry.add_component(_entity2, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
+    _registry.add_component(_player_entity,
+                            RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
     for (const auto& player : parsedPacket.players) {
         add_player(player.first, player.second);
     }
@@ -384,8 +385,8 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
             _players.erase(playerIt);
         }
         if (_localPlayerUUID == entity_id) {
-            _registry.remove_entity(*_entity2);
-            _entity2.reset();
+            _registry.remove_entity(*_player_entity);
+            _player_entity.reset();
         }
     }
 }
@@ -411,8 +412,8 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
 //                     _players.erase(playerIt);
 //                 }
 //                 if (_localPlayerUUID == id) {
-//                     _registry.remove_entity(*_entity2);
-//                     _entity2.reset();
+//                     _registry.remove_entity(*_player_entity);
+//                     _player_entity.reset();
 //                 }
 //             }
 //             break;
