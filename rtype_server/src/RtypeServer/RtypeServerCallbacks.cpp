@@ -38,6 +38,70 @@ std::array<char, BUFFER_SIZE> createNewClientMessage(long uuid, float x, float y
     return RTypeProtocol::serialize<BUFFER_SIZE>(newClientMessage);
 }
 
+void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
+    for (const auto& mob : _game_instance->getSimpleMobs()) {
+        if (!mob) continue;
+
+        auto* position = _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
+        auto* destructible =
+            _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
+        auto* velocity = _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
+        auto* rotation = _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
+
+        if (!position || !destructible || !velocity) continue;
+
+        RTypeProtocol::NewEntityMessage eventMessage;
+        eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+        eventMessage.uuid         = *mob;
+
+        // Serialize position and velocity component
+        addComponent(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);
+        addComponent(eventMessage, RTypeProtocol::ComponentList::VELOCITY, *velocity);
+
+        // Serialize rotation component
+        if (rotation) {
+            std::vector<char> rotationData(sizeof(RealEngine::Rotation));
+            std::memcpy(rotationData.data(), rotation, sizeof(RealEngine::Rotation));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::ROTATION, rotationData});
+        }
+
+        // Serialize collision component
+        sf::FloatRect             bounds      = {0, 0, 16, 8};
+        std::string               id          = "mob";
+        bool                      isColliding = false;
+        RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+        std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                        sizeof(type));
+        char*             collisionPtr = collisionData.data();
+        std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+        collisionPtr += sizeof(bounds);
+        std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+        collisionPtr += id.size() + 1;
+        std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+        collisionPtr += sizeof(isColliding);
+        std::memcpy(collisionPtr, &type, sizeof(type));
+        eventMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
+
+        // Serialize auto destructible component
+        float autoDestructible = destructible->lifeTime;
+        addComponent(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
+                     autoDestructible);
+        // Serialize drawable component
+        bool drawable = true;
+        addComponent(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
+
+        // Serialize sprite component
+        std::string       sprite = "enemy";
+        std::vector<char> spriteData(sprite.begin(), sprite.end());
+        addComponent(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+        std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
+        _server->send_reliable_packet(serializedEventMessage, sender);
+    }
+}
+
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
         sf::Vector2f player_start_position =
@@ -72,72 +136,7 @@ void RtypeServer::initCallbacks() {
         _server->send_reliable_packet(synchronizeMessage, sender);
 
         // Send all the entities to the new client, so it can synchronize and move
-        for (const auto& mob : _game_instance->getSimpleMobs()) {
-            if (!mob) continue;
-
-            auto* position =
-                _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
-            auto* destructible =
-                _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
-            auto* velocity =
-                _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
-            auto* rotation =
-                _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
-
-            if (!position || !destructible || !velocity) continue;
-
-            RTypeProtocol::NewEntityMessage eventMessage;
-            eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-            eventMessage.uuid         = *mob;
-
-            // Serialize position and velocity component
-            addComponent(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);
-            addComponent(eventMessage, RTypeProtocol::ComponentList::VELOCITY, *velocity);
-
-            // Serialize rotation component
-            if (rotation) {
-                std::vector<char> rotationData(sizeof(RealEngine::Rotation));
-                std::memcpy(rotationData.data(), rotation, sizeof(RealEngine::Rotation));
-                eventMessage.components.push_back(
-                    {RTypeProtocol::ComponentList::ROTATION, rotationData});
-            }
-
-            // Serialize collision component
-            sf::FloatRect             bounds      = {0, 0, 16, 8};
-            std::string               id          = "mob";
-            bool                      isColliding = false;
-            RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
-
-            std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                            sizeof(type));
-            char*             collisionPtr = collisionData.data();
-            std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-            collisionPtr += sizeof(bounds);
-            std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-            collisionPtr += id.size() + 1;
-            std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-            collisionPtr += sizeof(isColliding);
-            std::memcpy(collisionPtr, &type, sizeof(type));
-            eventMessage.components.push_back(
-                {RTypeProtocol::ComponentList::COLLISION, collisionData});
-
-            // Serialize auto destructible component
-            float autoDestructible = destructible->lifeTime;
-            addComponent(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
-                         autoDestructible);
-            // Serialize drawable component
-            bool drawable = true;
-            addComponent(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
-
-            // Serialize sprite component
-            std::string       sprite = "enemy";
-            std::vector<char> spriteData(sprite.begin(), sprite.end());
-            addComponent(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
-
-            std::array<char, 800> serializedEventMessage =
-                RTypeProtocol::serialize<800>(eventMessage);
-            _server->send_reliable_packet(serializedEventMessage, sender);
-        }
+        init_callback_mobs(sender);
         _players[sender] = player;
     });
 }
