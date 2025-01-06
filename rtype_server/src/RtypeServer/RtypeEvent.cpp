@@ -9,11 +9,8 @@
 
 void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
                            Player& player) {
-    // RTypeProtocol::NewEntityMessage eventMessage =
-    // RTypeProtocol::deserializeNewEntityMessage(buffer);
     RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<800>(buffer);
 
-    // if (eventMessage.event_type == RTypeProtocol::EventType::SHOOT) {
     if (baseMessage.message_type == RTypeProtocol::MessageType::SHOOT_EVENT) {
         // check player entity netvar shootCooldown
         // auto* component = registry.get_component<Component>(entity);
@@ -68,18 +65,10 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
             {RTypeProtocol::ComponentList::COLLISION, collisionData});
 
         // Serialize auto destructible component
-        float             autoDestructible = 5.f;
-        std::vector<char> autoDestructibleData(sizeof(int));
-        std::memcpy(autoDestructibleData.data(), &autoDestructible, sizeof(int));
-        bulletMessage.components.push_back(
-            {RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, autoDestructibleData});
+        bulletMessage = addAutoDestructibleComponent(bulletMessage, 5.f);
 
         // Serialize drawable component
-        bool              drawable = true;
-        std::vector<char> drawableData(sizeof(bool));
-        std::memcpy(drawableData.data(), &drawable, sizeof(bool));
-        bulletMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, drawableData});
-        // eventMessage.components.push_back({RTypeProtocol::ComponentList::DRAWABLE, {}});
+        bulletMessage = addDrawableComponent(bulletMessage);
 
         // Serialize sprite component
         std::string       sprite = "bullet";
