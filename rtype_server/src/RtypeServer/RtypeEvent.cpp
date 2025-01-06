@@ -5,11 +5,12 @@
 ** RtypeEvent
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 
 void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
                            Player& player) {
-    // RTypeProtocol::NewEntityMessage eventMessage = RTypeProtocol::deserializeNewEntityMessage(buffer);
+    // RTypeProtocol::NewEntityMessage eventMessage =
+    // RTypeProtocol::deserializeNewEntityMessage(buffer);
     RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<800>(buffer);
 
     // if (eventMessage.event_type == RTypeProtocol::EventType::SHOOT) {
@@ -63,7 +64,8 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
         std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
         collisionPtr += sizeof(isColliding);
         std::memcpy(collisionPtr, &type, sizeof(type));
-        bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
+        bulletMessage.components.push_back(
+            {RTypeProtocol::ComponentList::COLLISION, collisionData});
 
         // Serialize auto destructible component
         float             autoDestructible = 5.f;
@@ -89,6 +91,5 @@ void RtypeServer::runEvent(const std::array<char, 800>& buffer, asio::ip::udp::e
 
         return;
     }
-    std::cout << "Unknown message type: " << baseMessage.message_type
-              << std::endl;
+    std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
 }
