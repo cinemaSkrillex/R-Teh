@@ -92,6 +92,10 @@ class RtypeServer {
 
     void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                     Player& player);
+    void holdShootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
+                        Player& player);
+    void releaseShootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
+                           Player& player);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
