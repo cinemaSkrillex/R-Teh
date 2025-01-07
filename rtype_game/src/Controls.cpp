@@ -43,4 +43,14 @@ void Controls::shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& a
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);
 }
+
+void Controls::holdShoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                         RealEngine::Position& position, float deltaTime) {
+    std::cout << "HOLD SHOOT" << std::endl;
+}
+
+void Controls::releaseShoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                            RealEngine::Position& position, float deltaTime) {
+    std::cout << "RELEASE SHOOT" << std::endl;
+}
 }  // namespace rtype

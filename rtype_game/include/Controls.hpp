@@ -30,6 +30,10 @@ class Controls {
                    RealEngine::Position& position, float deltaTime);
     void shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
                RealEngine::Position& position, float deltaTime);
+    void holdShoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                   RealEngine::Position& position, float deltaTime);
+    void releaseShoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
+                      RealEngine::Position& position, float deltaTime);
 
    private:
     RealEngine::Registry&      _registry;

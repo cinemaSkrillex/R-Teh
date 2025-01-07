@@ -328,7 +328,7 @@ void Game::bind_keys() {
     _controlSystem.bindKey(sf::Keyboard::Down, RealEngine::Action::Down);
     _controlSystem.bindKey(sf::Keyboard::Left, RealEngine::Action::Left);
     _controlSystem.bindKey(sf::Keyboard::Right, RealEngine::Action::Right);
-    _controlSystem.bindKey(sf::Keyboard::Space, RealEngine::Action::Action1);
+    _controlSystem.bindKey(sf::Keyboard::Space, RealEngine::Action::Action1, true);
 }
 
 void Game::set_action_handlers() {
@@ -352,6 +352,14 @@ void Game::set_action_handlers() {
         RealEngine::Action::Action1,
         std::bind(&rtype::Controls::shoot, &_controls, std::placeholders::_1, std::placeholders::_2,
                   std::placeholders::_3, std::placeholders::_4));
+    _controlSystem.setActionHoldHandler(
+        RealEngine::Action::Action1,
+        std::bind(&rtype::Controls::holdShoot, &_controls, std::placeholders::_1, std::placeholders::_2,
+                  std::placeholders::_3, std::placeholders::_4));
+    _controlSystem.setActionReleaseHandler(
+        RealEngine::Action::Action1,
+        std::bind(&rtype::Controls::releaseShoot, &_controls, std::placeholders::_1, std::placeholders::_2,
+                  std::placeholders::_3, std::placeholders::_4));
 }
 
 void Game::set_sprite_scales() {
@@ -373,7 +381,7 @@ void Game::init_player_entity() {
     _registry.add_component(_player_entity, RealEngine::Position{200.f, 200.f});
     _registry.add_component(_player_entity,
                             RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    _registry.add_component(_player_entity, RealEngine::Acceleration{10.0f, 10.0f, 10.0f});
+    _registry.add_component(_player_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     _registry.add_component(_player_entity, RealEngine::Controllable{});
     _registry.add_component(_player_entity, RealEngine::Drawable{});
     _registry.add_component(
