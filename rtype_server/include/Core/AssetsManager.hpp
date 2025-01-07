@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <filesystem>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -16,6 +17,8 @@
 #include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
+
+#define DEBUG 0
 class AssetManager {
    public:
     static AssetManager& getInstance() {
@@ -86,6 +89,58 @@ class AssetManager {
     }
 
     void unloadSprite(const std::string& id) { _sprites.erase(id); }
+
+    /**
+     * @brief Loads textures from a specified folder and scales them.
+     *
+     * This function iterates through all files in the specified folder, loads PNG textures,
+     * and scales them according to the provided scale factor. The textures are identified
+     * by a unique ID, which is created by combining the folder name and the file name.
+     *
+     * @param folderPath The path to the folder containing the textures.
+     * @param folderName The name of the folder to be used as a prefix for texture IDs.
+     *                   If empty, only the file name is used as the texture ID.
+     * @param scale The scale factor to be applied to the textures.
+     *
+     * @example
+     * @code
+     * sf::Vector2f scale(1.0f, 1.0f);
+     * loadTexturesFromFolder("assets/textures", "textures", scale);
+     * @endcode
+     */
+    void loadTexturesFromFolder(const std::string& folderPath, const std::string& folderName,
+                                const sf::Vector2f& scale) {
+        try {
+            for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+                if (entry.is_regular_file()) {
+                    std::string filePath = entry.path().string();
+                    std::string fileName =
+                        entry.path().stem().string();  // File name without extension
+
+                    if (entry.path().extension() == ".png") {
+                        std::string textureId;
+                        if (folderName.empty()) {
+                            textureId = fileName;  // Use only fileName if folderName is empty
+                        } else {
+                            textureId =
+                                folderName + "_" + fileName;  // Create ID with folder prefix
+                        }
+                        loadSpriteTextureAndScale(textureId, filePath, scale);
+                        if (DEBUG) {
+                            std::cout << "Loaded texture: " << textureId << " from " << filePath
+                                      << std::endl;
+                        }
+                    } else {
+                        std::cout << "Skipping file: " << filePath << "it's not a PNG" << std::endl;
+                        continue;
+                    }
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to load textures from folder: " << folderPath << " - " << e.what()
+                      << std::endl;
+        }
+    }
 
    private:
     AssetManager()  = default;

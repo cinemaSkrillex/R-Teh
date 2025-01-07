@@ -181,9 +181,6 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     std::vector<RTypeProtocol::Tile> tiles = _server_map->getTiles();
     for (const auto& tile : tiles) {
-        std::cout << "Tile: " << tile.position.x << " " << tile.position.y << std::endl;
-        std::cout << "Tile: " << tile.type << " " << tile.element << "rotation " << tile.rotation
-                  << std::endl;
         RTypeProtocol::NewEntityMessage newTileMessage;
         newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
         newTileMessage.uuid         = 1000;
@@ -192,7 +189,6 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
             rtype::Block newBlock(*_game_instance->getRegistry(), tile.position, tile.element,
                                   tile.rotation);
 
-            std::cout << "Creating block" << std::endl;
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
                                   tile.position);
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
@@ -206,18 +202,7 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
             bool                      isColliding = false;
             RealEngine::CollisionType type        = RealEngine::CollisionType::SOLID;
 
-            std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                            sizeof(type));
-            char*             collisionPtr = collisionData.data();
-            std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-            collisionPtr += sizeof(bounds);
-            std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-            collisionPtr += id.size() + 1;
-            std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-            collisionPtr += sizeof(isColliding);
-            std::memcpy(collisionPtr, &type, sizeof(type));
-            newTileMessage.components.push_back(
-                {RTypeProtocol::ComponentList::COLLISION, collisionData});
+            addCollisionComponentToMessage(newTileMessage, bounds, id, isColliding, type);
 
             std::string       sprite = tile.element;
             std::vector<char> spriteData(sprite.begin(), sprite.end());

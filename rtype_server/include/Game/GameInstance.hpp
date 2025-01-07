@@ -24,6 +24,8 @@ class GameInstance {
     void init_sprites();
     void set_sprite_scales();
 
+    void init_level(std::string filepath, std::string foldername);
+
     void handleSignal(const std::string& message);
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);

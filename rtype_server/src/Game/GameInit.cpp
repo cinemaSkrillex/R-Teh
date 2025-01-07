@@ -112,6 +112,9 @@ void GameInstance::init_mobs() {
 
 void GameInstance::init_textures() {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+
+    init_level("../../assets/sprites/tiles/lv1", "lvl1");
+
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up",
                                                    "../../assets/sprites/spaceship.png",
                                                    {GAME_SCALE, GAME_SCALE}, {0, 0, 32 * 2, 15});
@@ -193,14 +196,13 @@ void GameInstance::init_textures() {
         "big_bullet", "../../assets/sprites/big_shoot.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale(
         "mid_bullet", "../../assets/sprites/medium_shoot.png", {GAME_SCALE, GAME_SCALE});
-
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "big_arm", "../../assets/sprites/tiles/lv1/big_arm.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "block_1", "../../assets/sprites/tiles/lv1/block_1.png", {GAME_SCALE, GAME_SCALE});
-
     AssetManagerInstance.loadSpriteTextureAndScale(
         "spaceship_other", "../../assets/sprites/spaceship.png", {GAME_SCALE, GAME_SCALE});
+}
+
+void GameInstance::init_level(std::string filepath, std::string foldername) {
+    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
 }
 
 void GameInstance::init_sprites() { set_sprite_scales(); }

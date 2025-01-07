@@ -49,6 +49,8 @@ class Game {
     void init_textures();
     void init_sprites();
 
+    void init_level(std::string filepath, std::string foldername);
+
     void register_components();
     void bind_keys();
     void set_action_handlers();
