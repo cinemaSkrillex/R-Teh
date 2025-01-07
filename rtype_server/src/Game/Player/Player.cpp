@@ -56,6 +56,17 @@ static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& e
     }
 }
 
+static void updateHoldTime(RealEngine::Registry& registry, RealEngine::Entity& entity,
+                           RealEngine::Netvar& currentNetvar, float deltaTime) {
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* isHolding = container->getNetvar("isHolding");
+    if (std::any_cast<bool>(isHolding->value)) {
+        currentNetvar.value = std::any_cast<float>(currentNetvar.value) + deltaTime;
+    } else {
+        currentNetvar.value = 0.f;
+    }
+}
+
 PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     _playerSpriteSheet.emplace(
@@ -69,8 +80,14 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_entity, RealEngine::Controllable{});
     registry.add_component(_entity, RealEngine::Health{100, 200});
-    registry.add_component(_entity,
-                           RealEngine::Netvar{"float", "shootCooldown", 0.5f, updateCooldown});
+    // registry.add_component(_entity,
+    //                        RealEngine::Netvar{"float", "shootCooldown", 0.5f, updateCooldown});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
+             {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
+             {"isHolding", {"bool", "isHolding", false, nullptr}}}});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{

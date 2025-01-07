@@ -37,9 +37,8 @@ static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
     }
 }
 
-// no more direction, the bullet will always go in the direction of its angle
 Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-               float speed)
+               float speed, std::string spriteName, float damage, int health)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
@@ -47,7 +46,7 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
         RealEngine::Velocity{direction.x * speed, direction.y * speed, {500.f, 500.f}, 0.f});
     registry.add_component(_entity,
                            RealEngine::SpriteComponent{
-                               *(RealEngine::AssetManager::getInstance().getSprite("bullet"))});
+                               *(RealEngine::AssetManager::getInstance().getSprite(spriteName))});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
@@ -56,8 +55,8 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
                                                  RealEngine::CollisionType::ALLY_BULLET,
                                                  destroyOnWallsAndEnemies});
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
-    registry.add_component(_entity, RealEngine::Damage{10});
-    registry.add_component(_entity, RealEngine::Health{10, 20});
+    registry.add_component(_entity, RealEngine::Damage{damage});
+    registry.add_component(_entity, RealEngine::Health{health, health});
 }
 
 Bullet::~Bullet() {}

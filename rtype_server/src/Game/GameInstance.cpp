@@ -39,25 +39,29 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 
     _netvarSystem.update(_registry, deltaTime);
     _simpleMobs.erase(
-        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
-                       [&](const auto& mob) {
-                           std::vector<RealEngine::Netvar*> netvars =
-                               _registry.get_components<RealEngine::Netvar>(mob);
-                           for (auto& netvar : netvars) {
-                               if (netvar->name != "dropChance") continue;
-                               netvar->value = std::any_cast<float>(netvar->value);
-                               if (std::any_cast<float>(netvar->value) < 0) {
-                                   auto powerup = _registry.spawn_entity();
-                                   auto position = _registry.get_component<RealEngine::Position>(mob);
-                                   _registry.add_component(powerup, RealEngine::Position{position->x, position->y});
-                                   _registry.add_component(
-                                       powerup,
-                                       RealEngine::Collision{
-                                           {0.f, 0.f, 12.f, 12.f}, "powerup_shoot", false, RealEngine::CollisionType::PICKABLE, nullptr});
-                               }
-                           }
-                           return _registry.get_component<RealEngine::Health>(mob) == nullptr;
-                       }),
+        std::remove_if(
+            _simpleMobs.begin(), _simpleMobs.end(),
+            [&](const auto& mob) {
+                std::vector<RealEngine::Netvar*> netvars =
+                    _registry.get_components<RealEngine::Netvar>(mob);
+                for (auto& netvar : netvars) {
+                    if (netvar->name != "dropChance") continue;
+                    netvar->value = std::any_cast<float>(netvar->value);
+                    if (std::any_cast<float>(netvar->value) < 0) {
+                        auto powerup  = _registry.spawn_entity();
+                        auto position = _registry.get_component<RealEngine::Position>(mob);
+                        _registry.add_component(powerup,
+                                                RealEngine::Position{position->x, position->y});
+                        _registry.add_component(
+                            powerup, RealEngine::Collision{{0.f, 0.f, 12.f, 12.f},
+                                                           "powerup_shoot",
+                                                           false,
+                                                           RealEngine::CollisionType::PICKABLE,
+                                                           nullptr});
+                    }
+                }
+                return _registry.get_component<RealEngine::Health>(mob) == nullptr;
+            }),
         _simpleMobs.end());
 
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
@@ -94,10 +98,10 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f p
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
                                                                   sf::Vector2f direction,
-                                                                  float        speed) {
-    // std::shared_ptr<rtype::Bullet> bullet =
-    //     std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
-    rtype::Bullet bullet(_registry, position, direction, speed);
+                                                                  float        speed,
+                                                                  std::string  spriteName,
+                                                                  float damage, int health) {
+    rtype::Bullet bullet(_registry, position, direction, speed, spriteName, damage, health);
     _bullets.push_back(bullet.getEntity());
     return bullet.getEntity();
 }
