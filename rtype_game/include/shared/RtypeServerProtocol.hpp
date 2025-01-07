@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "../ECS/Components/Collision.hpp"
+
 namespace RTypeProtocol {
 
 struct Tile {
