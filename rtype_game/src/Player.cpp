@@ -48,6 +48,7 @@ void Game::player_take_damage(RealEngine::Entity collider) {
 
     if (playerHealth) {
         if (colliderDamage) {
+            std::cerr << "ENEMY COLLIDED" << std::endl;
             playerHealth->damage += colliderDamage->amount;
         }
     }

@@ -43,14 +43,16 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
 
     auto more_background = _registry.spawn_entity();
     _registry.add_component(more_background, RealEngine::Position{0.f, 200.f});
-    auto more_background_sprite = RealEngine::Sprite{_textures["spaceship_up"]};
-    more_background_sprite.setScale(20, 2);
-    _registry.add_component(more_background, RealEngine::SpriteComponent{more_background_sprite});
-    _registry.add_component(more_background,
-                            RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-                                                  "spaceship_up",
-                                                  false,
-                                                  RealEngine::CollisionType::SOLID});
+    // auto more_background_sprite = RealEngine::Sprite{_textures["spaceship_up"]};
+    // more_background_sprite.setScale(20, 2);
+    // _registry.add_component(more_background,
+    // RealEngine::SpriteComponent{more_background_sprite});
+    // _registry.add_component(more_background,
+    //                         RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f *
+    //                         GAME_SCALE},
+    //                                               "spaceship_up",
+    //                                               false,
+    //                                               RealEngine::CollisionType::SOLID});
     _registry.add_component(more_background, RealEngine::Drawable{});
 
     // Example usage in game logic

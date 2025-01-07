@@ -19,17 +19,10 @@
 #include "Engine.hpp"
 #include "RtypeServerProtocol.hpp"
 
-struct Tile {
-    std::string             element;        // e.g., "background"
-    std::string             type;           // e.g., "block_1"
-    std::pair<float, float> position;       // (x, y)
-    std::string             collisionType;  // e.g., "SOLID", "NONE"
-};
-
 class ServerMap {
    private:
-    std::string       _map_name;
-    std::vector<Tile> _tiles;  // Updated to store richer tile data
+    std::string                      _map_name;
+    std::vector<RTypeProtocol::Tile> _tiles;  // Updated to store richer tile data
 
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
@@ -43,8 +36,8 @@ class ServerMap {
     void saveToJSON(const std::string& filepath);
 
     // Accessor methods
-    const std::vector<Tile>& getTiles() const { return _tiles; }
-    void                     addTile(const Tile& tile) { _tiles.push_back(tile); }
+    const std::vector<RTypeProtocol::Tile>& getTiles() const { return _tiles; }
+    void addTile(const RTypeProtocol::Tile& tile) { _tiles.push_back(tile); }
     // Accessor methods (omitted here for brevity but same as before)
     // Modifiers and debug methods (omitted here for brevity)
 };

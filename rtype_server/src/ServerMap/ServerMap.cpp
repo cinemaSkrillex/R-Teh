@@ -59,7 +59,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
     // Load tiles
     const auto& tiles = root["mapData"]["tiles"];
     for (const auto& tileJson : tiles) {
-        Tile tile;
+        RTypeProtocol::Tile tile;
         tile.element       = tileJson["element"].asString();
         tile.type          = tileJson["type"].asString();
         tile.position      = {tileJson["position"][0].asFloat(), tileJson["position"][1].asFloat()};

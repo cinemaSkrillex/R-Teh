@@ -68,6 +68,7 @@ void SimpleMob::mob_collision_handler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::OTHER:
             break;
         case RealEngine::CollisionType::PLAYER:
+            std::cerr << "PLAYER COLLIDED" << std::endl;
             mob_take_damage(registry, collider, entity);
             break;
         case RealEngine::CollisionType::ALLY_BULLET:

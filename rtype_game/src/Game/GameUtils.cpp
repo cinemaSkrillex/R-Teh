@@ -107,16 +107,17 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
-                std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+                // std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
                 _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
             case RTypeProtocol::ComponentList::VELOCITY: {
                 RealEngine::Velocity velocity;
                 std::memcpy(&velocity, component.second.data(), sizeof(velocity));
-                std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << "), MaxSpeed: ("
-                          << velocity.maxSpeed.x << ", " << velocity.maxSpeed.y
-                          << "), AirFrictionForce: " << velocity.airFrictionForce << "\n";
+                // std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << "), MaxSpeed:
+                // ("
+                //           << velocity.maxSpeed.x << ", " << velocity.maxSpeed.y
+                //           << "), AirFrictionForce: " << velocity.airFrictionForce << "\n";
                 _registry.add_component(
                     newEntity, RealEngine::Velocity{velocity.vx, velocity.vy, velocity.maxSpeed,
                                                     velocity.airFrictionForce});
@@ -136,7 +137,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::ROTATION: {
                 RealEngine::Rotation rotation;
                 std::memcpy(&rotation, component.second.data(), sizeof(rotation));
-                std::cout << "Rotation: " << rotation.angle << "\n";
+                // std::cout << "Rotation: " << rotation.angle << "\n";
                 _registry.add_component(newEntity, RealEngine::Rotation{rotation.angle});
                 break;
             }
@@ -153,13 +154,13 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
                 float autoDestructible;
                 std::memcpy(&autoDestructible, component.second.data(), sizeof(autoDestructible));
-                std::cout << "AutoDestructible: " << autoDestructible << "\n";
+                // std::cout << "AutoDestructible: " << autoDestructible << "\n";
                 _registry.add_component<RealEngine::AutoDestructible>(
                     *newEntity, RealEngine::AutoDestructible{autoDestructible});
                 break;
             }
             case RTypeProtocol::ComponentList::DRAWABLE: {
-                std::cout << "Drawable: " << std::endl;
+                // std::cout << "Drawable: " << std::endl;
                 _registry.add_component<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
                 break;
             }

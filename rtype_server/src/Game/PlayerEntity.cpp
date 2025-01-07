@@ -67,6 +67,7 @@ void Player::player_collision_handler(RealEngine::CollisionType collisionType,
             // handle pickable
             break;
         case RealEngine::CollisionType::OTHER:
+            // std::cout << "OTHER" << std::endl;
             break;
         case RealEngine::CollisionType::ENEMY:
             break;
@@ -94,12 +95,12 @@ void Player::player_collide_with_ground(RealEngine::Registry& registry, RealEngi
 
 void Player::player_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                                 RealEngine::Entity entity) {
-    // auto* playerHealth   = registry.get_component<RealEngine::Health>(*_playerEntity);
     auto* playerHealth   = registry.get_component<RealEngine::Health>(entity);
     auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
 
     if (playerHealth) {
         if (colliderDamage) {
+            std::cerr << "ENEMY COLLIDED" << std::endl;
             playerHealth->damage += colliderDamage->amount;
         }
     }

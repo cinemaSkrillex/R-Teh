@@ -82,6 +82,7 @@ class RtypeServer {
 
     void   initCallbacks();
     void   init_callback_mobs(const asio::ip::udp::endpoint& client);
+    void   init_callback_map(const asio::ip::udp::endpoint& client);
     Player init_callback_players(const asio::ip::udp::endpoint& client);
 
     void broadcastPlayerState(const Player& player);
@@ -91,8 +92,9 @@ class RtypeServer {
 
     void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                     Player& player);
-
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
+
+    void preloadTextures();
 
    public:
     RtypeServer(std::shared_ptr<UDPServer> server);

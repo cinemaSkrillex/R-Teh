@@ -86,6 +86,7 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
 
         // Serialize auto destructible component
         float autoDestructible = destructible->lifeTime;
+        std::cout << "Auto destructibleFLOAT: " << autoDestructible << std::endl;
         addComponent(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
                      autoDestructible);
         // Serialize drawable component
@@ -135,12 +136,94 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
     return player;
 }
 
+void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
+    // Create the map entity message
+    // RTypeProtocol::NewEntityMessage spaceshipMessage;
+    // spaceshipMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+    // spaceshipMessage.uuid         = 1;  // Example UUID for the entity
+
+    // // Serialize position component
+    // sf::Vector2f spaceshipPosition = {100.f, 20.f};
+    // addComponent(spaceshipMessage, RTypeProtocol::ComponentList::POSITION, spaceshipPosition);
+
+    // // Serialize collision component
+    // sf::FloatRect             bounds      = {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE};
+    // std::string               id          = "spaceship_up";
+    // bool                      isColliding = true;
+    // RealEngine::CollisionType type        = RealEngine::CollisionType::SOLID;
+
+    // std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+    //                                 sizeof(type));
+    // char*             collisionPtr = collisionData.data();
+    // std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+    // collisionPtr += sizeof(bounds);
+    // std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+    // collisionPtr += id.size() + 1;
+    // std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+    // collisionPtr += sizeof(isColliding);
+    // std::memcpy(collisionPtr, &type, sizeof(type));
+    // spaceshipMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION,
+    // collisionData});
+
+    // // Serialize drawable component
+    // addComponent(spaceshipMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+    // // Serialize sprite component
+    // std::string       sprite = "spaceship_up";  // Match the texture name loaded in init_textures
+    // std::vector<char> spriteData(sprite.begin(), sprite.end());
+    // addComponent(spaceshipMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+    // // Serialize the entity message
+    // std::array<char, 800> serializedSpaceshipMessage =
+    //     RTypeProtocol::serialize<800>(spaceshipMessage);
+
+    // // Send the serialized message to the client
+    // _server->send_reliable_packet(serializedSpaceshipMessage, sender);
+    RTypeProtocol::NewEntityMessage spaceshipMessage;
+    spaceshipMessage.message_type         = RTypeProtocol::MessageType::NEW_ENTITY;
+    spaceshipMessage.uuid                 = 1000;  // Example UUID for the entity
+    sf::FloatRect             bounds      = {0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE};
+    std::string               id          = "spaceship_up";
+    bool                      isColliding = false;
+    RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+
+    std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                    sizeof(type));
+    char*             collisionPtr = collisionData.data();
+    std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+    collisionPtr += sizeof(bounds);
+    std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+    collisionPtr += id.size() + 1;
+    std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+    collisionPtr += sizeof(isColliding);
+    std::memcpy(collisionPtr, &type, sizeof(type));
+    spaceshipMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
+    const sf::Vector2f spaceshipPos = sf::Vector2f(100.5f, 107.5f);
+    addComponent(spaceshipMessage, RTypeProtocol::ComponentList::POSITION, spaceshipPos);
+
+    // Serialize auto destructible component
+    addComponent(spaceshipMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 10.f);
+
+    // Serialize drawable component
+    addComponent(spaceshipMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+    // Serialize sprite component
+    std::string       sprite = "spaceship_up";
+    std::vector<char> spriteData(sprite.begin(), sprite.end());
+    addComponent(spaceshipMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+    std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(spaceshipMessage);
+    broadcastAllReliable(serializedEventMessage);
+}
+
 void RtypeServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
         Player player = init_callback_players(sender);
 
         // Send all the entities to the new client, so it can synchronize and move
         init_callback_mobs(sender);
+
+        // init_callback_map(sender);
         _players[sender] = player;
     });
 }

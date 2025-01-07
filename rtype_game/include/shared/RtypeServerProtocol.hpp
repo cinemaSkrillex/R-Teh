@@ -4,9 +4,17 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <array>
+#include <string>
 #include <vector>
 
 namespace RTypeProtocol {
+
+struct Tile {
+    std::string             element;        // e.g., "background"
+    std::string             type;           // e.g., "block_1"
+    std::pair<float, float> position;       // (x, y)
+    std::string             collisionType;  // e.g., "SOLID", "NONE"
+};
 
 // Enum for message types
 enum MessageType : int {
@@ -18,6 +26,7 @@ enum MessageType : int {
     DESTROY_ENTITY   = 0x06,
     SHOOT_EVENT      = 0x07,
     EVENT_TRIGGER    = 0x08,
+    MAP_ENTITES      = 0x09,
 };
 
 enum ComponentList : int {
@@ -68,7 +77,10 @@ struct DestroyEntityMessage : BaseMessage {
     std::vector<long> entity_ids;
 };
 
-// Unified serialize/deserialize functions with templated buffer size
+struct MapMessage : BaseMessage {
+    std::vector<Tile> tiles;
+};
+
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
 
