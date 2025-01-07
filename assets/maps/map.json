@@ -1,24 +1,25 @@
 {
     "map_name": "Level 1",
+    "background": "TODO: SPRITE_NAME",
     "mapData": {
         "tiles": [
             {
-                "element": "spaceship_up",
-                "type": "block_1",
+                "type": "BLOCK",
+                "element": "big_arm",
                 "position": [
                     100.5,
                     20.0
                 ],
-                "collisionType": "SOLID"
+                "rotation": 90.0
             },
             {
-                "element": "spaceship_up",
-                "type": "block_2",
+                "type": "BLOCK",
+                "element": "big_arm",
                 "position": [
                     200.0,
                     50.0
                 ],
-                "collisionType": "NONE"
+                "rotation": 90.0
             }
         ]
     }

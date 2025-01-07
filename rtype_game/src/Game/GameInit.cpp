@@ -127,6 +127,9 @@ void Game::init_textures() {
     AssetManagerInstance.loadTexture("space_laser", "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadTexture("small_laser", "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadTexture("fireball", "../../assets/sprites/enemies/fireball.png");
+
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "big_arm", "../../assets/sprites/tiles/lv1/big_arm.png", {GAME_SCALE, GAME_SCALE});
 }
 
 void Game::init_sprites() {

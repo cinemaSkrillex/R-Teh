@@ -328,6 +328,7 @@ void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
     auto* health = registry.get_component<RealEngine::Health>(entity);
 
     if (health) {
+        std::cout << "Entity " << entity << " self destructed" << std::endl;
         health->damage = health->maxHealth;
     }
 }

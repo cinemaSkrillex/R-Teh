@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "../ServerMap/ServerMap.hpp"
+#include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
 #include "Log.hpp"

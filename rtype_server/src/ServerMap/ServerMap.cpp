@@ -60,14 +60,13 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
     const auto& tiles = root["mapData"]["tiles"];
     for (const auto& tileJson : tiles) {
         RTypeProtocol::Tile tile;
-        tile.element       = tileJson["element"].asString();
-        tile.type          = tileJson["type"].asString();
-        tile.position      = {tileJson["position"][0].asFloat(), tileJson["position"][1].asFloat()};
-        tile.collisionType = tileJson["collisionType"].asString();
+        tile.type     = tileJson["type"].asString();
+        tile.element  = tileJson["element"].asString();
+        tile.position = {tileJson["position"][0].asFloat(), tileJson["position"][1].asFloat()};
+        tile.rotation = tileJson["rotation"].asFloat();
 
-        std::cout << "Loaded tile: " << tile.element << " " << tile.type << " "
-                  << tile.position.first << " " << tile.position.second << " " << tile.collisionType
-                  << std::endl;
+        std::cout << "Loaded tile: " << tile.element << " " << tile.type << " " << tile.position.x
+                  << " " << tile.position.y << " " << tile.rotation << std::endl;
         _tiles.push_back(tile);
     }
 }
@@ -83,9 +82,9 @@ void ServerMap::saveToJSON(const std::string& filepath) {
         Json::Value tileJson;
         tileJson["element"] = tile.element;
         tileJson["type"]    = tile.type;
-        tileJson["position"].append(tile.position.first);   // x-coordinate
-        tileJson["position"].append(tile.position.second);  // y-coordinate
-        tileJson["collisionType"] = tile.collisionType;
+        tileJson["position"].append(tile.position.x);  // x-coordinate
+        tileJson["position"].append(tile.position.y);  // y-coordinate
+        tileJson["rotation"] = tile.rotation;
         root["mapData"]["tiles"].append(tileJson);
     }
 

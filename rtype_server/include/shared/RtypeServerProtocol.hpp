@@ -10,10 +10,10 @@
 namespace RTypeProtocol {
 
 struct Tile {
-    std::string             element;        // e.g., "background"
-    std::string             type;           // e.g., "block_1"
-    std::pair<float, float> position;       // (x, y)
-    std::string             collisionType;  // e.g., "SOLID", "NONE"
+    std::string  type;      // e.g., "BLOCK"
+    std::string  element;   // e.g., "background"
+    sf::Vector2f position;  // e.g., (0, 0)
+    float        rotation;  // e.g., "SOLID", "NONE"
 };
 
 // Enum for message types

@@ -71,6 +71,20 @@ class AssetManager {
         return it->second;
     }
 
+    void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
+                                   const sf::Vector2f& scale) {
+        loadTexture(id, filepath);
+        loadSprite(id, id);
+        getSprite(id)->setScale(scale.x, scale.y);
+    }
+
+    void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
+                                   const sf::Vector2f& scale, const sf::IntRect& rect) {
+        loadTexture(id, filepath, rect);
+        loadSprite(id, id);
+        getSprite(id)->setScale(scale.x, scale.y);
+    }
+
     void unloadSprite(const std::string& id) { _sprites.erase(id); }
 
    private:
