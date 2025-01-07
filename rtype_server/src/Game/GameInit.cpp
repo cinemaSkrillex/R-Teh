@@ -9,8 +9,11 @@
 
 GameInstance::GameInstance()
     : _clock(),
+      _window(WINDOWED ? std::make_unique<RealEngine::Window>("I CAN SEE EVERYTHING",
+                                                              sf::Vector2u(800, 600))
+                       : nullptr),
       _registry(),
-      _drawSystem(nullptr),
+      _drawSystem(WINDOWED ? &_window->getRenderWindow() : nullptr),
       _movementSystem(),
       _collisionSystem(),
       _aiSystem(),
@@ -72,6 +75,10 @@ void GameInstance::init_systems() {
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _healthSystem.update(registry, deltaTime);
+    });
+
+    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+        _drawSystem.updateWithoutDisplay(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {

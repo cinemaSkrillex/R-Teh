@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** Engine
+*/
+
 #pragma once
 
 #define M_PI 3.14159265358979323846
@@ -23,8 +30,11 @@
 #include "ECS/Components/Damage.hpp"
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Health.hpp"
+#include "ECS/Components/Interpolation.hpp"
 #include "ECS/Components/Netvar.hpp"
 #include "ECS/Components/NetvarContainer.hpp"
+#include "ECS/Components/Particle.hpp"
+#include "ECS/Components/ParticleEmitter.hpp"
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
 #include "ECS/Components/Rotation.hpp"
@@ -46,8 +56,11 @@
 #include "ECS/Systems/DestructibleSystem.hpp"
 #include "ECS/Systems/DrawSystem.hpp"
 #include "ECS/Systems/HealthSystem.hpp"
+#include "ECS/Systems/LagCompensationSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
 #include "ECS/Systems/NetvarSystem.hpp"
+#include "ECS/Systems/ParallaxSystem.hpp"
+#include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
 // Media
@@ -56,5 +69,3 @@
 #include "Media/Graphics/Rendering/Background.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
 #include "Media/Graphics/UI/Text.hpp"
-// Scripting
-// #include "Scripting/LuaManager.hpp"

@@ -14,6 +14,14 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
+    if (WINDOWED) {
+        _window->clear();
+        _window->update();
+        _drawSystem.update(_registry, deltaTime);
+        _window->display();
+    } else {
+        _drawSystem.updateWithoutDisplay(_registry, deltaTime);
+    }
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
@@ -74,7 +82,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
                                                                   float        speed) {
     // std::shared_ptr<rtype::Bullet> bullet =
     //     std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
-    rtype::Bullet bullet(_registry, position, speed, 0);
+    rtype::Bullet bullet(_registry, position, direction, speed);
     _bullets.push_back(bullet.getEntity());
     return bullet.getEntity();
 }

@@ -13,7 +13,8 @@ namespace rtype {
 
 class Bullet {
    public:
-    Bullet(RealEngine::Registry& registry, sf::Vector2f position, float speed, float angle);
+    Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
+           float speed);
     ~Bullet();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

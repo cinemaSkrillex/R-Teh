@@ -7,6 +7,8 @@
 
 #pragma once
 
+#define WINDOWED false
+
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
@@ -43,7 +45,9 @@ class GameInstance {
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _simpleMobs; }
 
    private:
-    sf::Clock                      _clock;
+    std::unique_ptr<RealEngine::Window> _window;
+    sf::Clock                           _clock;
+
     RealEngine::Registry           _registry;
     RealEngine::DrawSystem         _drawSystem;
     RealEngine::MovementSystem     _movementSystem;

@@ -37,11 +37,13 @@ static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
 }
 
 // no more direction, the bullet will always go in the direction of its angle
-Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, float speed, float angle)
+Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
+               float speed)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    // float radAngle = angle * M_PI / 180;
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.f});
+    registry.add_component(
+        _entity,
+        RealEngine::Velocity{direction.x * speed, direction.y * speed, {500.f, 500.f}, 0.f});
     registry.add_component(_entity,
                            RealEngine::SpriteComponent{
                                *(RealEngine::AssetManager::getInstance().getSprite("bullet"))});
@@ -54,7 +56,7 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, float spee
                                                  destroyOnWallsAndEnemies});
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
     registry.add_component(_entity, RealEngine::Damage{10});
-    registry.add_component(_entity, RealEngine::Health{1, 1});
+    registry.add_component(_entity, RealEngine::Health{10, 20});
 }
 
 Bullet::~Bullet() {}
