@@ -5,7 +5,7 @@
 ** GameUtils
 */
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 void rtype::Game::handleSignal(std::array<char, 800> signal) {
     // Check if signal is empty or corrupted (all zeros)
@@ -125,9 +125,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::SPRITE: {
                 std::string sprite_str(component.second.begin(), component.second.end());
                 std::cout << "Sprite: " << sprite_str << "\n";
-                if (_textures.find(sprite_str) == _textures.end())
-                    std::cerr << "Texture not found for sprite: " << sprite_str << std::endl;
-                auto sprite = RealEngine::Sprite{_textures[sprite_str]};
+                auto sprite = *(RealEngine::AssetManager::getInstance().getSprite(sprite_str));
                 sprite.setScale(GAME_SCALE, GAME_SCALE);
                 _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
                 break;

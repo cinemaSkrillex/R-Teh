@@ -18,6 +18,7 @@
 #include <unordered_map>
 
 // Core
+#include "Core/AssetsManager.hpp"
 #include "Core/View.hpp"
 #include "Core/Window.hpp"
 // Components
@@ -30,6 +31,8 @@
 #include "ECS/Components/Drawable.hpp"
 #include "ECS/Components/Health.hpp"
 #include "ECS/Components/Interpolation.hpp"
+#include "ECS/Components/Netvar.hpp"
+#include "ECS/Components/NetvarContainer.hpp"
 #include "ECS/Components/Particle.hpp"
 #include "ECS/Components/ParticleEmitter.hpp"
 #include "ECS/Components/Position.hpp"
@@ -55,6 +58,7 @@
 #include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/LagCompensationSystem.hpp"
 #include "ECS/Systems/MovementSystem.hpp"
+#include "ECS/Systems/NetvarSystem.hpp"
 #include "ECS/Systems/ParallaxSystem.hpp"
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"

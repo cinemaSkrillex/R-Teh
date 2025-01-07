@@ -49,6 +49,19 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
     calculateTextureRect(spritesheet, sprite);
 }
 
+void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
+    auto particleEmitters = registry.view<ParticleEmitter>();
+    for (auto entity : particleEmitters) {
+        auto* emitter = registry.get_component<ParticleEmitter>(entity);
+        for (const auto& particle : emitter->particles) {
+            sf::CircleShape shape(particle.size);
+            shape.setPosition(particle.position);
+            shape.setFillColor(particle.color);
+            _window->draw(shape);
+        }
+    }
+}
+
 void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
     auto entities = registry.view<Position>();
 
@@ -71,27 +84,14 @@ void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
     }
 }
 
-void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
-    auto particleEmitters = registry.view<ParticleEmitter>();
-    for (auto entity : particleEmitters) {
-        auto* emitter = registry.get_component<ParticleEmitter>(entity);
-        for (const auto& particle : emitter->particles) {
-            sf::CircleShape shape(particle.size);
-            shape.setPosition(particle.position);
-            shape.setFillColor(particle.color);
-            _window->draw(shape);
-        }
-    }
-}
-
 void DrawSystem::update(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Drawable, Position>();
+    auto entities = registry.view<Position>();
 
     if (entities.empty()) {
         return;
     }
     for (auto entity : entities) {
-        auto* drawable    = registry.get_component<Drawable>(entity);
+        // auto* drawable    = registry.get_component<Drawable>(entity);
         auto* position    = registry.get_component<Position>(entity);
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
         auto* spritesheet = registry.get_component<SpriteSheet>(entity);
@@ -107,7 +107,6 @@ void DrawSystem::update(Registry& registry, float deltaTime) {
             sprite.draw(*_window);
         }
     }
-
-    updateParticles(registry, deltaTime);
+    // updateParticles(registry, deltaTime);
 }
 }  // namespace RealEngine

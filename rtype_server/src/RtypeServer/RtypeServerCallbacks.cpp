@@ -93,7 +93,7 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
         addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
 
         // Serialize sprite component
-        std::string       sprite = "enemy";
+        std::string       sprite = "eye_bomber";
         std::vector<char> spriteData(sprite.begin(), sprite.end());
         addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 
