@@ -5,7 +5,7 @@
         "tiles": [
             {
                 "type": "BLOCK",
-                "element": "big_arm",
+                "element": "block_1",
                 "position": [
                     100.5,
                     20.0
@@ -14,7 +14,7 @@
             },
             {
                 "type": "BLOCK",
-                "element": "big_arm",
+                "element": "block_1",
                 "position": [
                     200.0,
                     50.0

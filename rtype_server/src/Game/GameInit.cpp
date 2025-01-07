@@ -174,6 +174,9 @@ void GameInstance::init_textures() {
 
     AssetManagerInstance.loadSpriteTextureAndScale(
         "big_arm", "../../assets/sprites/tiles/lv1/big_arm.png", {GAME_SCALE, GAME_SCALE});
+
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "block_1", "../../assets/sprites/tiles/lv1/block_1.png", {GAME_SCALE, GAME_SCALE});
 }
 
 void GameInstance::init_sprites() {

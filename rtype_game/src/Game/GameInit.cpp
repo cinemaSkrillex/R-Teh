@@ -70,6 +70,10 @@ void Game::init_textures() {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadTexture("spaceship_up", "../../assets/sprites/spaceship.png",
                                      sf::IntRect{0, 0, 32 * 2, 15});
+
+    // AssetManagerInstance.loadSpriteTextureAndScale("spaceship_idle",
+    //                                                "../../assets/sprites/spaceship.png",
+    //                                                {GAME_SCALE, GAME_SCALE}, {0, 15, 32, 15});
     AssetManagerInstance.loadTexture("spaceship_idle", "../../assets/sprites/spaceship.png",
                                      sf::IntRect{0, 15, 32, 15});
     AssetManagerInstance.loadTexture("spaceship_down", "../../assets/sprites/spaceship.png",
@@ -130,6 +134,8 @@ void Game::init_textures() {
 
     AssetManagerInstance.loadSpriteTextureAndScale(
         "big_arm", "../../assets/sprites/tiles/lv1/big_arm.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "block_1", "../../assets/sprites/tiles/lv1/block_1.png", {GAME_SCALE, GAME_SCALE});
 }
 
 void Game::init_sprites() {
