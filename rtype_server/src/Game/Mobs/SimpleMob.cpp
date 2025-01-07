@@ -37,7 +37,11 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
     registry.add_component(_entity, RealEngine::Rotation{180.f});
-    registry.add_component(_entity, RealEngine::Netvar{"MOB", "dropChance", 33.0f});
+    registry.add_component(
+        _entity, RealEngine::NetvarContainer{{
+                     {"sprite_name", {"string", "sprite_name", std::string("eye_bomber"), nullptr}},
+                     {"dropChance", {"float", "dropChance", 33.0f, nullptr}},
+                 }});
 }
 
 SimpleMob::~SimpleMob() {}

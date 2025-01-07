@@ -45,10 +45,25 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
         auto* position = _game_instance->getRegistry()->get_component<RealEngine::Position>(mob);
         auto* destructible =
             _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(mob);
-        auto* velocity = _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
-        auto* rotation = _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
+        auto* velocity  = _game_instance->getRegistry()->get_component<RealEngine::Velocity>(mob);
+        auto* rotation  = _game_instance->getRegistry()->get_component<RealEngine::Rotation>(mob);
+        auto* collision = _game_instance->getRegistry()->get_component<RealEngine::Collision>(mob);
+        auto* drawable  = _game_instance->getRegistry()->get_component<RealEngine::Drawable>(mob);
+        auto* container =
+            _game_instance->getRegistry()->get_component<RealEngine::NetvarContainer>(mob);
+        auto* sprite =
+            _game_instance->getRegistry()->get_component<RealEngine::SpriteComponent>(mob);
+        auto* spriteSheet =
+            _game_instance->getRegistry()->get_component<RealEngine::SpriteSheet>(mob);
 
-        if (!position || !destructible || !velocity) continue;
+        if (!container) {
+            std::cerr << "Error: mob does not have a NetvarContainer component" << std::endl;
+            continue;
+        }
+        if (!position || !velocity) {
+            std::cerr << "Error: mob does not have a Position or Velocity component" << std::endl;
+            continue;
+        }
 
         RTypeProtocol::NewEntityMessage eventMessage;
         eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
@@ -67,35 +82,63 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
         }
 
         // Serialize collision component
-        sf::FloatRect             bounds      = {0, 0, 16, 8};
-        std::string               id          = "mob";
-        bool                      isColliding = false;
-        RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
+        if (collision) {
+            sf::FloatRect             bounds      = collision->bounds;
+            std::string               id          = collision->id;
+            bool                      isColliding = collision->isColliding;
+            RealEngine::CollisionType type        = collision->type;
 
-        std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                        sizeof(type));
-        char*             collisionPtr = collisionData.data();
-        std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-        collisionPtr += sizeof(bounds);
-        std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-        collisionPtr += id.size() + 1;
-        std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-        collisionPtr += sizeof(isColliding);
-        std::memcpy(collisionPtr, &type, sizeof(type));
-        eventMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
-
+            std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
+                                            sizeof(type));
+            char*             collisionPtr = collisionData.data();
+            std::memcpy(collisionPtr, &bounds, sizeof(bounds));
+            collisionPtr += sizeof(bounds);
+            std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
+            collisionPtr += id.size() + 1;
+            std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
+            collisionPtr += sizeof(isColliding);
+            std::memcpy(collisionPtr, &type, sizeof(type));
+            eventMessage.components.push_back(
+                {RTypeProtocol::ComponentList::COLLISION, collisionData});
+        }
         // Serialize auto destructible component
-        float autoDestructible = destructible->lifeTime;
-        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
-                              autoDestructible);
+        if (destructible) {
+            float autoDestructible = destructible->lifeTime;
+            addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
+                                  autoDestructible);
+        }
+
         // Serialize drawable component
-        bool drawable = true;
-        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
+        if (drawable) {
+            bool drawable = true;
+            addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
+        }
 
         // Serialize sprite component
-        std::string       sprite = "eye_bomber";
-        std::vector<char> spriteData(sprite.begin(), sprite.end());
-        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+        // if (container->getNetvar("sprite_name")) {
+        // if (sprite) {
+
+        // auto netvar = container->getNetvar("dropChance");
+        // if (netvar && netvar->value.type() == typeid(float)) {
+        //     float dropChance = std::any_cast<float>(netvar->value);
+        //     std::cout << "DropChance: " << dropChance << std::endl;
+        //     // std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
+        //     // addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE,
+        //     // spriteData);
+        // } else {
+        //     std::cerr << "Error: dropChance is not of type float or is null" << std::endl;
+        // }
+
+        auto netvar = container->getNetvar("sprite_name");
+        if (netvar && netvar->value.type() == typeid(std::string)) {
+            std::string sprite_str = std::any_cast<std::string>(netvar->value);
+            std::cout << "Sprite: " << sprite_str << std::endl;
+            std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
+            addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+        } else {
+            std::cerr << "Error: sprite_name is not of type std::string or is null" << std::endl;
+        }
 
         std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
         _server->send_reliable_packet(serializedEventMessage, sender);

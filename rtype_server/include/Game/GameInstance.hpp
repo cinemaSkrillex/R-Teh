@@ -7,7 +7,7 @@
 
 #pragma once
 
-#define WINDOWED false  // set to true to have a window for the server
+#define WINDOWED true  // set to true to have a window for the server
 
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
@@ -44,7 +44,7 @@ class GameInstance {
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
-    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _simpleMobs; }
+    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _ennemies; }
 
    private:
     std::unique_ptr<RealEngine::Window> _window;
@@ -62,7 +62,6 @@ class GameInstance {
     RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _ennemies;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _simpleMobs;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _ennemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };

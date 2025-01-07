@@ -92,7 +92,8 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{
-            {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateShootCooldown}},
+            {{"sprite_name", {"string", "sprite_name", "space_sphere", nullptr}},
+             {"shootCooldown", {"float", "shootCooldown", 0.5f, updateShootCooldown}},
              {"directionCooldown", {"float", "directionCooldown", 2.0f, updateDirectionCooldown}},
              {"goUp", {"bool", "goUp", false, updateDirection}}}});
 }
