@@ -5,7 +5,7 @@
 ** RtypeServerRun
 */
 
-#include "../../include/RtypeServer.hpp"
+#include "../../include/RtypeServer/RtypeServer.hpp"
 #include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
@@ -19,16 +19,17 @@ void RtypeServer::run() {
             _deltaTime = _clock.restart().asSeconds();
 
             // Do server work
-            for (auto client : _server->getClients()) {
-                // Process all messages from the client
-                for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
-                    RTypeProtocol::BaseMessage baseMessage =
-                        RTypeProtocol::deserialize<800>(message);
+            for (const auto& client : _server->getClients()) {  // Use reference to avoid copying
+                auto& player = _players.at(client);  // Store reference to avoid repeated lookups
+                const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
+
+                for (const auto& message : messages) {
+                    auto baseMessage = RTypeProtocol::deserialize<800>(message);
 
                     if (baseMessage.message_type == RTypeProtocol::PLAYER_DIRECTION) {
-                        runSimulation(message, client, _players.at(client));
+                        runSimulation(message, client, player);
                     } else {
-                        runEvent(message, client, _players.at(client));
+                        runEvent(message, client, player);
                     }
                 }
             }
@@ -37,12 +38,13 @@ void RtypeServer::run() {
                 RTypeProtocol::DestroyEntityMessage destroyMessage;
                 destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
                 destroyMessage.uuid         = 0;
-                for (auto entity : destroyedEntities) {
-                    destroyMessage.entity_ids.push_back(entity);
-                }
+                destroyMessage.entity_ids.reserve(destroyedEntities.size());
+                destroyMessage.entity_ids.insert(destroyMessage.entity_ids.end(),
+                                                 destroyedEntities.begin(),
+                                                 destroyedEntities.end());
                 std::array<char, 800> serializedDestroyMessage =
                     RTypeProtocol::serialize<800>(destroyMessage);
-                broadCastAll(serializedDestroyMessage);
+                broadcastAllReliable(serializedDestroyMessage);
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {

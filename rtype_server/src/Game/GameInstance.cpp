@@ -30,12 +30,27 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                              destroyedHealth.end());
 
     _netvarSystem.update(_registry, deltaTime);
-    _simpleMobs.erase(std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
-                                     [&](const auto& mob) {
-                                         return _registry.get_component<RealEngine::Health>(mob) ==
-                                                nullptr;
-                                     }),
-                      _simpleMobs.end());
+    _simpleMobs.erase(
+        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
+                       [&](const auto& mob) {
+                           std::vector<RealEngine::Netvar*> netvars =
+                               _registry.get_components<RealEngine::Netvar>(mob);
+                           for (auto& netvar : netvars) {
+                               if (netvar->name != "dropChance") continue;
+                               netvar->value = std::any_cast<float>(netvar->value);
+                               if (std::any_cast<float>(netvar->value) < 0) {
+                                   auto powerup = _registry.spawn_entity();
+                                   auto position = _registry.get_component<RealEngine::Position>(mob);
+                                   _registry.add_component(powerup, RealEngine::Position{position->x, position->y});
+                                   _registry.add_component(
+                                       powerup,
+                                       RealEngine::Collision{
+                                           {0.f, 0.f, 12.f, 12.f}, "powerup_shoot", false, RealEngine::CollisionType::PICKABLE, nullptr});
+                               }
+                           }
+                           return _registry.get_component<RealEngine::Health>(mob) == nullptr;
+                       }),
+        _simpleMobs.end());
 
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
                                   [&](const auto& bullet) {

@@ -385,18 +385,18 @@ class PacketManager {
     const std::array<char, BUFFER_SIZE> get_last_reliable_packet_data() {
         std::lock_guard<std::mutex> lock(_unprocessed_reliable_messages_data_mutex);
         if (_unprocessed_reliable_messages_data.empty()) return {};
-        std::array<char, BUFFER_SIZE> message;
-        std::copy(_unprocessed_reliable_messages_data.back().first.begin(),
-                  _unprocessed_reliable_messages_data.back().first.end(), message.begin());
+
+        std::array<char, BUFFER_SIZE> message =
+            std::move(_unprocessed_reliable_messages_data.back().first);
         _unprocessed_reliable_messages_data.erase(_unprocessed_reliable_messages_data.end() - 1);
+
         return message;
     }
     const std::array<char, BUFFER_SIZE> get_last_unreliable_packet_data() {
         std::lock_guard<std::mutex> lock(_unprocessed_unreliable_messages_data_mutex);
         if (_unprocessed_unreliable_messages_data.empty()) return {};
-        std::array<char, BUFFER_SIZE> message;
-        std::copy(_unprocessed_unreliable_messages_data.back().first.begin(),
-                  _unprocessed_unreliable_messages_data.back().first.end(), message.begin());
+        std::array<char, BUFFER_SIZE> message =
+            std::move(_unprocessed_unreliable_messages_data.back().first);
         _unprocessed_unreliable_messages_data.erase(_unprocessed_unreliable_messages_data.end() -
                                                     1);
         return message;
@@ -409,9 +409,7 @@ class PacketManager {
         for (auto it = _unprocessed_unreliable_messages_data.begin();
              it != _unprocessed_unreliable_messages_data.end();) {
             if (it->second == endpoint) {
-                std::array<char, BUFFER_SIZE> message_array;
-                std::copy(it->first.begin(), it->first.end(), message_array.begin());
-                messages.push_back(message_array);
+                messages.push_back(std::move(it->first));
                 it = _unprocessed_unreliable_messages_data.erase(it);
             } else {
                 ++it;
@@ -426,9 +424,7 @@ class PacketManager {
         for (auto it = _unprocessed_reliable_messages_data.begin();
              it != _unprocessed_reliable_messages_data.end();) {
             if (it->second == endpoint) {
-                std::array<char, BUFFER_SIZE> message_array;
-                std::copy(it->first.begin(), it->first.end(), message_array.begin());
-                messages.push_back(message_array);
+                messages.push_back(std::move(it->first));
                 it = _unprocessed_reliable_messages_data.erase(it);
             } else {
                 ++it;
@@ -485,24 +481,13 @@ class PacketManager {
     std::deque<packet<BUFFER_SIZE>> _retry_queue;
     std::mutex                      _retry_queue_mutex;
 
-    // // std::stack<std::string> _unprocessed_unreliable_messages;
-    // std::vector<std::pair<std::string, asio::ip::udp::endpoint>>
-    // _unprocessed_unreliable_messages; std::mutex _unprocessed_unreliable_messages_mutex;
-
     std::vector<std::pair<std::array<char, BUFFER_SIZE>, asio::ip::udp::endpoint>>
                _unprocessed_unreliable_messages_data;
     std::mutex _unprocessed_unreliable_messages_data_mutex;
 
-    // // std::stack<std::string> _unprocessed_reliable_messages;
-    // std::vector<std::pair<std::string, asio::ip::udp::endpoint>> _unprocessed_reliable_messages;
-    // std::mutex _unprocessed_reliable_messages_mutex;
-
     std::vector<std::pair<std::array<char, BUFFER_SIZE>, asio::ip::udp::endpoint>>
                _unprocessed_reliable_messages_data;
     std::mutex _unprocessed_reliable_messages_data_mutex;
-
-    // std::mutex  _message_complete_mutex;
-    // std::string _message_complete_buffer;
 
     // work guard
     asio::executor_work_guard<asio::io_context::executor_type> work_guard_;

@@ -21,6 +21,7 @@
 #include "GenerateUuid.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
+#include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
@@ -80,11 +81,17 @@ class RtypeServer {
     sf::Clock                                           _broadcastClock;
     std::chrono::steady_clock::time_point               _startTime;
 
-    void initCallbacks();
+    void   initCallbacks();
+    void   init_callback_mobs(const asio::ip::udp::endpoint& client);
+    Player init_callback_players(const asio::ip::udp::endpoint& client);
+
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
-    // void broadCastAll(std::string message);
-    void broadCastAll(const std::array<char, 800>& message);
+    void broadcastAllReliable(const std::array<char, 800>& message);
+    void broadcastAllUnreliable(const std::array<char, 800>& message);
+
+    void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
+                    Player& player);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
@@ -95,11 +102,11 @@ class RtypeServer {
     void run();
     // void runEvent(const std::unordered_map<std::string, std::string>& parsed_data,
     //               asio::ip::udp::endpoint& client, Player& player);
-    void runEvent(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
+    void runEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                   Player& player);
     // void runSimulation(const std::unordered_map<std::string, std::string>& parsed_data,
     //                    asio::ip::udp::endpoint& client, Player& player);
-    void runSimulation(const std::array<char, 800>& buffer, asio::ip::udp::endpoint& client,
+    void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        Player& player);
 
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
