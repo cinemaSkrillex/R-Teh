@@ -25,7 +25,8 @@ static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::PLAYER:
             break;
         case RealEngine::CollisionType::ENEMY:
-            selfDestruct(registry, entity);
+            // selfDestruct(registry, entity);
+            // bulletTakesDamage(collisionType, registry, collider, entity);
             break;
         case RealEngine::CollisionType::ALLY_BULLET:
             break;

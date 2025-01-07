@@ -7,7 +7,7 @@
 
 #pragma once
 
-#define WINDOWED false
+#define WINDOWED true
 
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
