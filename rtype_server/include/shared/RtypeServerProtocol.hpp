@@ -7,13 +7,15 @@
 #include <string>
 #include <vector>
 
+#include "../ECS/Components/Collision.hpp"
+
 namespace RTypeProtocol {
 
 struct Tile {
-    std::string  type;      // e.g., "BLOCK"
+    std::string  type;      // e.g., "BLOCK", "NONE"
     std::string  element;   // e.g., "background"
     sf::Vector2f position;  // e.g., (0, 0)
-    float        rotation;  // e.g., "SOLID", "NONE"
+    float        rotation;  // e.g., (90.0)
 };
 
 // Enum for message types

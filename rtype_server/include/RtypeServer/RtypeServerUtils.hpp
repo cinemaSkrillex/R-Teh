@@ -26,4 +26,7 @@ void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
                            RTypeProtocol::ComponentList     componentType,
                            const std::vector<char>&         componentData);
 
+void addCollisionComponentToMessage(RTypeProtocol::NewEntityMessage& message,
+                                    const sf::FloatRect& bounds, const std::string& id,
+                                    bool isColliding, RealEngine::CollisionType type);
 #endif /* !RTYPESERVERUTILS_HPP_ */
