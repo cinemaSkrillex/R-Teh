@@ -38,12 +38,13 @@ void RtypeServer::run() {
                 RTypeProtocol::DestroyEntityMessage destroyMessage;
                 destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
                 destroyMessage.uuid         = 0;
-                for (auto entity : destroyedEntities) {
-                    destroyMessage.entity_ids.push_back(entity);
-                }
+                destroyMessage.entity_ids.reserve(destroyedEntities.size());
+                destroyMessage.entity_ids.insert(destroyMessage.entity_ids.end(),
+                                                 destroyedEntities.begin(),
+                                                 destroyedEntities.end());
                 std::array<char, 800> serializedDestroyMessage =
                     RTypeProtocol::serialize<800>(destroyMessage);
-                broadCastAll(serializedDestroyMessage);
+                broadcastAllReliable(serializedDestroyMessage);
             }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
