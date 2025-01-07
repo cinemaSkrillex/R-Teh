@@ -55,8 +55,8 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
         eventMessage.uuid         = *mob;
 
         // Serialize position and velocity component
-        addComponent(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);
-        addComponent(eventMessage, RTypeProtocol::ComponentList::VELOCITY, *velocity);
+        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);
+        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::VELOCITY, *velocity);
 
         // Serialize rotation component
         if (rotation) {
@@ -86,17 +86,16 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
 
         // Serialize auto destructible component
         float autoDestructible = destructible->lifeTime;
-        std::cout << "Auto destructibleFLOAT: " << autoDestructible << std::endl;
-        addComponent(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
-                     autoDestructible);
+        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
+                              autoDestructible);
         // Serialize drawable component
         bool drawable = true;
-        addComponent(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
+        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::DRAWABLE, drawable);
 
         // Serialize sprite component
-        std::string       sprite = "enemy";
+        std::string       sprite = "eye_bomber";
         std::vector<char> spriteData(sprite.begin(), sprite.end());
-        addComponent(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+        addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 
         std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
         _server->send_reliable_packet(serializedEventMessage, sender);

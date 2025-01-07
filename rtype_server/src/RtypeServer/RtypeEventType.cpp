@@ -24,11 +24,11 @@ void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
     bulletMessage.uuid         = *bullet;
 
     // Serialize position component
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::POSITION, bullet_position);
+    addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::POSITION, bullet_position);
 
     // Serialize velocity component
     RealEngine::Velocity velocity = {500.f, 0.f, {500.f, 500.f}, 0.f};
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::VELOCITY, velocity);
+    addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::VELOCITY, velocity);
 
     // Serialize collision component
     sf::FloatRect             bounds      = {0, 0, 16, 8};
@@ -49,15 +49,15 @@ void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
     bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
 
     // Serialize auto destructible component
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
+    addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
 
     // Serialize drawable component
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+    addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
 
     // Serialize sprite component
     std::string       sprite = "bullet";
     std::vector<char> spriteData(sprite.begin(), sprite.end());
-    addComponent(bulletMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+    addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(bulletMessage);
     broadcastAllReliable(serializedEventMessage);

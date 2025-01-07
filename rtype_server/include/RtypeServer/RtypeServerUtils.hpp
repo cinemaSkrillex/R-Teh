@@ -11,17 +11,17 @@
 #include "RtypeServerProtocol.hpp"
 
 template <typename T>
-void addComponent(RTypeProtocol::NewEntityMessage& message,
+void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
                   RTypeProtocol::ComponentList componentType, const T& componentData) {
     std::vector<char> serializedData(sizeof(T));
     std::memcpy(serializedData.data(), &componentData, sizeof(T));
     message.components.push_back({componentType, serializedData});
 }
 
-void addComponent(RTypeProtocol::NewEntityMessage& message,
+void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
                   RTypeProtocol::ComponentList componentType, const std::string& componentData);
 
-void addComponent(RTypeProtocol::NewEntityMessage& message,
+void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
                   RTypeProtocol::ComponentList     componentType,
                   const std::vector<char>&         componentData);
 

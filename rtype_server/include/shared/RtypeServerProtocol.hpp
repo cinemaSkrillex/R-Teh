@@ -18,14 +18,15 @@ struct Tile {
 
 // Enum for message types
 enum MessageType : int {
-    NEW_CLIENT       = 0x01,
-    PLAYER_MOVE      = 0x02,
-    NEW_ENTITY       = 0x03,
-    SYNCHRONISE      = 0x04,
-    PLAYER_DIRECTION = 0x05,
-    DESTROY_ENTITY   = 0x06,
-    SHOOT_EVENT      = 0x07,
-    EVENT_TRIGGER    = 0x08,
+    NEW_CLIENT          = 0x01,
+    PLAYER_MOVE         = 0x02,
+    NEW_ENTITY          = 0x03,
+    SYNCHRONISE         = 0x04,
+    PLAYER_DIRECTION    = 0x05,
+    DESTROY_ENTITY      = 0x06,
+    SHOOT_EVENT         = 0x07,
+    HOLD_SHOOT_EVENT    = 0x08,
+    RELEASE_SHOOT_EVENT = 0x09,
 };
 
 enum ComponentList : int {

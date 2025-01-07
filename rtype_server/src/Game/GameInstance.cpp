@@ -14,6 +14,14 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
+    if (WINDOWED) {
+        _window->clear();
+        _window->update();
+        _drawSystem.update(_registry, deltaTime);
+        _window->display();
+    } else {
+        _drawSystem.updateWithoutDisplay(_registry, deltaTime);
+    }
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
@@ -30,12 +38,27 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                              destroyedHealth.end());
 
     _netvarSystem.update(_registry, deltaTime);
-    _simpleMobs.erase(std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
-                                     [&](const auto& mob) {
-                                         return _registry.get_component<RealEngine::Health>(mob) ==
-                                                nullptr;
-                                     }),
-                      _simpleMobs.end());
+    _simpleMobs.erase(
+        std::remove_if(_simpleMobs.begin(), _simpleMobs.end(),
+                       [&](const auto& mob) {
+                           std::vector<RealEngine::Netvar*> netvars =
+                               _registry.get_components<RealEngine::Netvar>(mob);
+                           for (auto& netvar : netvars) {
+                               if (netvar->name != "dropChance") continue;
+                               netvar->value = std::any_cast<float>(netvar->value);
+                               if (std::any_cast<float>(netvar->value) < 0) {
+                                   auto powerup = _registry.spawn_entity();
+                                   auto position = _registry.get_component<RealEngine::Position>(mob);
+                                   _registry.add_component(powerup, RealEngine::Position{position->x, position->y});
+                                   _registry.add_component(
+                                       powerup,
+                                       RealEngine::Collision{
+                                           {0.f, 0.f, 12.f, 12.f}, "powerup_shoot", false, RealEngine::CollisionType::PICKABLE, nullptr});
+                               }
+                           }
+                           return _registry.get_component<RealEngine::Health>(mob) == nullptr;
+                       }),
+        _simpleMobs.end());
 
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
                                   [&](const auto& bullet) {
@@ -57,8 +80,8 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 };
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(sf::Vector2f position) {
-    rtype::Player player(_registry, position, _spaceshipSheet);
-    auto          playerEntity = player.getEntity();
+    rtype::PlayerEntity player(_registry, position);
+    auto                playerEntity = player.getEntity();
     _players.emplace(*playerEntity, playerEntity);
     return _players.at(*playerEntity);
 }
@@ -72,10 +95,11 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f p
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
                                                                   sf::Vector2f direction,
                                                                   float        speed) {
-    std::shared_ptr<rtype::Bullet> bullet =
-        std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
-    _bullets.push_back(bullet->getEntity());
-    return bullet->getEntity();
+    // std::shared_ptr<rtype::Bullet> bullet =
+    //     std::make_shared<rtype::Bullet>(_registry, position, direction, speed, _bulletSprite);
+    rtype::Bullet bullet(_registry, position, direction, speed);
+    _bullets.push_back(bullet.getEntity());
+    return bullet.getEntity();
 }
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2f position,
@@ -83,7 +107,8 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2
                                                                      float        speed,
                                                                      float        destructTimer) {
     std::shared_ptr<rtype::SimpleMob> mob = std::make_shared<rtype::SimpleMob>(
-        _registry, position, direction, speed, destructTimer, _simpleMobSprite);
+        _registry, position, direction, speed, destructTimer,
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_bomber")));
     _simpleMobs.push_back(mob->getEntity());
     return _simpleMobs.back();
 }
@@ -106,8 +131,6 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
     if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
     if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
-    // velocity->vx += (acceleration->ax * 3 * deltaTime) * direction.x;
-    // velocity->vy += (acceleration->ay * 3 * deltaTime) * direction.y;
 }
 
 void GameInstance::handleSignal(const std::string& message) {
