@@ -33,20 +33,6 @@ SimpleMob::SimpleMob(RealEngine::Registry& registry, sf::Vector2f position, sf::
                             RealEngine::Entity collider, RealEngine::Entity entity) {
                          mob_collision_handler(collisionType, registry, collider, entity);
                      }});
-    // registry.add_component(_bulletEntity, RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f
-    // * GAME_SCALE},
-    //                                                            "bullet",
-    //                                                            false,
-    //                                                            RealEngine::CollisionType::OTHER,
-    //                                                            [this](RealEngine::CollisionType
-    //                                                            collisionType,
-    //                                                                   RealEngine::Registry&
-    //                                                                   registry,
-    //                                                                   RealEngine::Entity
-    //                                                                   collider) {
-    //                                                                bullet_collision_handler(collisionType,
-    //                                                                registry, collider);
-    //                                                            }});
     registry.add_component(_entity, RealEngine::AutoDestructible{destructTimer});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{10, 10});
