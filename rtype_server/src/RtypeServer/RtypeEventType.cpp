@@ -77,8 +77,9 @@ void RtypeServer::holdShootEvent(const std::array<char, 800>&   buffer,
 
 void RtypeServer::shootBigBullet(const std::array<char, 800>&   buffer,
                                  const asio::ip::udp::endpoint& client, Player& player) {
-const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 20.f, 50);
+    const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
+    auto               bullet =
+        _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 20.f, 50);
 
     RTypeProtocol::NewEntityMessage bulletMessage;
     bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
@@ -125,9 +126,10 @@ const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 
 }
 
 void RtypeServer::shootMiddleBullet(const std::array<char, 800>&   buffer,
-                                 const asio::ip::udp::endpoint& client, Player& player) {
-const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "mid_bullet", 15.f, 20);
+                                    const asio::ip::udp::endpoint& client, Player& player) {
+    const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
+    auto               bullet =
+        _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "mid_bullet", 15.f, 20);
 
     RTypeProtocol::NewEntityMessage bulletMessage;
     bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;

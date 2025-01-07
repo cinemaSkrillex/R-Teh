@@ -12,17 +12,18 @@
 
 template <typename T>
 void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
-                  RTypeProtocol::ComponentList componentType, const T& componentData) {
+                           RTypeProtocol::ComponentList componentType, const T& componentData) {
     std::vector<char> serializedData(sizeof(T));
     std::memcpy(serializedData.data(), &componentData, sizeof(T));
     message.components.push_back({componentType, serializedData});
 }
 
 void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
-                  RTypeProtocol::ComponentList componentType, const std::string& componentData);
+                           RTypeProtocol::ComponentList     componentType,
+                           const std::string&               componentData);
 
 void addComponentToMessage(RTypeProtocol::NewEntityMessage& message,
-                  RTypeProtocol::ComponentList     componentType,
-                  const std::vector<char>&         componentData);
+                           RTypeProtocol::ComponentList     componentType,
+                           const std::vector<char>&         componentData);
 
 #endif /* !RTYPESERVERUTILS_HPP_ */

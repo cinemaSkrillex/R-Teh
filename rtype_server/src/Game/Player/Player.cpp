@@ -82,12 +82,11 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Health{100, 200});
     // registry.add_component(_entity,
     //                        RealEngine::Netvar{"float", "shootCooldown", 0.5f, updateCooldown});
-    registry.add_component(
-        _entity,
-        RealEngine::NetvarContainer{
-            {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
-             {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
-             {"isHolding", {"bool", "isHolding", false, nullptr}}}});
+    registry.add_component(_entity,
+                           RealEngine::NetvarContainer{
+                               {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
+                                {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
+                                {"isHolding", {"bool", "isHolding", false, nullptr}}}});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{

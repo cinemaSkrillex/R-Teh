@@ -20,9 +20,9 @@ namespace RealEngine {
 
 // Define a struct to track the state of keys
 struct KeyState {
-    bool supported = false;
-    bool isHeld = false;
-    float holdTime = 0.0f; // How long the key has been held
+    bool  supported = false;
+    bool  isHeld    = false;
+    float holdTime  = 0.0f;  // How long the key has been held
 };
 
 class ControlSystem {
