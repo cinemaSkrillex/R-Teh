@@ -17,6 +17,7 @@ enum MessageType : int {
     PLAYER_DIRECTION = 0x05,
     DESTROY_ENTITY   = 0x06,
     SHOOT_EVENT      = 0x07,
+    EVENT_TRIGGER    = 0x08,
 };
 
 enum ComponentList : int {

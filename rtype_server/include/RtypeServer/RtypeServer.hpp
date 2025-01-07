@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../ServerMap/ServerMap.hpp"
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
 #include "Log.hpp"
@@ -34,9 +35,6 @@
 #include <windows.h>
 #endif
 
-// const sf::Int32    SERVER_TICK           = 60;
-// const sf::Int32    SERVER_BROADCAST_TICK = 10;
-// const sf::Vector2f PLAYER_START_POSITION = {70.f, 250.f};
 const float SNAP_TRESHOLD = 3.5f;
 
 class Player {
@@ -74,6 +72,7 @@ class RtypeServer {
     std::shared_ptr<UDPServer>                          _server;
     std::shared_ptr<GameInstance>                       _game_instance;
     ServerConfig                                        _server_config;
+    std::shared_ptr<ServerMap>                          _server_map;
     std::unordered_map<asio::ip::udp::endpoint, Player> _players;
     float                                               _deltaTime;
     float                                               _deltaTimeBroadcast;
