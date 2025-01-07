@@ -20,16 +20,14 @@ class Controls {
    public:
     Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> client);
     ~Controls();
-    void moveUp(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-                RealEngine::Position& position, float deltaTime);
-    void moveDown(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-                  RealEngine::Position& position, float deltaTime);
-    void moveLeft(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-                  RealEngine::Position& position, float deltaTime);
-    void moveRight(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-                   RealEngine::Position& position, float deltaTime);
-    void shoot(RealEngine::Velocity& velocity, RealEngine::Acceleration& acceleration,
-               RealEngine::Position& position, float deltaTime);
+
+    void moveUp(float deltaTime, RealEngine::Entity entity);
+    void moveDown(float deltaTime, RealEngine::Entity entity);
+    void moveLeft(float deltaTime, RealEngine::Entity entity);
+    void moveRight(float deltaTime, RealEngine::Entity entity);
+    void shoot(float deltaTime, RealEngine::Entity entity);
+    void holdShoot(float deltaTime, RealEngine::Entity entity);
+    void releaseShoot(float deltaTime, RealEngine::Entity entity);
 
    private:
     RealEngine::Registry&      _registry;
