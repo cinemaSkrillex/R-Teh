@@ -10,6 +10,7 @@ endif()
 # Find dependencies
 find_package(SFML REQUIRED system window graphics network audio)
 find_package(lz4 CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
 # find_package(Lua REQUIRED)
 
 # Source files
@@ -55,6 +56,7 @@ if(UNIX)
         sfml-network
         sfml-audio
         lz4::lz4
+        JsonCpp::JsonCpp
     )
 elseif(WIN32)
     target_link_libraries(rtype_engine
@@ -65,5 +67,6 @@ elseif(WIN32)
         sfml-network
         sfml-audio
         lz4::lz4
+        JsonCpp::JsonCpp
     )
 endif()

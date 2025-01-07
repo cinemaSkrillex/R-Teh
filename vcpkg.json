@@ -6,6 +6,7 @@
     "asio",
     "sol2",
     "lua",
-    "lz4"
+    "lz4",
+    "jsoncpp"
   ]
 }
