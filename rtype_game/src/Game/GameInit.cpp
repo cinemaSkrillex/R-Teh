@@ -127,6 +127,8 @@ void Game::init_textures() {
     AssetManagerInstance.loadTexture("space_laser", "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadTexture("small_laser", "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadTexture("fireball", "../../assets/sprites/enemies/fireball.png");
+    AssetManagerInstance.loadTexture("big_bullet", "../../assets/sprites/big_shoot.png");
+    AssetManagerInstance.loadTexture("mid_bullet", "../../assets/sprites/medium_shoot.png");
 }
 
 void Game::init_sprites() {
@@ -161,6 +163,8 @@ void Game::init_sprites() {
     AssetManagerInstance.loadSprite("space_laser", "space_laser");
     AssetManagerInstance.loadSprite("small_laser", "small_laser");
     AssetManagerInstance.loadSprite("fireball", "fireball");
+    AssetManagerInstance.loadSprite("big_bullet", "big_bullet");
+    AssetManagerInstance.loadSprite("mid_bullet", "mid_bullet");
     set_sprite_scales();
     set_sprite_opacity();
 }
@@ -307,6 +311,8 @@ void Game::set_sprite_scales() {
     AssetManagerInstance.getSprite("space_laser")->setScale(GAME_SCALE, GAME_SCALE);
     AssetManagerInstance.getSprite("small_laser")->setScale(1, 1);
     AssetManagerInstance.getSprite("fireball")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("big_bullet")->setScale(GAME_SCALE, GAME_SCALE);
+    AssetManagerInstance.getSprite("mid_bullet")->setScale(GAME_SCALE, GAME_SCALE);
 }
 
 void Game::set_sprite_opacity() {

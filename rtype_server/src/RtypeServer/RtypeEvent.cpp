@@ -16,11 +16,11 @@ void RtypeServer::runEvent(const std::array<char, 800>&   buffer,
         return;
     }
     if (baseMessage.message_type == RTypeProtocol::MessageType::HOLD_SHOOT_EVENT) {
-        // holdShootEvent(buffer, client, player);
+        holdShootEvent(buffer, client, player);
         return;
     }
     if (baseMessage.message_type == RTypeProtocol::MessageType::RELEASE_SHOOT_EVENT) {
-        // releaseShootEvent(buffer, client, player);
+        releaseShootEvent(buffer, client, player);
         return;
     }
     std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
