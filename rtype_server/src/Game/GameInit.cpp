@@ -7,13 +7,14 @@
 
 #include "../include/Game/GameInstance.hpp"
 
-GameInstance::GameInstance()
-    : _clock(),
-      _window(WINDOWED ? std::make_unique<RealEngine::Window>("I CAN SEE EVERYTHING",
-                                                              sf::Vector2u(800, 600))
-                       : nullptr),
+GameInstance::GameInstance(bool serverVision)
+    : _serverVision(serverVision),
+      _clock(),
+      _window(_serverVision ? std::make_unique<RealEngine::Window>("I CAN SEE EVERYTHING",
+                                                                   sf::Vector2u(800, 600))
+                            : nullptr),
       _registry(),
-      _drawSystem(WINDOWED ? &_window->getRenderWindow() : nullptr),
+      _drawSystem(_serverVision ? &_window->getRenderWindow() : nullptr),
       _movementSystem(),
       _collisionSystem(),
       _aiSystem(),

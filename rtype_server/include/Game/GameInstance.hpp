@@ -7,8 +7,6 @@
 
 #pragma once
 
-#define WINDOWED true  // set to true to have a window for the server
-
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
@@ -16,7 +14,7 @@
 
 class GameInstance {
    public:
-    GameInstance();
+    GameInstance(bool serverVision = false);
     void init_components();
     void init_systems();
     void init_mobs();
@@ -47,6 +45,7 @@ class GameInstance {
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
 
    private:
+    bool                                _serverVision;
     std::unique_ptr<RealEngine::Window> _window;
     sf::Clock                           _clock;
 

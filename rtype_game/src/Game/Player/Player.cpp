@@ -4,6 +4,14 @@
 
 namespace rtype {
 
+static void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
+    auto* health = registry.get_component<RealEngine::Health>(entity);
+
+    if (health) {
+        health->damage += health->maxHealth;
+    }
+}
+
 static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
     auto* playerHealth   = registry.get_component<RealEngine::Health>(entity);

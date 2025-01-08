@@ -31,21 +31,29 @@ class AssetManager {
     // Textures gestion
 
     void loadTexture(const std::string& id, const std::string& filePath) {
-        auto texture = std::make_shared<sf::Texture>();
-        if (!texture->loadFromFile(filePath)) {
-            std::cout << "Failed to load texture: " << filePath << std::endl;
-            throw std::runtime_error("Failed to load texture: " + filePath);
+        try {
+            auto texture = std::make_shared<sf::Texture>();
+            if (!texture->loadFromFile(filePath)) {
+                std::cout << "Failed to load texture: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load texture: " + filePath);
+            }
+            _textures[id] = texture;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadTexture: " << id << " - " << e.what() << std::endl;
         }
-        _textures[id] = texture;
     }
 
     void loadTexture(const std::string& id, const std::string& filePath, const sf::IntRect& rect) {
-        auto texture = std::make_shared<sf::Texture>();
-        if (!texture->loadFromFile(filePath, rect)) {
-            std::cout << "Failed to load texture: " << filePath << std::endl;
-            throw std::runtime_error("Failed to load texture: " + filePath);
+        try {
+            auto texture = std::make_shared<sf::Texture>();
+            if (!texture->loadFromFile(filePath, rect)) {
+                std::cout << "Failed to load texture: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load texture: " + filePath);
+            }
+            _textures[id] = texture;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadTexture: " << id << " - " << e.what() << std::endl;
         }
-        _textures[id] = texture;
     }
 
     // registry.add_component(
@@ -67,12 +75,17 @@ class AssetManager {
     }
 
     std::shared_ptr<sf::Texture> getTexture(const std::string& id) {
-        auto it = _textures.find(id);
-        if (it == _textures.end()) {
-            std::cout << "Texture not found: " << id << std::endl;
-            throw std::runtime_error("Texture not found: " + id);
+        try {
+            auto it = _textures.find(id);
+            if (it == _textures.end()) {
+                std::cout << "Texture not found: " << id << std::endl;
+                throw std::runtime_error("Texture not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get texture: " << id << " - " << e.what() << std::endl;
+            return nullptr;
         }
-        return it->second;
     }
 
     void unloadTexture(const std::string& id) { _textures.erase(id); }
@@ -80,18 +93,27 @@ class AssetManager {
     // Sprites gestion
 
     void loadSprite(const std::string& id, const std::string& textureId) {
-        std::shared_ptr<sf::Texture> texturePtr = getTexture(textureId);
-        auto                         sprite     = std::make_shared<RealEngine::Sprite>(texturePtr);
-        _sprites[id]                            = sprite;
+        try {
+            std::shared_ptr<sf::Texture> texturePtr = getTexture(textureId);
+            auto                         sprite = std::make_shared<RealEngine::Sprite>(texturePtr);
+            _sprites[id]                        = sprite;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadSprite: " << id << " - " << e.what() << std::endl;
+        }
     }
 
     std::shared_ptr<Sprite> getSprite(const std::string& id) {
-        auto it = _sprites.find(id);
-        if (it == _sprites.end()) {
-            std::cout << "Sprite not found: " << id << std::endl;
-            throw std::runtime_error("Sprite not found: " + id);
+        try {
+            auto it = _sprites.find(id);
+            if (it == _sprites.end()) {
+                std::cout << "Sprite not found: " << id << std::endl;
+                throw std::runtime_error("Sprite not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get sprite: " << id << " - " << e.what() << std::endl;
+            return nullptr;
         }
-        return it->second;
     }
 
     // void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,

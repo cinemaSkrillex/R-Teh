@@ -1,10 +1,13 @@
 #include "../include/Core/Window.hpp"
 
+#include <iostream>
+
 namespace RealEngine {
 
-Window::Window(const std::string title, const sf::Vector2u size) : _title(title), _size(size) {
-    _window.create(sf::VideoMode(_size.x, _size.y), _title);
-    // _window.setFramerateLimit(60);
+Window::Window(const std::string title, const sf::Vector2u size)
+    : _title(title), _size(size), _style(sf::Style::Default) {
+    _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
+    _window.setFramerateLimit(60);
 }
 
 Window::~Window() { _window.close(); }
@@ -85,12 +88,10 @@ void Window::setSize(const sf::Vector2u size) {
     _window.setSize(_size);
 }
 
-void Window::setFullscreen(bool isFullscreen) {
-    if (isFullscreen) {
-        _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Fullscreen);
-    } else {
-        _window.create(sf::VideoMode(_size.x, _size.y), _title);
-    }
+void Window::setStyle(sf::Uint32 style) {
+    if (_style == style) return;
+    _window.create(sf::VideoMode(_size.x, _size.y), _title, style);
+    _style = style;
 }
 
 void Window::setView(sf::View& view) { _window.setView(view); }
