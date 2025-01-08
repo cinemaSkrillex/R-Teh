@@ -17,9 +17,9 @@ static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::E
 
     if (container != nullptr) {
         float shootCooldown = std::any_cast<float>(container->getNetvar("shootCooldown")->value);
-        if (shootCooldown <= 0) {
-            Fireball fireball(registry, {position->x, position->y}, 180);
-        }
+        // if (shootCooldown <= 0) {
+        //     Fireball fireball(registry, {position->x, position->y}, 180);
+        // }
         bool goUp = std::any_cast<bool>(container->getNetvar("goUp")->value);
         if (goUp) {
             velocity->vy = (-10.f * deltaTime) * 100.0f;
@@ -70,14 +70,16 @@ static void updateDirection(RealEngine::Registry& registry, RealEngine::Entity e
 
 SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
                          sf::Vector2f direction, float speed)
-    : _entity(registry.spawn_entity()),
-      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_sphere"))) {
-    _mobSpriteSheet.emplace("normal", _mobSprite);
+    : _entity(registry.spawn_entity()) {
+    //   _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_sphere"))) {
+    // _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
-    registry.add_component(
-        _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+    // registry.add_component(
+    //     _entity, RealEngine::SpriteSheet{
+    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("space_sphere");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
@@ -92,7 +94,7 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", "space_sphere", nullptr}},
+            {{"sprite_name", {"string", "sprite_name", std::string("space_sphere"), nullptr}},
              {"shootCooldown", {"float", "shootCooldown", 0.5f, updateShootCooldown}},
              {"directionCooldown", {"float", "directionCooldown", 2.0f, updateDirectionCooldown}},
              {"goUp", {"bool", "goUp", false, updateDirection}}}});

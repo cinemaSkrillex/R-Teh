@@ -14,6 +14,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "ECS/Components/SpriteSheet.hpp"
+#include "Engine.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
@@ -29,30 +31,68 @@ class AssetManager {
     // Textures gestion
 
     void loadTexture(const std::string& id, const std::string& filePath) {
-        auto texture = std::make_shared<sf::Texture>();
-        if (!texture->loadFromFile(filePath)) {
-            std::cout << "Failed to load texture: " << filePath << std::endl;
-            throw std::runtime_error("Failed to load texture: " + filePath);
+        try {
+            auto texture = std::make_shared<sf::Texture>();
+            if (!texture->loadFromFile(filePath)) {
+                std::cout << "Failed to load texture: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load texture: " + filePath);
+            }
+            _textures[id] = texture;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadTexture: " << id << " - " << e.what() << std::endl;
         }
-        _textures[id] = texture;
     }
 
     void loadTexture(const std::string& id, const std::string& filePath, const sf::IntRect& rect) {
-        auto texture = std::make_shared<sf::Texture>();
-        if (!texture->loadFromFile(filePath, rect)) {
-            std::cout << "Failed to load texture: " << filePath << std::endl;
-            throw std::runtime_error("Failed to load texture: " + filePath);
+        try {
+            auto texture = std::make_shared<sf::Texture>();
+            if (!texture->loadFromFile(filePath, rect)) {
+                std::cout << "Failed to load texture: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load texture: " + filePath);
+            }
+            _textures[id] = texture;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadTexture: " << id << " - " << e.what() << std::endl;
         }
-        _textures[id] = texture;
+    }
+
+    void loadSpriteSheet(const std::string&                                  id,
+                         std::unordered_map<std::string, RealEngine::Sprite> spriteSheet,
+                         const std::string& spriteIndex, int frameIndex,
+                         const sf::Vector2i& frameSize, bool pause, bool loop, float animTime,
+                         const sf::Vector2i& origin, sf::Clock animClock) {
+        auto spriteSheetPtr = std::make_shared<RealEngine::SpriteSheet>(
+            spriteSheet, spriteIndex, frameIndex, frameSize, pause, loop, animTime, origin,
+            animClock);
+        _spriteSheets[id] = spriteSheetPtr;
+    }
+
+    std::shared_ptr<SpriteSheet> getSpriteSheet(const std::string& id) {
+        try {
+            auto it = _spriteSheets.find(id);
+            if (it == _spriteSheets.end()) {
+                std::cout << "SpriteSheet not found: " << id << std::endl;
+                throw std::runtime_error("SpriteSheet not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
+            return nullptr;
+        }
     }
 
     std::shared_ptr<sf::Texture> getTexture(const std::string& id) {
-        auto it = _textures.find(id);
-        if (it == _textures.end()) {
-            std::cout << "Texture not found: " << id << std::endl;
-            throw std::runtime_error("Texture not found: " + id);
+        try {
+            auto it = _textures.find(id);
+            if (it == _textures.end()) {
+                std::cout << "Texture not found: " << id << std::endl;
+                throw std::runtime_error("Texture not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get texture: " << id << " - " << e.what() << std::endl;
+            return nullptr;
         }
-        return it->second;
     }
 
     void unloadTexture(const std::string& id) { _textures.erase(id); }
@@ -60,29 +100,39 @@ class AssetManager {
     // Sprites gestion
 
     void loadSprite(const std::string& id, const std::string& textureId) {
-        std::shared_ptr<sf::Texture> texturePtr = getTexture(textureId);
-        auto                         sprite     = std::make_shared<RealEngine::Sprite>(texturePtr);
-        _sprites[id]                            = sprite;
+        try {
+            std::shared_ptr<sf::Texture> texturePtr = getTexture(textureId);
+            auto                         sprite = std::make_shared<RealEngine::Sprite>(texturePtr);
+            _sprites[id]                        = sprite;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadSprite: " << id << " - " << e.what() << std::endl;
+        }
     }
 
     std::shared_ptr<Sprite> getSprite(const std::string& id) {
-        auto it = _sprites.find(id);
-        if (it == _sprites.end()) {
-            std::cout << "Sprite not found: " << id << std::endl;
-            throw std::runtime_error("Sprite not found: " + id);
+        try {
+            auto it = _sprites.find(id);
+            if (it == _sprites.end()) {
+                std::cout << "Sprite not found: " << id << std::endl;
+                throw std::runtime_error("Sprite not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get sprite: " << id << " - " << e.what() << std::endl;
+            return nullptr;
         }
-        return it->second;
     }
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::Vector2f& scale) {
+                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
         loadTexture(id, filepath);
         loadSprite(id, id);
         getSprite(id)->setScale(scale.x, scale.y);
     }
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::Vector2f& scale, const sf::IntRect& rect) {
+                                   const sf::IntRect&  rect,
+                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
         loadTexture(id, filepath, rect);
         loadSprite(id, id);
         getSprite(id)->setScale(scale.x, scale.y);
@@ -146,10 +196,10 @@ class AssetManager {
     AssetManager()  = default;
     ~AssetManager() = default;
 
-    // AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
     std::unordered_map<std::string, std::shared_ptr<Sprite>>      _sprites;
+    std::unordered_map<std::string, std::shared_ptr<SpriteSheet>> _spriteSheets;
 };
 }  // namespace RealEngine

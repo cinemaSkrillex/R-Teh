@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SpaceMissile
+** DirectionalCanon
 */
 
-#include "Game/Mobs/Projectiles/SpaceMissile.hpp"
+#include "Game/Mobs/DirectionalCanon.hpp"
 
 namespace rtype {
 
@@ -20,13 +20,17 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-SpaceMissile::SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position, float angle,
-                           float speed)
+DirectionalCanon::DirectionalCanon(RealEngine::Registry& registry, sf::Vector2f position,
+                                   sf::Vector2f direction, float speed)
     : _entity(registry.spawn_entity()),
-      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_missile"))) {
+      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("directional_canon"))) {
+    _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
-    registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});
+    registry.add_component(
+        _entity,
+        RealEngine::SpriteSheet{
+            _mobSpriteSheet, "normal", 0, {64, 64}, false, true, 80, {32, 32}, sf::Clock()});
     registry.add_component(_entity, RealEngine::Drawable{});
     // registry.add_component(
     //     _entity, RealEngine::Collision{
@@ -43,9 +47,13 @@ SpaceMissile::SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position
                            RealEngine::AI{agressive_behavior, straight_line_behavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
-    registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(_entity, RealEngine::Rotation{0.f});
+    registry.add_component(
+        _entity, RealEngine::NetvarContainer{
+                     {{"sprite_name",
+                       {"string", "sprite_name", std::string("directional_canon"), nullptr}}}});
 }
 
-SpaceMissile::~SpaceMissile() {}
+DirectionalCanon::~DirectionalCanon() {}
 
 }  // namespace rtype

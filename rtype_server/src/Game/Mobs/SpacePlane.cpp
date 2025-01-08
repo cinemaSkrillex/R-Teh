@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** RobotMiniBoss
+** SpacePlane
 */
 
-#include "Game/Mobs/RobotMiniBoss.hpp"
+#include "Game/Mobs/SpacePlane.hpp"
 
 namespace rtype {
 
@@ -24,24 +24,17 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f position,
-                             sf::Vector2f direction, float speed)
+SpacePlane::SpacePlane(RealEngine::Registry& registry, sf::Vector2f position,
+                       sf::Vector2f direction, float speed)
     : _entity(registry.spawn_entity()),
-      _shootMobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_shoot"))),
-      _fordwardMobSprite(
-          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_fordward"))),
-      _backwardMobSprite(
-          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_backward"))) {
-    _mobSpriteSheet.emplace("shoot", _shootMobSprite);
-    _mobSpriteSheet.emplace("fordward", _fordwardMobSprite);
-    _mobSpriteSheet.emplace("backwards", _backwardMobSprite);
+      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_plane"))) {
+    _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.5f});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{
-            _mobSpriteSheet, "shoot", 0, {47, 43}, false, false, 0, {-1, -1}, sf::Clock()});
-    // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
+            _mobSpriteSheet, "normal", 0, {21, 23}, false, true, 75, {10, 12}, sf::Clock()});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
         _entity, RealEngine::Collision{
@@ -51,31 +44,22 @@ RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f positi
                      RealEngine::CollisionType::ENEMY,
                      [this](RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                             RealEngine::Entity collider, RealEngine::Entity entity) {
-                         collisionBehaviour(collisionType, registry, collider, entity);
+                         mob_collision_handler(collisionType, registry, collider, entity);
                      }});
     registry.add_component(_entity,
                            RealEngine::AI{agressive_behavior, straight_line_behavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("space_plane"), nullptr}}}});
 }
 
-RobotMiniBoss::~RobotMiniBoss() {}
+SpacePlane::~SpacePlane() {}
 
-static void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
-                            RealEngine::Entity entity) {
-    auto* health       = registry.get_component<RealEngine::Health>(entity);
-    auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
-
-    if (health) {
-        health->damage += 10;
-    }
-    if (bulletHealth) {
-        bulletHealth->damage += 10;
-    }
-}
-
-void RobotMiniBoss::collisionBehaviour(RealEngine::CollisionType collisionType,
+void SpacePlane::mob_collision_handler(RealEngine::CollisionType collisionType,
                                        RealEngine::Registry& registry, RealEngine::Entity collider,
                                        RealEngine::Entity entity) {
     switch (collisionType) {
@@ -97,6 +81,19 @@ void RobotMiniBoss::collisionBehaviour(RealEngine::CollisionType collisionType,
             break;
         default:
             break;
+    }
+}
+
+void SpacePlane::mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+                                 RealEngine::Entity entity) {
+    auto* health       = registry.get_component<RealEngine::Health>(entity);
+    auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
+
+    if (health) {
+        health->damage += 10;
+    }
+    if (bulletHealth) {
+        bulletHealth->damage += 10;
     }
 }
 

@@ -311,6 +311,7 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
                             RealEngine::Entity entity) {
     auto* health = registry.get_component<RealEngine::Health>(entity);
     auto* damage = registry.get_component<RealEngine::Damage>(collider);
+    std::cerr << "take damage from collider" << std::endl; //TODO: remove, for debug
 
     if (health && damage) {
         if (damage->effect) {

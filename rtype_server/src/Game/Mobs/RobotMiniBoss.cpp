@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** RobotBossMinion
+** RobotMiniBoss
 */
 
-#include "Game/Mobs/RobotBossMinion.hpp"
+#include "Game/Mobs/RobotMiniBoss.hpp"
 
 namespace rtype {
 
@@ -24,17 +24,23 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position,
-                                 sf::Vector2f direction, float speed)
+RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f position,
+                             sf::Vector2f direction, float speed)
     : _entity(registry.spawn_entity()),
-      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
-    _mobSpriteSheet.emplace("normal", _mobSprite);
+      _shootMobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_shoot"))),
+      _fordwardMobSprite(
+          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_fordward"))),
+      _backwardMobSprite(
+          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_backward"))) {
+    _mobSpriteSheet.emplace("shoot", _shootMobSprite);
+    _mobSpriteSheet.emplace("fordward", _fordwardMobSprite);
+    _mobSpriteSheet.emplace("backwards", _backwardMobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.5f});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{
-            _mobSpriteSheet, "normal", 0, {32, 31}, false, true, 230, {-1, -1}, sf::Clock()});
+            _mobSpriteSheet, "shoot", 0, {47, 43}, false, false, 0, {-1, -1}, sf::Clock()});
     // registry.add_component(_entity, RealEngine::SpriteComponent{_mobSprite});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
@@ -52,9 +58,13 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("robot_mini_boss"), nullptr}}}});
 }
 
-RobotBossMinion::~RobotBossMinion() {}
+RobotMiniBoss::~RobotMiniBoss() {}
 
 static void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
                             RealEngine::Entity entity) {
@@ -69,9 +79,9 @@ static void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity c
     }
 }
 
-void RobotBossMinion::collisionBehaviour(RealEngine::CollisionType collisionType,
-                                         RealEngine::Registry&     registry,
-                                         RealEngine::Entity collider, RealEngine::Entity entity) {
+void RobotMiniBoss::collisionBehaviour(RealEngine::CollisionType collisionType,
+                                       RealEngine::Registry& registry, RealEngine::Entity collider,
+                                       RealEngine::Entity entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;

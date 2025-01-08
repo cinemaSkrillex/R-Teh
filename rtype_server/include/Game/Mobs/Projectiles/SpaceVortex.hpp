@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Mobs/Behaviors.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 

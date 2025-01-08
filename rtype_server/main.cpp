@@ -8,17 +8,22 @@
 #include "RtypeServer/RtypeServer.hpp"
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
+    if (argc < 2 || argc > 3) {
         std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
         return 1;
     }
 
-    unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
+    unsigned short port          = static_cast<unsigned short>(std::stoi(argv[1]));
+    bool           server_vision = false;
 
+    if (argc == 3 && std::string(argv[2]) == "-window") {
+        server_vision = true;
+    }
     try {
         asio::io_context             io_context;
-        auto                         server       = std::make_shared<UDPServer>(io_context, port);
-        std::shared_ptr<RtypeServer> rtype_server = std::make_shared<RtypeServer>(server);
+        auto                         server = std::make_shared<UDPServer>(io_context, port);
+        std::shared_ptr<RtypeServer> rtype_server =
+            std::make_shared<RtypeServer>(server, server_vision);
         std::chrono::steady_clock::time_point start_time = rtype_server->getStartTime();
 
         rtype_server->run();

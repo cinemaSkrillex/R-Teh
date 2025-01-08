@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SpaceBomb
+** MiniBossShoot
 */
 
-#include "Game/Mobs/Projectiles/SpaceBomb.hpp"
+#include "Game/Mobs/Projectiles/MiniBossShoot.hpp"
 
 namespace rtype {
 
@@ -20,13 +20,17 @@ static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entit
     // no agressive behavior
 }
 
-SpaceBomb::SpaceBomb(RealEngine::Registry& registry, sf::Vector2f position, float angle,
-                     float speed)
+MiniBossShoot::MiniBossShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle,
+                             float speed)
     : _entity(registry.spawn_entity()),
-      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_bomb"))) {
+      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("mini_boss_shoot"))) {
+    _projSpriteSheet.emplace("normal", _projSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
-    registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});
+    registry.add_component(
+        _entity,
+        RealEngine::SpriteSheet{
+            _projSpriteSheet, "normal", 0, {63, 16}, false, true, 55, {50, 8}, sf::Clock()});
     registry.add_component(_entity, RealEngine::Drawable{});
     // registry.add_component(
     //     _entity, RealEngine::Collision{
@@ -44,8 +48,12 @@ SpaceBomb::SpaceBomb(RealEngine::Registry& registry, sf::Vector2f position, floa
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("mini_boss_shoot"), nullptr}}}});
 }
 
-SpaceBomb::~SpaceBomb() {}
+MiniBossShoot::~MiniBossShoot() {}
 
 }  // namespace rtype

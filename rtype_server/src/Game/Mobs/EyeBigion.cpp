@@ -2,12 +2,17 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** EyeBomber
+** EyeBigion
 */
 
-#include "Game/Mobs/EyeBomber.hpp"
+#include "Game/Mobs/EyeBigion.hpp"
 
 namespace rtype {
+
+static void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
+                              float deltaTime) {
+    rushTowardsTarget(registry, entity, deltaTime);
+}
 
 static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                            float deltaTime) {
@@ -16,21 +21,25 @@ static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity en
     auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(entity);
 
     if (!eyeRotation || !eyeVelocity || !eyeAcceleration)
-        std::cout << "Error: EyeBomber components not found!" << std::endl;
+        std::cout << "Error: EyeBigion components not found!" << std::endl;
 }
 
-EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
+EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
                      float speed)
     : _eyeEntity(registry.spawn_entity()),
-      _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bomber"))) {
+      _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_normal"))),
+      _angryEyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_angry"))) {
     _eyeSheet.emplace("normal", _eyeSprite);
+    _eyeSheet.emplace("angry", _angryEyeSprite);
 
     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
     registry.add_components(
         _eyeEntity,
         RealEngine::SpriteSheet{
-            _eyeSheet, "normal", 0, {15, 10}, false, true, 120, {10, 5}, sf::Clock()},
+            _eyeSheet, "normal", 0, {23, 16}, false, true, 120, {17, 8}, sf::Clock()},
         RealEngine::Drawable{});
+    // 23, 16 size and 17, 8 center for normal form
+    // 21, 16 size and 16, 8 center for angry form
     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
     registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
@@ -46,14 +55,17 @@ EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position, sf::
                 collisionBehaviour(collisionType, registry, collider, entity);
             }});
     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
-    registry.add_component(_eyeEntity,
-                           RealEngine::AI{rushAndAimTowardsTargetZigzagging, simpleBehavior, true});
+    registry.add_component(_eyeEntity, RealEngine::AI{agressiveBehavior, simpleBehavior, true});
     registry.add_component(_eyeEntity, RealEngine::Damage{40});
+    registry.add_component(
+        _eyeEntity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("eye_bigion"), nullptr}}}});
 }
 
-EyeBomber::~EyeBomber() {}
+EyeBigion::~EyeBigion() {}
 
-void EyeBomber::setTarget(std::shared_ptr<RealEngine::Entity> target,
+void EyeBigion::setTarget(std::shared_ptr<RealEngine::Entity> target,
                           RealEngine::Registry&               registry) {
     auto* acceleration = registry.get_component<RealEngine::Acceleration>(_eyeEntity);
 
@@ -62,7 +74,7 @@ void EyeBomber::setTarget(std::shared_ptr<RealEngine::Entity> target,
     registry.add_component(_eyeEntity, RealEngine::Target{target});
 }
 
-void EyeBomber::collisionBehaviour(RealEngine::CollisionType collisionType,
+void EyeBigion::collisionBehaviour(RealEngine::CollisionType collisionType,
                                    RealEngine::Registry& registry, RealEngine::Entity collider,
                                    RealEngine::Entity entity) {
     switch (collisionType) {

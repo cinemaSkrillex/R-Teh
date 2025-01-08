@@ -7,8 +7,6 @@
 
 #pragma once
 
-#define WINDOWED true  // set to true to have a window for the server
-
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
@@ -16,13 +14,12 @@
 
 class GameInstance {
    public:
-    GameInstance();
+    GameInstance(bool serverVision = false);
     void init_components();
     void init_systems();
     void init_mobs();
     void init_textures();
-    void init_sprites();
-    void set_sprite_scales();
+    void init_sprite_sheets();
 
     void init_level(std::string filepath, std::string foldername);
 
@@ -34,9 +31,8 @@ class GameInstance {
                                                         sf::Vector2f direction, float speed,
                                                         std::string spriteName, float damage,
                                                         int health);
-    std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position,
-                                                           sf::Vector2f direction, float speed,
-                                                           float destructTimer);
+    std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
+        std::shared_ptr<RealEngine::Entity> enemyEntity);
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
@@ -46,9 +42,10 @@ class GameInstance {
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
-    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _ennemies; }
+    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
 
    private:
+    bool                                _serverVision;
     std::unique_ptr<RealEngine::Window> _window;
     sf::Clock                           _clock;
 
@@ -64,6 +61,6 @@ class GameInstance {
     RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _ennemies;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };

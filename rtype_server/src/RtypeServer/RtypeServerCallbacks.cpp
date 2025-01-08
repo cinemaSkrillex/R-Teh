@@ -157,6 +157,10 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
     // Notify all other clients about the new client
     for (const auto& client : _server->getClients()) {
         if (client != sender) {
+            if (!_players[client].getUUID()) {
+                std::cout << "Player UUID is null" << std::endl;
+                continue;
+            }
             std::array<char, 800> serializedMessage = createNewClientMessage<800>(
                 *playerEntity, player_start_position.x, player_start_position.y, elapsed_time);
             _server->send_reliable_packet(serializedMessage, client);
@@ -166,6 +170,11 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
     std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
     for (const auto& player_pair : _players) {
         const auto& player = player_pair.second;
+        if (!player.getUUID()) {
+            std::cout << "Player UUID is null" << std::endl;
+            continue;
+        }
+        std::cout << "Player UUID: " << player.getUUID() << std::endl;
         activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
     }
     std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
@@ -179,23 +188,40 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
 }
 
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    std::vector<RTypeProtocol::Tile> tiles = _server_map->getTiles();
+    if (!_server_map) {
+        std::cerr << "Error: Server map is null" << std::endl;
+        return;
+    }
+    std::vector<RTypeProtocol::Tile> tiles      = _server_map->getTiles();
+    int                              uuid_count = 0;
     for (const auto& tile : tiles) {
         RTypeProtocol::NewEntityMessage newTileMessage;
         newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-        newTileMessage.uuid         = 1000;
+        if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 ||
+            tile.rotation < 0) {
+            std::cerr << "Error: Tile position is null" << std::endl;
+            return;
+        }
 
         if (tile.type == "BLOCK") {
+            if (!_game_instance) {
+                std::cerr << "Error: Game instance is null" << std::endl;
+                return;
+            }
             rtype::Block newBlock(*_game_instance->getRegistry(), tile.position, tile.element,
                                   tile.rotation);
+            auto         blockEntity = newBlock.getEntity();
+            if (!blockEntity) {
+                std::cerr << "Error: Block entity is null" << std::endl;
+                return;
+            }
+            newTileMessage.uuid = *blockEntity;
 
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
                                   tile.position);
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
                                   tile.rotation);
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
-                                  50.0f);
 
             sf::FloatRect             bounds      = {0, 0, 16, 8};
             std::string               id          = tile.element;
