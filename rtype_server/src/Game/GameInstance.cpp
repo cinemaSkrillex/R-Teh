@@ -38,9 +38,9 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                              destroyedHealth.end());
 
     _netvarSystem.update(_registry, deltaTime);
-    _enemiess.erase(
+    _enemies.erase(
         std::remove_if(
-            _enemiess.begin(), _enemiess.end(),
+            _enemies.begin(), _enemies.end(),
             [&](const auto& mob) {
                 std::vector<RealEngine::Netvar*> netvars =
                     _registry.get_components<RealEngine::Netvar>(mob);
@@ -62,7 +62,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                 }
                 return _registry.get_component<RealEngine::Health>(mob) == nullptr;
             }),
-        _enemiess.end());
+        _enemies.end());
 
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
                                   [&](const auto& bullet) {
@@ -72,7 +72,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                    _bullets.end());
 
     // Then update remaining mobs
-    for (auto& mob : _enemiess) {
+    for (auto& mob : _enemies) {
         _movementSystem.update(_registry, mob, deltaTime);
     }
 
@@ -92,7 +92,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetPlayer(sf::Vector2f p
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(sf::Vector2f position) {
     auto entity = _registry.spawn_entity();
-    _enemiess.push_back(entity);
+    _enemies.push_back(entity);
     return entity;
 }
 
@@ -108,8 +108,8 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEnemy(
     std::shared_ptr<RealEngine::Entity> enemyEntity) {
-    _enemiess.push_back(enemyEntity);
-    return _enemiess.back();
+    _enemies.push_back(enemyEntity);
+    return _enemies.back();
 }
 
 void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {

@@ -70,14 +70,16 @@ static void updateDirection(RealEngine::Registry& registry, RealEngine::Entity e
 
 SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
                          sf::Vector2f direction, float speed)
-    : _entity(registry.spawn_entity()),
-      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_sphere"))) {
-    _mobSpriteSheet.emplace("normal", _mobSprite);
+    : _entity(registry.spawn_entity()) {
+    //   _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_sphere"))) {
+    // _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
-    registry.add_component(
-        _entity, RealEngine::SpriteSheet{
-                     _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+    // registry.add_component(
+    //     _entity, RealEngine::SpriteSheet{
+    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("space_sphere");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
