@@ -185,6 +185,10 @@ EyeBoss::EyeBoss(RealEngine::Registry& registry)
                                                        setBossStatusMid, setBossStatusLong});
     registry.add_component(_entity, RealEngine::AI{targetBossBehavior, noTargetBossBehavior,
                                                    false});  // the boss ai is disabled for now
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("eye_boss"), nullptr}}}});
 }
 
 EyeBoss::~EyeBoss() {}

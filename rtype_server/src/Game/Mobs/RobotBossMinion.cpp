@@ -52,6 +52,10 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
+    registry.add_component(
+        _entity, RealEngine::NetvarContainer{
+                     {{"sprite_name",
+                       {"string", "sprite_name", std::string("robot_boss_minion"), nullptr}}}});
 }
 
 RobotBossMinion::~RobotBossMinion() {}

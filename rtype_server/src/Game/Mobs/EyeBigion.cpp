@@ -57,6 +57,10 @@ EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position, sf::
     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
     registry.add_component(_eyeEntity, RealEngine::AI{agressiveBehavior, simpleBehavior, true});
     registry.add_component(_eyeEntity, RealEngine::Damage{40});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("eye_bigion"), nullptr}}}});
 }
 
 EyeBigion::~EyeBigion() {}

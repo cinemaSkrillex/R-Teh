@@ -84,6 +84,10 @@ WallTurret::WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bo
     registry.add_component(_pedestalEntity, RealEngine::SpriteComponent{_pedestalSprite});
     registry.add_component(_pedestalEntity, RealEngine::Drawable{});
     registry.add_component(_pedestalEntity, RealEngine::Rotation{0.f});
+    registry.add_component(
+        _entity, RealEngine::NetvarContainer{
+                     {{"sprite_name",
+                       {"string", "sprite_name", std::string("directional_canon"), nullptr}}}});
 }
 
 WallTurret::~WallTurret() {}

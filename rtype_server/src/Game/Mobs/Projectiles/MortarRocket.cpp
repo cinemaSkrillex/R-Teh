@@ -44,6 +44,10 @@ MortarRocket::MortarRocket(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("mortar_rocket"), nullptr}}}});
 }
 
 MortarRocket::~MortarRocket() {}
