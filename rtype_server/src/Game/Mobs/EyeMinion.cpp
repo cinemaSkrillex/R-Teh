@@ -81,39 +81,6 @@ void mob_collision_handler(RealEngine::CollisionType collisionType, RealEngine::
     }
 }
 
-// EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-//                      float speed)
-//     : _eyeEntity(registry.spawn_entity()),
-//       _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_minion"))) {
-//     _eyeSheet.emplace("normal", _eyeSprite);
-
-//     registry.add_component(_eyeEntity, RealEngine::Position{position.x, position.y});
-//     registry.add_components(
-//         _eyeEntity,
-//         RealEngine::SpriteSheet{
-//             _eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock()},
-//         RealEngine::Drawable{});
-//     registry.add_component(_eyeEntity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
-//     registry.add_component(_eyeEntity, RealEngine::Acceleration{60.0f, 30.0f, 0.5f});
-//     registry.add_component(_eyeEntity, RealEngine::Rotation{0.0f});
-//     registry.add_component(_eyeEntity,
-//                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
-//                                                  "mob",
-//                                                  false,
-//                                                  RealEngine::CollisionType::ENEMY,
-//                                                  mob_collision_handler});
-
-//     registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
-//     registry.add_component(_eyeEntity,
-//                            RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
-//     registry.add_component(_eyeEntity, RealEngine::Damage{5});
-//     registry.add_component(
-//         _eyeEntity,
-//         RealEngine::NetvarContainer{
-//             {{"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
-//              {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}}}});
-// }
-
 EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
                      float speed)
     : _eyeEntity(registry.spawn_entity()) {
