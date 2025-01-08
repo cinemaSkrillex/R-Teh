@@ -93,7 +93,7 @@ void GameInstance::init_systems() {
 void GameInstance::init_mobs() {
     rtype::EyeMinion eyeMinion(_registry, {700, 100}, {0, 0}, 0);
     addAndGetEnemy(eyeMinion.getEntity());
-    rtype::SpaceSphere spaceSphere(_registry, {1200, 100}, {0, 0}, 0);
+    rtype::SpaceSphere spaceSphere(_registry, {100, 300}, {0, 0}, 0);
     addAndGetEnemy(spaceSphere.getEntity());
     // addAndGetSimpleMob({1000, 100}, {-1, 0}, 50 * 2, 50);
     // addAndGetSimpleMob({2050, 100}, {-1, 0}, 50 * 2, 50);
