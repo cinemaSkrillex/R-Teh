@@ -131,31 +131,27 @@ class PacketManager {
         auto message = std::make_shared<std::array<char, BUFFER_SIZE>>();
         std::copy(recv_buffer_.begin(), recv_buffer_.begin() + bytes_recvd, message->begin());
 
-        try {
-            packet<BUFFER_SIZE> pkt = deserialize_packet(*message);
-            switch (pkt.flag) {
-                case ACK:
-                    handle_ack(pkt);
-                    break;
-                case RELIABLE:
-                    handle_reliable_packet(pkt);
-                    break;
-                case UNRELIABLE:
-                    handle_unreliable_packet(pkt.data);
-                    break;
-                case NEW_CLIENT:
-                    handle_new_client(_endpoint);
-                    break;
-                case TEST:
-                    handle_test(_endpoint);
-                    break;
-                default:
-                    std::cerr << "Received unknown packet<BUFFER_SIZE> type: " << pkt.flag
-                              << std::endl;
-                    break;
-            }
-        } catch (const std::exception& e) {
-            std::cerr << "Failed to deserialize packet: " << e.what() << std::endl;
+        packet<BUFFER_SIZE> pkt = deserialize_packet(*message);
+
+        switch (pkt.flag) {
+            case ACK:
+                handle_ack(pkt);
+                break;
+            case RELIABLE:
+                handle_reliable_packet(pkt);
+                break;
+            case UNRELIABLE:
+                handle_unreliable_packet(pkt.data);
+                break;
+            case NEW_CLIENT:
+                handle_new_client(_endpoint);
+                break;
+            case TEST:
+                handle_test(_endpoint);
+                break;
+            default:
+                std::cerr << "Received unknown packet<BUFFER_SIZE> type: " << pkt.flag << std::endl;
+                break;
         }
     }
     // handle messages
