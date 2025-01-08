@@ -5,7 +5,7 @@
 ** TCPServer.cpp
 */
 
-#include "TCPServer.hpp"
+#include "../../include/Server/TCPServer.hpp"
 #include <iostream>
 
 TCPServer::TCPServer(unsigned short port)
