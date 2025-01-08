@@ -125,9 +125,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             }
             case RTypeProtocol::ComponentList::SPRITE: {
                 std::string sprite_str(component.second.begin(), component.second.end());
-                std::cout << "Sprite: " << sprite_str << "\n";
+                // std::cout << "Sprite: " << sprite_str << "\n";
                 auto sprite = *(RealEngine::AssetManager::getInstance().getSprite(sprite_str));
-                sprite.setScale(GAME_SCALE, GAME_SCALE);
                 _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
                 break;
             }
@@ -139,16 +138,10 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 _registry.add_component(newEntity, RealEngine::Rotation{rotation.angle});
                 break;
             }
-
-                // case RTypeProtocol::ComponentList::COLLISION: {
-                //     sf::IntRect collision;
-                //     std::memcpy(&collision, component.second.data(), sizeof(collision));
-                //     std::cout << "Collision: (" << collision.left << ", " << collision.top << ",
-                //     "
-                //               << collision.width << ", " << collision.height << ")\n";
-                //     break;
-                // }
-
+            case RTypeProtocol::ComponentList::COLLISION: {
+                //TODO: handle collision client side
+                break;
+            }
             case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
                 float autoDestructible;
                 std::memcpy(&autoDestructible, component.second.data(), sizeof(autoDestructible));
@@ -168,7 +161,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
         }
     }
-    std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
+    // std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
     _entities.emplace(parsedPacket.uuid, newEntity);
 }
 
