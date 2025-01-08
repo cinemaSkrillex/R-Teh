@@ -124,10 +124,28 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
             case RTypeProtocol::ComponentList::SPRITE: {
+                // auto spriteSheet = *(RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str));
+                // //check if spriteSheet is not null
+                // // if not null do:
+                // // _registry.add_component(*newEntity, RealEngine::SpriteSheet{spriteSheet});
+                // //else
+                // auto sprite = *(RealEngine::AssetManager::getInstance().getSprite(sprite_str));
+                // _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
+                // break;
                 std::string sprite_str(component.second.begin(), component.second.end());
                 // std::cout << "Sprite: " << sprite_str << "\n";
-                auto sprite = *(RealEngine::AssetManager::getInstance().getSprite(sprite_str));
-                _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
+    
+                auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
+                if (spriteSheet) {
+                    _registry.add_component(*newEntity, RealEngine::SpriteSheet{*spriteSheet});
+                } else {
+                    auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
+                    if (sprite) {
+                        _registry.add_component(*newEntity, RealEngine::SpriteComponent{*sprite});
+                    } else {
+                        std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << sprite_str << std::endl;
+                    }
+                }
                 break;
             }
 

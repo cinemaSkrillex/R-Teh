@@ -66,12 +66,17 @@ class AssetManager {
     }
 
     std::shared_ptr<SpriteSheet> getSpriteSheet(const std::string& id) {
-        auto it = _spriteSheets.find(id);
-        if (it == _spriteSheets.end()) {
-            std::cout << "SpriteSheet not found: " << id << std::endl;
-            throw std::runtime_error("SpriteSheet not found: " + id);
+        try {
+            auto it = _spriteSheets.find(id);
+            if (it == _spriteSheets.end()) {
+                std::cout << "SpriteSheet not found: " << id << std::endl;
+                throw std::runtime_error("SpriteSheet not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
+            return nullptr;
         }
-        return it->second;
     }
 
     std::shared_ptr<sf::Texture> getTexture(const std::string& id) {
