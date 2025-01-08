@@ -8,8 +8,9 @@
 #ifndef TCPCLIENT_HPP
 #define TCPCLIENT_HPP
 
+// #include "../shared/PacketUtils.hpp"
 #include "TCPPacketManager.hpp"
-#include <asio.hpp>
+#include "TCPPacketUtils.hpp"
 
 class TCPClient {
    public:
