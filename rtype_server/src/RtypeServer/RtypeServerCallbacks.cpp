@@ -188,15 +188,34 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
 }
 
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    std::vector<RTypeProtocol::Tile> tiles = _server_map->getTiles();
+    if (!_server_map) {
+        std::cerr << "Error: Server map is null" << std::endl;
+        return;
+    }
+    std::vector<RTypeProtocol::Tile> tiles      = _server_map->getTiles();
+    int                              uuid_count = 0;
     for (const auto& tile : tiles) {
         RTypeProtocol::NewEntityMessage newTileMessage;
         newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-        newTileMessage.uuid         = 1000;
+        if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 ||
+            tile.rotation < 0) {
+            std::cerr << "Error: Tile position is null" << std::endl;
+            return;
+        }
 
         if (tile.type == "BLOCK") {
+            if (!_game_instance) {
+                std::cerr << "Error: Game instance is null" << std::endl;
+                return;
+            }
             rtype::Block newBlock(*_game_instance->getRegistry(), tile.position, tile.element,
                                   tile.rotation);
+            auto         blockEntity = newBlock.getEntity();
+            if (!blockEntity) {
+                std::cerr << "Error: Block entity is null" << std::endl;
+                return;
+            }
+            newTileMessage.uuid = *blockEntity;
 
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
                                   tile.position);
