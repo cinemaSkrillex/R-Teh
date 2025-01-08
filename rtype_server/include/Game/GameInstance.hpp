@@ -21,8 +21,7 @@ class GameInstance {
     void init_systems();
     void init_mobs();
     void init_textures();
-    void init_sprites();
-    void set_sprite_scales();
+    void init_sprite_sheets();
 
     void init_level(std::string filepath, std::string foldername);
 
@@ -45,7 +44,7 @@ class GameInstance {
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
-    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemiess; }
+    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
 
    private:
     std::unique_ptr<RealEngine::Window> _window;
@@ -63,6 +62,6 @@ class GameInstance {
     RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemiess;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };

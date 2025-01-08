@@ -14,7 +14,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "Engine.hpp"
 #include "Media/Graphics/Rendering/Sprite.hpp"
+#include "ECS/Components/SpriteSheet.hpp"
 
 namespace RealEngine {
 
@@ -46,6 +48,24 @@ class AssetManager {
         _textures[id] = texture;
     }
 
+    // registry.add_component(
+    //     _entity, RealEngine::SpriteSheet{
+    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+
+    void loadSpriteSheet(const std::string& id,std::unordered_map<std::string, RealEngine::Sprite> spriteSheet, const std::string& spriteIndex, int frameIndex, const sf::Vector2i& frameSize, bool pause, bool loop, float animTime, const sf::Vector2i& origin, sf::Clock animClock) {
+        auto spriteSheetPtr = std::make_shared<RealEngine::SpriteSheet>(spriteSheet, spriteIndex, frameIndex, frameSize, pause, loop, animTime, origin, animClock);
+        _spriteSheets[id] = spriteSheetPtr;
+    }
+
+    std::shared_ptr<SpriteSheet> getSpriteSheet(const std::string& id) {
+        auto it = _spriteSheets.find(id);
+        if (it == _spriteSheets.end()) {
+            std::cout << "SpriteSheet not found: " << id << std::endl;
+            throw std::runtime_error("SpriteSheet not found: " + id);
+        }
+        return it->second;
+    }
+
     std::shared_ptr<sf::Texture> getTexture(const std::string& id) {
         auto it = _textures.find(id);
         if (it == _textures.end()) {
@@ -74,15 +94,30 @@ class AssetManager {
         return it->second;
     }
 
+    // void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
+    //                                const sf::Vector2f& scale) {
+    //     loadTexture(id, filepath);
+    //     loadSprite(id, id);
+    //     getSprite(id)->setScale(scale.x, scale.y);
+    // }
+
+    // void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
+    //                                const sf::Vector2f& scale, const sf::IntRect& rect) {
+    //     loadTexture(id, filepath, rect);
+    //     loadSprite(id, id);
+    //     getSprite(id)->setScale(scale.x, scale.y);
+    // }
+
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::Vector2f& scale) {
+                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
         loadTexture(id, filepath);
         loadSprite(id, id);
         getSprite(id)->setScale(scale.x, scale.y);
     }
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::Vector2f& scale, const sf::IntRect& rect) {
+                                   const sf::IntRect&  rect,
+                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
         loadTexture(id, filepath, rect);
         loadSprite(id, id);
         getSprite(id)->setScale(scale.x, scale.y);
@@ -151,5 +186,6 @@ class AssetManager {
 
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
     std::unordered_map<std::string, std::shared_ptr<Sprite>>      _sprites;
+    std::unordered_map<std::string, std::shared_ptr<SpriteSheet>> _spriteSheets;
 };
 }  // namespace RealEngine

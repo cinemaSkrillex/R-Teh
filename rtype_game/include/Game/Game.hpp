@@ -31,7 +31,6 @@ class Game {
     ~Game();
     void                                run();
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
-    RealEngine::Entity                  createEntity();
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
@@ -47,7 +46,7 @@ class Game {
     void init_controls();
     void init_systems();
     void init_textures();
-    void init_sprites();
+    void init_sprite_sheets();
 
     void init_level(std::string filepath, std::string foldername);
 
@@ -55,7 +54,6 @@ class Game {
     void bind_keys();
     void set_action_handlers();
     void add_systems();
-    void set_sprite_scales();
     void set_sprite_opacity();
 
     // GameSignals
