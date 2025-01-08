@@ -45,7 +45,7 @@ class GameInstance {
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
-    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _ennemies; }
+    std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemiess; }
 
    private:
     std::unique_ptr<RealEngine::Window> _window;
@@ -63,6 +63,6 @@ class GameInstance {
     RealEngine::NetvarSystem       _netvarSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::vector<std::shared_ptr<RealEngine::Entity>>                  _ennemies;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemiess;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
 };
