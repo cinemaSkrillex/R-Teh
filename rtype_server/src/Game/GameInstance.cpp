@@ -14,7 +14,7 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
-    if (WINDOWED) {
+    if (_serverVision) {
         _window->clear();
         _window->update();
         _drawSystem.update(_registry, deltaTime);

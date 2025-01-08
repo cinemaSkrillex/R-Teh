@@ -7,13 +7,14 @@
 
 #include "../include/Game/GameInstance.hpp"
 
-GameInstance::GameInstance()
-    : _clock(),
-      _window(WINDOWED ? std::make_unique<RealEngine::Window>("I CAN SEE EVERYTHING",
-                                                              sf::Vector2u(800, 600))
-                       : nullptr),
+GameInstance::GameInstance(bool serverVision)
+    : _serverVision(serverVision),
+      _clock(),
+      _window(_serverVision ? std::make_unique<RealEngine::Window>("I CAN SEE EVERYTHING",
+                                                                   sf::Vector2u(800, 600))
+                            : nullptr),
       _registry(),
-      _drawSystem(WINDOWED ? &_window->getRenderWindow() : nullptr),
+      _drawSystem(_serverVision ? &_window->getRenderWindow() : nullptr),
       _movementSystem(),
       _collisionSystem(),
       _aiSystem(),
@@ -93,7 +94,7 @@ void GameInstance::init_systems() {
 void GameInstance::init_mobs() {
     rtype::EyeMinion eyeMinion(_registry, {700, 100}, {0, 0}, 0);
     addAndGetEnemy(eyeMinion.getEntity());
-    rtype::SpaceSphere spaceSphere(_registry, {1200, 100}, {0, 0}, 0);
+    rtype::SpaceSphere spaceSphere(_registry, {100, 300}, {0, 0}, 0);
     addAndGetEnemy(spaceSphere.getEntity());
     // addAndGetSimpleMob({1000, 100}, {-1, 0}, 50 * 2, 50);
     // addAndGetSimpleMob({2050, 100}, {-1, 0}, 50 * 2, 50);
