@@ -47,7 +47,8 @@ void Game::init_all_game() {
     init_systems();
     init_level("../../assets/sprites/tiles/lv1", "lvl1");
     init_textures();
-    init_sprites();
+    set_sprite_opacity();
+    init_sprite_sheets();
 
     Background background(_registry, -200.f, 3);
     Background background2(_registry, -100.f, 2);
@@ -70,99 +71,79 @@ void Game::init_systems() { add_systems(); }
 
 void Game::init_textures() {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up",
-                                                   "../../assets/sprites/spaceship.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 0, 32 * 2, 15});
-    AssetManagerInstance.loadSpriteTextureAndScale("spaceship_idle",
-                                                   "../../assets/sprites/spaceship.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 15, 32, 15});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "spaceship_down", "../../assets/sprites/spaceship.png", {GAME_SCALE, GAME_SCALE},
-        {0, 15 * 2, 33 * 2, 15});
+        "spaceship_up", "../../assets/sprites/spaceship.png", {0, 0, 32 * 2, 15});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "spaceship_idle", "../../assets/sprites/spaceship.png", {0, 15, 32, 15});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "spaceship_down", "../../assets/sprites/spaceship.png", {0, 15 * 2, 33 * 2, 15});
     AssetManagerInstance.loadSpriteTextureAndScale(
         "stars_background", "../../assets/sprites/backgrounds/stars.png", {1, 1});
     AssetManagerInstance.getTexture("stars_background")->setRepeated(true);
 
+    AssetManagerInstance.loadSpriteTextureAndScale("bullet",
+                                                   "../../assets/sprites/spaceship_bullet.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_plane",
+                                                   "../../assets/sprites/enemies/space_plane.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_drill",
+                                                   "../../assets/sprites/enemies/space_drill.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_sphere",
+                                                   "../../assets/sprites/enemies/space_sphere.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("turret_canon",
+                                                   "../../assets/sprites/enemies/turret_canon.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "bullet", "../../assets/sprites/spaceship_bullet.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_plane", "../../assets/sprites/enemies/space_plane.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_drill", "../../assets/sprites/enemies/space_drill.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_sphere", "../../assets/sprites/enemies/space_sphere.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "turret_canon", "../../assets/sprites/enemies/turret_canon.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "turret_pedestal", "../../assets/sprites/enemies/turret_pedestal.png",
-        {GAME_SCALE, GAME_SCALE});
+        "turret_pedestal", "../../assets/sprites/enemies/turret_pedestal.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mob_spawner_ship",
-                                                   "../../assets/sprites/enemies/mob_spawner.png",
-                                                   {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale("mortar_rocket",
-                                                   "../../assets/sprites/enemies/mortar_rocket.png",
-                                                   {GAME_SCALE, GAME_SCALE});
+                                                   "../../assets/sprites/enemies/mob_spawner.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "mortar_rocket", "../../assets/sprites/enemies/mortar_rocket.png");
     AssetManagerInstance.loadSpriteTextureAndScale("robot_boss_minion",
-                                                   "../../assets/sprites/enemies/boss_minion.png",
-                                                   {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale("robot_boss_shoot",
-                                                   "../../assets/sprites/enemies/mini_boss.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 0, 47, 43});
-    AssetManagerInstance.loadSpriteTextureAndScale("robot_boss_fordward",
-                                                   "../../assets/sprites/enemies/mini_boss.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 43, 56, 54});
-    AssetManagerInstance.loadSpriteTextureAndScale("robot_boss_backward",
-                                                   "../../assets/sprites/enemies/mini_boss.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 97, 49, 50});
+                                                   "../../assets/sprites/enemies/boss_minion.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "directional_canon", "../../assets/sprites/enemies/directional_canon.png",
-        {GAME_SCALE, GAME_SCALE});
+        "robot_boss_shoot", "../../assets/sprites/enemies/mini_boss.png", {0, 0, 47, 43});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_bomber", "../../assets/sprites/enemies/eye_bomber.png", {GAME_SCALE, GAME_SCALE});
+        "robot_boss_fordward", "../../assets/sprites/enemies/mini_boss.png", {0, 43, 56, 54});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_minion", "../../assets/sprites/enemies/eye_minion.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_bigion_normal",
-                                                   "../../assets/sprites/enemies/eye_bigion.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 0, 23 * 2, 16});
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_bigion_angry",
-                                                   "../../assets/sprites/enemies/eye_bigion.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 16, 21 * 2, 16});
+        "robot_boss_backward", "../../assets/sprites/enemies/mini_boss.png", {0, 97, 49, 50});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "directional_canon", "../../assets/sprites/enemies/directional_canon.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("eye_bomber",
+                                                   "../../assets/sprites/enemies/eye_bomber.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("eye_minion",
+                                                   "../../assets/sprites/enemies/eye_minion.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_bigion_normal", "../../assets/sprites/enemies/eye_bigion.png", {0, 0, 23 * 2, 16});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_bigion_angry", "../../assets/sprites/enemies/eye_bigion.png", {0, 16, 21 * 2, 16});
     AssetManagerInstance.loadSpriteTextureAndScale("eye_boss_short_range",
                                                    "../../assets/sprites/enemies/the_eye/boss.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 0, 73 * 3, 55});
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_boss_mid_range",
+                                                   {0, 0, 73 * 3, 55});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_boss_mid_range", "../../assets/sprites/enemies/the_eye/boss.png", {0, 55, 91 * 3, 55});
+    AssetManagerInstance.loadSpriteTextureAndScale("eye_boss_long_range",
                                                    "../../assets/sprites/enemies/the_eye/boss.png",
-                                                   {GAME_SCALE, GAME_SCALE}, {0, 55, 91 * 3, 55});
+                                                   {0, 55 * 2, 81 * 3, 55});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_boss_long_range", "../../assets/sprites/enemies/the_eye/boss.png",
-        {GAME_SCALE, GAME_SCALE}, {0, 55 * 2, 81 * 3, 55});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_laser", "../../assets/sprites/enemies/the_eye/laser_shoot.png",
-        {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_vortex", "../../assets/sprites/enemies/space_vortex.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_laser", "../../assets/sprites/enemies/laser_shoot.png", {GAME_SCALE, GAME_SCALE});
+        "eye_laser", "../../assets/sprites/enemies/the_eye/laser_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_vortex",
+                                                   "../../assets/sprites/enemies/space_vortex.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_laser",
+                                                   "../../assets/sprites/enemies/laser_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
         "small_laser", "../../assets/sprites/enemies/laser_shoot.png", {1, 1});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "fireball", "../../assets/sprites/enemies/fireball.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "big_bullet", "../../assets/sprites/big_shoot.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "mid_bullet", "../../assets/sprites/medium_shoot.png", {GAME_SCALE, GAME_SCALE});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "spaceship_other", "../../assets/sprites/spaceship.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("fireball",
+                                                   "../../assets/sprites/enemies/fireball.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("big_bullet",
+                                                   "../../assets/sprites/big_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet",
+                                                   "../../assets/sprites/medium_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other",
+                                                   "../../assets/sprites/spaceship.png");
 }
 
 void Game::init_level(std::string filepath, std::string foldername) {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
-}
-
-void Game::init_sprites() {
-    set_sprite_scales();
-    set_sprite_opacity();
 }
 
 void Game::add_systems() {
@@ -276,10 +257,53 @@ void Game::set_action_handlers() {
                                                      std::placeholders::_1, std::placeholders::_2));
 }
 
-void Game::set_sprite_scales() {}
-
 void Game::set_sprite_opacity() {
     RealEngine::AssetManager::getInstance().getSprite("spaceship_other")->setOpacity(90);
 }
+
+void Game::init_sprite_sheets() {
+    // load eye minion sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> eyeSheet;
+    RealEngine::Sprite                                  eyeSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
+    eyeSheet.emplace("normal", eyeSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "eye_minion", eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock());
+
+    // load space sphere sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> spaceSphereSheet;
+    RealEngine::Sprite                                  spaceSphereSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("space_sphere")));
+    spaceSphereSheet.emplace("normal", spaceSphereSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("space_sphere", spaceSphereSheet,
+                                                            "normal", 0, {16, 14}, false, true, 55,
+                                                            {8, 8}, sf::Clock());
+
+    // load mid bullet sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> midBulletSheet;
+    RealEngine::Sprite                                  midBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("mid_bullet")));
+    midBulletSheet.emplace("normal", midBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "mid_bullet", midBulletSheet, "normal", 0, {16, 12}, false, true, 55, {8, 6}, sf::Clock());
+
+    // load big bullet sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> bigBulletSheet;
+    RealEngine::Sprite                                  bigBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("big_bullet")));
+    bigBulletSheet.emplace("normal", bigBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
+}
+
+// std::unordered_map<std::string, RealEngine::Sprite> sprites;
+// std::string                                         spriteIndex;
+// int                                                 frameIndex;
+// sf::Vector2i                                        frameSize;
+// bool                                                pause;
+// bool                                                loop;
+// float                                               animTime;
+// sf::Vector2i                                        origin = {-1, -1};
+// sf::Clock                                           animClock;
 
 }  // namespace rtype

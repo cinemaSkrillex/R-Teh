@@ -14,7 +14,7 @@ class Window {
     void              close();
     void              setTitle(const std::string title);
     void              setSize(const sf::Vector2u size);
-    void              setFullscreen(bool isFullscreen);
+    void              setStyle(sf::Uint32 style);
     void              setView(sf::View& view);
     bool              isOpen();
     bool              isFocused();
@@ -25,5 +25,6 @@ class Window {
     sf::Event        _event;
     sf::Vector2u     _size;
     std::string      _title;
+    sf::Uint32       _style;
 };
 }  // namespace RealEngine
