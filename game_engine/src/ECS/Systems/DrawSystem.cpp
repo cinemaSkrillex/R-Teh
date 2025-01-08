@@ -9,7 +9,13 @@
 
 namespace RealEngine {
 
-DrawSystem::DrawSystem(sf::RenderWindow& window) : _window(window) {}
+DrawSystem::DrawSystem(sf::RenderWindow* window) : _window(window) {}
+
+DrawSystem::~DrawSystem() {
+    if (_window) {
+        delete _window;
+    }
+}
 
 void calculateTextureRect(SpriteSheet& spritesheet, RealEngine::Sprite& sprite) {
     sprite.setTextureRect(spritesheet.frameSize.x * spritesheet.frameIndex, 0,
@@ -43,31 +49,64 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
     calculateTextureRect(spritesheet, sprite);
 }
 
-void DrawSystem::update(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Drawable>();
+void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
+    auto particleEmitters = registry.view<ParticleEmitter>();
+    for (auto entity : particleEmitters) {
+        auto* emitter = registry.get_component<ParticleEmitter>(entity);
+        for (const auto& particle : emitter->particles) {
+            sf::CircleShape shape(particle.size);
+            shape.setPosition(particle.position);
+            shape.setFillColor(particle.color);
+            _window->draw(shape);
+        }
+    }
+}
 
+void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Position>();
+
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
-        auto* drawable    = registry.get_component<Drawable>(entity);
         auto* position    = registry.get_component<Position>(entity);
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
         auto* spritesheet = registry.get_component<SpriteSheet>(entity);
 
         if (sprite) {
             sprite->sprite.setPosition(position->x, position->y);
-            sprite->sprite.draw(_window);
         } else if (spritesheet) {
             auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
 
             handleSpriteSheetAnimation(*spritesheet, sprite);
-
             sprite.setPosition(position->x, position->y);
-            sprite.draw(_window);
-        } else {
-            sf::RectangleShape shape(sf::Vector2f(50.0f, 50.0f));
-            shape.setPosition(position->x, position->y);
-            shape.setFillColor(sf::Color::Blue);
-            _window.draw(shape);
         }
     }
+}
+
+void DrawSystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<Position>();
+
+    if (entities.empty()) {
+        return;
+    }
+    for (auto entity : entities) {
+        // auto* drawable    = registry.get_component<Drawable>(entity);
+        auto* position    = registry.get_component<Position>(entity);
+        auto* sprite      = registry.get_component<SpriteComponent>(entity);
+        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
+
+        if (sprite) {
+            sprite->sprite.setPosition(position->x, position->y);
+            sprite->sprite.draw(*_window);
+        } else if (spritesheet) {
+            auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
+
+            handleSpriteSheetAnimation(*spritesheet, sprite);
+            sprite.setPosition(position->x, position->y);
+            sprite.draw(*_window);
+        }
+    }
+    // updateParticles(registry, deltaTime);
 }
 }  // namespace RealEngine

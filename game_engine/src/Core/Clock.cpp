@@ -7,4 +7,4 @@ Clock::~Clock() {}
 
 void Clock::restart() { _clock.restart(); }
 
-} // namespace RealEngine
+}  // namespace RealEngine

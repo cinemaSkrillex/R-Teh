@@ -1,7 +1,7 @@
 #include <atomic>
 #include <thread>
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments
@@ -22,29 +22,17 @@ int main(int argc, char* argv[]) {
 
         std::atomic<bool> running(true);
 
-        // Start a thread to run the io_context
-        std::thread network_thread([&]() {
-            try {
-                io_context.run();
-            } catch (const std::exception& e) {
-                std::cerr << "Network thread exception: " << e.what() << std::endl;
-                running.store(false);  // Stop the game if an exception occurs
-            }
-        });
-
         // Launch the game on the main thread
-        rtype::Game game(client);
+        // added the port, temporarily for testing.
+        rtype::Game game(client, client_port);
 
         client->send_new_client();
 
         // Game loop
+
         game.run();
 
         running.store(false);
-        io_context.stop();
-
-        if (network_thread.joinable()) network_thread.join();
-
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

@@ -23,16 +23,14 @@ void Music::update() {
         float volume = _music.getVolume();
         if (volume > 0) {
             volume -= 100 * _fadeOutDuration;
-            if (volume < 0)
-                volume = 0;
+            if (volume < 0) volume = 0;
             _music.setVolume(volume);
         } else {
             _fadeOut = false;
             stop();
         }
     }
-    if (!_stopped && !isPlaying())
-        replay();
+    if (!_stopped && !isPlaying()) replay();
 }
 
 void Music::play() {
@@ -67,4 +65,4 @@ void Music::setVolume(float volume) {
 void Music::setPitch(float pitch) { _music.setPitch(pitch); }
 
 void Music::setLoop(bool loop) { _music.setLoop(loop); }
-} // namespace RealEngine
+}  // namespace RealEngine

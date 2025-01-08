@@ -10,6 +10,9 @@ RotationSystem::~RotationSystem() {}
 void RotationSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Rotation, Drawable>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* rotation    = registry.get_component<Rotation>(entity);
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
@@ -21,26 +24,6 @@ void RotationSystem::update(Registry& registry, float deltaTime) {
             auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
             sprite.setRotation(rotation->angle);
         }
-    }
-}
-
-void RotationSystem::setRotation(Registry& registry, Entity entity, float angle) {
-    auto* rotation = registry.get_component<Rotation>(entity);
-
-    if (rotation) {
-        rotation->angle = angle;
-    } else {
-        std::cerr << "Error: Entity does not have an Rotation component!" << std::endl;
-    }
-}
-
-void RotationSystem::rotate(Registry& registry, Entity entity, float angle) {
-    auto* rotation = registry.get_component<Rotation>(entity);
-
-    if (rotation) {
-        rotation->angle += angle;
-    } else {
-        std::cerr << "Error: Entity does not have an Rotation component!" << std::endl;
     }
 }
 

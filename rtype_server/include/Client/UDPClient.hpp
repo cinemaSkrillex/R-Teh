@@ -14,35 +14,34 @@
 #include <queue>
 #include <string>
 
-#include "../shared/PacketManager.hpp"
+#include "ANetwork.hpp"
 
-class UDPClient {
+class UDPClient : public ANetwork<800> {
    public:
+    // Constructor
     UDPClient(asio::io_context& io_context, unsigned short port, const std::string& server_ip,
               unsigned short server_port);
-    ~UDPClient();
 
-    void                     send_unreliable_packet(const std::string& message);
-    void                     send_reliable_packet(const std::string& message);
-    void                     send_new_client();
-    void                     send_test();
-    const std::string        get_last_reliable_packet();
-    const std::string        get_last_unreliable_packet();
-    std::vector<std::string> get_unreliable_messages_from_endpoint(
+    // Callbacks
+    void setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint&)>& callback);
+
+    // Send methods
+    void send_unreliable_packet(const std::array<char, 800>& message);
+    void send_reliable_packet(const std::array<char, 800>& message);
+
+    // Receive methods
+    std::vector<std::array<char, 800>> get_unreliable_messages_from_endpoint(
         const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::string> get_reliable_messages_from_endpoint(
+    std::vector<std::array<char, 800>> get_reliable_messages_from_endpoint(
         const asio::ip::udp::endpoint& endpoint);
+    std::array<char, 800> get_last_unreliable_packet_data();
+    std::array<char, 800> get_last_reliable_packet_data();
+
+    // Miscellaneous methods
+    void send_new_client();
 
    private:
-    asio::ip::udp::endpoint                                    _server_endpoint;
-    asio::ip::udp::socket                                      _socket;
-    asio::io_context&                                          _io_context;
-    std::thread                                                _io_context_thread;
-    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
-
-    // Reliable packet handling via sequence numbers
-    PacketManager _packet_manager;
-    // Packet processing
+    asio::ip::udp::endpoint _server_endpoint;  // The client's endpoint
 };
 
 #endif  // UDPCLIENT_HPP

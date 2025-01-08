@@ -25,6 +25,8 @@ class TCPServer {
 
    private:
     std::shared_ptr<TCPPacketManager> _packet_manager;
+   private:
+    std::shared_ptr<TCPPacketManager> _packet_manager;
 };
 
 #endif

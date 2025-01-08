@@ -12,6 +12,9 @@ namespace RealEngine {
 void MovementSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<Position, Velocity>();
 
+    if (entities.empty()) {
+        return;
+    }
     for (auto entity : entities) {
         auto* position = registry.get_component<Position>(entity);
         auto* velocity = registry.get_component<Velocity>(entity);
@@ -23,6 +26,26 @@ void MovementSystem::update(Registry& registry, float deltaTime) {
         if (velocity->airFrictionForce > 0.0f) {
             applyFriction(*velocity, deltaTime);
         }
+    }
+}
+
+void MovementSystem::update(Registry& registry, std::shared_ptr<Entity> entity, float deltaTime) {
+    if (!entity) {
+        return;
+    }
+    auto* position = registry.get_component<Position>(entity);
+    auto* velocity = registry.get_component<Velocity>(entity);
+
+    if (!position || !velocity) {
+        return;
+    }
+    limitSpeed(*velocity);
+    if (position && velocity) {
+        position->x += velocity->vx * deltaTime;
+        position->y += velocity->vy * deltaTime;
+    }
+    if (velocity->airFrictionForce > 0.0f) {
+        applyFriction(*velocity, deltaTime);
     }
 }
 

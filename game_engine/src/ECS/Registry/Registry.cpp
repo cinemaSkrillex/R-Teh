@@ -18,7 +18,7 @@ void Registry::remove_entity(Entity const& entity) {
     }
 }
 
-Entity Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
+std::shared_ptr<Entity> Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
 
 Entity Registry::entity_from_index(std::size_t idx) {
     if (idx >= _entity_manager.size()) {
@@ -31,7 +31,7 @@ void Registry::kill_entity(Entity const& e) {
     if (!_entity_manager.is_valid(e)) {
         throw std::invalid_argument("kill_entity: Invalid entity");
     }
-    _entity_manager.kill_entity(e);
+    // _entity_manager.kill_entity(e);
     remove_entity(e);
 }
 
@@ -41,4 +41,6 @@ void Registry::run_systems(float deltaTime) {
     }
 }
 
-} // namespace RealEngine
+bool Registry::is_valid(Entity const& e) const { return _entity_manager.is_valid(e); }
+
+}  // namespace RealEngine

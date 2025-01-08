@@ -16,55 +16,61 @@ This project is a multiplayer game engine, running games like R-TYPE.
 
 ## Technologies used 🖥
 
-- Main language : C++
-- Scripting language : Lua
-- Network protocol : TCP/UDP
-- Graphic library : SFML
-- Audio library : OpenAL
-- Build system : CMake
-- CI/CD : GitHub Actions
-- Code formatter : ClangFormat
-- Package manager : Vcpkg
+#### Languages and Libraries
+- Main language: C++
+- Graphic library: SFML
+- Network protocol: TCP/UDP using Asio
+- Scripting language: Lua
+
+#### Tools and Systems
+- Build system: CMake
+- Code formatter: ClangFormat
+- Package manager: Vcpkg
+- CI/CD: GitHub Actions
+
 
 ## Prerequisites 📋
 
 On Linux:
 ```bash
-<chmod +x ./scripts/requirements.sh>
+# Run the script to install the dependencies (from root)
+chmod +x ./scripts/requirements.sh
 ./scripts/requirements.sh
 ```
 
 On Windows:
 ```bash
-# Open an administrator PowerShell and run the following command : 
+# Open an administrator PowerShell and run the following command :
 Set-ExecutionPolicy Bypass -Scope Process -Force; .\scripts\requirements.ps1
 ```
 
 ## Install the dependencies
-
-On Windows:
-```bash
-cmake --preset windows
-```
 
 On Linux:
 ```bash
 cmake --preset linux
 ```
 
+On Windows:
+```bash
+#Release
+cmake --preset windows-release
+#Debug
+cmake --preset windows-debug
+```
+
 ## How to build the project 🔨
  
 ```bash
-cd build
+cd build/default
 
 # Build debug mode (g3 flag)
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Debug .
 # Build release mode (O3 flag)
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release .
 
-# Alternative way to build
-cmake ..
-cmake --build .
+# Build the cmake and build the project with 20 threads
+cmake . && cmake --build . -j 20
 
 ```
 
@@ -72,7 +78,12 @@ cmake --build .
 
 Launch the server:
 ```bash
-./build/network/rtype_server [PORT]
+./build/default/r_type_server/rtype_server [PORT]
+```
+
+Launch the client:
+```bash
+./build/default/rtype_game/rtype [SERVER_IP] [SERVER_PORT] [CLIENT_PORT]
 ```
 
 ## How to run the tests 🧪
@@ -88,8 +99,24 @@ Launch the server:
 - [DOC] : Add documentation :book:
 - [TST] : Add tests :microscope:
 
+### Custom commit tags (CI/CD)
+
+- [BUILD] : Build the project 🔨
+- [RELEASE] : Release the project 🚀
+- [DOC] : Deploy documentation online 📘
+
+## Documentation 📚
+
+Our documentation is hosted on github.io. You can find it here [website link](https://cinemaskrillex.github.io/R-Teh/).
+
 ## Example of the project 📸
+
+## TODO : IMAGE
 
 ## Have fun! 🎉
 
-More informations in the [documentation](./documentation/r_type_doc.md)
+
+## TODO : LICENCE
+
+
+## TODO : HOW TO CONTRIBUTE

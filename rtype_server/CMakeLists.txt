@@ -1,66 +1,74 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtype_server)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-#TODO BUILD_SHARED_LIBS(OFF)
-#TODO BUILD_SHARED_LIBS(OFF)
-#TODO BUILD_SHARED_LIBS(OFF)
-
-# define _WIN32_WINNT for windows
-if (WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
-endif()
-
-# Include directories
-if (UNIX)
-    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
-    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
-elseif (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
-    set(SFML_STATIC_LIBRARIES TRUE)
-    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
-    set(OPENAL_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/openal)
-    set(OPENAL_LIBRARY "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/lib/OpenAL32.lib")
-endif()
-
-#add includes files
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Server)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
-
 # Add sources files
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-find_package(SFML 2.5 REQUIRED COMPONENTS system)
+find_package(SFML 2.5 REQUIRED system window graphics network audio)
 
 # Create the binary
 add_executable(r_type_server ${SOURCES})
 
-# Link pthread for Linux
-if(UNIX)
-    target_link_libraries(r_type_server
-        pthread
-        sfml-system
-    )
-endif()
+target_link_libraries(r_type_server
+    rtype_engine
+)
 
-# Link ws2_32 for Windows
-if(WIN32)
-    target_link_libraries(r_type_server
-        ws2_32
-        sfml-system
-    )
-endif()
+target_include_directories(r_type_server PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ServerMap
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config
+    ${CMAKE_BINARY_DIR}/rtype_server/Config
+)
 
-# Link lib to binary
+# Link lib to binary (r_type_server is linked to rtype_server)
+# name: r_type_server (binary) -> rtype_server (lib)
 target_link_libraries(r_type_server rtype_server)
+target_link_libraries(r_type_server utils)
+
+# Copy the include headers from game_engine to rtype_game
+add_custom_target(copy_headers_engine_for_server ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/game_engine/include
+    ${CMAKE_SOURCE_DIR}/rtype_server/include
+)
+
+add_custom_target(copy_headers_server_parser ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/PeterParser/include
+    ${CMAKE_SOURCE_DIR}/rtype_server/include
+)
+add_custom_target(copy_headers_server_lagcompensation ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
+    ${CMAKE_SOURCE_DIR}/rtype_server/include
+)
+
+add_custom_target(copy_config ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/rtype_server/Config
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_SOURCE_DIR}/rtype_server/Config/server.config
+    ${CMAKE_BINARY_DIR}/rtype_server/Config/server.config
+    )
+
+# add_compile_definitions(CONFIG_FILE_PATH=\"$<TARGET_FILE_DIR:r_type_server>/Config/server.config\")
+set(CONFIG_FILE_PATH "${CMAKE_BINARY_DIR}/rtype_server/Config/server.config")
+
+configure_file(${CMAKE_SOURCE_DIR}/rtype_server/Config/configpath.h.in ${CMAKE_BINARY_DIR}/rtype_server/Config/configpath.h)
+
+
+# Ensure the headers are copied before building rtype_game
+add_dependencies(r_type copy_headers_engine_for_server)
+add_dependencies(r_type copy_headers_server_parser)
+add_dependencies(r_type copy_headers_server_lagcompensation)
+add_dependencies(r_type copy_config)
+# add_dependencies(r_type copy_assets_server)
+
 
 if (WIN32)
     # Copy all DLLs from the bin directory to the output directory
@@ -70,3 +78,20 @@ if (WIN32)
             $<TARGET_FILE_DIR:r_type_server>
     )
 endif()
+
+# Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server and ../game_engine
+# add_custom_target(copy_headers ALL
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+#     ${CMAKE_SOURCE_DIR}/rtype_server/include/Client
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+
+add_custom_target(copy_headers_protocol ALL
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.hpp
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.tpp
+)

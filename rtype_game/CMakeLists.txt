@@ -1,35 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtype_game)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-#TODO BUILD_SHARED_LIBS(OFF)
-#TODO BUILD_SHARED_LIBS(OFF)
-#TODO BUILD_SHARED_LIBS(OFF)
-
-# define _WIN32_WINNT for windows
-if (WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
-endif()
-
-#includes
-if (UNIX)
-    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
-    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/share/sfml)
-elseif (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/include)
-    set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows")
-    set(SFML_DIR ${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/share/sfml)
-endif()
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Client)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/shared)
-
-
 # Add sources files
 file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
@@ -39,23 +10,47 @@ file(GLOB_RECURSE SOURCES
 # Create the binary
 add_executable(r_type ${SOURCES})
 
-# Link pthread for Linux
-if(UNIX)
-    target_link_libraries(r_type
-        pthread
-    )
-endif()
-
-# Link ws2_32 for Windows
-if(WIN32)
-    target_link_libraries(r_type
-        ws2_32
-    )
-endif()
-
 # Link lib to binary
 target_link_libraries(r_type rtype_engine)
 target_link_libraries(r_type rtype_client)
+
+target_include_directories(r_type PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Game
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Components
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Entities
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Enum
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Registry
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/SparseArray
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS/Systems
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Media
+)
+
+# Copy the include headers from game_engine to rtype_game
+add_custom_target(copy_headers_engine_for_game ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/game_engine/include
+    ${CMAKE_SOURCE_DIR}/rtype_game/include
+    )
+add_custom_target(copy_headers_parser ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/PeterParser/include
+    ${CMAKE_SOURCE_DIR}/rtype_game/include
+)
+add_custom_target(copy_headers_lagcompensation ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
+    ${CMAKE_SOURCE_DIR}/rtype_game/include
+)
+
+# Ensure the headers are copied before building rtype_game
+add_dependencies(r_type copy_headers_engine_for_game)
+add_dependencies(r_type copy_headers_parser)
+add_dependencies(r_type copy_headers_lagcompensation)
 
 if (WIN32)
 # Copy all DLLs from the bin directory to the output directory

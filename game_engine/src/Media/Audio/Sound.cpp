@@ -20,4 +20,4 @@ void Sound::setVolume(float volume) {
 }
 
 void Sound::setPitch(float pitch) { _sound.setPitch(pitch); }
-} // namespace RealEngine
+}  // namespace RealEngine

@@ -2,17 +2,14 @@
 
 namespace RealEngine {
 
-Sprite::Sprite(const std::string filepath) {
-    loadFile(filepath);
+Sprite::Sprite(const std::shared_ptr<sf::Texture> texture) {
+    if (!texture) {
+        std::cerr << "Error: Null texture passed to Sprite constructor!" << std::endl;
+        return;
+    }
+    _texture = texture;
+    _sprite.setTexture(*texture);
     centerOrigin();
-    setPosition(0, 0);
-    setColor(sf::Color::White);
-    _flipped = false;
-}
-
-Sprite::Sprite(const std::string filepath, sf::IntRect textureRect) {
-    loadFile(filepath, textureRect);
-    _sprite.setOrigin(_sprite.getLocalBounds().width / 2, _sprite.getLocalBounds().height / 2);
     setPosition(0, 0);
     setColor(sf::Color::White);
     _flipped = false;
@@ -20,27 +17,9 @@ Sprite::Sprite(const std::string filepath, sf::IntRect textureRect) {
 
 Sprite::~Sprite() {}
 
-void Sprite::loadFile(const std::string filePath) {
-    if (!_texture.loadFromFile(filePath)) {
-        _texture.loadFromFile("../assets/missing_texture.png");
-        _texture.setRepeated(true);
-        // get the sprite hibox to be the size of the texture
-        _sprite.setTextureRect(sf::IntRect(0, 0, _texture.getSize().x, _texture.getSize().y));
-    }
-    _sprite.setTexture(_texture);
-}
-
-void Sprite::loadFile(const std::string filePath, const sf::IntRect textureRect) {
-    if (!_texture.loadFromFile(filePath, textureRect)) {
-        _texture.loadFromFile("../assets/missing_texture.png");
-        _texture.setRepeated(true);
-    }
-    _sprite.setTexture(_texture);
-}
-
 void Sprite::loadImage(sf::Image image) {
-    _texture.loadFromImage(image);
-    _sprite.setTexture(_texture);
+    _texture->loadFromImage(image);
+    _sprite.setTexture(*_texture);
 }
 
 void Sprite::draw(sf::RenderWindow& window) { window.draw(_sprite); }
@@ -72,7 +51,7 @@ void Sprite::setTextureRect(int start_x, int start_y, int width, int height) {
     _sprite.setTextureRect(sf::IntRect(start_x, start_y, width, height));
 }
 
-void Sprite::setSmooth(bool smooth) { _texture.setSmooth(smooth); }
+void Sprite::setSmooth(bool smooth) { _texture->setSmooth(smooth); }
 
 void Sprite::setColor(sf::Color color) { _sprite.setColor(color); }
 
@@ -96,20 +75,8 @@ void Sprite::centerOrigin() {
 
 void Sprite::setOrigin(float x, float y) { _sprite.setOrigin(x, y); }
 
-void Sprite::colorize(sf::Color colorToReplace, sf::Color newColor) {
-    for (unsigned int x = 0; x < _image.getSize().x; x++) {
-        for (unsigned int y = 0; y < _image.getSize().y; y++) {
-            if (_image.getPixel(x, y) == colorToReplace) {
-                _image.setPixel(x, y, newColor);
-            }
-        }
-    }
-    _texture.loadFromImage(_image);
-    _sprite.setTexture(_texture);
-}
-
 void Sprite::scaleFromSize(const float width, const float height) {
-    sf::Vector2u textureSize = _texture.getSize();
+    sf::Vector2u textureSize = _texture->getSize();
 
     float scaleX = width / static_cast<float>(textureSize.x);
     float scaleY = height / static_cast<float>(textureSize.y);
@@ -117,20 +84,15 @@ void Sprite::scaleFromSize(const float width, const float height) {
 }
 
 bool Sprite::isTextureOfBounds() {
-    sf::IntRect  rect = _sprite.getTextureRect();
-    sf::Vector2u size = _texture.getSize();
-
-    // std::cout << "Texture size: " << size.x << "x" << size.y << std::endl;
-    // std::cout << "Texture rect: " << rect.left << "," << rect.top << "," << rect.width << ","
-    //           << rect.height << std::endl;
+    sf::IntRect rect = _sprite.getTextureRect();
+    if (!_texture) std::cerr << "Error: Null texture in Sprite!" << std::endl;
+    sf::Vector2u size = _texture->getSize();
 
     // Check if the texture coordinates go out of bounds
-    if (rect.left < 0 || rect.top < 0 || rect.left + rect.width >= size.x ||
-        rect.top + rect.height > size.y) {
+    if (rect.left < 0 || rect.top < 0 || rect.left + rect.width >= static_cast<int>(size.x) ||
+        rect.top + rect.height > static_cast<int>(size.y)) {
         return true;
     }
-
     return false;
 }
-
 }  // namespace RealEngine

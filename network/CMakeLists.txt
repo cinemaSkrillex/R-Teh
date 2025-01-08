@@ -1,31 +1,7 @@
 # Network project
 project(Network)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-
-# Add debug flags for Valgrind
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-    endif()
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-    endif()
-endif()
-
-#define _WIN32_WINNT for windows
-if (WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
-endif()
 
 # Include directories
 if (UNIX)
@@ -62,23 +38,14 @@ target_include_directories(rtype_server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 # Link pthread for Linux
 if(UNIX)
     target_link_libraries(rtype_server pthread)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
-    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server and dl for dynamic loading on Linux   
-    add_executable(testing_rtype_client TestingClientMain.cpp)
-    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client and dl for dynamic loading on Linux
 endif()
 
 # Link ws2_32 for Windows
 if(WIN32)
     target_link_libraries(rtype_server ws2_32)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
-    target_link_libraries(testing_rtype_server rtype_server)  # Link with rtype_server on Windows
-    add_executable(testing_rtype_client TestingClientMain.cpp)
-    target_link_libraries(testing_rtype_client rtype_client)  # Link with rtype_client on Windows
 endif()
 
-
-# Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server
+# Copy the include headers (client, server, and shared) into the include folder of ../rtype_game and ../rtype_server and ../game_engine
 add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
@@ -98,6 +65,12 @@ add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
     ${CMAKE_SOURCE_DIR}/rtype_game/include/shared
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_SOURCE_DIR}/game_engine/include/shared
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
+    ${CMAKE_SOURCE_DIR}/game_engine/include/Client
 )
 
 # Ensure the headers are copied before building rtype_server and rtype_game
