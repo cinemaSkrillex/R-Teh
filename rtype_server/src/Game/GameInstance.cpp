@@ -106,15 +106,9 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
     return bullet.getEntity();
 }
 
-std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetSimpleMob(sf::Vector2f position,
-                                                                     sf::Vector2f direction,
-                                                                     float        speed,
-                                                                     float        destructTimer) {
-    // std::shared_ptr<rtype::SimpleMob> mob = std::make_shared<rtype::SimpleMob>(
-    //     _registry, position, direction, speed, destructTimer,
-    //     *(RealEngine::AssetManager::getInstance().getSprite("eye_bomber")));
-    rtype::EyeMinion mob(_registry, position, direction, speed);
-    _ennemies.push_back(mob.getEntity());
+std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEnemy(
+    std::shared_ptr<RealEngine::Entity> enemyEntity) {
+    _ennemies.push_back(enemyEntity);
     return _ennemies.back();
 }
 

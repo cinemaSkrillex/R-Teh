@@ -34,9 +34,8 @@ class GameInstance {
                                                         sf::Vector2f direction, float speed,
                                                         std::string spriteName, float damage,
                                                         int health);
-    std::shared_ptr<RealEngine::Entity> addAndGetSimpleMob(sf::Vector2f position,
-                                                           sf::Vector2f direction, float speed,
-                                                           float destructTimer);
+    std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
+        std::shared_ptr<RealEngine::Entity> enemyEntity);
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
