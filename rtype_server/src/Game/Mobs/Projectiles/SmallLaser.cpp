@@ -31,6 +31,12 @@ SmallLaser::SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, fl
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{1, 1});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(
+        _entity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string("small_laser"), nullptr}}
+
+            }});
 }
 
 SmallLaser::~SmallLaser() {}
