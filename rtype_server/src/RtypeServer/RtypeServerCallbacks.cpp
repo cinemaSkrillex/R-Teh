@@ -222,8 +222,6 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
                                   tile.rotation);
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
-                                  50.0f);
 
             sf::FloatRect             bounds      = {0, 0, 16, 8};
             std::string               id          = tile.element;

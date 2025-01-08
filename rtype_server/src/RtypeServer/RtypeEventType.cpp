@@ -38,19 +38,7 @@ void RtypeServer::shootEvent(const std::array<char, 800>&   buffer,
     std::string               id          = "bullet";
     bool                      isColliding = false;
     RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
-
-    std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                    sizeof(type));
-    char*             collisionPtr = collisionData.data();
-    std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-    collisionPtr += sizeof(bounds);
-    std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-    collisionPtr += id.size() + 1;
-    std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-    collisionPtr += sizeof(isColliding);
-    std::memcpy(collisionPtr, &type, sizeof(type));
-    bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
-
+    addCollisionComponentToMessage(bulletMessage, bounds, id, isColliding, type);
     // Serialize auto destructible component
     addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
 
@@ -97,19 +85,7 @@ void RtypeServer::shootBigBullet(const std::array<char, 800>&   buffer,
     std::string               id          = "bullet";
     bool                      isColliding = false;
     RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
-
-    std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                    sizeof(type));
-    char*             collisionPtr = collisionData.data();
-    std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-    collisionPtr += sizeof(bounds);
-    std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-    collisionPtr += id.size() + 1;
-    std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-    collisionPtr += sizeof(isColliding);
-    std::memcpy(collisionPtr, &type, sizeof(type));
-    bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
-
+    addCollisionComponentToMessage(bulletMessage, bounds, id, isColliding, type);
     // Serialize auto destructible component
     addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
 
@@ -147,19 +123,7 @@ void RtypeServer::shootMiddleBullet(const std::array<char, 800>&   buffer,
     std::string               id          = "bullet";
     bool                      isColliding = false;
     RealEngine::CollisionType type        = RealEngine::CollisionType::OTHER;
-
-    std::vector<char> collisionData(sizeof(bounds) + id.size() + 1 + sizeof(isColliding) +
-                                    sizeof(type));
-    char*             collisionPtr = collisionData.data();
-    std::memcpy(collisionPtr, &bounds, sizeof(bounds));
-    collisionPtr += sizeof(bounds);
-    std::memcpy(collisionPtr, id.c_str(), id.size() + 1);
-    collisionPtr += id.size() + 1;
-    std::memcpy(collisionPtr, &isColliding, sizeof(isColliding));
-    collisionPtr += sizeof(isColliding);
-    std::memcpy(collisionPtr, &type, sizeof(type));
-    bulletMessage.components.push_back({RTypeProtocol::ComponentList::COLLISION, collisionData});
-
+    addCollisionComponentToMessage(bulletMessage, bounds, id, isColliding, type);
     // Serialize auto destructible component
     addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE, 2.f);
 
