@@ -157,6 +157,10 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
     // Notify all other clients about the new client
     for (const auto& client : _server->getClients()) {
         if (client != sender) {
+            if (!_players[client].getUUID()) {
+                std::cout << "Player UUID is null" << std::endl;
+                continue;
+            }
             std::array<char, 800> serializedMessage = createNewClientMessage<800>(
                 *playerEntity, player_start_position.x, player_start_position.y, elapsed_time);
             _server->send_reliable_packet(serializedMessage, client);
@@ -166,6 +170,11 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
     std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
     for (const auto& player_pair : _players) {
         const auto& player = player_pair.second;
+        if (!player.getUUID()) {
+            std::cout << "Player UUID is null" << std::endl;
+            continue;
+        }
+        std::cout << "Player UUID: " << player.getUUID() << std::endl;
         activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
     }
     std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(

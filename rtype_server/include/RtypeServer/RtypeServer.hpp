@@ -43,6 +43,10 @@ class Player {
     long int     getUUID() const { return _uuid; }
     sf::Vector2f getPosition() const {
         RealEngine::Position* component = _registry->get_component<RealEngine::Position>(*_entity);
+        if (!component) {
+            std::cout << "Error: Player entity does not have a Position component" << std::endl;
+            return {0, 0};
+        }
         return {component->x, component->y};
     }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
