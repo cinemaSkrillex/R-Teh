@@ -29,7 +29,6 @@ class ControlSystem {
    public:
     ControlSystem(Window& window);
 
-    // using ActionHandler = std::function<void(Velocity&, Acceleration&, Position&, float)>;
     using ActionHandler = std::function<void(float, RealEngine::Entity)>;
     void              update(Registry& registry, float deltaTime);
     void              bindKey(sf::Keyboard::Key key, Action action, bool supportHold = false);

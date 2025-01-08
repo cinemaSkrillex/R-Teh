@@ -52,7 +52,7 @@ class Registry {
         if (_components_arrays.find(index) != _components_arrays.end()) {
             return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
         } else {
-            throw std::runtime_error("");  // TODO: proper exception
+            throw std::runtime_error("get_components: Component not registered!");
         }
     }
 
@@ -194,7 +194,6 @@ class Registry {
         return components;
     }
 
-    // template <typename Component> SparseArray<Component>& get_sparse_array();
     template <typename... Components>
     std::vector<Entity> view() {
         std::vector<Entity> result;
