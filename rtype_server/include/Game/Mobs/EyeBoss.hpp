@@ -8,8 +8,7 @@
 #pragma once
 
 #include "Game/Mobs/Behaviors.hpp"
-#include "Macros.hpp"
-#include "Mobs/Projectiles/EyeLaser.hpp"
+#include "Game/Mobs/Projectiles/EyeLaser.hpp"
 
 namespace rtype {
 

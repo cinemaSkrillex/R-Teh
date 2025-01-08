@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Mobs/Behaviors.hpp"
+#include "Engine.hpp"
 
 namespace rtype {
 class Player {

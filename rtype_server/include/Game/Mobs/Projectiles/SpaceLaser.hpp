@@ -2,19 +2,19 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** SmallLaser
+** SpaceLaser
 */
 
 #pragma once
 
-#include "Mobs/Behaviors.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 
-class SmallLaser {
+class SpaceLaser {
    public:
-    SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle);
-    ~SmallLaser();
+    SpaceLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle);
+    ~SpaceLaser();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 
