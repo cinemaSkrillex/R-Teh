@@ -79,6 +79,12 @@ add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
     ${CMAKE_SOURCE_DIR}/game_engine/include/Client
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+    ${CMAKE_SOURCE_DIR}/launcher_server/include/Server
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+    ${CMAKE_SOURCE_DIR}/launcher_game/include/Server
 )
 
 # Ensure the headers are copied before building rtype_server and rtype_game
