@@ -107,7 +107,7 @@ class RtypeServer {
     void preloadTextures();
 
    public:
-    RtypeServer(std::shared_ptr<UDPServer> server);
+    RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision);
     ~RtypeServer();
 
     void run();
