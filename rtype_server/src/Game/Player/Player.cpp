@@ -16,7 +16,7 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
             playerHealth->regenerationTimer    = 0.0f;
             playerHealth->regenerationTime     = colliderDamage->effectDuration;
         } else {
-            playerHealth->damage += colliderDamage->amount;
+            playerHealth->amount -= colliderDamage->amount;
         }
         playerHealth->invincibilityTime = 1.5f;
     }
@@ -67,6 +67,14 @@ static void updateHoldTime(RealEngine::Registry& registry, RealEngine::Entity& e
     }
 }
 
+static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
+                                    RealEngine::Netvar& currentNetvar, float deltaTime) {
+    currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
+    if (std::any_cast<float>(currentNetvar.value) < 0) {
+        currentNetvar.value = 0.f;
+    }
+}
+
 PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     _playerSpriteSheet.emplace(
@@ -81,10 +89,13 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Controllable{});
     registry.add_component(_entity, RealEngine::Health{100, 200});
     registry.add_component(_entity,
-                           RealEngine::NetvarContainer{
-                               {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
-                                {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
-                                {"isHolding", {"bool", "isHolding", false, nullptr}}}});
+                           RealEngine::NetvarContainer{{
+                               {"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
+                               {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
+                               {"isHolding", {"bool", "isHolding", false, nullptr}},
+                               {"invincibilityAnimTimer",
+                                {"float", "invincibilityAnimTimer", 0.0f, updateInvincibilityAnim}},
+                           }});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{
