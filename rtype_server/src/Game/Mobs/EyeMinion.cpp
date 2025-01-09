@@ -42,44 +42,44 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
     currentNetvar.value = cooldown;
 }
 
-void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
-                     RealEngine::Entity entity) {
-    std::cerr << "mob take damage" << std::endl;
-    auto* health       = registry.get_component<RealEngine::Health>(entity);
-    auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
+// void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
+//                      RealEngine::Entity entity) {
+//     std::cerr << "mob take damage" << std::endl;
+//     auto* health       = registry.get_component<RealEngine::Health>(entity);
+//     auto* bulletHealth = registry.get_component<RealEngine::Health>(collider);
 
-    if (health) {
-        health->damage += 10;
-    }
-    if (bulletHealth) {
-        bulletHealth->damage += 10;
-    }
-}
+//     if (health) {
+//         health->damage += 10;
+//     }
+//     if (bulletHealth) {
+//         bulletHealth->damage += 10;
+//     }
+// }
 
-void mob_collision_handler(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                           RealEngine::Entity collider, RealEngine::Entity entity) {
-    switch (collisionType) {
-        case RealEngine::CollisionType::INACTIVE:
-            break;
-        case RealEngine::CollisionType::SOLID:
-            break;
-        case RealEngine::CollisionType::PICKABLE:
-            break;
-        case RealEngine::CollisionType::OTHER:
-            break;
-        case RealEngine::CollisionType::PLAYER:
-            std::cerr << "PLAYER COLLIDED" << std::endl;
-            mob_take_damage(registry, collider, entity);
-            break;
-        case RealEngine::CollisionType::ALLY_BULLET:
-            mob_take_damage(registry, collider, entity);
-            break;
-        case RealEngine::CollisionType::ENEMY_BULLET:
-            break;
-        default:
-            break;
-    }
-}
+// void mob_collision_handler(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+//                            RealEngine::Entity collider, RealEngine::Entity entity) {
+//     switch (collisionType) {
+//         case RealEngine::CollisionType::INACTIVE:
+//             break;
+//         case RealEngine::CollisionType::SOLID:
+//             break;
+//         case RealEngine::CollisionType::PICKABLE:
+//             break;
+//         case RealEngine::CollisionType::OTHER:
+//             break;
+//         case RealEngine::CollisionType::PLAYER:
+//             std::cerr << "PLAYER COLLIDED" << std::endl;
+//             mob_take_damage(registry, collider, entity);
+//             break;
+//         case RealEngine::CollisionType::ALLY_BULLET:
+//             mob_take_damage(registry, collider, entity);
+//             break;
+//         case RealEngine::CollisionType::ENEMY_BULLET:
+//             break;
+//         default:
+//             break;
+//     }
+// }
 
 EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
     : _eyeEntity(registry.spawn_entity()) {
@@ -97,7 +97,7 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
 
-    registry.add_component(_eyeEntity, RealEngine::Health{50, 50});
+    registry.add_component(_eyeEntity, RealEngine::Health{15, 50});
     registry.add_component(_eyeEntity,
                            RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
     registry.add_component(_eyeEntity, RealEngine::Damage{5});

@@ -321,7 +321,7 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
         } else {
             health->damage += damage->amount;
         }
-        health->invincibilityTime = 0.5f;
+        // health->invincibilityTime = 0.5f;
     }
 }
 
