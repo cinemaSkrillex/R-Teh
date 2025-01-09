@@ -17,16 +17,16 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
 // Callbacks
 void UDPClient::setNewClientCallback(
     const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
-    ANetwork<800>::setNewClientCallback(callback);  // Call the inherited method
+    ANetwork<800>::setNewClientCallback(callback);
 }
 
 // Send methods
 void UDPClient::send_unreliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_unreliable_packet(message, _server_endpoint);  // Call the inherited method
+    ANetwork<800>::send_unreliable_packet(message, _server_endpoint);
 }
 
 void UDPClient::send_reliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_reliable_packet(message, _server_endpoint);  // Call the inherited method
+    ANetwork<800>::send_reliable_packet(message, _server_endpoint);
 }
 
 // Receive methods
