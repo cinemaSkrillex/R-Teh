@@ -77,7 +77,8 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
     registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
     // registry.add_component(
     //     _entity, RealEngine::SpriteSheet{
-    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8}, sf::Clock()});
+    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8},
+    //                  sf::Clock()});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("space_sphere");
     registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});

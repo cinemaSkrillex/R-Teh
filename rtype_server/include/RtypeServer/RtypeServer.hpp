@@ -93,6 +93,10 @@ class RtypeServer {
                                  float y, long timestamp);
     void   sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
                                   const sf::Vector2f& player_start_position, long timestamp);
+    void   processTile(const Map::Tile& tile, std::vector<std::array<char, 800>>& batchMessages);
+    void   processWave(const Map::Wave& wave, std::vector<std::array<char, 800>>& batchMessages);
+    void   processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
+                                const std::string&                  entityType);
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);

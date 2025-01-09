@@ -8,14 +8,15 @@
 #ifndef TCPPACKETMANAGER_HPP
 #define TCPPACKETMANAGER_HPP
 
-#include "PacketUtils.hpp"
 #include <asio.hpp>
+#include <filesystem>
+#include <fstream>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
-#include <functional>
-#include <filesystem>
-#include <fstream>
+
+#include "PacketUtils.hpp"
 
 // enum class Role { SERVER, CLIENT };
 
@@ -27,13 +28,14 @@ class TCPPacketManager {
     void start_client(const std::string& host, unsigned short port);
     void listen_for_server_data();
     void send_message_to_server(const std::string& message);
-    void send_message_to_client_endpoint(const std::string& message,
+    void send_message_to_client_endpoint(const std::string&             message,
                                          const asio::ip::tcp::endpoint& endpoint);
     void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
-    void send_directory_to_client(const std::string& directory_path,
+    void send_directory_to_client(const std::string&             directory_path,
                                   const asio::ip::tcp::endpoint& endpoint);
     void handle_file_reception(std::string& data, const std::string& current_directory);
-    void handle_directory_reception(const std::string& directory_name, const std::string& parent_directory);
+    void handle_directory_reception(const std::string& directory_name,
+                                    const std::string& parent_directory);
     void close();
 
     std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
@@ -41,12 +43,12 @@ class TCPPacketManager {
    private:
     void accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);
 
-    Role _role;
-    asio::io_context _io_context;
-    std::shared_ptr<asio::ip::tcp::socket> _socket;
-    std::vector<std::shared_ptr<asio::ip::tcp::socket>> _client_sockets;
+    Role                                                       _role;
+    asio::io_context                                           _io_context;
+    std::shared_ptr<asio::ip::tcp::socket>                     _socket;
+    std::vector<std::shared_ptr<asio::ip::tcp::socket>>        _client_sockets;
     asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
-    std::thread _io_thread;
+    std::thread                                                _io_thread;
 };
 
 #endif

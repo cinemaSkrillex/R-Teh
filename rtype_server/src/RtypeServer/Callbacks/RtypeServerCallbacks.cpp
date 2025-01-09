@@ -128,76 +128,31 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     }
 
     const std::vector<Map::Tile>& tiles = serverMap->getTiles();
+    const std::vector<Map::Wave>& waves = serverMap->getWaves();
 
     // Batching setup (reduce network overhead)
-    constexpr size_t BATCH_SIZE     = 100;
+    constexpr size_t BATCH_SIZE     = 25;
     size_t           processedCount = 0;
 
     std::vector<std::array<char, 800>> batchMessages;
     batchMessages.reserve(BATCH_SIZE);
 
     for (const auto& tile : tiles) {
-        if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 ||
-            tile.rotation < 0) {
-            std::cerr << "Error: Invalid tile data. Skipping..." << std::endl;
-            continue;
-        }
-
-        if (tile.type == "BLOCK") {
-            if (!_game_instance) {
-                std::cerr << "Error: Game instance is null" << std::endl;
-                return;
-            }
-            auto newBlock = std::make_shared<rtype::Block>(
-                _game_instance->getRegistryRef(), tile.position, tile.element, tile.rotation);
-            auto blockEntity = newBlock->getEntity();
-
-            if (!blockEntity) {
-                std::cerr << "Error: Block entity is null" << std::endl;
-                continue;
-            }
-
-            RTypeProtocol::NewEntityMessage newTileMessage;
-            newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-            newTileMessage.uuid         = *blockEntity;
-
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
-                                  tile.position);
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
-                                  tile.rotation);
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-
-            sf::FloatRect bounds = {0, 0, 16, 8};
-            addCollisionComponentToMessage(newTileMessage, bounds, tile.element, false,
-                                           RealEngine::CollisionType::SOLID);
-
-            std::string       sprite = tile.element;
-            std::vector<char> spriteData(sprite.begin(), sprite.end());
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
-
-            std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
-            batchMessages.push_back(serializedMessage);
-
-            processedCount++;
-
-            // Send the batch if it reaches the batch size
-            if (batchMessages.size() == BATCH_SIZE) {
-                for (const auto& message : batchMessages) {
-                    broadcastAllReliable(message);
-                }
-                batchMessages.clear();
-                std::cout << "Processed batch of " << BATCH_SIZE << " tiles." << std::endl;
-            }
+        processTile(tile, batchMessages);
+        processedCount++;
+        if (batchMessages.size() == BATCH_SIZE) {
+            processBatchMessages(batchMessages, "tile");
         }
     }
-
-    // Send remaining messages in the last batch
-    if (!batchMessages.empty()) {
-        for (const auto& message : batchMessages) {
-            broadcastAllReliable(message);
+    processBatchMessages(batchMessages, "tile");
+    // Process waves
+    for (const auto& wave : waves) {
+        processWave(wave, batchMessages);
+        if (batchMessages.size() == BATCH_SIZE) {
+            processBatchMessages(batchMessages, "wave");
         }
-        std::cout << "Processed final batch of " << batchMessages.size() << " tiles." << std::endl;
     }
+    processBatchMessages(batchMessages, "wave");
 }
 
 void RtypeServer::initCallbacks() {

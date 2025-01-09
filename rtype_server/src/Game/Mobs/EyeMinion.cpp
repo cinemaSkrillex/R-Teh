@@ -56,7 +56,8 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 //     }
 // }
 
-// void mob_collision_handler(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+// void mob_collision_handler(RealEngine::CollisionType collisionType, RealEngine::Registry&
+// registry,
 //                            RealEngine::Entity collider, RealEngine::Entity entity) {
 //     switch (collisionType) {
 //         case RealEngine::CollisionType::INACTIVE:

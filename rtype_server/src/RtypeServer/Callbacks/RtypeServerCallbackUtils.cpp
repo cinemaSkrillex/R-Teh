@@ -72,3 +72,92 @@ void RtypeServer::sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, 
 
     _server->send_reliable_packet(synchronizeMessage, sender);
 }
+
+void RtypeServer::processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
+                                       const std::string&                  entityType) {
+    if (!batchMessages.empty()) {
+        for (const auto& message : batchMessages) {
+            broadcastAllReliable(message);
+        }
+        std::cout << "Processed final batch of " << batchMessages.size() << " " << entityType
+                  << " entities." << std::endl;
+        batchMessages.clear();
+    }
+}
+
+void RtypeServer::processTile(const Map::Tile&                    tile,
+                              std::vector<std::array<char, 800>>& batchMessages) {
+    if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 || tile.rotation < 0) {
+        std::cerr << "Error: Invalid tile data. Skipping..." << std::endl;
+        return;
+    }
+
+    if (tile.type == "BLOCK") {
+        if (!_game_instance) {
+            std::cerr << "Error: Game instance is null" << std::endl;
+            return;
+        }
+        auto newBlock    = std::make_shared<rtype::Block>(_game_instance->getRegistryRef(),
+                                                          tile.position, tile.element, tile.rotation);
+        auto blockEntity = newBlock->getEntity();
+
+        if (!blockEntity) {
+            std::cerr << "Error: Block entity is null" << std::endl;
+            return;
+        }
+
+        RTypeProtocol::NewEntityMessage newTileMessage;
+        newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+        newTileMessage.uuid         = *blockEntity;
+
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
+                              tile.position);
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
+                              tile.rotation);
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+        sf::FloatRect bounds = {0, 0, 16, 8};
+        addCollisionComponentToMessage(newTileMessage, bounds, tile.element, false,
+                                       RealEngine::CollisionType::SOLID);
+
+        std::string       sprite = tile.element;
+        std::vector<char> spriteData(sprite.begin(), sprite.end());
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
+        batchMessages.push_back(serializedMessage);
+    }
+}
+
+void RtypeServer::processWave(const Map::Wave&                    wave,
+                              std::vector<std::array<char, 800>>& batchMessages) {
+    for (const auto& content : wave.contents) {
+        // Handle wave content (e.g., spawn mobs)
+        std::cout << "Processing wave content: " << content.mobName << " at position ("
+                  << content.position.x << ", " << content.position.y << ")" << std::endl;
+
+        // TODO: create a Wave class and use it to create the entity
+        //  Create a new entity for the wave content
+        //  auto newEntity = std::make_shared<rtype::Block>(_game_instance->getRegistryRef(),
+        //                                                  content.position, content.mobName,
+        //                                                  0.0f);
+        //  auto entity    = newEntity->getEntity();
+
+        // if (!entity) {
+        //     std::cerr << "Error: Wave entity is null" << std::endl;
+        //     continue;
+        // }
+
+        RTypeProtocol::NewEntityMessage newEntityMessage;
+        // newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+        // newEntityMessage.uuid         = *entity;
+
+        // addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::POSITION,
+        //                       content.position);
+        // addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+        // std::array<char, 800> serializedMessage =
+        // RTypeProtocol::serialize<800>(newEntityMessage);
+        // batchMessages.push_back(serializedMessage);
+    }
+}

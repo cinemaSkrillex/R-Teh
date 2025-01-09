@@ -24,8 +24,8 @@ static void bulletTakesDamage(RealEngine::CollisionType collisionType,
 }
 
 static void bulletHandleCollision(RealEngine::CollisionType collisionType,
-                                     RealEngine::Registry& registry, RealEngine::Entity collider,
-                                     RealEngine::Entity entity) {
+                                  RealEngine::Registry& registry, RealEngine::Entity collider,
+                                  RealEngine::Entity entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
