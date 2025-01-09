@@ -9,7 +9,21 @@
 
 namespace rtype {
 
-static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
+static void bulletTakesDamage(RealEngine::CollisionType collisionType,
+                              RealEngine::Registry& registry, RealEngine::Entity collider,
+                              RealEngine::Entity entity) {
+    auto* health         = registry.get_component<RealEngine::Health>(entity);
+    auto* colliderHealth = registry.get_component<RealEngine::Health>(collider);
+    auto* damage         = registry.get_component<RealEngine::Damage>(entity);
+
+    if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
+        selfDestruct(registry, entity);
+    } else {
+        health->amount -= damage->amount;
+    }
+}
+
+static void bulletHandleCollision(RealEngine::CollisionType collisionType,
                                      RealEngine::Registry& registry, RealEngine::Entity collider,
                                      RealEngine::Entity entity) {
     switch (collisionType) {
@@ -26,7 +40,7 @@ static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
             break;
         case RealEngine::CollisionType::ENEMY:
             // selfDestruct(registry, entity);
-            // bulletTakesDamage(collisionType, registry, collider, entity);
+            bulletTakesDamage(collisionType, registry, collider, entity);
             break;
         case RealEngine::CollisionType::ALLY_BULLET:
             break;
@@ -48,12 +62,13 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
                            RealEngine::SpriteComponent{
                                *(RealEngine::AssetManager::getInstance().getSprite(spriteName))});
     registry.add_component(_entity, RealEngine::Drawable{});
-    registry.add_component(_entity,
-                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                                                 "bullet",
-                                                 false,
-                                                 RealEngine::CollisionType::ALLY_BULLET,
-                                                 destroyOnWallsAndEnemies});
+    registry.add_component(
+        _entity,
+        RealEngine::Collision{{-1.f, -1.f, -1.f, -1.f},  // automatic adjustement of collision
+                              "bullet",
+                              false,
+                              RealEngine::CollisionType::ALLY_BULLET,
+                              bulletHandleCollision});
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
     registry.add_component(_entity, RealEngine::Damage{damage});
     registry.add_component(_entity, RealEngine::Health{health, health});

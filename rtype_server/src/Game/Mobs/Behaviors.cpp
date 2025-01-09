@@ -311,9 +311,8 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
                             RealEngine::Entity entity) {
     auto* health = registry.get_component<RealEngine::Health>(entity);
     auto* damage = registry.get_component<RealEngine::Damage>(collider);
-    std::cerr << "take damage from collider" << std::endl; //TODO: remove, for debug
 
-    if (health && damage) {
+    if (health && damage && health->invincibilityTime <= 0.0f) {
         if (damage->effect) {
             health->regenerationRate     = -damage->amount;
             health->regenerationCooldown = damage->effectInterval;
@@ -322,6 +321,7 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
         } else {
             health->damage += damage->amount;
         }
+        // health->invincibilityTime = 0.5f;
     }
 }
 
@@ -329,7 +329,7 @@ void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
     auto* health = registry.get_component<RealEngine::Health>(entity);
 
     if (health) {
-        health->damage = health->maxHealth;
+        health->damage += health->maxHealth;
     }
 }
 

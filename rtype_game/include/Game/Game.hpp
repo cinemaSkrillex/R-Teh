@@ -16,7 +16,6 @@
 #include "Controls.hpp"
 #include "Engine.hpp"
 #include "Game/Background.hpp"
-#include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"

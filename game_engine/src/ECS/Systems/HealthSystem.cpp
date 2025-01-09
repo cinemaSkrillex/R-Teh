@@ -23,6 +23,10 @@ std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
             health->invincibilityTime -= deltaTime;
         } else {
             health->amount -= health->damage;
+            if (health->damage > 0) {
+                std::cout << "HealthSystem: entity " << entity
+                          << " take damage amount: " << health->amount << std::endl;
+            }
             // display a text with the amount of health lost
             health->damage = 0;
         }

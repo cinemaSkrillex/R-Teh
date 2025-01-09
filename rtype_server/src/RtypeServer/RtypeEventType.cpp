@@ -67,7 +67,7 @@ void RtypeServer::shootBigBullet(const std::array<char, 800>&   buffer,
                                  const asio::ip::udp::endpoint& client, Player& player) {
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
     auto               bullet =
-        _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 20.f, 50);
+        _game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 25.f, 50);
 
     RTypeProtocol::NewEntityMessage bulletMessage;
     bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;

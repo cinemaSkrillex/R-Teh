@@ -17,40 +17,36 @@ UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
 // Callbacks
 void UDPClient::setNewClientCallback(
     const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
-    ANetwork<800>::setNewClientCallback(callback);  // Call the inherited method
+    ANetwork<800>::setNewClientCallback(callback);
 }
 
 // Send methods
 void UDPClient::send_unreliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_unreliable_packet(message, _server_endpoint);  // Call the inherited method
+    ANetwork<800>::send_unreliable_packet(message, _server_endpoint);
 }
 
 void UDPClient::send_reliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_reliable_packet(message, _server_endpoint);  // Call the inherited method
+    ANetwork<800>::send_reliable_packet(message, _server_endpoint);
 }
 
 // Receive methods
 std::vector<std::array<char, 800>> UDPClient::get_unreliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return ANetwork<800>::get_unreliable_messages_from_endpoint(
-        endpoint);  // Call the inherited method
+    return ANetwork<800>::get_unreliable_messages_from_endpoint(endpoint);
 }
 
 std::vector<std::array<char, 800>> UDPClient::get_reliable_messages_from_endpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return ANetwork<800>::get_reliable_messages_from_endpoint(
-        endpoint);  // Call the inherited method
+    return ANetwork<800>::get_reliable_messages_from_endpoint(endpoint);
 }
 
 std::array<char, 800> UDPClient::get_last_unreliable_packet_data() {
-    return ANetwork<800>::get_last_unreliable_packet_data();  // Call the inherited method
+    return ANetwork<800>::get_last_unreliable_packet_data();
 }
 
 std::array<char, 800> UDPClient::get_last_reliable_packet_data() {
-    return ANetwork<800>::get_last_reliable_packet_data();  // Call the inherited method
+    return ANetwork<800>::get_last_reliable_packet_data();
 }
 
 // Miscellaneous methods
-void UDPClient::send_new_client() {
-    ANetwork<800>::send_new_client(_server_endpoint);  // Call the inherited method
-}
+void UDPClient::send_new_client() { ANetwork<800>::send_new_client(_server_endpoint); }
