@@ -116,83 +116,11 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
                           elapsed_time);
     // Create the uuid for each new client
     sendSynchronizeMessage(sender, *playerEntity, player_start_position, elapsed_time);
-    // std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
-    // for (const auto& player_pair : _players) {
-    //     const auto& player = player_pair.second;
-    //     if (!player.getUUID()) {
-    //         std::cout << "Player UUID is null" << std::endl;
-    //         continue;
-    //     }
-    //     std::cout << "Player UUID: " << player.getUUID() << std::endl;
-    //     activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
-    // }
-    // std::array<char, 800> synchronizeMessage = createSynchronizeMessage<800>(
-    //     *playerEntity,
-    //     std::chrono::duration_cast<std::chrono::milliseconds>(_startTime.time_since_epoch())
-    //         .count(),
-    //     player_start_position.x, player_start_position.y, activePlayerUUIDs);
-
-    // _server->send_reliable_packet(synchronizeMessage, sender);
     return player;
 }
 
-// void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-//     if (!_server_map) {
-//         std::cerr << "Error: Server map is null" << std::endl;
-//         return;
-//     }
-//     std::vector<RTypeProtocol::Tile> tiles      = _server_map->getTiles();
-//     int                              uuid_count = 0;
-//     for (const auto& tile : tiles) {
-//         RTypeProtocol::NewEntityMessage newTileMessage;
-//         newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-//         if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 ||
-//             tile.rotation < 0) {
-//             std::cerr << "Error: Tile position is null" << std::endl;
-//             return;
-//         }
-
-//         if (tile.type == "BLOCK") {
-//             if (!_game_instance) {
-//                 std::cerr << "Error: Game instance is null" << std::endl;
-//                 return;
-//             }
-//             rtype::Block newBlock(*_game_instance->getRegistry(), tile.position, tile.element,
-//                                   tile.rotation);
-//             auto         blockEntity = newBlock.getEntity();
-//             if (!blockEntity) {
-//                 std::cerr << "Error: Block entity is null" << std::endl;
-//                 return;
-//             }
-//             newTileMessage.uuid = *blockEntity;
-
-//             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
-//                                   tile.position);
-//             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
-//                                   tile.rotation);
-//             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-
-//             sf::FloatRect             bounds      = {0, 0, 16, 8};
-//             std::string               id          = tile.element;
-//             bool                      isColliding = false;
-//             RealEngine::CollisionType type        = RealEngine::CollisionType::SOLID;
-
-//             addCollisionComponentToMessage(newTileMessage, bounds, id, isColliding, type);
-
-//             std::string       sprite = tile.element;
-//             std::vector<char> spriteData(sprite.begin(), sprite.end());
-//             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE,
-//             spriteData);
-
-//             std::array<char, 800> serializedMessage =
-//             RTypeProtocol::serialize<800>(newTileMessage);
-//             broadcastAllReliable(serializedMessage);
-//             std::cout << "Broadcasted block" << std::endl;
-//         }
-//     }
-// }
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    auto serverMap = _server_map;  // Retain shared ownership
+    auto serverMap = _server_map;  // Retain shared ownership (avoid lifetime issue I had here)
 
     if (!serverMap) {
         std::cerr << "Error: Server map is null" << std::endl;
@@ -201,8 +129,8 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
 
     const std::vector<RTypeProtocol::Tile>& tiles = serverMap->getTiles();
 
-    // Batching setup
-    constexpr size_t BATCH_SIZE     = 100;  // Adjust as necessary for optimal performance
+    // Batching setup (reduce network overhead)
+    constexpr size_t BATCH_SIZE     = 100;
     size_t           processedCount = 0;
 
     std::vector<std::array<char, 800>> batchMessages;
@@ -220,10 +148,6 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
                 std::cerr << "Error: Game instance is null" << std::endl;
                 return;
             }
-
-            // rtype::Block newBlock(_game_instance->getRegistryRef(), tile.position, tile.element,
-            //                       tile.rotation);
-            // auto         blockEntity = newBlock.getEntity();
             auto newBlock = std::make_shared<rtype::Block>(
                 _game_instance->getRegistryRef(), tile.position, tile.element, tile.rotation);
             auto blockEntity = newBlock->getEntity();
@@ -243,10 +167,9 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
                                   tile.rotation);
             addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
 
-            // sf::FloatRect bounds = {0, 0, 16, 8};
-            // addCollisionComponentToMessage(newTileMessage, bounds, tile.element,
-            // false,
-            //                                RealEngine::CollisionType::SOLID);
+            sf::FloatRect bounds = {0, 0, 16, 8};
+            addCollisionComponentToMessage(newTileMessage, bounds, tile.element, false,
+                                           RealEngine::CollisionType::SOLID);
 
             std::string       sprite = tile.element;
             std::vector<char> spriteData(sprite.begin(), sprite.end());
@@ -275,8 +198,6 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
         }
         std::cout << "Processed final batch of " << batchMessages.size() << " tiles." << std::endl;
     }
-
-    //     std::cout << "Total processed tiles: " << processedCount << std::endl;
 }
 
 void RtypeServer::initCallbacks() {
