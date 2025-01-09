@@ -5,7 +5,7 @@
 ** ServerMap
 */
 
-#include "ServerMap/ServerMap.hpp"
+#include "shared/ServerMap.hpp"
 
 ServerMap::ServerMap() {}
 
@@ -59,7 +59,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
     // Load tiles
     const auto& tiles = root["mapData"]["tiles"];
     for (const auto& tileJson : tiles) {
-        RTypeProtocol::Tile tile;
+        Map::Tile tile;
         tile.type     = tileJson["type"].asString();
         tile.element  = tileJson["element"].asString();
         tile.position = {tileJson["position"][0].asFloat(), tileJson["position"][1].asFloat()};

@@ -17,7 +17,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../ServerMap/ServerMap.hpp"
 #include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
@@ -27,6 +26,7 @@
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
+#include "ServerMap.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00

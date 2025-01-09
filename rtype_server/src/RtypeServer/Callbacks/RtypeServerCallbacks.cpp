@@ -127,7 +127,7 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
         return;
     }
 
-    const std::vector<RTypeProtocol::Tile>& tiles = serverMap->getTiles();
+    const std::vector<Map::Tile>& tiles = serverMap->getTiles();
 
     // Batching setup (reduce network overhead)
     constexpr size_t BATCH_SIZE     = 100;

@@ -19,10 +19,24 @@
 #include "Engine.hpp"
 #include "RtypeServerProtocol.hpp"
 
+namespace Map {
+struct Tile {
+    std::string  type;      // e.g., "BLOCK", "NONE"
+    std::string  element;   // e.g., "background"
+    sf::Vector2f position;  // e.g., (0, 0)
+    float        rotation;  // e.g., (90.0)
+};
+
+struct Wave {
+    std::string  type;  // e.g., "wave1" which will be used to load the correct wave (wave1.json)
+    sf::Vector2f position;  // e.g., (0, 0)
+};
+}  // namespace Map
+
 class ServerMap {
    private:
-    std::string                      _map_name;
-    std::vector<RTypeProtocol::Tile> _tiles;  // Updated to store richer tile data
+    std::string            _map_name;
+    std::vector<Map::Tile> _tiles;  // Updated to store richer tile data
 
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
@@ -36,8 +50,8 @@ class ServerMap {
     void saveToJSON(const std::string& filepath);
 
     // Accessor methods
-    const std::vector<RTypeProtocol::Tile>& getTiles() const { return _tiles; }
-    void addTile(const RTypeProtocol::Tile& tile) { _tiles.push_back(tile); }
+    const std::vector<Map::Tile>& getTiles() const { return _tiles; }
+    void                          addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
     // Accessor methods (omitted here for brevity but same as before)
     // Modifiers and debug methods (omitted here for brevity)
 };
