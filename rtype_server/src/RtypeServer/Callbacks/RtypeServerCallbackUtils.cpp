@@ -58,13 +58,13 @@ void RtypeServer::sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, 
                                          long                timestamp) {
     std::vector<std::pair<long, sf::Vector2f>> activePlayerUUIDs;
     for (const auto& player_pair : _players) {
-        const auto& player = player_pair.second;
-        if (!player.getUUID()) {
+        const auto& current_player = player_pair.second;
+        if (!current_player.getUUID()) {
             std::cout << "Player UUID is null" << std::endl;
             continue;
         }
-        std::cout << "Player UUID: " << player.getUUID() << std::endl;
-        activePlayerUUIDs.push_back({player.getUUID(), player.getPosition()});
+        std::cout << "Player UUID: " << current_player.getUUID() << std::endl;
+        activePlayerUUIDs.push_back({current_player.getUUID(), current_player.getPosition()});
     }
     std::array<char, 800> synchronizeMessage =
         createSynchronizeMessage<800>(playerEntity, timestamp, player_start_position.x,
