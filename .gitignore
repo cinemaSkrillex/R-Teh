@@ -10,3 +10,4 @@ build/
 my_logs.txt
 documentation/setup_vm_vcpkg/
 vcpkg/
+assets/maps/map_big.json

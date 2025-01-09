@@ -89,6 +89,10 @@ class RtypeServer {
     void   init_callback_mobs(const asio::ip::udp::endpoint& client);
     void   init_callback_map(const asio::ip::udp::endpoint& client);
     Player init_callback_players(const asio::ip::udp::endpoint& client);
+    void   sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity, float x,
+                                 float y, long timestamp);
+    void   sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
+                                  const sf::Vector2f& player_start_position, long timestamp);
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
