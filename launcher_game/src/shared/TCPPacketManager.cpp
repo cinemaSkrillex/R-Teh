@@ -89,7 +89,7 @@ void TCPPacketManager::handle_file_reception(std::string& data, const std::strin
     std::string file_name = data.substr(5, name_end - 5);
     std::size_t file_size = std::stoul(data.substr(name_end + 1, size_end - name_end - 1));
     std::cout << "Receiving file: " << file_name << " (" << file_size << " bytes)" << std::endl;
-    std::string directory = current_directory.empty() ? "test" : current_directory;
+    std::string directory = current_directory.empty() ? "FILE_SHARING" : current_directory;
 
     if (!fs::exists(directory)) {
         try {
