@@ -21,6 +21,7 @@ std::vector<Entity> HealthSystem::update(Registry& registry, float deltaTime) {
         auto* health = registry.get_component<Health>(entity);
         if (health->invincibilityTime > 0.0f) {
             health->invincibilityTime -= deltaTime;
+            health->damage = 0;
         } else {
             health->amount -= health->damage;
             // display a text with the amount of health lost
