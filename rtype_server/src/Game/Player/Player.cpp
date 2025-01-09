@@ -80,8 +80,6 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_entity, RealEngine::Controllable{});
     registry.add_component(_entity, RealEngine::Health{100, 200});
-    // registry.add_component(_entity,
-    //                        RealEngine::Netvar{"float", "shootCooldown", 0.5f, updateCooldown});
     registry.add_component(_entity,
                            RealEngine::NetvarContainer{
                                {{"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},

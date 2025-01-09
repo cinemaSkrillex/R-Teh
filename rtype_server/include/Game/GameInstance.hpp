@@ -36,7 +36,6 @@ class GameInstance {
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
-    // void run(float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);
 
     RealEngine::Registry* getRegistry() { return &_registry; }

@@ -93,7 +93,7 @@ void GameInstance::init_systems() {
 
 void GameInstance::init_mobs() {
     std::cerr << "init mobs" << std::endl;
-    rtype::EyeMinion eyeMinion(_registry, {700, 100}, {0, 0}, 0);
+    rtype::EyeMinion eyeMinion(_registry, {700, 100});
     addAndGetEnemy(eyeMinion.getEntity());
     rtype::SpaceSphere spaceSphere(_registry, {100, 300}, {0, 0}, 0);
     addAndGetEnemy(spaceSphere.getEntity());
@@ -175,17 +175,17 @@ void GameInstance::init_textures() {
 }
 
 void GameInstance::init_sprite_sheets() {
-    //load eye minion sprite sheet
+    // load eye minion sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> eyeSheet;
-    RealEngine::Sprite _eyeSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
+    RealEngine::Sprite                                  _eyeSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
     eyeSheet.emplace("normal", _eyeSprite);
-    RealEngine::AssetManager::getInstance().loadSpriteSheet("eye_minion", eyeSheet, "normal", 0,
-                                                            {18, 11}, false, true, 120, {14, 5},
-                                                            sf::Clock());
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "eye_minion", eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock());
 
     // //load space sphere sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> spaceSphereSheet;
-    RealEngine::Sprite _spaceSphereSprite(
+    RealEngine::Sprite                                  _spaceSphereSprite(
         *(RealEngine::AssetManager::getInstance().getSprite("space_sphere")));
     spaceSphereSheet.emplace("normal", _spaceSphereSprite);
     RealEngine::AssetManager::getInstance().loadSpriteSheet("space_sphere", spaceSphereSheet,

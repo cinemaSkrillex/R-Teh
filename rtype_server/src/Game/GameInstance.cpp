@@ -14,6 +14,7 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
+    // Then update remaining mobs
     if (_serverVision) {
         _window->clear();
         _window->update();
@@ -26,12 +27,10 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
-    // _destructibleSystem.update(_registry, deltaTime);
     // get returned std::vector<RealEngine::Entity> of destroyed entities
     auto destroyedEntities = _destructibleSystem.update(_registry, deltaTime);
-    _collisionSystem.update(_registry, deltaTime);
-    // _healthSystem.update(_registry, deltaTime);
     // add returned std::vector<RealEngine::Entity> of health to destroyedEntities
+    _collisionSystem.update(_registry, deltaTime);
     auto destroyedHealth = _healthSystem.update(_registry, deltaTime);
 
     destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
@@ -71,7 +70,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                                   }),
                    _bullets.end());
 
-    // Then update remaining mobs
     for (auto& mob : _enemies) {
         _movementSystem.update(_registry, mob, deltaTime);
     }
@@ -80,6 +78,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     for (auto& bullet : _bullets) {
         _movementSystem.update(_registry, bullet, deltaTime);
     }
+
     return destroyedEntities;
 };
 
