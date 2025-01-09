@@ -16,12 +16,14 @@ static void bulletTakesDamage(RealEngine::CollisionType collisionType,
     auto* colliderHealth = registry.get_component<RealEngine::Health>(collider);
     auto* damage         = registry.get_component<RealEngine::Damage>(entity);
 
-    if ((colliderHealth && damage) && (colliderHealth->amount > damage->amount)) {
+    if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
         selfDestruct(registry, entity);
+    } else {
+        health->amount -= damage->amount;
     }
 }
 
-static void destroyOnWallsAndEnemies(RealEngine::CollisionType collisionType,
+static void bulletHandleCollision(RealEngine::CollisionType collisionType,
                                      RealEngine::Registry& registry, RealEngine::Entity collider,
                                      RealEngine::Entity entity) {
     switch (collisionType) {
@@ -66,7 +68,7 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
                               "bullet",
                               false,
                               RealEngine::CollisionType::ALLY_BULLET,
-                              destroyOnWallsAndEnemies});
+                              bulletHandleCollision});
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
     registry.add_component(_entity, RealEngine::Damage{damage});
     registry.add_component(_entity, RealEngine::Health{health, health});
