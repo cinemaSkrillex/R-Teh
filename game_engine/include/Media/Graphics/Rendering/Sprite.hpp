@@ -35,7 +35,7 @@ class Sprite : public IRender {
     void                         scaleFromSize(const float width, const float height);
     bool                         isTextureOfBounds();
     sf::FloatRect                getBounds() { return _sprite.getGlobalBounds(); }
-    int                          getOpacity() { return _sprite.getColor().a; }
+    float                        getOpacity() { return _sprite.getColor().a; }
 
    private:
     sf::Sprite                   _sprite;

@@ -70,8 +70,31 @@ static void updateHoldTime(RealEngine::Registry& registry, RealEngine::Entity& e
 static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
                                     RealEngine::Netvar& currentNetvar, float deltaTime) {
     currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
-    if (std::any_cast<float>(currentNetvar.value) < 0) {
-        currentNetvar.value = 0.f;
+    auto* health        = registry.get_component<RealEngine::Health>(entity);
+    auto* spritesheet   = registry.get_component<RealEngine::SpriteSheet>(entity);
+
+    if (!health || !spritesheet) {
+        return;
+    }
+    std::cout << "Invincibility time: " << health->invincibilityTime << std::endl;
+    if (health->invincibilityTime > 0.0f) {
+        if (std::any_cast<float>(currentNetvar.value) < 0) {
+            for (auto& [key, sprite] : spritesheet->sprites) {
+                if (sprite.getOpacity() == 255) {
+                    sprite.setOpacity(0);
+                } else {
+                    sprite.setOpacity(255);
+                }
+            }
+            currentNetvar.value = 0.25f;
+        }
+    } else {
+        for (auto& [key, sprite] : spritesheet->sprites) {
+            if (sprite.getOpacity() != 255) {
+                sprite.setOpacity(255);
+            }
+        }
+        currentNetvar.value = 0.25f;
     }
 }
 

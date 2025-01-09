@@ -33,6 +33,44 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
     }
 }
 
+static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
+                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
+    currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
+    auto* health        = registry.get_component<RealEngine::Health>(entity);
+    auto* spritesheet   = registry.get_component<RealEngine::SpriteSheet>(entity);
+    auto* netvars       = registry.get_component<RealEngine::NetvarContainer>(entity);
+
+    if (!health || !spritesheet || !netvars) {
+        return;
+    }
+    auto* timerNetvar = netvars->getNetvar("clignotingFrameTimer");
+    float frameTimer  = std::any_cast<float>(timerNetvar->value);
+    if (std::any_cast<float>(currentNetvar.value) > 0) {
+        std::cout << "frameTimer: " << frameTimer << std::endl;
+        frameTimer -= deltaTime;
+        if (frameTimer <= 0.f) {
+            for (auto& [key, sprite] : spritesheet->sprites) {
+                std::cout << "Sprite opacity: " << sprite.getOpacity() << std::endl;
+                if (sprite.getOpacity() == 255) {
+                    sprite.setOpacity(50);
+                } else {
+                    sprite.setOpacity(255);
+                }
+            }
+            frameTimer = 0.25f;
+        }
+        timerNetvar->value = frameTimer;
+
+    } else {
+        if (timerNetvar) timerNetvar->value = 0.25f;
+        for (auto& [key, sprite] : spritesheet->sprites) {
+            if (sprite.getOpacity() != 255) {
+                sprite.setOpacity(255);
+            }
+        }
+    }
+}
+
 static void playerCollisionHandler(RealEngine::CollisionType collisionType,
                                    RealEngine::Registry& registry, RealEngine::Entity collider,
                                    RealEngine::Entity entity) {
@@ -84,6 +122,12 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
                                            RealEngine::CollisionType::OTHER,
                                            playerCollisionHandler});
         registry.add_component(_entity, RealEngine::Health{100, 200});
+        registry.add_component(
+            _entity,
+            RealEngine::NetvarContainer{{
+                {"clignotingTimer", {"float", "clignotingTimer", float(0.f), updateClignotingAnim}},
+                {"clignotingFrameTimer", {"float", "clignotingFrameTimer", float(0.25f), nullptr}},
+            }});
     } else {
         registry.add_component(_entity, RealEngine::Position{position.x, position.y});
         registry.add_component(_entity, RealEngine::Drawable{});
