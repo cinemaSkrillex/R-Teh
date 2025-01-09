@@ -314,7 +314,7 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
 
     if (health && damage && health->invincibilityTime <= 0.0f) {
         if (damage->effect) {
-            health->regenerationRate     -= damage->amount;
+            health->regenerationRate     = -damage->amount;
             health->regenerationCooldown = damage->effectInterval;
             health->regenerationTimer    = 0.0f;
             health->regenerationTime     = damage->effectDuration;
