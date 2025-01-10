@@ -2,10 +2,13 @@
 
 #include <SFML/Graphics.hpp>
 
+#define VIEW_WIDTH 800
+#define VIEW_HEIGHT 600
+
 namespace RealEngine {
 class View {
    public:
-    View(sf::RenderWindow& window, const sf::Vector2f center, const sf::Vector2f size);
+    View(const sf::Vector2f center, const sf::Vector2f size);
     ~View();
 
     void          setCenter(const sf::Vector2f center);
@@ -22,9 +25,9 @@ class View {
     sf::FloatRect getViewport() { return _view.getViewport(); }
     sf::Transform getTransform() { return _view.getTransform(); }
     sf::Transform getInverseTransform() { return _view.getInverseTransform(); }
+    void          resizeWithAspectRatio(int width, int height);
 
    private:
-    sf::View          _view;
-    sf::RenderWindow& _window;
+    sf::View _view;
 };
 }  // namespace RealEngine

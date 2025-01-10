@@ -27,7 +27,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _healthSystem(),
       _parallaxSystem(),
       _destructibleSystem(),
-      _view(_window.getRenderWindow(), {800 / 2, 600 / 2}, {800, 600}),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
