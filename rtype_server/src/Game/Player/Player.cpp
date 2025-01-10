@@ -43,6 +43,9 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::ENEMY_BULLET:
             playerTakeDamage(registry, collider, entity);
             break;
+        case RealEngine::CollisionType::BLOCKING:
+            blockEntity(registry, collider, entity);
+            break;
         default:
             break;
     }

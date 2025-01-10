@@ -333,4 +333,30 @@ void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
     }
 }
 
+void blockEntity(RealEngine::Registry& registry, RealEngine::Entity collider,
+                 RealEngine::Entity entity) {
+    auto* playerCollision   = registry.get_component<RealEngine::Collision>(entity);
+    auto* colliderCollision = registry.get_component<RealEngine::Collision>(collider);
+    auto* entityPosition    = registry.get_component<RealEngine::Position>(entity);
+
+    if (playerCollision && colliderCollision) {
+        sf::FloatRect entityBounds   = playerCollision->bounds;
+        sf::FloatRect colliderBounds = colliderCollision->bounds;
+
+        float overlapLeft   = (entityBounds.left + entityBounds.width) - colliderBounds.left;
+        float overlapRight  = (colliderBounds.left + colliderBounds.width) - entityBounds.left;
+        float overlapTop    = (entityBounds.top + entityBounds.height) - colliderBounds.top;
+        float overlapBottom = (colliderBounds.top + colliderBounds.height) - entityBounds.top;
+
+        float correctionX = (overlapLeft < overlapRight) ? -overlapLeft : overlapRight;
+        float correctionY = (overlapTop < overlapBottom) ? -overlapTop : overlapBottom;
+
+        if (std::abs(correctionX) < std::abs(correctionY)) {
+            entityPosition->x += correctionX;
+        } else {
+            entityPosition->y += correctionY;
+        }
+    }
+}
+
 }  // namespace rtype

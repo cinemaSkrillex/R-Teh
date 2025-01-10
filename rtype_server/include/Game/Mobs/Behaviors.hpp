@@ -46,4 +46,6 @@ void takesDamage(RealEngine::CollisionType collisionType, RealEngine::Registry& 
 void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity collider,
                             RealEngine::Entity entity);
 void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity);
+void blockEntity(RealEngine::Registry& registry, RealEngine::Entity collider,
+                 RealEngine::Entity entity);
 }  // namespace rtype

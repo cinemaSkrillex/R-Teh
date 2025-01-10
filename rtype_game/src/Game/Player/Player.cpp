@@ -71,6 +71,32 @@ static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Ent
     }
 }
 
+static void blockPlayer(RealEngine::Registry& registry, RealEngine::Entity collider,
+                        RealEngine::Entity entity) {
+    auto* playerCollision   = registry.get_component<RealEngine::Collision>(entity);
+    auto* colliderCollision = registry.get_component<RealEngine::Collision>(collider);
+    auto* playerPosition    = registry.get_component<RealEngine::Position>(entity);
+
+    if (playerCollision && colliderCollision) {
+        sf::FloatRect playerBounds   = playerCollision->bounds;
+        sf::FloatRect colliderBounds = colliderCollision->bounds;
+
+        float overlapLeft   = (playerBounds.left + playerBounds.width) - colliderBounds.left;
+        float overlapRight  = (colliderBounds.left + colliderBounds.width) - playerBounds.left;
+        float overlapTop    = (playerBounds.top + playerBounds.height) - colliderBounds.top;
+        float overlapBottom = (colliderBounds.top + colliderBounds.height) - playerBounds.top;
+
+        float correctionX = (overlapLeft < overlapRight) ? -overlapLeft : overlapRight;
+        float correctionY = (overlapTop < overlapBottom) ? -overlapTop : overlapBottom;
+
+        if (std::abs(correctionX) < std::abs(correctionY)) {
+            playerPosition->x += correctionX;
+        } else {
+            playerPosition->y += correctionY;
+        }
+    }
+}
+
 static void playerCollisionHandler(RealEngine::CollisionType collisionType,
                                    RealEngine::Registry& registry, RealEngine::Entity collider,
                                    RealEngine::Entity entity) {
@@ -92,6 +118,8 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
         case RealEngine::CollisionType::ENEMY_BULLET:
             playerTakeDamage(registry, collider, entity);
             break;
+        case RealEngine::CollisionType::BLOCKING:
+            blockPlayer(registry, collider, entity);
         default:
             break;
     }

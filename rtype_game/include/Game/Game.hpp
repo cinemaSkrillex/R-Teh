@@ -45,13 +45,13 @@ class Game {
     void init_systems();
     void init_textures();
     void init_sprite_sheets();
+    void init_screen_limits();
 
     void init_level(std::string filepath, std::string foldername);
 
     void register_components();
     void bind_keys();
     void set_action_handlers();
-    void add_systems();
     void set_sprite_opacity();
 
     // GameSignals

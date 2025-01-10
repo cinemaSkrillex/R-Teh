@@ -26,6 +26,7 @@ GameInstance::GameInstance(bool serverVision)
     init_systems();
     init_textures();
     init_sprite_sheets();
+    init_screen_limits();
     init_mobs();
 }
 
@@ -196,4 +197,23 @@ void GameInstance::init_sprite_sheets() {
 void GameInstance::init_level(std::string filepath, std::string foldername) {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
+}
+
+void GameInstance::init_screen_limits() {
+    std::shared_ptr<RealEngine::Entity> topWall = _registry.spawn_entity();
+    _registry.add_component(
+        topWall, RealEngine::Collision{
+                     {0, -20, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawn_entity();
+    _registry.add_component(
+        bottomWall, RealEngine::Collision{
+                        {0, 600, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> leftWall = _registry.spawn_entity();
+    _registry.add_component(
+        leftWall, RealEngine::Collision{
+                      {-20, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> rightWall = _registry.spawn_entity();
+    _registry.add_component(
+        rightWall, RealEngine::Collision{
+                       {800, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
 }

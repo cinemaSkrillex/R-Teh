@@ -49,6 +49,7 @@ void Game::init_all_game() {
     init_textures();
     set_sprite_opacity();
     init_sprite_sheets();
+    init_screen_limits();
 
     Background background(_registry, -200.f, 3);
     Background background2(_registry, -100.f, 2);
@@ -67,7 +68,24 @@ void Game::init_controls() {
     set_action_handlers();
 }
 
-void Game::init_systems() { add_systems(); }
+void Game::init_screen_limits() {
+    std::shared_ptr<RealEngine::Entity> topWall = _registry.spawn_entity();
+    _registry.add_component(
+        topWall, RealEngine::Collision{
+                     {0, -20, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawn_entity();
+    _registry.add_component(
+        bottomWall, RealEngine::Collision{
+                        {0, 600, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> leftWall = _registry.spawn_entity();
+    _registry.add_component(
+        leftWall, RealEngine::Collision{
+                      {-20, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> rightWall = _registry.spawn_entity();
+    _registry.add_component(
+        rightWall, RealEngine::Collision{
+                       {800, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
+}
 
 void Game::init_textures() {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
@@ -146,7 +164,7 @@ void Game::init_level(std::string filepath, std::string foldername) {
     AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
 }
 
-void Game::add_systems() {
+void Game::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _lagCompensationSystem.update(registry, deltaTime);
     });
@@ -295,15 +313,5 @@ void Game::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
 }
-
-// std::unordered_map<std::string, RealEngine::Sprite> sprites;
-// std::string                                         spriteIndex;
-// int                                                 frameIndex;
-// sf::Vector2i                                        frameSize;
-// bool                                                pause;
-// bool                                                loop;
-// float                                               animTime;
-// sf::Vector2i                                        origin = {-1, -1};
-// sf::Clock                                           animClock;
 
 }  // namespace rtype
