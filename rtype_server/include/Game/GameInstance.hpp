@@ -11,6 +11,7 @@
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
 #include "Mobs/Mobs.hpp"
+#include "ServerMap.hpp"
 
 class GameInstance {
    public:
@@ -34,6 +35,8 @@ class GameInstance {
                                                         int health);
     std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
         std::shared_ptr<RealEngine::Entity> enemyEntity);
+    void spawnMob(const std::string& mobName, const sf::Vector2f& position);
+
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
@@ -43,6 +46,7 @@ class GameInstance {
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
+    std::shared_ptr<ServerMap>                        getMap() { return _game_map; }
 
    private:
     bool                                _serverVision;
@@ -63,4 +67,5 @@ class GameInstance {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
+    std::shared_ptr<ServerMap>                                        _game_map;
 };

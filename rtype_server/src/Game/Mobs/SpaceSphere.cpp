@@ -68,17 +68,10 @@ static void updateDirection(RealEngine::Registry& registry, RealEngine::Entity e
     currentNetvar.value = goUp;
 }
 
-SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position,
-                         sf::Vector2f direction, float speed)
+SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
-    //   _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_sphere"))) {
-    // _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
-    // registry.add_component(
-    //     _entity, RealEngine::SpriteSheet{
-    //                  _mobSpriteSheet, "normal", 0, {16, 14}, false, true, 55, {8, 8},
-    //                  sf::Clock()});
+    registry.add_component(_entity, RealEngine::Velocity{0, 0, {850.f, 850.f}, 0.5f});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("space_sphere");
     registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});

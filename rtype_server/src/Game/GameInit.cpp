@@ -21,12 +21,14 @@ GameInstance::GameInstance(bool serverVision)
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
-      _netvarSystem() {
+      _netvarSystem(),
+      _game_map(std::make_shared<ServerMap>()) {
     init_components();
     init_systems();
     init_textures();
     init_sprite_sheets();
     init_screen_limits();
+    _game_map->loadFromJSON("../../assets/maps/map.json");
     init_mobs();
 }
 
@@ -96,8 +98,13 @@ void GameInstance::init_mobs() {
     std::cerr << "init mobs" << std::endl;
     rtype::EyeMinion eyeMinion(_registry, {700, 100});
     addAndGetEnemy(eyeMinion.getEntity());
-    rtype::SpaceSphere spaceSphere(_registry, {100, 300}, {0, 0}, 0);
+    rtype::SpaceSphere spaceSphere(_registry, {100, 300});
     addAndGetEnemy(spaceSphere.getEntity());
+    auto waves = _game_map->getWaves();
+    auto wave  = waves.front();
+    for (const auto& mob : wave.mobs) {
+        spawnMob(mob.name, mob.position);
+    }
 }
 
 void GameInstance::init_textures() {

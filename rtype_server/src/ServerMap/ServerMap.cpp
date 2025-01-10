@@ -91,7 +91,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
 
             for (const auto& waveMobJson : waveRoot["wave"]) {
                 Map::WaveMob mobsInWave;
-                mobsInWave.mobName  = waveMobJson["mobName"].asString();
+                mobsInWave.name     = waveMobJson["mobName"].asString();
                 mobsInWave.position = {waveMobJson["position"][0].asFloat(),
                                        waveMobJson["position"][1].asFloat()};
                 wave.mobs.push_back(mobsInWave);
@@ -129,11 +129,11 @@ void ServerMap::saveToJSON(const std::string& filepath) {
 
         // Save wave contents to a separate file
         Json::Value waveRoot;
-        for (const auto& content : wave.mobs) {
+        for (const auto& wabeMob : wave.mobs) {
             Json::Value contentJson;
-            contentJson["mobName"] = content.mobName;
-            contentJson["position"].append(content.position.x);
-            contentJson["position"].append(content.position.y);
+            contentJson["mobName"] = wabeMob.name;
+            contentJson["position"].append(wabeMob.position.x);
+            contentJson["position"].append(wabeMob.position.y);
             waveRoot["wave"] = contentJson;
         }
         std::string waveFilePath = "../../assets/maps/waves/" + wave.waveType + ".json";

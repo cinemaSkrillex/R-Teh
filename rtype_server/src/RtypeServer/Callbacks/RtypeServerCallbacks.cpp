@@ -120,7 +120,7 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
 }
 
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    auto serverMap = _server_map;  // Retain shared ownership (avoid lifetime issue I had here)
+    auto serverMap = _game_instance->getMap();
 
     if (!serverMap) {
         std::cerr << "Error: Server map is null" << std::endl;

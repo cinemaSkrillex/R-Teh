@@ -17,8 +17,7 @@ namespace rtype {
 
 class SpaceSphere {
    public:
-    SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                float speed);
+    SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position);
     ~SpaceSphere();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

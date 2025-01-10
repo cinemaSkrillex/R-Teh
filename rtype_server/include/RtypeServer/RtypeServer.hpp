@@ -26,7 +26,6 @@
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
-#include "ServerMap.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -77,7 +76,6 @@ class RtypeServer {
     std::shared_ptr<UDPServer>                          _server;
     std::shared_ptr<GameInstance>                       _game_instance;
     ServerConfig                                        _server_config;
-    std::shared_ptr<ServerMap>                          _server_map;
     std::unordered_map<asio::ip::udp::endpoint, Player> _players;
     float                                               _deltaTime;
     float                                               _deltaTimeBroadcast;
