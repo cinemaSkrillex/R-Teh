@@ -131,7 +131,7 @@ void RtypeServer::processTile(const Map::Tile&                    tile,
 
 void RtypeServer::processWave(const Map::Wave&                    wave,
                               std::vector<std::array<char, 800>>& batchMessages) {
-    for (const auto& content : wave.contents) {
+    for (const auto& content : wave.mobs) {
         // Handle wave content (e.g., spawn mobs)
         std::cout << "Processing wave content: " << content.mobName << " at position ("
                   << content.position.x << ", " << content.position.y << ")" << std::endl;

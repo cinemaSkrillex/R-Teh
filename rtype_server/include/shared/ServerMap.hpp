@@ -27,15 +27,15 @@ struct Tile {
     float        rotation;  // e.g., (90.0)
 };
 
-struct WaveContent {
+struct WaveMob {
     std::string  mobName;   // Name of the mob (e.g., "eye_minion")
     sf::Vector2f position;  // Position of the mob
 };
 
 struct Wave {
-    std::string              waveType;       // e.g., "wave1" (filename of the wave JSON)
-    sf::Vector2f             startPosition;  // Starting position for the wave
-    std::vector<WaveContent> contents;       // List of mobs in this wave
+    std::string          waveType;       // e.g., "wave1" (filename of the wave JSON)
+    sf::Vector2f         startPosition;  // Starting position for the wave
+    std::vector<WaveMob> mobs;           // List of mobs in this wave
 };
 }  // namespace Map
 
