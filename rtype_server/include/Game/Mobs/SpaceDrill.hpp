@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Engine.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 
@@ -15,16 +15,10 @@ namespace rtype {
 
 class SpaceDrill {
    public:
-    SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-               float speed);
+    SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position);
     ~SpaceDrill();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
-    void mob_collision_handler(RealEngine::CollisionType collisionType,
-                               RealEngine::Registry& registry, RealEngine::Entity collider,
-                               RealEngine::Entity entity);
-    void mob_take_damage(RealEngine::Registry& registry, RealEngine::Entity collider,
-                         RealEngine::Entity entity);
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _entity;

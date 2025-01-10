@@ -319,9 +319,8 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
             health->regenerationTimer    = 0.0f;
             health->regenerationTime     = damage->effectDuration;
         } else {
-            health->damage += damage->amount;
+            health->amount -= damage->amount;
         }
-        // health->invincibilityTime = 0.5f;
     }
 }
 
@@ -329,7 +328,7 @@ void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
     auto* health = registry.get_component<RealEngine::Health>(entity);
 
     if (health) {
-        health->damage += health->maxHealth;
+        health->amount -= health->maxHealth;
     }
 }
 

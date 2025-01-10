@@ -8,7 +8,7 @@ static void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity enti
     auto* health = registry.get_component<RealEngine::Health>(entity);
 
     if (health) {
-        health->damage += health->maxHealth;
+        health->amount -= health->maxHealth;
     }
 }
 
@@ -26,7 +26,7 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
             playerHealth->regenerationTimer    = 0.0f;
             playerHealth->regenerationTime     = colliderDamage->effectDuration;
         } else {
-            playerHealth->damage += colliderDamage->amount;
+            playerHealth->amount -= colliderDamage->amount;
         }
         playerHealth->invincibilityTime = 1.5f;
         HitEffect hitEffect(registry, {playerPosition->x, playerPosition->y});

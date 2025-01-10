@@ -7,18 +7,14 @@
 
 #pragma once
 
-#include "Engine.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 class RobotBossMinion {
    public:
-    RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-                    float speed);
+    RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position);
     ~RobotBossMinion();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
-    void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
-    void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
-                            RealEngine::Entity collider, RealEngine::Entity entity);
 
    private:
     std::shared_ptr<RealEngine::Entity>                 _entity;
