@@ -73,7 +73,7 @@ class Game {
     RealEngine::AISystem              _aiSystem;
     RealEngine::RotationSystem        _rotationSystem;
     RealEngine::RadiusSystem          _radiusSystem;
-    RealEngine::DestroySystem         _destructibleSystem;
+    RealEngine::DestroySystem         _destroySystem;
     RealEngine::HealthSystem          _healthSystem;
     RealEngine::ParallaxSystem        _parallaxSystem;
     RealEngine::ParticleSystem        _particleSystem;

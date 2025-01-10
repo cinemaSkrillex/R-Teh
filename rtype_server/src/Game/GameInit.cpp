@@ -90,7 +90,7 @@ void GameInstance::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _destructibleSystem.update(registry, deltaTime);
+        _destroySystem.update(registry, deltaTime);
     });
 }
 

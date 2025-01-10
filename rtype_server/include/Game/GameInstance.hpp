@@ -60,7 +60,7 @@ class GameInstance {
     RealEngine::AISystem        _aiSystem;
     RealEngine::RotationSystem  _rotationSystem;
     RealEngine::RadiusSystem    _radiusSystem;
-    RealEngine::DestroySystem   _destructibleSystem;
+    RealEngine::DestroySystem   _destroySystem;
     RealEngine::HealthSystem    _healthSystem;
     RealEngine::NetvarSystem    _netvarSystem;
 
