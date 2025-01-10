@@ -26,6 +26,7 @@ SpaceLaser::SpaceLaser(RealEngine::Registry& registry, sf::Vector2f position, fl
     registry.add_component(_entity, RealEngine::Damage{15});
     registry.add_component(_entity, RealEngine::Health{1, 1});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

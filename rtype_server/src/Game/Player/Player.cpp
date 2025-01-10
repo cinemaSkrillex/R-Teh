@@ -79,7 +79,6 @@ static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::
     if (!health || !spritesheet) {
         return;
     }
-    std::cout << "Invincibility time: " << health->invincibilityTime << std::endl;
     if (health->invincibilityTime > 0.0f) {
         if (std::any_cast<float>(currentNetvar.value) < 0) {
             for (auto& [key, sprite] : spritesheet->sprites) {

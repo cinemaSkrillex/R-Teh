@@ -31,6 +31,7 @@ Fireball::Fireball(RealEngine::Registry& registry, sf::Vector2f position, float 
     registry.add_component(_entity, RealEngine::Damage{10, true, 3.0f, 1.0f, false});
     registry.add_component(_entity, RealEngine::Health{1, 1});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

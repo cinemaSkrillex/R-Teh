@@ -23,7 +23,6 @@
 namespace RealEngine {
 class Registry {
    public:
-    // Register a component type by adding a SparseArray to the registry
     template <class Component>
     SparseArray<Component>& register_component() {
         std::type_index index(typeid(Component));
@@ -31,7 +30,6 @@ class Registry {
         if (_components_arrays.find(index) == _components_arrays.end()) {
             _components_arrays[index] = std::make_any<SparseArray<Component>>();
 
-            // Create and store the erase function
             _erase_functions.push_back([this, index](Registry& registry, Entity const& entity) {
                 auto& components =
                     std::any_cast<SparseArray<Component>&>(registry._components_arrays[index]);
@@ -44,7 +42,6 @@ class Registry {
         return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
     }
 
-    // Get the component array for a given type (non-const version)
     template <class Component>
     SparseArray<Component>& get_components() {
         std::type_index index(typeid(Component));
@@ -65,7 +62,6 @@ class Registry {
         }
     }
 
-    // Get the component array for a given type (const version)
     template <class Component>
     SparseArray<Component> const& get_components() const {
         std::type_index index(typeid(Component));
@@ -77,9 +73,6 @@ class Registry {
         }
     }
 
-    // Entity management methods
-
-    // Remove an entity from all component arrays
     void                    remove_entity(Entity const& entity);
     std::shared_ptr<Entity> spawn_entity();
     Entity                  entity_from_index(std::size_t idx);
@@ -101,7 +94,6 @@ class Registry {
         return components[to];
     }
 
-    // add more than one component at once
     template <typename... Components>
     void add_components(std::shared_ptr<Entity> to, Components&&... components) {
         (add_component(to, std::forward<Components>(components)), ...);
@@ -121,7 +113,6 @@ class Registry {
         components[*from].reset();
     }
 
-    // Add a system to the registry
     template <class... Components, typename Function>
     void add_system(Function&& f) {
         _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
@@ -134,7 +125,6 @@ class Registry {
         _systems.push_back(
             [this, &f](float deltaTime) { f(*this, get_components_helper<Components>(*this)...); });
     }
-    // Run all systems
     void run_systems(float deltaTime);
 
     template <typename Component>
@@ -178,7 +168,7 @@ class Registry {
         std::vector<Component*> components;
 
         if (index >= sparseArray.size() || !sparseArray[index]) {
-            return components;  // Return an empty vector if the entity is invalid
+            return components;
         }
 
         components.push_back(&(*sparseArray[index]));
@@ -196,7 +186,7 @@ class Registry {
         std::vector<Component*> components;
 
         if (index >= sparseArray.size() || !sparseArray[index]) {
-            return components;  // Return an empty vector if the entity is invalid
+            return components;
         }
 
         components.push_back(&(*sparseArray[index]));

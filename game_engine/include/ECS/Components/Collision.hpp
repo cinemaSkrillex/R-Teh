@@ -25,7 +25,7 @@ enum class CollisionType {
     ALLY_BULLET,
     ENEMY_BULLET,
     BLOCKING,
-    OUT_OF_BOUDS,
+    SCREEN,
 };
 
 struct Collision {

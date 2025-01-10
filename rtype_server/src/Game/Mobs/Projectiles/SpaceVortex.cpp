@@ -38,6 +38,7 @@ SpaceVortex::SpaceVortex(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(_entity, RealEngine::AI{noBehavior, straight_line_behavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{1, 1});
+    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

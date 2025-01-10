@@ -14,9 +14,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "Core/Graphics/Rendering/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "Engine.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 

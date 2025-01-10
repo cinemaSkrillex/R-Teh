@@ -48,6 +48,7 @@ MiniBossShoot::MiniBossShoot(RealEngine::Registry& registry, sf::Vector2f positi
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{angle});
+    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

@@ -4,6 +4,7 @@ parent: Developper
 has_children: true
 nav_order: 1
 ---
+
 # Repository structure deep dive
 
 ## Overview
@@ -38,7 +39,7 @@ You can see a tree representation of the repository structure inside the "reposi
 
 ## Advanced directories
 
-`game_engine/src/Core` - Contains the core game engine code. (e.g. Clock, View, Window, etc.)
+`game_engine/src/Core` - Contains the core game engine code. (e.g. Clock, View, Window, Images, Sounds, etc.)
 
 `game_engine/src/ECS` - Contains the Entity-Component-System code.
 
@@ -49,9 +50,5 @@ You can see a tree representation of the repository structure inside the "reposi
 `game_engine/src/ECS/SparseArray` - Contains the sparse array code for the ECS.
 
 `game_engine/src/ECS/Systems` - Contains the systems code, for example, the MovementSystem, CollisionSystem, etc.
-
-`game_engine/src/Media/Audio` - Contains the media code (e.g. Image, Sound, etc.)
-
-`game_engine/src/Media/Graphic` - Contains the video code (e.g. Sprite, Animation, Text, etc.)
 
 `game_engine/src/Scripting` - Contains the scripting code : Lua via sol2

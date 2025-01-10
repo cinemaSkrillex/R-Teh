@@ -32,7 +32,8 @@ void moveWithoutVelocity(RealEngine::Registry& registry, RealEngine::Entity enti
                          float deltaTime);
 
 // collisions
-
+void destroyOutOfScreen(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
+                        RealEngine::Entity entity);
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                          RealEngine::Entity collider, RealEngine::Entity entity);
 void destroyOnWalls(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,

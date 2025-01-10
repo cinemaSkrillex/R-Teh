@@ -33,7 +33,6 @@ class Game {
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::IntRect                         getPlayerNormalizedDirection();
-    // void add_component_to_entity(RealEngine::Entity entity, RealEngine::Position position);
 
     std::shared_ptr<UDPClient> _clientUDP;
 
@@ -63,7 +62,6 @@ class Game {
 
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
-    RealEngine::View   _view;
     sf::Clock          _clock;
 
     RealEngine::Registry              _registry;
@@ -75,7 +73,7 @@ class Game {
     RealEngine::AISystem              _aiSystem;
     RealEngine::RotationSystem        _rotationSystem;
     RealEngine::RadiusSystem          _radiusSystem;
-    RealEngine::DestructibleSystem    _destructibleSystem;
+    RealEngine::DestroySystem         _destroySystem;
     RealEngine::HealthSystem          _healthSystem;
     RealEngine::ParallaxSystem        _parallaxSystem;
     RealEngine::ParticleSystem        _particleSystem;

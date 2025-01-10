@@ -17,7 +17,7 @@ void isCollidingWithOthers(std::optional<Collision> collision, Registry& registr
     for (auto other : entities) {
         auto* currentCollision = registry.get_component<Collision>(other);
 
-        if (entity == other) {
+        if ((entity == other) || (currentCollision->id.compare(collision->id) == 0)) {
             continue;
         }
         if (collision->bounds.intersects(currentCollision->bounds)) {
@@ -39,6 +39,10 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
         auto* spritesheet = registry.get_component<SpriteSheet>(entity);
 
+        if (collision->type == CollisionType::SCREEN ||
+            collision->type == CollisionType::INACTIVE) {
+            continue;
+        }
         if (sprite) {
             collision->bounds = sprite->sprite.getBounds();
         }
