@@ -24,29 +24,36 @@
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port>"
+                  << std::endl;
         return 1;
     }
 
-    std::string server_ip = argv[1];
+    std::string    server_ip   = argv[1];
     unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
+    // unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
-        std::cout << "Client started, waiting for Enter key to connect..." << std::endl;
-        std::cin.get();
-
-        std::cout << "User pressed Enter. Connecting to server..." << std::endl;
-
+        std::cout << "Starting client" << std::endl;
         asio::io_context io_context;
+
         auto tcpclient = std::make_shared<TCPClient>(server_ip, server_port);
 
-        std::cout << "Connected to server at " << server_ip << ":" << server_port << std::endl;
-        std::cout << "Waiting for data from server..." << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(100000000));
+        // auto client = std::make_shared<UDPClient>(io_context, server_ip, server_port);
+        // client->send_new_client();
+        // client->send_test();
+        // client->send_unreliable_packet("Hello");
+        // client->send_unreliable_packet("World");
+        // client->send_reliable_packet("Hello1");
+        // client->send_unreliable_packet("Hello2");
+        // client->send_reliable_packet("Hello3");
+        // client->send_unreliable_packet("Hello4");
+        // io_context.run();
 
+        // for how long the client will run:
+        std::this_thread::sleep_for(std::chrono::seconds(100000000));
         std::cout << "Client stopped" << std::endl;
         exit(0);
-
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;

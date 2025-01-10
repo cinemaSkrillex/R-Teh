@@ -49,6 +49,7 @@ int main(int argc, char* argv[]) {
                 tcpserver->send_message("UWU13", client_endpoint);
                 tcpserver->send_file("testing_rtype_client", client_endpoint);
                 tcpserver->send_directory("zebiiiiiii", client_endpoint);
+                tcpserver->send_directory("../../../assets", client_endpoint);
                 tcpserver->send_message("UWU14", client_endpoint);
                 tcpserver->send_message("UWU15", client_endpoint);
                 tcpserver->send_message("UWU16", client_endpoint);
