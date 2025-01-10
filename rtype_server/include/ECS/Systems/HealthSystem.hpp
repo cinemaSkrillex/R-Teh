@@ -8,6 +8,6 @@ class HealthSystem {
    public:
     HealthSystem();
     ~HealthSystem() = default;
-    std::vector<Entity> update(Registry& registry, float deltaTime);
+    void update(Registry& registry, float deltaTime);
 };
 }  // namespace RealEngine

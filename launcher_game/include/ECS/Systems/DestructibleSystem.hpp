@@ -4,10 +4,10 @@
 #include "../include/ECS/Registry/Registry.hpp"
 
 namespace RealEngine {
-class DestructibleSystem {
+class DestroySystem {
    public:
-    DestructibleSystem();
-    ~DestructibleSystem() = default;
+    DestroySystem();
+    ~DestroySystem() = default;
     std::vector<Entity> update(Registry& registry, float deltaTime);
 };
 }  // namespace RealEngine

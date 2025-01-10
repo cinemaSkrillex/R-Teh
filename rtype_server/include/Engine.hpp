@@ -59,7 +59,7 @@
 #include "ECS/Systems/AISystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
-#include "ECS/Systems/DestructibleSystem.hpp"
+#include "ECS/Systems/DestroySystem.hpp"
 #include "ECS/Systems/DrawSystem.hpp"
 #include "ECS/Systems/HealthSystem.hpp"
 #include "ECS/Systems/LagCompensationSystem.hpp"

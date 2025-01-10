@@ -11,7 +11,8 @@
 
 namespace RealEngine {
 struct AutoDestructible {
-    float                 lifeTime      = -1.0f;
-    std::function<bool()> killCondition = []() { return false; };
+    float lifeTime      = -1.0f;
+    bool  killCondition = false;
+    bool  kill          = false;
 };
 }  // namespace RealEngine

@@ -28,13 +28,10 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
     // get returned std::vector<RealEngine::Entity> of destroyed entities
-    auto destroyedEntities = _destructibleSystem.update(_registry, deltaTime);
     // add returned std::vector<RealEngine::Entity> of health to destroyedEntities
     _collisionSystem.update(_registry, deltaTime);
-    auto destroyedHealth = _healthSystem.update(_registry, deltaTime);
-
-    destroyedEntities.insert(destroyedEntities.end(), destroyedHealth.begin(),
-                             destroyedHealth.end());
+    _healthSystem.update(_registry, deltaTime);
+    auto destroyedEntities = _destructibleSystem.update(_registry, deltaTime);
 
     _netvarSystem.update(_registry, deltaTime);
     _enemies.erase(
