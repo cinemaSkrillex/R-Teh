@@ -6,6 +6,7 @@
 #include <string>
 #include "../Client/TCPClient.hpp"
 #include "../Media/Graphics/UI/Text.hpp"
+#include "../Core/Window.hpp"
 
 class Launcher {
 public:
@@ -17,7 +18,7 @@ private:
     void connectToServer();
     void handleTextInput(sf::Event event);
 
-    sf::RenderWindow window;
+    RealEngine::Window window;
     sf::RectangleShape button;
     RealEngine::Text inputTextIP; 
     RealEngine::Text inputTextPort; 
