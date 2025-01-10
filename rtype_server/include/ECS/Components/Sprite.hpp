@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Media/Graphics/Rendering/Sprite.hpp"
+#include "Core/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 struct SpriteComponent {

@@ -19,8 +19,14 @@
 
 // Core
 #include "Core/AssetsManager.hpp"
+#include "Core/Audio/Music.hpp"
+#include "Core/Audio/Sound.hpp"
+#include "Core/Graphics/Rendering/Background.hpp"
+#include "Core/Graphics/Rendering/Sprite.hpp"
+#include "Core/Graphics/UI/Text.hpp"
 #include "Core/View.hpp"
 #include "Core/Window.hpp"
+
 // Components
 #include "ECS/Components/AI.hpp"
 #include "ECS/Components/Acceleration.hpp"
@@ -63,11 +69,3 @@
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
-// Media
-#include "Media/Audio/Music.hpp"
-#include "Media/Audio/Sound.hpp"
-#include "Media/Graphics/Rendering/Background.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
-#include "Media/Graphics/UI/Text.hpp"
-// Scripting
-// #include "Scripting/LuaManager.hpp"

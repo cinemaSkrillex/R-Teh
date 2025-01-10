@@ -8,12 +8,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+#include "../include/Core/Graphics/Rendering/Sprite.hpp"
 #include "../include/ECS/Components/Drawable.hpp"
 #include "../include/ECS/Components/ParticleEmitter.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Components/SpriteSheet.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
-#include "../include/Media/Graphics/Rendering/Sprite.hpp"
 
 namespace RealEngine {
 class DrawSystem {

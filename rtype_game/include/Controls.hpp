@@ -3,6 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Client/UDPClient.hpp"
+#include "Core/Graphics/Rendering/Sprite.hpp"
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/AutoDestructible.hpp"
 #include "ECS/Components/Controllable.hpp"
@@ -13,7 +14,6 @@
 #include "ECS/Registry/Registry.hpp"
 #include "ECS/Systems/ControlSystem.hpp"
 #include "Macros.hpp"
-#include "Media/Graphics/Rendering/Sprite.hpp"
 
 namespace rtype {
 class Controls {
