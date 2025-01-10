@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** DestroySystem
+*/
+
 #pragma once
 
 #include "../include/ECS/Components/AutoDestructible.hpp"

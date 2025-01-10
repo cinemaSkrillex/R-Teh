@@ -27,10 +27,9 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
-    // get returned std::vector<RealEngine::Entity> of destroyed entities
-    // add returned std::vector<RealEngine::Entity> of health to destroyedEntities
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
+    _netvarSystem.update(_registry, deltaTime);
     auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
 
     _netvarSystem.update(_registry, deltaTime);

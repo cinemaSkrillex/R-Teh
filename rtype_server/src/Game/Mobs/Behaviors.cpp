@@ -193,14 +193,13 @@ void destroyOutOfScreen(RealEngine::CollisionType collisionType, RealEngine::Reg
                         RealEngine::Entity entity) {
     auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
 
-    if (autoDestructible && collisionType == RealEngine::CollisionType::SCREEN) {
-        autoDestructible->kill = false;
-    }
+    if (!autoDestructible || collisionType != RealEngine::CollisionType::SCREEN) return;
+    autoDestructible->kill = false;
 }
 
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                          RealEngine::Entity collider, RealEngine::Entity entity) {
-    destroyOutOfScreen(collisionType, registry, collider);
+    destroyOutOfScreen(collisionType, registry, entity);
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -225,7 +224,7 @@ void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Re
 
 void destroyOnWalls(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                     RealEngine::Entity collider, RealEngine::Entity entity) {
-    destroyOutOfScreen(collisionType, registry, collider);
+    destroyOutOfScreen(collisionType, registry, entity);
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -252,7 +251,7 @@ void destroyOnWalls(RealEngine::CollisionType collisionType, RealEngine::Registr
 void destroyOnWallsAndPlayer_TakesDamage(RealEngine::CollisionType collisionType,
                                          RealEngine::Registry&     registry,
                                          RealEngine::Entity collider, RealEngine::Entity entity) {
-    destroyOutOfScreen(collisionType, registry, collider);
+    destroyOutOfScreen(collisionType, registry, entity);
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -281,7 +280,7 @@ void destroyOnWallsAndPlayer_TakesDamage(RealEngine::CollisionType collisionType
 void destroyOnWallsAndPlayer(RealEngine::CollisionType collisionType,
                              RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
-    destroyOutOfScreen(collisionType, registry, collider);
+    destroyOutOfScreen(collisionType, registry, entity);
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;
@@ -308,7 +307,7 @@ void destroyOnWallsAndPlayer(RealEngine::CollisionType collisionType,
 
 void takesDamage(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                  RealEngine::Entity collider, RealEngine::Entity entity) {
-    destroyOutOfScreen(collisionType, registry, collider);
+    destroyOutOfScreen(collisionType, registry, entity);
     switch (collisionType) {
         case RealEngine::CollisionType::INACTIVE:
             break;

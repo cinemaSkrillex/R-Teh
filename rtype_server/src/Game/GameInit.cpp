@@ -187,9 +187,8 @@ void GameInstance::init_textures() {
 void GameInstance::init_sprite_sheets() {
     // load eye minion sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> eyeSheet;
-    RealEngine::Sprite                                  _eyeSprite(
-        *(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
-    eyeSheet.emplace("normal", _eyeSprite);
+    RealEngine::Sprite _sprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
+    eyeSheet.emplace("normal", _sprite);
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "eye_minion", eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock());
 
@@ -218,26 +217,29 @@ void GameInstance::init_level(std::string filepath, std::string foldername) {
 void GameInstance::init_screen_limits() {
     std::shared_ptr<RealEngine::Entity> topWall = _registry.spawn_entity();
     _registry.add_component(
-        topWall, RealEngine::Collision{
-                     {0, -20, VIEW_WIDTH, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
-    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawn_entity();
-    _registry.add_component(
-        bottomWall,
+        topWall,
         RealEngine::Collision{
-            {0, VIEW_HEIGHT, VIEW_WIDTH, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
+            {0, -20, VIEW_WIDTH, 20}, "limits", false, RealEngine::CollisionType::BLOCKING});
+    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawn_entity();
+    _registry.add_component(bottomWall, RealEngine::Collision{{0, VIEW_HEIGHT, VIEW_WIDTH, 20},
+                                                              "limits",
+                                                              false,
+                                                              RealEngine::CollisionType::BLOCKING});
     std::shared_ptr<RealEngine::Entity> leftWall = _registry.spawn_entity();
     _registry.add_component(
         leftWall,
         RealEngine::Collision{
-            {-20, 0, 20, VIEW_HEIGHT}, "wall", false, RealEngine::CollisionType::BLOCKING});
+            {-20, 0, 20, VIEW_HEIGHT}, "limits", false, RealEngine::CollisionType::BLOCKING});
     std::shared_ptr<RealEngine::Entity> rightWall = _registry.spawn_entity();
-    _registry.add_component(
-        rightWall,
-        RealEngine::Collision{
-            {VIEW_WIDTH, 0, 20, VIEW_HEIGHT}, "wall", false, RealEngine::CollisionType::BLOCKING});
+    _registry.add_component(rightWall, RealEngine::Collision{{VIEW_WIDTH, 0, 20, VIEW_HEIGHT},
+                                                             "limits",
+                                                             false,
+                                                             RealEngine::CollisionType::BLOCKING});
+
     std::shared_ptr<RealEngine::Entity> entitiesRect = _registry.spawn_entity();
-    _registry.add_component(
-        entitiesRect,
-        RealEngine::Collision{
-            {0, 0, 800, 600}, "entitiesRect", false, RealEngine::CollisionType::SCREEN});
+    _registry.add_component(entitiesRect,
+                            RealEngine::Collision{{-100, -50, VIEW_WIDTH + 200, VIEW_HEIGHT + 100},
+                                                  "limits",
+                                                  false,
+                                                  RealEngine::CollisionType::SCREEN});
 }

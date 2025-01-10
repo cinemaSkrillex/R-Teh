@@ -1,4 +1,13 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** DestroySystem
+*/
+
 #include "../include/ECS/Systems/DestroySystem.hpp"
+
+#include <iostream>
 
 namespace RealEngine {
 
@@ -16,7 +25,7 @@ static bool autoDestroy(Registry& registry, Entity entity, float deltaTime,
     auto* destructible = registry.get_component<AutoDestructible>(entity);
 
     if (destructible) {
-        if (destructible->lifeTime > 0) {
+        if (destructible->lifeTime >= 0) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
                 if (registry.is_valid(entity)) {

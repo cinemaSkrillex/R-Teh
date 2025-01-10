@@ -38,6 +38,7 @@ WallTurret::WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bo
     registry.add_component(_canonEntity, RealEngine::Damage{10});
     registry.add_component(_canonEntity, RealEngine::Health{40, 40});
     registry.add_component(_canonEntity, RealEngine::Rotation{0.f});
+    registry.add_component(_canonEntity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _canonEntity,
         RealEngine::NetvarContainer{
@@ -50,6 +51,7 @@ WallTurret::WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bo
     registry.add_component(_pedestalEntity, RealEngine::Drawable{});
     registry.add_component(_pedestalEntity, RealEngine::Rotation{onGround ? 0.f : 180.f});
     registry.add_component(_pedestalEntity, RealEngine::AI{noBehavior, moveWithoutVelocity, true});
+    registry.add_component(_pedestalEntity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _pedestalEntity,
         RealEngine::NetvarContainer{

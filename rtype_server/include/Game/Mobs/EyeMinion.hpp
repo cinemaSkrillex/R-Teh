@@ -18,12 +18,12 @@ class EyeMinion {
    public:
     EyeMinion(RealEngine::Registry& registry, sf::Vector2f position);
     ~EyeMinion();
-    std::shared_ptr<RealEngine::Entity> getEntity() { return _eyeEntity; }
+    std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
 
    private:
-    std::shared_ptr<RealEngine::Entity>                 _eyeEntity;
-    RealEngine::Sprite                                  _eyeSprite;
-    std::unordered_map<std::string, RealEngine::Sprite> _eyeSheet;
+    std::shared_ptr<RealEngine::Entity>                 _entity;
+    RealEngine::Sprite                                  _sprite;
+    std::unordered_map<std::string, RealEngine::Sprite> _spriteSheet;
 };
 }  // namespace rtype
