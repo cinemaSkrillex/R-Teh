@@ -124,7 +124,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
             case RTypeProtocol::ComponentList::SPRITE: {
-                // auto spriteSheet = *(RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str));
+                // auto spriteSheet =
+                // *(RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str));
                 // //check if spriteSheet is not null
                 // // if not null do:
                 // // _registry.add_component(*newEntity, RealEngine::SpriteSheet{spriteSheet});
@@ -134,8 +135,9 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 // break;
                 std::string sprite_str(component.second.begin(), component.second.end());
                 // std::cout << "Sprite: " << sprite_str << "\n";
-    
-                auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
+
+                auto spriteSheet =
+                    RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
                 if (spriteSheet) {
                     _registry.add_component(*newEntity, RealEngine::SpriteSheet{*spriteSheet});
                 } else {
@@ -143,7 +145,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                     if (sprite) {
                         _registry.add_component(*newEntity, RealEngine::SpriteComponent{*sprite});
                     } else {
-                        std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << sprite_str << std::endl;
+                        std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << sprite_str
+                                  << std::endl;
                     }
                 }
                 break;
@@ -157,7 +160,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
             case RTypeProtocol::ComponentList::COLLISION: {
-                //TODO: handle collision client side
+                // TODO: handle collision client side
                 break;
             }
             case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {

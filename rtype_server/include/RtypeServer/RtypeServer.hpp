@@ -17,7 +17,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../ServerMap/ServerMap.hpp"
 #include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
@@ -27,6 +26,7 @@
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
+#include "ServerMap.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -89,6 +89,14 @@ class RtypeServer {
     void   init_callback_mobs(const asio::ip::udp::endpoint& client);
     void   init_callback_map(const asio::ip::udp::endpoint& client);
     Player init_callback_players(const asio::ip::udp::endpoint& client);
+    void   sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity, float x,
+                                 float y, long timestamp);
+    void   sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
+                                  const sf::Vector2f& player_start_position, long timestamp);
+    void   processTile(const Map::Tile& tile, std::vector<std::array<char, 800>>& batchMessages);
+    void   processWave(const Map::Wave& wave, std::vector<std::array<char, 800>>& batchMessages);
+    void   processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
+                                const std::string&                  entityType);
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);

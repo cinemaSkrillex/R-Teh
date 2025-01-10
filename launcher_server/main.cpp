@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
                 tcp_server->send_message("T'as tout les fichiers", client_endpoint);
         });
         io_context.run();
-        std::this_thread::sleep_for(std::chrono::seconds(100000000000000));
+        std::this_thread::sleep_for(std::chrono::hours(1));
         std::cout << "Server stopped" << std::endl;
         return 0;
     } catch (const std::exception& e) {

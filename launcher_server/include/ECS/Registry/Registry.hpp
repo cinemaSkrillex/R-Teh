@@ -49,10 +49,19 @@ class Registry {
     SparseArray<Component>& get_components() {
         std::type_index index(typeid(Component));
 
-        if (_components_arrays.find(index) != _components_arrays.end()) {
-            return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
-        } else {
-            throw std::runtime_error("get_components: Component not registered!");
+        try {
+            if (_components_arrays.find(index) != _components_arrays.end()) {
+                return std::any_cast<SparseArray<Component>&>(_components_arrays[index]);
+            } else {
+                throw std::runtime_error(std::string("get_components: Component not registered: ") +
+                                         typeid(Component).name());
+            }
+        } catch (const std::bad_any_cast& e) {
+            throw std::runtime_error(std::string("get_components: Bad any_cast for component: ") +
+                                     typeid(Component).name() + " - " + e.what());
+        } catch (const std::exception& e) {
+            throw std::runtime_error(std::string("get_components: Exception for component: ") +
+                                     typeid(Component).name() + " - " + e.what());
         }
     }
 

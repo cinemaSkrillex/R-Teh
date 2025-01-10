@@ -8,9 +8,10 @@
 #ifndef TCPSERVER_HPP
 #define TCPSERVER_HPP
 
-#include "TCPPacketManager.hpp"
-#include <functional>
 #include <asio.hpp>
+#include <functional>
+
+#include "TCPPacketManager.hpp"
 
 class TCPServer {
    public:
