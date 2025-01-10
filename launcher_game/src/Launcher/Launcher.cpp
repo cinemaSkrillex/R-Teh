@@ -4,26 +4,22 @@
 Launcher::Launcher() : ipInput("127.0.0.1"), portInput("1212"), inputTextIP("127.0.0.1", "../../../assets/arial.ttf"), inputTextPort("1212", "../../../assets/arial.ttf"), isEditingIP(true) {
     window.create(sf::VideoMode(800, 600), "Game Launcher");
 
-    // Définir la zone de saisie pour l'IP
     inputBoxIP.setSize(sf::Vector2f(400, 50));
     inputBoxIP.setPosition(200, 150);
     inputBoxIP.setFillColor(sf::Color::White);
 
-    // Initialiser le texte pour l'IP
     inputTextIP.setPosition(400, 160);
     inputTextIP.setCharacterSize(24);
-    inputTextIP.setColor(0, 0, 0, 255); 
+    inputTextIP.setColor(0, 0, 0, 255);
     inputTextIP.center();
 
-    // Définir la zone de saisie pour le port
     inputBoxPort.setSize(sf::Vector2f(400, 50));
     inputBoxPort.setPosition(200, 250);
     inputBoxPort.setFillColor(sf::Color::White);
 
-    // Initialiser le texte pour le port
     inputTextPort.setPosition(400, 260);
     inputTextPort.setCharacterSize(24);
-    inputTextPort.setColor(0, 0, 0, 255); 
+    inputTextPort.setColor(0, 0, 0, 255);
     inputTextPort.center();
 
     button.setSize(sf::Vector2f(200, 50));
@@ -46,7 +42,7 @@ void Launcher::run() {
                 if (inputBoxIP.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                     isEditingIP = true;
                 } else if (inputBoxPort.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
-                    isEditingIP = false; 
+                    isEditingIP = false;
                 }
             }
             if (event.type == sf::Event::TextEntered) {
@@ -62,7 +58,7 @@ void Launcher::run() {
 
         window.clear();
         window.draw(inputBoxIP);
-        inputTextIP.draw(window); 
+        inputTextIP.draw(window);
         window.draw(inputBoxPort);
         inputTextPort.draw(window);
         window.draw(button);
@@ -78,14 +74,13 @@ void Launcher::handleTextInput(sf::Event event) {
             } else if (!isEditingIP && !portInput.empty()) {
                 portInput.pop_back();
             }
-        } else if (event.text.unicode == 13) {  // Enter key
+        } else if (event.text.unicode == 13) { 
         } else {
             if (isEditingIP) {
-                if (ipInput.length() < 15) { 
+                if (ipInput.length() < 15) {
                     ipInput += static_cast<char>(event.text.unicode);
                 }
-            }
-            else {
+            } else {
                 if (portInput.length() < 4) {
                     portInput += static_cast<char>(event.text.unicode);
                 }
@@ -98,21 +93,22 @@ void Launcher::handleTextInput(sf::Event event) {
     }
 }
 
-
 void Launcher::onConnectClick() {
     std::cout << "Button clicked, connecting to server..." << std::endl;
+
     std::thread clientThread(&Launcher::connectToServer, this);
-    clientThread.join();
+    clientThread.detach();  // Detach the thread to allow it to run independently
 }
 
 void Launcher::connectToServer() {
     try {
-        std::cout << "Connecting to server at " << ipInput << ":" << portInput << std::endl;
-
         asio::io_context io_context;
+
         auto tcpclient = std::make_shared<TCPClient>(ipInput, static_cast<unsigned short>(std::stoi(portInput)));
 
-        std::cout << "Connected to server at " << ipInput << ":" << portInput << std::endl;
+        std::thread ioThread([&io_context]() { io_context.run(); }); // Run io_context in a separate thread
+
+        ioThread.join(); // Ensure the io_thread completes
         std::this_thread::sleep_for(std::chrono::hours(1));
         std::cout << "Client stopped" << std::endl;
     } catch (const std::exception& e) {
