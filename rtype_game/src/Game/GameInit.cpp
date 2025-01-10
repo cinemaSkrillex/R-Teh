@@ -288,6 +288,14 @@ void Game::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "eye_minion", eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock());
 
+    std::unordered_map<std::string, RealEngine::Sprite> eyeBomberSheet;
+    RealEngine::Sprite                                  _eyeBomberSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_bomber")));
+    eyeBomberSheet.emplace("normal", _eyeBomberSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("eye_bomber", eyeBomberSheet, "normal",
+                                                            0, {15, 10}, false, true, 120, {11, 5},
+                                                            sf::Clock());
+
     // load space sphere sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> spaceSphereSheet;
     RealEngine::Sprite                                  spaceSphereSprite(

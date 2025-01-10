@@ -35,7 +35,7 @@ class GameInstance {
                                                         int health);
     std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
         std::shared_ptr<RealEngine::Entity> enemyEntity);
-    void spawnMob(const std::string& mobName, const sf::Vector2f& position);
+    void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 

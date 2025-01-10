@@ -178,6 +178,17 @@ void goStraightConstantAngle(RealEngine::Registry& registry, RealEngine::Entity 
     }
 }
 
+void moveWithoutVelocity(RealEngine::Registry& registry, RealEngine::Entity entity,
+                         float deltaTime) {
+    auto* position = registry.get_component<RealEngine::Position>(entity);
+    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+
+    if (position && velocity) {
+        position->x += velocity->vx * deltaTime;
+        position->y += velocity->vy * deltaTime;
+    }
+}
+
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                          RealEngine::Entity collider, RealEngine::Entity entity) {
     switch (collisionType) {

@@ -1,0 +1,89 @@
+{
+    "wave": [
+        {
+            "mobName": "directional_canon",
+            "position": [
+                500.5,
+                20.0
+            ]
+        },
+        {
+            "mobName": "eye_bigion",
+            "position": [
+                700.5,
+                200.0
+            ]
+        },
+        {
+            "mobName": "eye_boss",
+            "position": [
+                100.5,
+                400.0
+            ]
+        },
+        {
+            "mobName": "eye_bomber",
+            "position": [
+                300.5,
+                20.0
+            ]
+        },
+        {
+            "mobName": "eye_minion",
+            "position": [
+                100.5,
+                20.0
+            ]
+        },
+        {
+            "mobName": "mob_spawner_ship",
+            "position": [
+                200.5,
+                400.0
+            ]
+        },
+        {
+            "mobName": "mortar",
+            "position": [
+                400.5,
+                400.0
+            ]
+        },
+        {
+            "mobName": "robot_boss_minion",
+            "position": [
+                300.5,
+                220.0
+            ]
+        },
+        {
+            "mobName": "robot_mini_boss",
+            "position": [
+                100.5,
+                220.0
+            ]
+        },
+        {
+            "mobName": "space_drill",
+            "position": [
+                700.5,
+                20.0
+            ]
+        },
+        {
+            "mobName": "space_plane",
+            "position": [
+                500.5,
+                220.0
+            ]
+        },
+        {
+            "mobName": "wall_turret",
+            "position": [
+                700.5,
+                400.0
+            ]
+        }
+
+    ]
+}

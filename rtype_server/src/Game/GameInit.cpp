@@ -103,7 +103,7 @@ void GameInstance::init_mobs() {
     auto waves = _game_map->getWaves();
     auto wave  = waves.front();
     for (const auto& mob : wave.mobs) {
-        spawnMob(mob.name, mob.position);
+        spawnMob(mob.name, mob.position, mob.angle);
     }
 }
 
@@ -146,6 +146,8 @@ void GameInstance::init_textures() {
         "robot_boss_fordward", "../../assets/sprites/enemies/mini_boss.png", {0, 43, 56, 54});
     AssetManagerInstance.loadSpriteTextureAndScale(
         "robot_boss_backward", "../../assets/sprites/enemies/mini_boss.png", {0, 97, 49, 50});
+    AssetManagerInstance.loadSpriteTextureAndScale("mortar_enemy",
+                                                   "../../assets/sprites/enemies/mortar_enemy.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
         "directional_canon", "../../assets/sprites/enemies/directional_canon.png");
     AssetManagerInstance.loadSpriteTextureAndScale("eye_bomber",
@@ -191,6 +193,13 @@ void GameInstance::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "eye_minion", eyeSheet, "normal", 0, {18, 11}, false, true, 120, {14, 5}, sf::Clock());
 
+    std::unordered_map<std::string, RealEngine::Sprite> eyeBomberSheet;
+    RealEngine::Sprite                                  _eyeBomberSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_bomber")));
+    eyeBomberSheet.emplace("normal", _eyeBomberSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("eye_bomber", eyeBomberSheet, "normal",
+                                                            0, {15, 10}, false, true, 120, {11, 5},
+                                                            sf::Clock());
     // //load space sphere sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> spaceSphereSheet;
     RealEngine::Sprite                                  _spaceSphereSprite(

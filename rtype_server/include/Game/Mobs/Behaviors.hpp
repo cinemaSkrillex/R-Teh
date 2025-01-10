@@ -28,6 +28,8 @@ void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float
 void goStraightConstant(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime);
 void goStraightConstantAngle(RealEngine::Registry& registry, RealEngine::Entity entity,
                              float deltaTime);
+void moveWithoutVelocity(RealEngine::Registry& registry, RealEngine::Entity entity,
+                         float deltaTime);
 
 // collisions
 

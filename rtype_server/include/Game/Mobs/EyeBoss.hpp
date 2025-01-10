@@ -16,7 +16,7 @@ enum EyeBossState { SHORT_RANGE, MID_RANGE, LONG_RANGE };
 
 class EyeBoss {
    public:
-    EyeBoss(RealEngine::Registry& registry);
+    EyeBoss(RealEngine::Registry& registry, sf::Vector2f position);
     ~EyeBoss();
     void setTarget(RealEngine::Registry& registry, std::shared_ptr<RealEngine::Entity> target);
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

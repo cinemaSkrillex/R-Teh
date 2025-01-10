@@ -162,29 +162,30 @@ static void setBossStatusLong(RealEngine::Registry& registry, RealEngine::Entity
     spriteSheet->frameSize   = {81, 55};
 }
 
-EyeBoss::EyeBoss(RealEngine::Registry& registry)
+EyeBoss::EyeBoss(RealEngine::Registry& registry, sf::Vector2f position)
     : _state(EyeBossState::SHORT_RANGE),
       _entity(registry.spawn_entity()),
       _shootCooldown(0.0f),
       _shootPhaseTimer(0.0f),
       _isInShootPhase(false) {
-    _bossSheet.emplace("short",
-                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_short")));
-    _bossSheet.emplace("mid", *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_mid")));
+    _bossSheet.emplace(
+        "short", *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_short_range")));
+    _bossSheet.emplace("mid",
+                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_mid_range")));
     _bossSheet.emplace("long",
-                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_long")));
+                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_long_range")));
 
-    registry.add_components(_entity, RealEngine::Position{800.f, 800.f}, RealEngine::Drawable{});
+    registry.add_components(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {400.0f, 400.0f}, 1.8f});
+    registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
     registry.add_component(
         _entity, RealEngine::SpriteSheet{
                      _bossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}, sf::Clock()});
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {400.0f, 400.0f}, 1.8f});
-    registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
+    registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity, RealEngine::Rotation{300.0f});
     registry.add_component(_entity, RealEngine::Radius{800.0f, 350.0f, setBossStatusShort,
                                                        setBossStatusMid, setBossStatusLong});
-    registry.add_component(_entity, RealEngine::AI{targetBossBehavior, noTargetBossBehavior,
-                                                   false});  // the boss ai is disabled for now
+    registry.add_component(_entity, RealEngine::AI{targetBossBehavior, noTargetBossBehavior, true});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

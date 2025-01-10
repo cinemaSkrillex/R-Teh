@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include "Engine.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 class WallTurret {
    public:
-    WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bool onGround);
+    WallTurret(RealEngine::Registry& registry, sf::Vector2f position, bool onGround, float speed);
     ~WallTurret();
-    std::shared_ptr<RealEngine::Entity> getCanonEntity() { return _canonEntity; }
+    std::shared_ptr<RealEngine::Entity> getCannonEntity() { return _canonEntity; }
     std::shared_ptr<RealEngine::Entity> getPedestalEntity() { return _pedestalEntity; }
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
     void collisionBehaviour(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,

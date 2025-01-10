@@ -36,7 +36,7 @@ SpaceDrill::SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position)
                                                  false,
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
-    registry.add_component(_entity, RealEngine::AI{noBehavior, straight_line_behavior, true});
+    registry.add_component(_entity, RealEngine::AI{noBehavior, noBehavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});

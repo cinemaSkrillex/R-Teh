@@ -28,8 +28,9 @@ struct Tile {
 };
 
 struct WaveMob {
-    std::string  name;      // Name of the mob (e.g., "eye_minion")
-    sf::Vector2f position;  // Position of the mob
+    std::string  name;       // Name of the mob (e.g., "eye_minion")
+    sf::Vector2f position;   // Position of the mob
+    float        angle = 0;  // Angle of the mob (if it mentionned)
 };
 
 struct Wave {

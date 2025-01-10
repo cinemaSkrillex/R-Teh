@@ -9,16 +9,6 @@
 
 namespace rtype {
 
-static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                                   float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
-
-    if (position->x > 0) {
-        velocity->vx = -100.0f;
-    }
-}
-
 RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()),
       _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
@@ -36,7 +26,7 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
                                                  false,
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
-    registry.add_component(_entity, RealEngine::AI{noBehavior, straight_line_behavior, true});
+    registry.add_component(_entity, RealEngine::AI{noBehavior, noBehavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
     registry.add_component(_entity, RealEngine::Health{40, 40});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
