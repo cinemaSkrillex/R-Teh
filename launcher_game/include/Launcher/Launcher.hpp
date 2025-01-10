@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** Launcher
+*/
+
 #pragma once
 
 #include <SFML/Graphics.hpp>
