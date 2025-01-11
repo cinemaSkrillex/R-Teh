@@ -182,6 +182,12 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
 
+            case RTypeProtocol::ComponentList::BLOCKTAG: {
+                _registry.add_component<RealEngine::BlockTag>(*newEntity, RealEngine::BlockTag{});
+                std::cout << "BlockTag added: " << std::endl;
+                break;
+            }
+
             default:
                 std::cout << "Unknown component type: " << component.first << "\n";
                 break;

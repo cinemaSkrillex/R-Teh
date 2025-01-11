@@ -29,6 +29,7 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
                                                  false,
                                                  RealEngine::CollisionType::SOLID,
                                                  nullptr});
+    registry.add_component(_blockEntity, RealEngine::BlockTag{});  // Add BlockTag component
 }
 
 Block::~Block() {}

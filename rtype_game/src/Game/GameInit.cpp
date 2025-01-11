@@ -236,6 +236,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::Netvar>();
     _registry.register_component<RealEngine::NetvarContainer>();
+    _registry.register_component<RealEngine::BlockTag>();
 }
 
 void Game::bind_keys() {

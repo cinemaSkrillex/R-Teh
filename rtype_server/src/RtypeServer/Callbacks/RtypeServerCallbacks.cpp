@@ -149,6 +149,7 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     batchMessages.reserve(BATCH_SIZE);
 
     // Process blocks
+    std::cout << "block size" << blocks.size() << std::endl;
     for (const auto& block : blocks) {
         processBlock(block, batchMessages);
         processedCount++;
