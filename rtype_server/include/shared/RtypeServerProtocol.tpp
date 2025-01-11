@@ -97,60 +97,10 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const DestroyEntityMessag
 }
 
 template <std::size_t BUFFER_SIZE>
-RTypeProtocol::DestroyEntityMessage RTypeProtocol::deserializeDestroyEntity(
-    const std::array<char, BUFFER_SIZE>& buffer) {
-    DestroyEntityMessage msg;
-    const char*          it = buffer.data();
-
-    // Deserialize the base message
-    readFromBuffer(it, static_cast<BaseMessage&>(msg));
-
-    // Deserialize the additional fields
-    int entity_count = 0;
-    readFromBuffer(it, entity_count);
-
-    for (int i = 0; i < entity_count; ++i) {
-        long entity_id;
-        readFromBuffer(it, entity_id);
-        msg.entity_ids.push_back(entity_id);
-    }
-
-    return msg;
-}
-
-template <std::size_t BUFFER_SIZE>
-RTypeProtocol::PlayerDirectionMessage RTypeProtocol::deserializePlayerDirection(
-    const std::array<char, BUFFER_SIZE>& buffer) {
-    PlayerDirectionMessage msg;
-    const char*            it = buffer.data();
-
-    // Deserialize the base message
-    readFromBuffer(it, static_cast<BaseMessage&>(msg));
-
-    // Deserialize the additional fields
-    readFromBuffer(it, msg.direction);
-    readFromBuffer(it, msg.timestamp);
-
-    return msg;
-}
-
-// Helper function to deserialize a PlayerMoveMessage
-template <std::size_t BUFFER_SIZE>
-RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
-    const std::array<char, BUFFER_SIZE>& buffer) {
-    PlayerMoveMessage msg;
-    const char*       it = buffer.data();
-
-    // Deserialize the base message
-    readFromBuffer(it, static_cast<BaseMessage&>(msg));
-
-    // Deserialize the additional fields
-    readFromBuffer(it, msg.x);
-    readFromBuffer(it, msg.y);
-    readFromBuffer(it, msg.step);
-    readFromBuffer(it, msg.timestamp);
-
-    return msg;
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    std::memcpy(buffer.data(), &msg, sizeof(MapMessage));
+    return buffer;
 }
 
 template <std::size_t BUFFER_SIZE>
@@ -211,12 +161,69 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage&
     return buffer;
 }
 
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::DestroyEntityMessage RTypeProtocol::deserializeDestroyEntity(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    DestroyEntityMessage msg;
+    const char*          it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the additional fields
+    int entity_count = 0;
+    readFromBuffer(it, entity_count);
+
+    for (int i = 0; i < entity_count; ++i) {
+        long entity_id;
+        readFromBuffer(it, entity_id);
+        msg.entity_ids.push_back(entity_id);
+    }
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::PlayerDirectionMessage RTypeProtocol::deserializePlayerDirection(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    PlayerDirectionMessage msg;
+    const char*            it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the additional fields
+    readFromBuffer(it, msg.direction);
+    readFromBuffer(it, msg.timestamp);
+
+    return msg;
+}
+
+// Helper function to deserialize a PlayerMoveMessage
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::PlayerMoveMessage RTypeProtocol::deserializePlayerMove(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    PlayerMoveMessage msg;
+    const char*       it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the additional fields
+    readFromBuffer(it, msg.x);
+    readFromBuffer(it, msg.y);
+    readFromBuffer(it, msg.step);
+    readFromBuffer(it, msg.timestamp);
+
+    return msg;
+}
+
 // Deserialize an EventMessage
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::NewEntityMessage RTypeProtocol::deserializeNewEntityMessage(
     const std::array<char, BUFFER_SIZE>& buffer) {
     NewEntityMessage msg;
-    const char*  it = buffer.data();
+    const char*      it = buffer.data();
 
     // Deserialize the base message
     readFromBuffer(it, static_cast<BaseMessage&>(msg));
@@ -297,6 +304,14 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const BaseMessage& msg) {
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::BaseMessage RTypeProtocol::deserialize(const std::array<char, BUFFER_SIZE>& buffer) {
     return deserializeBaseMessage<BUFFER_SIZE, BaseMessage>(buffer);
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    MapMessage msg;
+    std::memcpy(&msg, buffer.data(), sizeof(MapMessage));
+    return msg;
 }
 
 #endif  // RTYPESERVERPROTOCOL_TPP_

@@ -68,7 +68,9 @@ class GameMap {
     const std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() const {
         return _blockEntities;
     }
-    void addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
+    float getScrollingSpeed() const { return _scrollingSpeed; }
+    float getXLevelPosition() const { return x_level_position; }
+    void  addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
     // Accessor methods (omitted here for brevity but same as before)
     // Modifiers and debug methods (omitted here for brevity)
 };

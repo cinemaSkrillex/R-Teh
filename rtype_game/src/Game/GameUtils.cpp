@@ -32,6 +32,11 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleSynchronize(syncMessage);
             break;
         }
+        case RTypeProtocol::MAP_INFO: {
+            RTypeProtocol::MapMessage mapMessage = RTypeProtocol::deserializeMapMessage(signal);
+            handleMapMessage(mapMessage);
+            break;
+        }
         case RTypeProtocol::PLAYER_MOVE: {
             // Deserialize and handle player movement
             RTypeProtocol::PlayerMoveMessage playerMoveMessage =
@@ -204,4 +209,11 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
             _player_entity.reset();
         }
     }
+}
+
+void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
+    _ClientScrollingSpeed   = parsedPacket.scrollingSpeed;
+    _ClientX_level_position = parsedPacket.x_level_position;
+    std::cout << "Received map info: ScrollingSpeed: " << _ClientScrollingSpeed
+              << ", XLevelPosition: " << _ClientX_level_position << std::endl;
 }

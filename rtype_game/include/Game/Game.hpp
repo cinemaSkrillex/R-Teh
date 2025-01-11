@@ -59,6 +59,7 @@ class Game {
     void handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
+    void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
 
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
@@ -87,6 +88,8 @@ class Game {
     long int                                                          _localPlayerUUID;
     std::chrono::steady_clock::time_point                             _startTime;
     long                                                              _serverTime;
+    float                                                             _ClientScrollingSpeed;
+    float                                                             _ClientX_level_position;
 };
 }  // namespace rtype
 

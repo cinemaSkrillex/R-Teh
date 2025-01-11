@@ -22,6 +22,7 @@ enum MessageType : int {
     SHOOT_EVENT         = 0x07,
     HOLD_SHOOT_EVENT    = 0x08,
     RELEASE_SHOOT_EVENT = 0x09,
+    MAP_INFO            = 0x0A,
 };
 
 enum ComponentList : int {
@@ -73,6 +74,11 @@ struct DestroyEntityMessage : BaseMessage {
     std::vector<long> entity_ids;
 };
 
+struct MapMessage : BaseMessage {
+    float scrollingSpeed;
+    float x_level_position;
+};
+
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
 
@@ -95,6 +101,9 @@ std::array<char, BUFFER_SIZE> serialize(const PlayerDirectionMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const DestroyEntityMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const MapMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -110,6 +119,9 @@ SynchronizeMessage deserializeSynchronize(const std::array<char, BUFFER_SIZE>& b
 
 template <std::size_t BUFFER_SIZE>
 DestroyEntityMessage deserializeDestroyEntity(const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+MapMessage deserializeMapMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 

@@ -127,8 +127,19 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
         return;
     }
 
-    const std::vector<Map::Wave>&                     waves  = GameMap->getWaves();
-    const std::vector<std::shared_ptr<rtype::Block>>& blocks = GameMap->getBlockEntities();
+    const std::vector<Map::Wave>&                     waves          = GameMap->getWaves();
+    const std::vector<std::shared_ptr<rtype::Block>>& blocks         = GameMap->getBlockEntities();
+    float                                             scrollingSpeed = GameMap->getScrollingSpeed();
+    float                                             xLevelPosition = GameMap->getXLevelPosition();
+
+    RTypeProtocol::MapMessage mapMessage;
+    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
+    mapMessage.uuid             = 0;
+    mapMessage.scrollingSpeed   = scrollingSpeed;
+    mapMessage.x_level_position = xLevelPosition;
+
+    std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
+    broadcastAllReliable(serializedMapMessage);
 
     // Batching setup (reduce network overhead)
     constexpr size_t BATCH_SIZE     = 25;
