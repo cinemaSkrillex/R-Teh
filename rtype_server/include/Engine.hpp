@@ -47,6 +47,7 @@
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "ECS/Components/Target.hpp"
+#include "ECS/Components/TargetRadius.hpp"
 #include "ECS/Components/Velocity.hpp"
 // Entities
 #include "ECS/Entities/Entity.hpp"
@@ -69,3 +70,4 @@
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/RadiusSystem.hpp"
 #include "ECS/Systems/RotationSystem.hpp"
+#include "ECS/Systems/TargetRadiusSystem.hpp"

@@ -50,6 +50,9 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::Damage>();
     _registry.register_component<RealEngine::Netvar>();
     _registry.register_component<RealEngine::NetvarContainer>();
+    _registry.register_component<RealEngine::Particle>();
+    _registry.register_component<RealEngine::ParticleEmitter>();
+    _registry.register_component<RealEngine::TargetRadius>();
 }
 
 void GameInstance::init_systems() {

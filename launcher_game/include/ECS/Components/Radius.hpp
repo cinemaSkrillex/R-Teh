@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** Radius
+*/
+
 #pragma once
 
 #include <functional>

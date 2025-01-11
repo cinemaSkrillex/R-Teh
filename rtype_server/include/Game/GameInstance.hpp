@@ -53,16 +53,17 @@ class GameInstance {
     std::unique_ptr<RealEngine::Window> _window;
     sf::Clock                           _clock;
 
-    RealEngine::Registry        _registry;
-    RealEngine::DrawSystem      _drawSystem;
-    RealEngine::MovementSystem  _movementSystem;
-    RealEngine::CollisionSystem _collisionSystem;
-    RealEngine::AISystem        _aiSystem;
-    RealEngine::RotationSystem  _rotationSystem;
-    RealEngine::RadiusSystem    _radiusSystem;
-    RealEngine::DestroySystem   _destroySystem;
-    RealEngine::HealthSystem    _healthSystem;
-    RealEngine::NetvarSystem    _netvarSystem;
+    RealEngine::Registry           _registry;
+    RealEngine::DrawSystem         _drawSystem;
+    RealEngine::MovementSystem     _movementSystem;
+    RealEngine::CollisionSystem    _collisionSystem;
+    RealEngine::AISystem           _aiSystem;
+    RealEngine::RotationSystem     _rotationSystem;
+    RealEngine::RadiusSystem       _radiusSystem;
+    RealEngine::DestroySystem      _destroySystem;
+    RealEngine::HealthSystem       _healthSystem;
+    RealEngine::NetvarSystem       _netvarSystem;
+    RealEngine::TargetRadiusSystem _targetRadiusSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;

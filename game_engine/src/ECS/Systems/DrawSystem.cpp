@@ -30,27 +30,22 @@ void handleSpriteSheetAnimation(SpriteSheet& spritesheet, RealEngine::Sprite& sp
     calculateTextureRect(spritesheet, sprite);
     if (!spritesheet.pause &&
         spritesheet.animClock.getElapsedTime().asMilliseconds() > spritesheet.animTime) {
-        // Check if texture is out of bounds before advancing the frame
         if (sprite.isTextureOfBounds()) {
             if (spritesheet.loop)
-                spritesheet.frameIndex = 0;  // Reset frame index to 0
+                spritesheet.frameIndex = 0;
             else
-                spritesheet.pause = true;  // Paute animation;
+                spritesheet.pause = true;
         } else {
-            // Only increment frame if not out of bounds
             spritesheet.frameIndex++;
         }
-
-        // Update frame index and restart clock
         spritesheet.animClock.restart();
     }
-
-    // Update texture rect after resetting
     calculateTextureRect(spritesheet, sprite);
 }
 
 void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
     auto particleEmitters = registry.view<ParticleEmitter>();
+
     for (auto entity : particleEmitters) {
         auto* emitter = registry.get_component<ParticleEmitter>(entity);
         for (const auto& particle : emitter->particles) {

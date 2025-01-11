@@ -7,7 +7,7 @@ RadiusSystem::RadiusSystem() {}
 RadiusSystem::~RadiusSystem() {}
 
 void RadiusSystem::update(Registry& registry) {
-    auto radius_entities = registry.view<Position, Radius>();  // crash when get redius entities
+    auto radius_entities = registry.view<Position, Radius>();
     auto player_entities = registry.view<Position, Controllable>();
     bool in, outer_max, outer_min = false;
 

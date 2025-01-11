@@ -56,6 +56,7 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
 
     registry.add_component(_entity, RealEngine::Health{15, 50});
     registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
+    registry.add_component(_entity, RealEngine::TargetRadius{200.0f});
     registry.add_component(_entity, RealEngine::Damage{5});
     registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
