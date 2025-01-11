@@ -184,7 +184,6 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
 
             case RTypeProtocol::ComponentList::BLOCKTAG: {
                 _registry.add_component<RealEngine::BlockTag>(*newEntity, RealEngine::BlockTag{});
-                std::cout << "BlockTag added: " << std::endl;
                 break;
             }
 
@@ -220,6 +219,8 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
 void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     _ClientScrollingSpeed   = parsedPacket.scrollingSpeed;
     _ClientX_level_position = parsedPacket.x_level_position;
+    _isMapLoaded            = parsedPacket.isLoaded;
     std::cout << "Received map info: ScrollingSpeed: " << _ClientScrollingSpeed
-              << ", XLevelPosition: " << _ClientX_level_position << std::endl;
+              << ", XLevelPosition: " << _ClientX_level_position << ", isLoaded: " << _isMapLoaded
+              << std::endl;
 }

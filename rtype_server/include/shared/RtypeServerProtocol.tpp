@@ -99,7 +99,16 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const DestroyEntityMessag
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
-    std::memcpy(buffer.data(), &msg, sizeof(MapMessage));
+    std::size_t                   offset = 0;
+
+    std::memcpy(buffer.data() + offset, &msg, sizeof(BaseMessage));
+    offset += sizeof(BaseMessage);
+    std::memcpy(buffer.data() + offset, &msg.scrollingSpeed, sizeof(msg.scrollingSpeed));
+    offset += sizeof(msg.scrollingSpeed);
+    std::memcpy(buffer.data() + offset, &msg.x_level_position, sizeof(msg.x_level_position));
+    offset += sizeof(msg.x_level_position);
+    std::memcpy(buffer.data() + offset, &msg.isLoaded, sizeof(msg.isLoaded));
+
     return buffer;
 }
 
@@ -309,8 +318,17 @@ RTypeProtocol::BaseMessage RTypeProtocol::deserialize(const std::array<char, BUF
 template <std::size_t BUFFER_SIZE>
 RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     const std::array<char, BUFFER_SIZE>& buffer) {
-    MapMessage msg;
-    std::memcpy(&msg, buffer.data(), sizeof(MapMessage));
+    MapMessage  msg;
+    std::size_t offset = 0;
+
+    std::memcpy(&msg, buffer.data() + offset, sizeof(BaseMessage));
+    offset += sizeof(BaseMessage);
+    std::memcpy(&msg.scrollingSpeed, buffer.data() + offset, sizeof(msg.scrollingSpeed));
+    offset += sizeof(msg.scrollingSpeed);
+    std::memcpy(&msg.x_level_position, buffer.data() + offset, sizeof(msg.x_level_position));
+    offset += sizeof(msg.x_level_position);
+    std::memcpy(&msg.isLoaded, buffer.data() + offset, sizeof(msg.isLoaded));
+
     return msg;
 }
 

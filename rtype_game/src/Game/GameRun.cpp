@@ -41,26 +41,25 @@ void rtype::Game::run() {
 }
 
 void rtype::Game::updateMap(float deltaTime) {
-    if (deltaTime <= 0) {
-        std::cerr << "Error: Delta time is less than or equal to 0" << std::endl;
+    if (!_isMapLoaded) {
         return;
     }
     _ClientX_level_position += _ClientScrollingSpeed * deltaTime;
 
     auto blockTagEntities = _registry.view<RealEngine::BlockTag, RealEngine::Position>();
     if (blockTagEntities.empty()) {
-        std::cerr << "Error: No block tag entities found" << std::endl;
         return;
     }
     std::cout << "blockTagEntities.size(): " << blockTagEntities.size() << std::endl;
     for (auto entity : blockTagEntities) {
         if (!entity) {
-            std::cerr << "Error: Block entity is null" << std::endl;
             continue;
         }
         auto position = _registry.get_component<RealEngine::Position>(entity);
         if (!position) {
-            std::cerr << "Error: Block position is null or X is less than 0" << std::endl;
+            continue;
+        }
+        if (position->x > INT_MAX) {
             continue;
         }
         if (position->x < 0) {

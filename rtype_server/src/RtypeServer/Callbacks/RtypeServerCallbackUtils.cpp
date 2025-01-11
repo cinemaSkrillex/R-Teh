@@ -101,28 +101,23 @@ void RtypeServer::processBlock(const std::shared_ptr<rtype::Block>& block,
     auto& registry = _game_instance->getRegistryRef();
     auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
     auto* rotation = registry.get_component<RealEngine::Rotation>(*blockEntity);
-
-    if (position) {
-        std::cout << "Processing block with position: (" << position->x << ", " << position->y
-                  << ")" << std::endl;
-        if (position->x < 0) {
-            std::cerr << "Error: Block position is null or X is less than 0" << std::endl;
-            return;
-        }
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
-    } else {
+    if (!position || position->x < 0) {
         std::cerr << "Error: Block position is null" << std::endl;
         return;
     }
-    if (rotation) {
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
+    if (!rotation) {
+        std::cerr << "Error: Block rotation is null" << std::endl;
+        return;
     }
+    std::cout << "position: " << position->x << ", " << position->y << std::endl;
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::BLOCKTAG, true);
 
     sf::FloatRect bounds = {0, 0, 16, 8};
     addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,
                                    RealEngine::CollisionType::SOLID);
-    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::BLOCKTAG, true);
 
     std::string sprite = block->getElement();
     std::cout << "Sprite: " << sprite << std::endl;

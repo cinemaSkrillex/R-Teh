@@ -137,9 +137,10 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     mapMessage.uuid             = 0;
     mapMessage.scrollingSpeed   = scrollingSpeed;
     mapMessage.x_level_position = xLevelPosition;
+    mapMessage.isLoaded         = true;
 
-    std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
-    broadcastAllReliable(serializedMapMessage);
+    // std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
+    // broadcastAllReliable(serializedMapMessage);
 
     // Batching setup (reduce network overhead)
     constexpr size_t BATCH_SIZE     = 25;
@@ -167,6 +168,21 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
         }
     }
     processBatchMessages(batchMessages, "wave");
+
+    RTypeProtocol::MapMessage mapMessageLoaded;
+    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
+    mapMessage.uuid             = 0;
+    mapMessage.scrollingSpeed   = scrollingSpeed;
+    mapMessage.x_level_position = xLevelPosition;
+    mapMessage.isLoaded         = true;
+
+    // std::array<char, 800> serializedMapMessageLoaded =
+    //     RTypeProtocol::serialize<800>(mapMessageLoaded);
+    // broadcastAllReliable(serializedMapMessageLoaded);
+    // std::cout << "Map loaded AND sent" << std::endl;
+
+    std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
+    broadcastAllReliable(serializedMapMessage);
 }
 
 void RtypeServer::initCallbacks() {
@@ -174,9 +190,10 @@ void RtypeServer::initCallbacks() {
         Player player = init_callback_players(sender);
 
         // Send all the entities to the new client, so it can synchronize and move
+        init_callback_map(sender);
+
         init_callback_mobs(sender);
 
-        init_callback_map(sender);
         _players[sender] = player;
     });
 }

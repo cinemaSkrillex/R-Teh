@@ -78,6 +78,7 @@ struct DestroyEntityMessage : BaseMessage {
 struct MapMessage : BaseMessage {
     float scrollingSpeed;
     float x_level_position;
+    bool  isLoaded;
 };
 
 template <std::size_t BUFFER_SIZE>

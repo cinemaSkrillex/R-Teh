@@ -92,6 +92,7 @@ class Game {
     long                                             _serverTime;
     float                                            _ClientScrollingSpeed;
     float                                            _ClientX_level_position;
+    bool                                             _isMapLoaded = false;
 };
 }  // namespace rtype
 
