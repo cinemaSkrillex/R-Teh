@@ -28,3 +28,4 @@ assets/maps/map_big.json
 /cmake-build-debug/.cmake/api/v1/query/toolchains-v1
 /.idea/*
 /cmake-build-debug/CMakeFiles/3.30.5/CMakeSystem.cmake
+/.clang-tidy
