@@ -5,7 +5,7 @@
 ** GameInstance
 */
 
-#include "../include/Game/GameInstance.hpp"
+#include "../../include/Game/GameInstance.hpp"
 
 void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity,
                                        float                               deltaTime) {
