@@ -85,48 +85,42 @@ void RtypeServer::processBatchMessages(std::vector<std::array<char, 800>>& batch
     }
 }
 
-void RtypeServer::processTile(const Map::Tile&                    tile,
-                              std::vector<std::array<char, 800>>& batchMessages) {
-    if (tile.element.empty() || tile.position.x < 0 || tile.position.y < 0 || tile.rotation < 0) {
-        std::cerr << "Error: Invalid tile data. Skipping..." << std::endl;
+void RtypeServer::processBlock(const std::shared_ptr<rtype::Block>& block,
+                               std::vector<std::array<char, 800>>&  batchMessages) {
+    auto blockEntity = block->getEntity();
+
+    if (!blockEntity) {
+        std::cerr << "Error: Block entity is null" << std::endl;
         return;
     }
 
-    if (tile.type == "BLOCK") {
-        if (!_game_instance) {
-            std::cerr << "Error: Game instance is null" << std::endl;
-            return;
-        }
-        auto newBlock    = std::make_shared<rtype::Block>(_game_instance->getRegistryRef(),
-                                                          tile.position, tile.element, tile.rotation);
-        auto blockEntity = newBlock->getEntity();
+    RTypeProtocol::NewEntityMessage newTileMessage;
+    newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+    newTileMessage.uuid         = *blockEntity;
 
-        if (!blockEntity) {
-            std::cerr << "Error: Block entity is null" << std::endl;
-            return;
-        }
+    auto& registry = _game_instance->getRegistryRef();
+    auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
+    auto* rotation = registry.get_component<RealEngine::Rotation>(*blockEntity);
 
-        RTypeProtocol::NewEntityMessage newTileMessage;
-        newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-        newTileMessage.uuid         = *blockEntity;
-
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
-                              tile.position);
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
-                              tile.rotation);
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-
-        sf::FloatRect bounds = {0, 0, 16, 8};
-        addCollisionComponentToMessage(newTileMessage, bounds, tile.element, false,
-                                       RealEngine::CollisionType::SOLID);
-
-        std::string       sprite = tile.element;
-        std::vector<char> spriteData(sprite.begin(), sprite.end());
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
-
-        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
-        batchMessages.push_back(serializedMessage);
+    if (position) {
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     }
+    if (rotation) {
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
+    }
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+    sf::FloatRect bounds = {0, 0, 16, 8};
+    addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,
+                                   RealEngine::CollisionType::SOLID);
+
+    std::string sprite = block->getElement();
+    std::cout << "Sprite: " << sprite << std::endl;
+    std::vector<char> spriteData(sprite.begin(), sprite.end());
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
+    batchMessages.push_back(serializedMessage);
 }
 
 void RtypeServer::processWave(const Map::Wave&                    wave,

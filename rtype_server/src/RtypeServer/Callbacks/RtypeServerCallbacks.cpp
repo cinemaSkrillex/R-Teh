@@ -137,50 +137,16 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     std::vector<std::array<char, 800>> batchMessages;
     batchMessages.reserve(BATCH_SIZE);
 
+    // Process blocks
     for (const auto& block : blocks) {
-        auto blockEntity = block->getEntity();
-
-        if (!blockEntity) {
-            std::cerr << "Error: Block entity is null" << std::endl;
-            continue;
-        }
-
-        RTypeProtocol::NewEntityMessage newTileMessage;
-        newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-        newTileMessage.uuid         = *blockEntity;
-
-        auto& registry = _game_instance->getRegistryRef();
-        auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
-        auto* rotation = registry.get_component<RealEngine::Rotation>(*blockEntity);
-
-        if (position) {
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
-                                  *position);
-        }
-        if (rotation) {
-            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
-                                  *rotation);
-        }
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-
-        sf::FloatRect bounds = {0, 0, 16, 8};
-        addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,
-                                       RealEngine::CollisionType::SOLID);
-
-        std::string sprite = block->getElement();
-        std::cout << "Sprite: " << sprite << std::endl;
-        std::vector<char> spriteData(sprite.begin(), sprite.end());
-        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
-
-        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
-        batchMessages.push_back(serializedMessage);
-
+        processBlock(block, batchMessages);
         processedCount++;
         if (batchMessages.size() == BATCH_SIZE) {
             processBatchMessages(batchMessages, "block");
         }
     }
     processBatchMessages(batchMessages, "block");
+
     // Process waves
     for (const auto& wave : waves) {
         processWave(wave, batchMessages);

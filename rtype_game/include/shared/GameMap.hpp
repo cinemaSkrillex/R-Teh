@@ -44,7 +44,8 @@ struct Wave {
 class GameMap {
    private:
     std::string                                _map_name;
-    float                                      _scrollingSpeed = 0.0f;
+    float                                      _scrollingSpeed  = 0.0f;
+    float                                      x_level_position = 0.0f;
     std::vector<Map::Tile>                     _tiles;
     std::vector<Map::Wave>                     _waves;
     std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
