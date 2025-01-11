@@ -107,13 +107,12 @@ void ServerMap::saveToJSON(const std::string& filepath) {
     Json::Value root;
 
     // Save map name
-    root["map_name"] = _map_name;
-
+    _map_name = root["map_name"].asString();
     // Save tiles
     for (const auto& tile : _tiles) {
         Json::Value tileJson;
-        tileJson["element"] = tile.element;
-        tileJson["type"]    = tile.type;
+        tileJson["element"] = Json::Value(tile.element);
+        tileJson["type"]    = Json::Value(tile.type);
         tileJson["position"].append(tile.position.x);  // x-coordinate
         tileJson["position"].append(tile.position.y);  // y-coordinate
         tileJson["rotation"] = tile.rotation;
@@ -123,7 +122,7 @@ void ServerMap::saveToJSON(const std::string& filepath) {
     // Save waves
     for (const auto& wave : _waves) {
         Json::Value waveJson;
-        waveJson["waveType"] = wave.waveType;
+        waveJson["waveType"] = Json::Value(wave.waveType);
         waveJson["startPosition"].append(wave.startPosition.x);
         waveJson["startPosition"].append(wave.startPosition.y);
 
@@ -131,7 +130,7 @@ void ServerMap::saveToJSON(const std::string& filepath) {
         Json::Value waveRoot;
         for (const auto& wabeMob : wave.mobs) {
             Json::Value contentJson;
-            contentJson["mobName"] = wabeMob.name;
+            contentJson["mobName"] = Json::Value(wabeMob.name);
             contentJson["position"].append(wabeMob.position.x);
             contentJson["position"].append(wabeMob.position.y);
             waveRoot["wave"] = contentJson;
