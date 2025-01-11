@@ -5,7 +5,7 @@
 ** GameInit
 */
 
-#include "../include/Game/GameInstance.hpp"
+#include "../../include/Game/GameInstance.hpp"
 
 GameInstance::GameInstance(bool serverVision)
     : _serverVision(serverVision),
