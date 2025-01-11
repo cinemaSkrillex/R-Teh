@@ -7,8 +7,6 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/LagComposensation/src/*.cpp"
 )
 
-find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
-
 # create the library
 
 #name will be `lib_utils.a` or `lib_utils.lib`
