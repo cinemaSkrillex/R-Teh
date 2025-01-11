@@ -21,6 +21,7 @@
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
 #include "Log.hpp"
+#include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
@@ -115,7 +116,11 @@ class RtypeServer {
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
-    void preloadTextures();
+    void updateMapState(float deltaTime);
+
+    void handleClientMessages();
+    void runGameInstance(float deltaTime);
+    void broadcastStates();
 
    public:
     RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision);

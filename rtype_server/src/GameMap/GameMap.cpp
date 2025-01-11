@@ -113,6 +113,7 @@ void GameMap::loadFromJSON(const std::string& filepath) {
     std::cout << "Loaded map: " << _map_name << "with: " << _tiles.size() << " tiles and "
               << _blockEntities.size() << "block entities and" << _waves.size() << " waves"
               << std::endl;
+    _isLoaded = true;
 }
 
 void GameMap::saveToJSON(const std::string& filepath) {
@@ -154,4 +155,9 @@ void GameMap::saveToJSON(const std::string& filepath) {
     }
 
     writeJSONFile(filepath, root);
+}
+
+void GameMap::removeBlockEntity(std::shared_ptr<rtype::Block>& block) {
+    _blockEntities.erase(std::remove(_blockEntities.begin(), _blockEntities.end(), block),
+                         _blockEntities.end());
 }

@@ -79,6 +79,7 @@ struct MapMessage : BaseMessage {
     float scrollingSpeed;
     float x_level_position;
     bool  isLoaded;
+    int   server_tick;
 };
 
 template <std::size_t BUFFER_SIZE>

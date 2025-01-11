@@ -220,7 +220,8 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     _ClientScrollingSpeed   = parsedPacket.scrollingSpeed;
     _ClientX_level_position = parsedPacket.x_level_position;
     _isMapLoaded            = parsedPacket.isLoaded;
+    _serverTick             = parsedPacket.server_tick;
     std::cout << "Received map info: ScrollingSpeed: " << _ClientScrollingSpeed
               << ", XLevelPosition: " << _ClientX_level_position << ", isLoaded: " << _isMapLoaded
-              << std::endl;
+              << ", ServerTick: " << _serverTick << std::endl;
 }

@@ -65,6 +65,7 @@ class Game {
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
     sf::Clock          _clock;
+    int                _serverTick;
 
     RealEngine::Registry              _registry;
     RealEngine::LagCompensationSystem _lagCompensationSystem;

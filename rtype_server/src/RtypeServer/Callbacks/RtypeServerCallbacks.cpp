@@ -137,7 +137,8 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     mapMessage.uuid             = 0;
     mapMessage.scrollingSpeed   = scrollingSpeed;
     mapMessage.x_level_position = xLevelPosition;
-    mapMessage.isLoaded         = true;
+    mapMessage.isLoaded         = GameMap->isLoaded();
+    mapMessage.server_tick      = _server_config.getConfigItem<int>("SERVER_TICK");
 
     // std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
     // broadcastAllReliable(serializedMapMessage);
@@ -168,18 +169,6 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
         }
     }
     processBatchMessages(batchMessages, "wave");
-
-    RTypeProtocol::MapMessage mapMessageLoaded;
-    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
-    mapMessage.uuid             = 0;
-    mapMessage.scrollingSpeed   = scrollingSpeed;
-    mapMessage.x_level_position = xLevelPosition;
-    mapMessage.isLoaded         = true;
-
-    // std::array<char, 800> serializedMapMessageLoaded =
-    //     RTypeProtocol::serialize<800>(mapMessageLoaded);
-    // broadcastAllReliable(serializedMapMessageLoaded);
-    // std::cout << "Map loaded AND sent" << std::endl;
 
     std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
     broadcastAllReliable(serializedMapMessage);

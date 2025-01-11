@@ -41,16 +41,16 @@ void rtype::Game::run() {
 }
 
 void rtype::Game::updateMap(float deltaTime) {
+    const float fixedTimeStep = 1.0f / _serverTick;
     if (!_isMapLoaded) {
         return;
     }
-    _ClientX_level_position += _ClientScrollingSpeed * deltaTime;
+    _ClientX_level_position += _ClientScrollingSpeed * fixedTimeStep;
 
     auto blockTagEntities = _registry.view<RealEngine::BlockTag, RealEngine::Position>();
     if (blockTagEntities.empty()) {
         return;
     }
-    std::cout << "blockTagEntities.size(): " << blockTagEntities.size() << std::endl;
     for (auto entity : blockTagEntities) {
         if (!entity) {
             continue;
@@ -63,13 +63,9 @@ void rtype::Game::updateMap(float deltaTime) {
             continue;
         }
         if (position->x < 0) {
-            std::cout << "Removing block entity with position: (" << position->x << ", "
-                      << position->y << ")" << std::endl;
             _registry.remove_entity(entity);
             continue;
         }
-        position->x -= _ClientScrollingSpeed * deltaTime;
-        std::cout << "Block entity position: (" << position->x << ", " << position->y << ")"
-                  << std::endl;
+        position->x -= _ClientScrollingSpeed * fixedTimeStep;
     }
 }

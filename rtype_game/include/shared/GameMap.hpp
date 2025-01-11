@@ -45,11 +45,12 @@ class GameMap {
    private:
     std::string                                _map_name;
     float                                      _scrollingSpeed  = 0.0f;
-    float                                      x_level_position = 0.0f;
+    float                                      x_level_position = 1.0f;
     std::vector<Map::Tile>                     _tiles;
     std::vector<Map::Wave>                     _waves;
     std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
     RealEngine::Registry&                      _registry;
+    bool                                       _isLoaded = false;
 
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
@@ -63,11 +64,14 @@ class GameMap {
     void saveToJSON(const std::string& filepath);
 
     // Accessor methods
-    const std::vector<Map::Tile>&                     getTiles() const { return _tiles; }
-    const std::vector<Map::Wave>&                     getWaves() const { return _waves; }
-    const std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() const {
-        return _blockEntities;
-    }
+    const std::vector<Map::Tile>&               getTiles() const { return _tiles; }
+    const std::vector<Map::Wave>&               getWaves() const { return _waves; }
+    bool                                        isLoaded() const { return _isLoaded; }
+    std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
+    void removeBlockEntity(std::shared_ptr<rtype::Block>& block);
+
+    void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
+
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
     void  addTile(const Map::Tile& tile) { _tiles.push_back(tile); }

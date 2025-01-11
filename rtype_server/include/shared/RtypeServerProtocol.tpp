@@ -108,6 +108,8 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
     std::memcpy(buffer.data() + offset, &msg.x_level_position, sizeof(msg.x_level_position));
     offset += sizeof(msg.x_level_position);
     std::memcpy(buffer.data() + offset, &msg.isLoaded, sizeof(msg.isLoaded));
+    offset += sizeof(msg.isLoaded);
+    std::memcpy(buffer.data() + offset, &msg.server_tick, sizeof(msg.server_tick));
 
     return buffer;
 }
@@ -328,6 +330,8 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     std::memcpy(&msg.x_level_position, buffer.data() + offset, sizeof(msg.x_level_position));
     offset += sizeof(msg.x_level_position);
     std::memcpy(&msg.isLoaded, buffer.data() + offset, sizeof(msg.isLoaded));
+    offset += sizeof(msg.isLoaded);
+    std::memcpy(&msg.server_tick, buffer.data() + offset, sizeof(msg.server_tick));
 
     return msg;
 }
