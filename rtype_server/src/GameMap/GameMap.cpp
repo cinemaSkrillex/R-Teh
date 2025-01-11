@@ -2,16 +2,16 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** ServerMap
+** GameMap
 */
 
-#include "shared/ServerMap.hpp"
+#include "shared/GameMap.hpp"
 
-ServerMap::ServerMap() {}
+GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry) {}
 
-ServerMap::~ServerMap() { std::cout << "ServerMap destroyed" << std::endl; }
+GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
-Json::Value ServerMap::readJSONFile(const std::string& filepath) {
+Json::Value GameMap::readJSONFile(const std::string& filepath) {
     try {
         if (!std::filesystem::exists(filepath)) {
             throw std::runtime_error("JSON file does not exist: " + filepath);
@@ -39,7 +39,7 @@ Json::Value ServerMap::readJSONFile(const std::string& filepath) {
     }
 }
 
-void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
+void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
     std::ofstream file(filepath, std::ofstream::binary);
 
     if (!file.is_open()) {
@@ -55,12 +55,14 @@ void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& js
     file.close();
 }
 
-void ServerMap::loadFromJSON(const std::string& filepath) {
+void GameMap::loadFromJSON(const std::string& filepath) {
     Json::Value root = readJSONFile(filepath);
     try {
         std::cout << "Loaded map from JSON file: " << filepath << std::endl;
         // Load map name
-        _map_name = root["map_name"].asString();
+        _map_name       = root["map_name"].asString();
+        _scrollingSpeed = root["scrollingSpeed"].asFloat();
+        _scrollingSpeed = std::clamp(_scrollingSpeed, 1.0f, 100.0f);  // Clamp from 1 to 100
 
         // Load tiles
         const auto& tiles = root["mapData"]["tiles"];
@@ -71,6 +73,11 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
             tile.position = {tileJson["position"][0].asFloat(), tileJson["position"][1].asFloat()};
             tile.rotation = tileJson["rotation"].asFloat();
             _tiles.push_back(tile);
+            if (tile.type == "BLOCK") {
+                auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
+                                                            tile.rotation);
+                _blockEntities.push_back(block);
+            }
         }
     } catch (const std::exception& e) {
         std::cerr << "Error loading map: " << e.what() << std::endl;
@@ -103,7 +110,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
     }
 }
 
-void ServerMap::saveToJSON(const std::string& filepath) {
+void GameMap::saveToJSON(const std::string& filepath) {
     Json::Value root;
 
     // Save map name

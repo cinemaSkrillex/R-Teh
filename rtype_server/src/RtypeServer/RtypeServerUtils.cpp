@@ -26,13 +26,13 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
     }
 
     // Create a PlayerMoveMessage
-    RTypeProtocol::PlayerMoveMessage playerMoveMessage;
-    playerMoveMessage.message_type = RTypeProtocol::PLAYER_MOVE;
-    playerMoveMessage.uuid         = player.getUUID();
-    playerMoveMessage.x            = position->x;
-    playerMoveMessage.y            = position->y;
-    playerMoveMessage.step         = _deltaTimeBroadcast;
-    playerMoveMessage.timestamp    = std::chrono::system_clock::now().time_since_epoch().count();
+    RTypeProtocol::PlayerMoveMessage playerMoveMessage = {};
+    playerMoveMessage.message_type                     = RTypeProtocol::PLAYER_MOVE;
+    playerMoveMessage.uuid                             = player.getUUID();
+    playerMoveMessage.x                                = position->x;
+    playerMoveMessage.y                                = position->y;
+    playerMoveMessage.step                             = _deltaTimeBroadcast;
+    playerMoveMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
 
     // Serialize the PlayerMoveMessage
     std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(playerMoveMessage);

@@ -22,7 +22,7 @@ GameInstance::GameInstance(bool serverVision)
       _radiusSystem(),
       _healthSystem(),
       _netvarSystem(),
-      _game_map(std::make_shared<ServerMap>()) {
+      _game_map(std::make_shared<GameMap>(getRegistryRef())) {
     init_components();
     init_systems();
     init_textures();

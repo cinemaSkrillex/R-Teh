@@ -21,7 +21,7 @@ target_include_directories(l_auncher_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
     ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/ServerMap
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GameMap
     ${CMAKE_CURRENT_SOURCE_DIR}/Config
     ${CMAKE_BINARY_DIR}/launcher_server/Config
 )

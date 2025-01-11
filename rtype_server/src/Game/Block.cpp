@@ -12,7 +12,8 @@ namespace rtype {
 Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
              float rotation)
     : _blockEntity(registry.spawn_entity()),
-      _blockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))) {
+      _blockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
+      _element(spriteName) {
     if (position.x < 0 || position.y < 0 || rotation < 0) {
         std::cerr << "Error: Block position is null" << std::endl;
         return;

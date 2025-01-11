@@ -19,9 +19,11 @@ class Block {
           float rotation);
     ~Block();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _blockEntity; }
+    const std::string&                  getElement() const { return _element; }
 
    private:
     std::shared_ptr<RealEngine::Entity> _blockEntity;
     RealEngine::Sprite                  _blockSprite;
+    std::string                         _element;
 };
 }  // namespace rtype

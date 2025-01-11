@@ -120,15 +120,15 @@ Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender)
 }
 
 void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    auto serverMap = _game_instance->getMap();
+    auto GameMap = _game_instance->getMap();
 
-    if (!serverMap) {
+    if (!GameMap) {
         std::cerr << "Error: Server map is null" << std::endl;
         return;
     }
 
-    const std::vector<Map::Tile>& tiles = serverMap->getTiles();
-    const std::vector<Map::Wave>& waves = serverMap->getWaves();
+    const std::vector<Map::Wave>&                     waves  = GameMap->getWaves();
+    const std::vector<std::shared_ptr<rtype::Block>>& blocks = GameMap->getBlockEntities();
 
     // Batching setup (reduce network overhead)
     constexpr size_t BATCH_SIZE     = 25;
@@ -137,14 +137,50 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
     std::vector<std::array<char, 800>> batchMessages;
     batchMessages.reserve(BATCH_SIZE);
 
-    for (const auto& tile : tiles) {
-        processTile(tile, batchMessages);
+    for (const auto& block : blocks) {
+        auto blockEntity = block->getEntity();
+
+        if (!blockEntity) {
+            std::cerr << "Error: Block entity is null" << std::endl;
+            continue;
+        }
+
+        RTypeProtocol::NewEntityMessage newTileMessage;
+        newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+        newTileMessage.uuid         = *blockEntity;
+
+        auto& registry = _game_instance->getRegistryRef();
+        auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
+        auto* rotation = registry.get_component<RealEngine::Rotation>(*blockEntity);
+
+        if (position) {
+            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION,
+                                  *position);
+        }
+        if (rotation) {
+            addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION,
+                                  *rotation);
+        }
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+
+        sf::FloatRect bounds = {0, 0, 16, 8};
+        addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,
+                                       RealEngine::CollisionType::SOLID);
+
+        std::string sprite = block->getElement();
+        std::cout << "Sprite: " << sprite << std::endl;
+        std::vector<char> spriteData(sprite.begin(), sprite.end());
+        addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
+
+        std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
+        batchMessages.push_back(serializedMessage);
+
         processedCount++;
         if (batchMessages.size() == BATCH_SIZE) {
-            processBatchMessages(batchMessages, "tile");
+            processBatchMessages(batchMessages, "block");
         }
     }
-    processBatchMessages(batchMessages, "tile");
+    processBatchMessages(batchMessages, "block");
     // Process waves
     for (const auto& wave : waves) {
         processWave(wave, batchMessages);

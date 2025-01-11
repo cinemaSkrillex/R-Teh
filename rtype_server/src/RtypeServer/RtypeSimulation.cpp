@@ -16,7 +16,7 @@ void RtypeServer::runSimulation(const std::array<char, 800>&   buffer,
     const auto timestamp                   = playerDirectionMessage.timestamp;
     const auto lastTimestamp               = _players.at(client).getLastTimestamp();
     long       client_elapsed_time         = timestamp - lastTimestamp;
-    float      client_elapsed_time_seconds = client_elapsed_time / 1000.f;
+    float      client_elapsed_time_seconds = static_cast<float>(client_elapsed_time) / 1000.f;
 
     _players.at(client).setLastTimestamp(timestamp);
 

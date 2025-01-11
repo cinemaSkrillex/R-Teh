@@ -21,7 +21,7 @@ target_include_directories(r_type_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
     ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/ServerMap
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GameMap
     ${CMAKE_CURRENT_SOURCE_DIR}/Config
     ${CMAKE_BINARY_DIR}/rtype_server/Config
 )
@@ -95,6 +95,6 @@ add_custom_target(copy_headers_protocol ALL
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
     ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.tpp
     COMMAND ${CMAKE_COMMAND} -E copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/ServerMap.hpp
-    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/ServerMap.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/GameMap.hpp
+    ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/GameMap.hpp
 )

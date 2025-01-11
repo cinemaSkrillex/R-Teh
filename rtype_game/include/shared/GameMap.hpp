@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** ServerMap
+** GameMap
 */
 
-#ifndef SERVERMAP_HPP_
-#define SERVERMAP_HPP_
+#ifndef GameMap_HPP_
+#define GameMap_HPP_
 
 #include <json/json.h>
 
@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "../Game/Block.hpp"
 #include "Engine.hpp"
 #include "RtypeServerProtocol.hpp"
 
@@ -40,30 +41,35 @@ struct Wave {
 };
 }  // namespace Map
 
-class ServerMap {
+class GameMap {
    private:
-    std::string            _map_name;
-    std::size_t            scrollingSpeed;
-    std::vector<Map::Tile> _tiles;
-    std::vector<Map::Wave> _waves;
+    std::string                                _map_name;
+    float                                      _scrollingSpeed = 0.0f;
+    std::vector<Map::Tile>                     _tiles;
+    std::vector<Map::Wave>                     _waves;
+    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
+    RealEngine::Registry&                      _registry;
 
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
     void        writeJSONFile(const std::string& filepath, const Json::Value& json);
 
    public:
-    ServerMap();
-    ~ServerMap();
+    GameMap(RealEngine::Registry& registry);
+    ~GameMap();
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
 
     // Accessor methods
-    const std::vector<Map::Tile>& getTiles() const { return _tiles; }
-    const std::vector<Map::Wave>& getWaves() const { return _waves; }
-    void                          addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
+    const std::vector<Map::Tile>&                     getTiles() const { return _tiles; }
+    const std::vector<Map::Wave>&                     getWaves() const { return _waves; }
+    const std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() const {
+        return _blockEntities;
+    }
+    void addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
     // Accessor methods (omitted here for brevity but same as before)
     // Modifiers and debug methods (omitted here for brevity)
 };
 
-#endif /* !SERVERMAP_HPP_ */
+#endif /* !GameMap_HPP_ */
