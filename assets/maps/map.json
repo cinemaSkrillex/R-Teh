@@ -1,5 +1,6 @@
 {
     "map_name": "Level 1",
+    "scrollingSpeed": 1.0,
     "background": "TODO: SPRITE_NAME",
     "mapData": {
         "tiles": [

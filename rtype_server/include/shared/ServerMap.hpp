@@ -43,6 +43,7 @@ struct Wave {
 class ServerMap {
    private:
     std::string            _map_name;
+    std::size_t scrollingSpeed;
     std::vector<Map::Tile> _tiles;
     std::vector<Map::Wave> _waves;
 
