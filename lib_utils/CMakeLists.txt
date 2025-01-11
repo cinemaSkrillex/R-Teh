@@ -8,6 +8,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 # create the library
+find_package(SFML COMPONENTS system window graphics REQUIRED)
 
 #name will be `lib_utils.a` or `lib_utils.lib`
 add_library(utils STATIC ${SOURCES})
