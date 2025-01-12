@@ -9,7 +9,6 @@
 
 void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
     for (const auto& mob : _gameInstance->getSimpleMobs()) {
-        std::cout << "Mob: " << mob << std::endl;
         if (!mob) continue;
         auto  registry     = _gameInstance->getRegistry();
         auto* position     = registry->get_component<RealEngine::Position>(mob);
