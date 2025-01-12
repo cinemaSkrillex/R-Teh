@@ -18,21 +18,13 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
         return;
     }
 
-    RTypeProtocol::MapMessage mapMessage;
-    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
-    mapMessage.uuid             = 0;
-    mapMessage.scrollingSpeed   = GameMap->getScrollingSpeed();
-    mapMessage.x_level_position = GameMap->getXLevelPosition();
-    mapMessage.isLoaded         = GameMap->isLoaded();
-    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
-
-    // Serialize and send map info
-
     // Send blocks
     sendEntities(GameMap->getBlockEntities(), "block", sender);
     // sendEntities(GameMap->getWaves(), "wave", sender);
 
-    std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
+    // Serialize and send map info
+    RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
+    std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 
@@ -75,5 +67,18 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 
     std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
-    batchMessages.push_back(serializedMessage);
+    batchMessages.emplace_back(serializedMessage);
+}
+
+RTypeProtocol::MapMessage MapInitializer::createMapMessage(
+    const std::shared_ptr<GameMap>& GameMap) {
+    RTypeProtocol::MapMessage mapMessage;
+    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
+    mapMessage.uuid             = 0;
+    mapMessage.scrollingSpeed   = GameMap->getScrollingSpeed();
+    mapMessage.x_level_position = GameMap->getXLevelPosition();
+    mapMessage.isLoaded         = GameMap->isLoaded();
+    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
+
+    return mapMessage;
 }

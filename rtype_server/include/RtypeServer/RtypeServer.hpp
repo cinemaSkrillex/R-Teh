@@ -24,6 +24,7 @@
 #include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
 #include "RtypeServer/Callbacks/MapInitializer.hpp"
+#include "RtypeServer/Callbacks/PlayerInitializer.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
@@ -85,19 +86,17 @@ class RtypeServer {
     sf::Clock                                           _broadcastClock;
     std::chrono::steady_clock::time_point               _startTime;
 
-    void   initCallbacks();
-    void   init_callback_mobs(const asio::ip::udp::endpoint& client);
-    void   init_callback_map(const asio::ip::udp::endpoint& client);
-    Player init_callback_players(const asio::ip::udp::endpoint& client);
-    void   sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity, float x,
-                                 float y, long timestamp);
-    void   sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
-                                  const sf::Vector2f& player_start_position, long timestamp);
-    void   processBlock(const std::shared_ptr<rtype::Block>& block,
-                        std::vector<std::array<char, 800>>&  batchMessages);
-    void   processWave(const Map::Wave& wave, std::vector<std::array<char, 800>>& batchMessages);
-    void   processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
-                                const std::string&                  entityType);
+    void initCallbacks();
+    void init_callback_mobs(const asio::ip::udp::endpoint& client);
+    void sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity, float x,
+                               float y, long timestamp);
+    void sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
+                                const sf::Vector2f& player_start_position, long timestamp);
+    void processBlock(const std::shared_ptr<rtype::Block>& block,
+                      std::vector<std::array<char, 800>>&  batchMessages);
+    void processWave(const Map::Wave& wave, std::vector<std::array<char, 800>>& batchMessages);
+    void processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
+                              const std::string&                  entityType);
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
@@ -136,8 +135,9 @@ class RtypeServer {
     //                    asio::ip::udp::endpoint& client, Player& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        Player& player);
-
-    std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
-    std::shared_ptr<UDPServer>            getServer() { return _server; }
-    std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
+    ServerConfig                                        getServerConfig() { return _server_config; }
+    std::unordered_map<asio::ip::udp::endpoint, Player> getPlayers() { return _players; }
+    std::shared_ptr<GameInstance>                       getGameInstance() { return _game_instance; }
+    std::shared_ptr<UDPServer>                          getServer() { return _server; }
+    std::chrono::steady_clock::time_point               getStartTime() { return _startTime; }
 };

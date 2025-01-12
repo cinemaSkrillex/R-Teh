@@ -102,90 +102,18 @@ void RtypeServer::init_callback_mobs(const asio::ip::udp::endpoint& sender) {
     }
 }
 
-Player RtypeServer::init_callback_players(const asio::ip::udp::endpoint& sender) {
-    sf::Vector2f player_start_position =
-        _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
-    // create Player entity
-    long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::steady_clock::now() - _startTime)
-                            .count();
-    auto playerEntity = _game_instance->addAndGetPlayer(player_start_position);
-    auto player = Player(*playerEntity, elapsed_time, playerEntity, _game_instance->getRegistry());
-    // Notify all other clients about the new client
-    sendNewClientMessages(sender, *playerEntity, player_start_position.x, player_start_position.y,
-                          elapsed_time);
-    // Create the uuid for each new client
-    sendSynchronizeMessage(sender, *playerEntity, player_start_position, elapsed_time);
-    return player;
-}
-
-void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
-    auto GameMap = _game_instance->getMap();
-
-    if (!GameMap) {
-        std::cerr << "Error: Server map is null" << std::endl;
-        return;
-    }
-
-    const std::vector<Map::Wave>&                     waves          = GameMap->getWaves();
-    const std::vector<std::shared_ptr<rtype::Block>>& blocks         = GameMap->getBlockEntities();
-    float                                             scrollingSpeed = GameMap->getScrollingSpeed();
-    float                                             xLevelPosition = GameMap->getXLevelPosition();
-
-    RTypeProtocol::MapMessage mapMessage;
-    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
-    mapMessage.uuid             = 0;
-    mapMessage.scrollingSpeed   = scrollingSpeed;
-    mapMessage.x_level_position = xLevelPosition;
-    mapMessage.isLoaded         = GameMap->isLoaded();
-    mapMessage.server_tick      = _server_config.getConfigItem<int>("SERVER_TICK");
-
-    // std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
-    // broadcastAllReliable(serializedMapMessage);
-
-    // Batching setup (reduce network overhead)
-    constexpr size_t BATCH_SIZE     = 25;
-    size_t           processedCount = 0;
-
-    std::vector<std::array<char, 800>> batchMessages;
-    batchMessages.reserve(BATCH_SIZE);
-
-    // Process blocks
-    std::cout << "block size" << blocks.size() << std::endl;
-    for (const auto& block : blocks) {
-        processBlock(block, batchMessages);
-        processedCount++;
-        if (batchMessages.size() == BATCH_SIZE) {
-            processBatchMessages(batchMessages, "block");
-        }
-    }
-    processBatchMessages(batchMessages, "block");
-
-    // Process waves
-    for (const auto& wave : waves) {
-        processWave(wave, batchMessages);
-        if (batchMessages.size() == BATCH_SIZE) {
-            processBatchMessages(batchMessages, "wave");
-        }
-    }
-    processBatchMessages(batchMessages, "wave");
-
-    std::array<char, 800> serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
-    broadcastAllReliable(serializedMapMessage);
-}
-
 void RtypeServer::initCallbacks() {
     auto mapInitializer = std::make_shared<MapInitializer>(_game_instance, _server, _server_config);
+    auto playerInitializer = std::make_shared<PlayerInitializer>(this);
+    _server->setNewClientCallback(
+        [this, mapInitializer, playerInitializer](const asio::ip::udp::endpoint& sender) {
+            auto player = playerInitializer->initializePlayer(sender);
 
-    _server->setNewClientCallback([this, mapInitializer](const asio::ip::udp::endpoint& sender) {
-        Player player = init_callback_players(sender);
+            // Send all the entities to the new client, so it can synchronize and move
+            mapInitializer->initializeMap(sender);
 
-        // Send all the entities to the new client, so it can synchronize and move
-        // init_callback_map(sender);
-        mapInitializer->initializeMap(sender);
+            init_callback_mobs(sender);
 
-        init_callback_mobs(sender);
-
-        _players[sender] = player;
-    });
+            _players[sender] = player;
+        });
 }

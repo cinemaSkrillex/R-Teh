@@ -8,12 +8,18 @@
 #ifndef PLAYERINITIALIZER_HPP_
 #define PLAYERINITIALIZER_HPP_
 
-#include "RtypeServer.hpp"
+#include <memory>
 
+#include "../RtypeServer.hpp"
+#include "UDPServer.hpp"
+
+class Player;
+class RtypeServer;
+class GameInstance;
+class UDPServer;
 class PlayerInitializer {
    public:
-    explicit PlayerInitializer(GameInstance* gameInstance, UDPServer* UDPServer)
-        : _gameInstance(gameInstance), _UdpServer(UDPServer) {}
+    explicit PlayerInitializer(RtypeServer* server) : _server(server) {}
 
     Player initializePlayer(const asio::ip::udp::endpoint& sender);
 
@@ -24,13 +30,12 @@ class PlayerInitializer {
             .count();
     }
 
-    void sendNewClientMessages(const asio::ip::udp::endpoint& sender, int playerEntity, float x,
-                               float y) {
-        // Send player initialization messages
-    }
+    void sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity,
+                               sf::Vector2f player_start_pos, long timestamp);
+    void sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
+                                const sf::Vector2f& player_start_position, long timestamp);
 
-    GameInstance* _gameInstance;
-    UDPServer*    _UdpServer;
+    RtypeServer* _server;
 };
 
 #endif /* !PLAYERINITIALIZER_HPP_ */
