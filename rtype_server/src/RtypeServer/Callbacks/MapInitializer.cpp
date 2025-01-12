@@ -55,7 +55,6 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::BLOCKTAG, true);
 
     sf::FloatRect bounds = {0, 0, 16, 8};
     addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,

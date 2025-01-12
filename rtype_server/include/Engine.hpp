@@ -31,7 +31,6 @@
 #include "ECS/Components/AI.hpp"
 #include "ECS/Components/Acceleration.hpp"
 #include "ECS/Components/AutoDestructible.hpp"
-#include "ECS/Components/BlockTag.hpp"
 #include "ECS/Components/Collision.hpp"
 #include "ECS/Components/Controllable.hpp"
 #include "ECS/Components/Damage.hpp"

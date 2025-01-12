@@ -33,7 +33,6 @@ enum ComponentList : int {
     AUTO_DESTRUCTIBLE = 0x05,
     DRAWABLE          = 0x06,
     SPRITE            = 0x07,
-    BLOCKTAG          = 0x08,
     // SPRITESHEET       = 0x08,
 };
 
