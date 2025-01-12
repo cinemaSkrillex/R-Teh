@@ -24,6 +24,7 @@
 #include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
 #include "RtypeServer/Callbacks/MapInitializer.hpp"
+#include "RtypeServer/Callbacks/MobInitializer.hpp"
 #include "RtypeServer/Callbacks/PlayerInitializer.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
@@ -87,16 +88,6 @@ class RtypeServer {
     std::chrono::steady_clock::time_point               _startTime;
 
     void initCallbacks();
-    void init_callback_mobs(const asio::ip::udp::endpoint& client);
-    void sendNewClientMessages(const asio::ip::udp::endpoint& sender, long playerEntity, float x,
-                               float y, long timestamp);
-    void sendSynchronizeMessage(const asio::ip::udp::endpoint& sender, long playerEntity,
-                                const sf::Vector2f& player_start_position, long timestamp);
-    void processBlock(const std::shared_ptr<rtype::Block>& block,
-                      std::vector<std::array<char, 800>>&  batchMessages);
-    void processWave(const Map::Wave& wave, std::vector<std::array<char, 800>>& batchMessages);
-    void processBatchMessages(std::vector<std::array<char, 800>>& batchMessages,
-                              const std::string&                  entityType);
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
