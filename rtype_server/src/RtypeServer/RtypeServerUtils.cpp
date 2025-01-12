@@ -75,6 +75,7 @@ void RtypeServer::printServerStartupBanner() {
     auto GameMap               = _game_instance->getMap();
     auto blockEntities         = GameMap->getBlockEntities();
     auto waveEntities          = GameMap->getWaves();
+    auto tiles                 = GameMap->getTiles();
     auto scrollSpeed           = GameMap->getScrollingSpeed();
     auto XLevelPosition        = GameMap->getXLevelPosition();
     auto isLoaded              = GameMap->isLoaded();
@@ -85,11 +86,9 @@ void RtypeServer::printServerStartupBanner() {
     std::cout << boldColorText("R-Type Server", BOLD_GREEN) << " - "
               << colorText("Server Started", BOLD_YELLOW) << std::endl;
     std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
-    std::cout << colorText("Server IP: ", BOLD_CYAN) << colorText(IP, BOLD_WHITE) << std::endl;
-    std::cout << colorText("Server Port: ", BOLD_CYAN)
+    std::cout << colorText("[Server] IP: ", BOLD_CYAN) << colorText(IP, BOLD_WHITE) << std::endl;
+    std::cout << colorText("[Server] Port: ", BOLD_CYAN)
               << colorText(std::to_string(PORT), BOLD_WHITE) << std::endl;
-    std::cout << colorText("Start Time: ", BOLD_CYAN) << colorText(timestamp + "ms", BOLD_WHITE)
-              << std::endl;
     std::cout << colorText("[ServerConfig] ServerTickRate: ", BOLD_CYAN)
               << colorText(std::to_string(server_tick), BOLD_WHITE) << std::endl;
     std::cout << colorText("[ServerConfig] ServerBroadcastTickRate: ", BOLD_CYAN)
@@ -105,6 +104,8 @@ void RtypeServer::printServerStartupBanner() {
               << colorText(std::to_string(XLevelPosition), BOLD_WHITE) << std::endl;
     std::cout << colorText("[GameMap] BlockEntities: ", BOLD_CYAN)
               << colorText(std::to_string(blockEntities.size()), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[GameMap] Tiles: ", BOLD_CYAN)
+              << colorText(std::to_string(tiles.size()), BOLD_WHITE) << std::endl;
     std::cout << colorText("[GameMap] WaveEntities: ", BOLD_CYAN)
               << colorText(std::to_string(waveEntities.size()), BOLD_WHITE) << std::endl;
     std::cout << colorText("[GameMap] IsLoaded: ", BOLD_CYAN)

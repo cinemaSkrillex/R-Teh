@@ -19,7 +19,6 @@ Json::Value GameMap::readJSONFile(const std::string& filepath) {
         Json::Value root;
 
         std::ifstream file(filepath, std::ifstream::binary);
-        std::cout << "Reading JSON file: " << filepath << std::endl;
 
         if (!file.is_open()) {
             throw std::runtime_error("Unable to open JSON file: " + filepath);
@@ -58,8 +57,6 @@ void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json
 void GameMap::loadFromJSON(const std::string& filepath) {
     Json::Value root = readJSONFile(filepath);
     try {
-        std::cout << "Loaded map from JSON file: " << filepath << std::endl;
-        // Load map name
         _map_name = root["map_name"].asString();
         _scrollingSpeed =
             root["scrollingSpeed"]
@@ -110,9 +107,6 @@ void GameMap::loadFromJSON(const std::string& filepath) {
     } catch (const std::exception& e) {
         std::cerr << "Error loading waves: " << e.what() << std::endl;
     }
-    std::cout << "Loaded map: " << _map_name << "with: " << _tiles.size() << " tiles and "
-              << _blockEntities.size() << "block entities and" << _waves.size() << " waves"
-              << std::endl;
     _isLoaded = true;
 }
 
