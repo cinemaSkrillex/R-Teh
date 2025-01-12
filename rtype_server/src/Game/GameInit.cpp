@@ -29,7 +29,6 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     _game_map->loadFromJSON("../../assets/maps/map.json");
-    init_mobs();
 }
 
 void GameInstance::init_components() {
@@ -95,19 +94,6 @@ void GameInstance::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destroySystem.update(registry, deltaTime);
     });
-}
-
-void GameInstance::init_mobs() {
-    std::cerr << "init mobs" << std::endl;
-    rtype::EyeMinion eyeMinion(_registry, {700, 100});
-    addAndGetEnemy(eyeMinion.getEntity());
-    rtype::SpaceSphere spaceSphere(_registry, {100, 300});
-    addAndGetEnemy(spaceSphere.getEntity());
-    auto waves = _game_map->getWaves();
-    auto wave  = waves.front();
-    for (const auto& mob : wave.mobs) {
-        spawnMob(mob.name, mob.position, mob.angle);
-    }
 }
 
 void GameInstance::init_textures() {

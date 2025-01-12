@@ -35,6 +35,10 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 
     _netvarSystem.update(_registry, deltaTime);
     _game_map->updateLevel(deltaTime);
+    auto enemies_to_spawn = _game_map->invokeWaves();
+    for (auto& enemy : enemies_to_spawn) {
+        spawnMob(enemy.name, enemy.position, enemy.angle);
+    }
     _enemies.erase(
         std::remove_if(
             _enemies.begin(), _enemies.end(),

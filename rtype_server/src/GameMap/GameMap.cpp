@@ -5,7 +5,7 @@
 ** GameMap
 */
 
-#include "shared/GameMap.hpp"
+#include "Game/GameMap.hpp"
 
 GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelStarted(false) {}
 
@@ -49,6 +49,23 @@ void GameMap::updateLevel(float deltaTime) {
             position->x -= _scrollingSpeed * deltaTime;
         }
     }
+    removeDeadBlocks();
+}
+
+std::vector<Map::WaveMob> GameMap::invokeWaves() {
+    // if (!_levelStarted) {
+    //     return {};
+    // }
+    std::vector<Map::WaveMob> enemiesToSpawn;
+    for (auto& wave : _waves) {
+        if (x_level_position < wave.startPosition.x) {
+            break;
+        } else {
+            enemiesToSpawn.insert(enemiesToSpawn.end(), wave.mobs.begin(), wave.mobs.end());
+            _waves.erase(_waves.begin());
+        }
+    }
+    return enemiesToSpawn;
 }
 
 void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
@@ -74,7 +91,7 @@ void GameMap::loadFromJSON(const std::string& filepath) {
         _scrollingSpeed =
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
-        _scrollingSpeed = std::clamp(_scrollingSpeed, 1.0f, 1000.0f);  // Clamp from 1 to 1000
+        _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);  // Clamp from 1 to 1000
 
         // Load tiles
         const auto& tiles = root["mapData"]["tiles"];
@@ -117,6 +134,11 @@ void GameMap::loadFromJSON(const std::string& filepath) {
             }
             _waves.push_back(wave);
         }
+
+        std::sort(_waves.begin(), _waves.end(), [](const Map::Wave& a, const Map::Wave& b) {
+            return a.startPosition.x < b.startPosition.x;
+        });
+
     } catch (const std::exception& e) {
         std::cerr << "Error loading waves: " << e.what() << std::endl;
     }
@@ -164,7 +186,9 @@ void GameMap::saveToJSON(const std::string& filepath) {
     writeJSONFile(filepath, root);
 }
 
-void GameMap::removeBlockEntity(std::shared_ptr<rtype::Block>& block) {
-    _blockEntities.erase(std::remove(_blockEntities.begin(), _blockEntities.end(), block),
-                         _blockEntities.end());
+void GameMap::removeDeadBlocks() {
+    _blockEntities.erase(
+        std::remove_if(_blockEntities.begin(), _blockEntities.end(),
+                       [](const std::shared_ptr<rtype::Block>& block) { return block == nullptr; }),
+        _blockEntities.end());
 }

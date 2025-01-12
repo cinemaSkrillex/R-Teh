@@ -9,6 +9,26 @@
 
 namespace rtype {
 
+static void collisionHandler(RealEngine::CollisionType collisionType,
+                             RealEngine::Registry& registry, RealEngine::Entity collider,
+                             RealEngine::Entity entity) {
+    return;
+    auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
+
+    if (collisionType != RealEngine::CollisionType::SCREEN) return;
+    if (!autoDestructible) {
+        auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+        if (container) {
+            bool destroy_out_of_screen =
+                std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value);
+            if (!destroy_out_of_screen) {
+                registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
+            }
+        }
+    }
+    autoDestructible->kill = false;
+}
+
 Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
              float rotation)
     : _blockEntity(registry.spawn_entity()),
@@ -28,7 +48,12 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
                                                  spriteName,
                                                  false,
                                                  RealEngine::CollisionType::SOLID,
-                                                 nullptr});
+                                                 collisionHandler});
+    registry.add_component(
+        _blockEntity,
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
+             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}}}});
 }
 
 Block::~Block() {}

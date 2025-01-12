@@ -49,30 +49,29 @@ class GameMap {
    public:
     GameMap(RealEngine::Registry& registry);
     ~GameMap();
-    void updateLevel(float deltaTime);
+    void                      updateLevel(float deltaTime);
+    std::vector<Map::WaveMob> invokeWaves();
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
 
-    // Accessor methods
-    const std::vector<Map::Tile>&               getTiles() const { return _tiles; }
-    const std::vector<Map::Wave>&               getWaves() const { return _waves; }
-    bool                                        isLoaded() const { return _isLoaded; }
-    std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
-
-    void removeBlockEntity(std::shared_ptr<rtype::Block>& block);
+    bool isLoaded() const { return _isLoaded; }
+    void addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
+    void removeDeadBlocks();
 
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
 
+    std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
+    const std::vector<Map::Tile>&               getTiles() const { return _tiles; }
+    const std::vector<Map::Wave>&               getWaves() const { return _waves; }
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
-    void  addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
-    // Accessor methods (omitted here for brevity but same as before)
-    // Modifiers and debug methods (omitted here for brevity)
+
    private:
     std::string                                      _map_name;
+    std::string                                      _music_name;
     float                                            _scrollingSpeed  = 0.0f;
-    float                                            x_level_position = 1.0f;
+    float                                            x_level_position = 0.0f;
     std::vector<Map::Tile>                           _tiles;
     std::vector<Map::Wave>                           _waves;
     std::vector<std::shared_ptr<rtype::Block>>       _blockEntities;

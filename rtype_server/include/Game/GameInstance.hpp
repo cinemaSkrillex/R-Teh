@@ -18,7 +18,6 @@ class GameInstance {
     GameInstance(bool serverVision = false);
     void init_components();
     void init_systems();
-    void init_mobs();
     void init_textures();
     void init_sprite_sheets();
     void init_screen_limits();
