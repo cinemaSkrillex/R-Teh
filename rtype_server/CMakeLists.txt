@@ -21,6 +21,7 @@ target_include_directories(r_type_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
     ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Callbacks
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GameMap
     ${CMAKE_CURRENT_SOURCE_DIR}/Config
     ${CMAKE_BINARY_DIR}/rtype_server/Config

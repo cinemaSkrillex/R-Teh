@@ -23,6 +23,7 @@
 #include "Log.hpp"
 #include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
+#include "RtypeServer/Callbacks/MapInitializer.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"

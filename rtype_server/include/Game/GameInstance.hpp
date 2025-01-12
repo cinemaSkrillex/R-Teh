@@ -46,7 +46,12 @@ class GameInstance {
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
-    std::shared_ptr<GameMap>                          getMap() { return _game_map; }
+    std::shared_ptr<GameMap>                          getMap() {
+        if (!_game_map) {
+            std::cerr << "Error: _game_map is null" << std::endl;
+        }
+        return _game_map;
+    }
 
    private:
     bool                                _serverVision;

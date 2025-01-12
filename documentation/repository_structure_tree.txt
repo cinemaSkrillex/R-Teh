@@ -1,16 +1,20 @@
 .
 ├── assets
 │   ├── 8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg
+│   ├── arial.ttf
+│   ├── maps
+│   │   ├── map_big.json
+│   │   ├── map.json
+│   │   └── waves
 │   ├── missing_texture.png
 │   └── sprites
 │       ├── backgrounds
 │       ├── big_shoot.png
-│       ├── bonus.png
 │       ├── enemies
 │       ├── life_recover.png
 │       ├── medium_shoot.png
+│       ├── nuke.png
 │       ├── power_up.png
-│       ├── shoot_load.png
 │       ├── shoot_power_up.png
 │       ├── spaceship_bullet.png
 │       ├── spaceship.png
@@ -20,10 +24,10 @@
 │   │   ├── CompilerIdC
 │   │   └── CompilerIdCXX
 │   ├── CMakeScratch
-│   └── pkgRedirects
+│   ├── pkgRedirects
+│   └── Progress
 ├── CMakeLists.txt
 ├── CMakePresets.json
-├── doc
 ├── documentation
 │   ├── _config.yml
 │   ├── developper
@@ -35,14 +39,13 @@
 │   │   └── technology_choices
 │   ├── index.md
 │   ├── repository_structure_tree.txt
-│   ├── user
-│   │   ├── requirements
-│   │   ├── setup_windows_vm
-│   │   └── user.md
-│   └── vendor
-│       └── bundle
+│   └── user
+│       ├── requirements
+│       ├── setup_windows_vm
+│       └── user.md
 ├── game_engine
 │   ├── CMakeFiles
+│   │   ├── copy_headers_lagcompensation_engine.dir
 │   │   └── rtype_engine.dir
 │   ├── CMakeLists.txt
 │   ├── include
@@ -50,12 +53,45 @@
 │   │   ├── Core
 │   │   ├── ECS
 │   │   ├── interpolation.hpp
-│   │   ├── Media
 │   │   └── shared
 │   └── src
 │       ├── Core
-│       ├── ECS
-│       └── Media
+│       └── ECS
+├── launcher_game
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── Client
+│   │   ├── Core
+│   │   ├── DynamicLibrary
+│   │   ├── ECS
+│   │   ├── interpolation.hpp
+│   │   ├── Launcher
+│   │   ├── Media
+│   │   ├── PlayerUtils.hpp
+│   │   ├── Server
+│   │   └── shared
+│   ├── main.cpp
+│   └── src
+│       ├── Client
+│       ├── Launcher
+│       ├── Server
+│       └── shared
+├── launcher_server
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── Client
+│   │   ├── Core
+│   │   ├── DynamicLibrary
+│   │   ├── ECS
+│   │   ├── interpolation.hpp
+│   │   ├── Media
+│   │   ├── Server
+│   │   └── shared
+│   ├── main.cpp
+│   └── src
+│       ├── Client
+│       ├── Server
+│       └── shared
 ├── lib_utils
 │   ├── CMakeFiles
 │   │   └── utils.dir
@@ -68,6 +104,7 @@
 │       └── src
 ├── network
 │   ├── CMakeFiles
+│   │   ├── copy_headers.dir
 │   │   ├── rtype_client.dir
 │   │   ├── rtype_server.dir
 │   │   ├── testing_rtype_client.dir
@@ -80,13 +117,18 @@
 │   │   └── shared
 │   ├── network_stress_test.py
 │   ├── ping.sh
-│   └── src
-│       ├── Client
-│       ├── Server
-│       └── shared
+│   ├── src
+│   │   ├── Client
+│   │   ├── Server
+│   │   └── shared
+│   ├── TestingClientMain.cpp
+│   └── TestingServerMain.cpp
 ├── README.md
 ├── rtype_game
 │   ├── CMakeFiles
+│   │   ├── copy_headers_engine_for_game.dir
+│   │   ├── copy_headers_lagcompensation.dir
+│   │   ├── copy_headers_parser.dir
 │   │   └── r_type.dir
 │   ├── CMakeLists.txt
 │   ├── include
@@ -95,22 +137,23 @@
 │   │   ├── Core
 │   │   ├── ECS
 │   │   ├── Engine.hpp
-│   │   ├── Game.hpp
+│   │   ├── Game
 │   │   ├── interpolation.hpp
 │   │   ├── Macros.hpp
 │   │   ├── Media
-│   │   ├── Mobs
 │   │   ├── PlayerUtils.hpp
 │   │   ├── Server
 │   │   └── shared
 │   ├── main.cpp
 │   └── src
 │       ├── Controls.cpp
-│       ├── Game
-│       ├── Mobs
-│       └── Player.cpp
+│       └── Game
 ├── rtype_server
 │   ├── CMakeFiles
+│   │   ├── copy_config.dir
+│   │   ├── copy_headers_engine_for_server.dir
+│   │   ├── copy_headers_server_lagcompensation.dir
+│   │   ├── copy_headers_server_parser.dir
 │   │   └── r_type_server.dir
 │   ├── CMakeLists.txt
 │   ├── Config
@@ -125,16 +168,20 @@
 │   │   ├── interpolation.hpp
 │   │   ├── Media
 │   │   ├── PlayerUtils.hpp
-│   │   ├── RtypeServer.hpp
+│   │   ├── RtypeServer
 │   │   ├── Server
 │   │   └── shared
 │   ├── main.cpp
 │   └── src
 │       ├── Game
-│       ├── Mobs
+│       ├── GameMap
 │       ├── Player
 │       └── RtypeServer
 ├── scripts
+│   ├── check_format.ps1
+│   ├── check_format.sh
+│   ├── format_all.ps1
+│   ├── format_all.sh
 │   ├── requirements.ps1
 │   ├── requirements.sh
 │   └── update_repository_structure.sh
@@ -149,8 +196,6 @@
 │   └── user
 │       ├── requirements
 │       └── setup_windows_vm
-├── vcpkg.json
-└── vendor
-    └── bundle
+└── vcpkg.json
 
-106 directories, 48 files
+139 directories, 60 files

@@ -175,11 +175,14 @@ void RtypeServer::init_callback_map(const asio::ip::udp::endpoint& sender) {
 }
 
 void RtypeServer::initCallbacks() {
-    _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
+    auto mapInitializer = std::make_shared<MapInitializer>(_game_instance, _server, _server_config);
+
+    _server->setNewClientCallback([this, mapInitializer](const asio::ip::udp::endpoint& sender) {
         Player player = init_callback_players(sender);
 
         // Send all the entities to the new client, so it can synchronize and move
-        init_callback_map(sender);
+        // init_callback_map(sender);
+        mapInitializer->initializeMap(sender);
 
         init_callback_mobs(sender);
 

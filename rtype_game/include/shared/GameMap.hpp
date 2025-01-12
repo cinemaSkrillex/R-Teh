@@ -43,14 +43,15 @@ struct Wave {
 
 class GameMap {
    private:
-    std::string                                _map_name;
-    float                                      _scrollingSpeed  = 0.0f;
-    float                                      x_level_position = 1.0f;
-    std::vector<Map::Tile>                     _tiles;
-    std::vector<Map::Wave>                     _waves;
-    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
-    RealEngine::Registry&                      _registry;
-    bool                                       _isLoaded = false;
+    std::string                                      _map_name;
+    float                                            _scrollingSpeed  = 0.0f;
+    float                                            x_level_position = 1.0f;
+    std::vector<Map::Tile>                           _tiles;
+    std::vector<Map::Wave>                           _waves;
+    std::vector<std::shared_ptr<rtype::Block>>       _blockEntities;
+    std::vector<std::shared_ptr<RealEngine::Entity>> _WaveEntities;
+    RealEngine::Registry&                            _registry;
+    bool                                             _isLoaded = false;
 
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
@@ -68,6 +69,7 @@ class GameMap {
     const std::vector<Map::Wave>&               getWaves() const { return _waves; }
     bool                                        isLoaded() const { return _isLoaded; }
     std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
+
     void removeBlockEntity(std::shared_ptr<rtype::Block>& block);
 
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
