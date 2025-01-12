@@ -10,38 +10,37 @@ if (UNIX)
     # You can add all of the standard flags here
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic -pedantic-errors -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-endif()
+endif ()
 
 if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0A00)
-endif()
+endif ()
 
-if(MSVC)
+if (MSVC)
     add_compile_options(/std:c++20)
     add_compile_options(/permissive-)
-endif()
+endif ()
 
 # Add debug flags for Valgrind and GDB
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    if(MSVC)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if (MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-    else()
+    else ()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-    endif()
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(MSVC)
+    endif ()
+elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+    if (MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
-    else()
+    else ()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-    endif()
-endif()
+    endif ()
+endif ()
 
 # Include directories
 # Not needed anymore since VCPKG toolchain file is used (CmakePresets.json)
 
 
 # Add subdirectories
-add_subdirectory(lib_utils)
 add_subdirectory(network)
 
 # add_subdirectory(client)
