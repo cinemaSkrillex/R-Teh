@@ -17,6 +17,7 @@ class Player;
 class RtypeServer;
 class GameInstance;
 class UDPServer;
+
 class PlayerInitializer {
    public:
     explicit PlayerInitializer(RtypeServer* server) : _server(server) {}
