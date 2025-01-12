@@ -42,17 +42,6 @@ struct Wave {
 }  // namespace Map
 
 class GameMap {
-   private:
-    std::string                                      _map_name;
-    float                                            _scrollingSpeed  = 0.0f;
-    float                                            x_level_position = 1.0f;
-    std::vector<Map::Tile>                           _tiles;
-    std::vector<Map::Wave>                           _waves;
-    std::vector<std::shared_ptr<rtype::Block>>       _blockEntities;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _WaveEntities;
-    RealEngine::Registry&                            _registry;
-    bool                                             _isLoaded = false;
-
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
     void        writeJSONFile(const std::string& filepath, const Json::Value& json);
@@ -60,6 +49,7 @@ class GameMap {
    public:
     GameMap(RealEngine::Registry& registry);
     ~GameMap();
+    void updateLevel(float deltaTime);
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
@@ -79,6 +69,17 @@ class GameMap {
     void  addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
     // Accessor methods (omitted here for brevity but same as before)
     // Modifiers and debug methods (omitted here for brevity)
+   private:
+    std::string                                      _map_name;
+    float                                            _scrollingSpeed  = 0.0f;
+    float                                            x_level_position = 1.0f;
+    std::vector<Map::Tile>                           _tiles;
+    std::vector<Map::Wave>                           _waves;
+    std::vector<std::shared_ptr<rtype::Block>>       _blockEntities;
+    std::vector<std::shared_ptr<RealEngine::Entity>> _WaveEntities;
+    RealEngine::Registry&                            _registry;
+    bool                                             _isLoaded = false;
+    bool                                             _levelStarted;
 };
 
 #endif /* !GameMap_HPP_ */

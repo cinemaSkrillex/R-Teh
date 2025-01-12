@@ -34,6 +34,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
 
     _netvarSystem.update(_registry, deltaTime);
+    _game_map->updateLevel(deltaTime);
     _enemies.erase(
         std::remove_if(
             _enemies.begin(), _enemies.end(),

@@ -53,7 +53,6 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::Particle>();
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::TargetRadius>();
-    _registry.register_component<RealEngine::BlockTag>();
 }
 
 void GameInstance::init_systems() {

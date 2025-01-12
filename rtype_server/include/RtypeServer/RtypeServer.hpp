@@ -21,7 +21,6 @@
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
 #include "Log.hpp"
-#include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
 #include "RtypeServer/Callbacks/MapInitializer.hpp"
 #include "RtypeServer/Callbacks/MobInitializer.hpp"
@@ -106,8 +105,6 @@ class RtypeServer {
                            const asio::ip::udp::endpoint& client, Player& player);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
-
-    void updateMapState(float deltaTime);
 
     void handleClientMessages();
     void runGameInstance(float deltaTime);

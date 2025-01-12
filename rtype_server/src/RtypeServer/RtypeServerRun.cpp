@@ -24,10 +24,10 @@ void RtypeServer::run() {
             handleClientMessages();
             runGameInstance(_deltaTime);
 
-            while (accumulatedTime >= fixedTimeStep) {
-                updateMapState(fixedTimeStep);
-                accumulatedTime -= fixedTimeStep;
-            }
+            // while (accumulatedTime >= fixedTimeStep) {
+            //     updateMapState(fixedTimeStep);
+            //     accumulatedTime -= fixedTimeStep;
+            // }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();

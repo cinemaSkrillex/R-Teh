@@ -7,7 +7,7 @@
 
 #include "shared/GameMap.hpp"
 
-GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry) {}
+GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelStarted(false) {}
 
 GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
@@ -35,6 +35,19 @@ Json::Value GameMap::readJSONFile(const std::string& filepath) {
     } catch (const std::exception& e) {
         std::cerr << "Error reading JSON file: " << e.what() << std::endl;
         return Json::Value();
+    }
+}
+
+void GameMap::updateLevel(float deltaTime) {
+    // if (!_levelStarted) {
+    //     return;
+    // }
+    x_level_position += _scrollingSpeed * deltaTime;
+    for (auto& block : _blockEntities) {
+        auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());
+        if (position) {
+            position->x -= _scrollingSpeed * deltaTime;
+        }
     }
 }
 
