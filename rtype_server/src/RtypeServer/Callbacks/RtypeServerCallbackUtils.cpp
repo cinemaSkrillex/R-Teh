@@ -109,7 +109,6 @@ void RtypeServer::processBlock(const std::shared_ptr<rtype::Block>& block,
         std::cerr << "Error: Block rotation is null" << std::endl;
         return;
     }
-    std::cout << "position: " << position->x << ", " << position->y << std::endl;
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
