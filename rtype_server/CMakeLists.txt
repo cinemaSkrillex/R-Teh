@@ -89,5 +89,4 @@ add_custom_target(copy_headers_protocol ALL
         COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
         ${CMAKE_SOURCE_DIR}/rtype_game/include/shared/RtypeServerProtocol.tpp
-        COMMAND ${CMAKE_COMMAND} -E copy
 )
