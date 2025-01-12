@@ -113,6 +113,8 @@ class RtypeServer {
     void runGameInstance(float deltaTime);
     void broadcastStates();
 
+    void printServerStartupBanner();
+
    public:
     RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision);
     ~RtypeServer();

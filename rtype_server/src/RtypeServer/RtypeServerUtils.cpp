@@ -6,6 +6,7 @@
 */
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
+#include "TerminalColors.hpp"
 
 std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_point& start_time) {
     auto now     = std::chrono::steady_clock::now();
@@ -63,4 +64,50 @@ void RtypeServer::broadcastAllUnreliable(const std::array<char, 800>& message) {
     for (const auto& client : _server->getClients()) {
         _server->send_unreliable_packet(message, client);
     }
+}
+
+void RtypeServer::printServerStartupBanner() {
+    std::string  timestamp   = formatTimestamp(_startTime);
+    int          server_tick = _server_config.getConfigItem<int>("SERVER_TICK");
+    sf::Vector2f player_start_position =
+        _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
+    int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
+    auto GameMap               = _game_instance->getMap();
+    auto blockEntities         = GameMap->getBlockEntities();
+    auto waveEntities          = GameMap->getWaves();
+    auto scrollSpeed           = GameMap->getScrollingSpeed();
+    auto XLevelPosition        = GameMap->getXLevelPosition();
+    auto isLoaded              = GameMap->isLoaded();
+    auto IP                    = _server->getLocalEndpoint().address().to_string();
+    auto PORT                  = _server->getLocalEndpoint().port();
+
+    std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
+    std::cout << boldColorText("R-Type Server", BOLD_GREEN) << " - "
+              << colorText("Server Started", BOLD_YELLOW) << std::endl;
+    std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
+    std::cout << colorText("Server IP: ", BOLD_CYAN) << colorText(IP, BOLD_WHITE) << std::endl;
+    std::cout << colorText("Server Port: ", BOLD_CYAN)
+              << colorText(std::to_string(PORT), BOLD_WHITE) << std::endl;
+    std::cout << colorText("Start Time: ", BOLD_CYAN) << colorText(timestamp + "ms", BOLD_WHITE)
+              << std::endl;
+    std::cout << colorText("[ServerConfig] ServerTickRate: ", BOLD_CYAN)
+              << colorText(std::to_string(server_tick), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[ServerConfig] ServerBroadcastTickRate: ", BOLD_CYAN)
+              << colorText(std::to_string(server_broadcast_tick), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[ServerConfig] PlayerStartPosition: ", BOLD_CYAN)
+              << colorText("(" + std::to_string(player_start_position.x) + "," +
+                               std::to_string(player_start_position.y) + ")",
+                           BOLD_WHITE)
+              << std::endl;
+    std::cout << colorText("[GameMap] ScrollingSpeed: ", BOLD_CYAN)
+              << colorText(std::to_string(scrollSpeed), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[GameMap] XLevelPosition: ", BOLD_CYAN)
+              << colorText(std::to_string(XLevelPosition), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[GameMap] BlockEntities: ", BOLD_CYAN)
+              << colorText(std::to_string(blockEntities.size()), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[GameMap] WaveEntities: ", BOLD_CYAN)
+              << colorText(std::to_string(waveEntities.size()), BOLD_WHITE) << std::endl;
+    std::cout << colorText("[GameMap] IsLoaded: ", BOLD_CYAN)
+              << colorText(isLoaded ? "true" : "false", BOLD_WHITE) << std::endl;
+    std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
 }

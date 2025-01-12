@@ -43,6 +43,8 @@ class ANetwork : public INetwork<BUFFER_SIZE> {
         }
     }
 
+    asio::ip::udp::endpoint getLocalEndpoint() const { return _socket.local_endpoint(); }
+
     // callbacks
     void setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint&)>& callback) {
         _new_client_callback                 = callback;
