@@ -17,12 +17,15 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Events/IEvent.hpp"
 #include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
 #include "GenerateUuid.hpp"
+#include "HoldShootEvent.hpp"
 #include "Log.hpp"
 #include "MapUpdater.hpp"
 #include "PlayerUtils.hpp"
+#include "ReleaseShootEvent.hpp"
 #include "RtypeServer/Callbacks/MapInitializer.hpp"
 #include "RtypeServer/Callbacks/MobInitializer.hpp"
 #include "RtypeServer/Callbacks/PlayerInitializer.hpp"
@@ -30,6 +33,7 @@
 #include "RtypeServerProtocol.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
+#include "ShootEvent.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -86,24 +90,15 @@ class RtypeServer {
     sf::Clock                                           _clock;
     sf::Clock                                           _broadcastClock;
     std::chrono::steady_clock::time_point               _startTime;
+    std::unordered_map<int, std::unique_ptr<IEvent>>    eventHandlers;
 
     void initCallbacks();
+    void initEventHandlers();
 
     void broadcastPlayerState(const Player& player);
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
-
-    void shootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                    Player& player);
-    void holdShootEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                        Player& player);
-    void releaseShootEvent(const std::array<char, 800>&   buffer,
-                           const asio::ip::udp::endpoint& client, Player& player);
-    void shootBigBullet(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                        Player& player);
-    void shootMiddleBullet(const std::array<char, 800>&   buffer,
-                           const asio::ip::udp::endpoint& client, Player& player);
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 

@@ -53,6 +53,14 @@ void RtypeServer::handleClientMessages() {
     }
 }
 
+void RtypeServer::initEventHandlers() {
+    eventHandlers[RTypeProtocol::MessageType::SHOOT_EVENT] = std::make_unique<ShootEvent>();
+    eventHandlers[RTypeProtocol::MessageType::HOLD_SHOOT_EVENT] =
+        std::make_unique<HoldShootEvent>();
+    eventHandlers[RTypeProtocol::MessageType::RELEASE_SHOOT_EVENT] =
+        std::make_unique<ReleaseShootEvent>();
+}
+
 void RtypeServer::runGameInstance(float deltaTime) {
     auto destroyedEntities = _game_instance->run(_deltaTime);
     if (!destroyedEntities.empty()) {
