@@ -18,7 +18,7 @@ void RtypeServer::initCallbacks() {
         // Send all the entities to the new client, so it can synchronize and move
         mapInitializer->initializeMap(sender);
 
-        // init_callback_mobs(sender);
+        // Send all the mobs to the new client (from SimpleMobs Class)
         mobInitializer->initializeMobs(sender);
 
         _players[sender] = player;
