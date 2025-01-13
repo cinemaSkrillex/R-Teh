@@ -212,11 +212,12 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
 }
 
 void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
-    _ClientScrollingSpeed   = parsedPacket.scrollingSpeed;
-    _ClientX_level_position = parsedPacket.x_level_position;
-    _isMapLoaded            = parsedPacket.isLoaded;
-    _serverTick             = parsedPacket.server_tick;
-    std::cout << "Received map info: ScrollingSpeed: " << _ClientScrollingSpeed
-              << ", XLevelPosition: " << _ClientX_level_position << ", isLoaded: " << _isMapLoaded
-              << ", ServerTick: " << _serverTick << std::endl;
+    _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
+    _game_map.setXLevelPosition(parsedPacket.x_level_position);
+    _game_map.setIsMapLoaded(parsedPacket.isLoaded);
+    _serverTick = parsedPacket.server_tick;
+    std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
+              << ", XLevelPosition: " << _game_map.getXLevelPosition()
+              << ", isLoaded: " << _game_map.isMapLoaded() << ", ServerTick: " << _serverTick
+              << std::endl;
 }

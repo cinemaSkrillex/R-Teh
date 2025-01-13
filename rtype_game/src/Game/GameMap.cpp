@@ -7,12 +7,14 @@
 
 #include "Game/GameMap.hpp"
 
-GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelStarted(false) {}
+namespace rtype {
+
+GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelRunning(false) {}
 
 GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
 void GameMap::updateLevel(float deltaTime) {
-    if (!_levelStarted) {
+    if (!_levelRunning) {
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
@@ -22,6 +24,27 @@ void GameMap::updateLevel(float deltaTime) {
             position->x -= _scrollingSpeed * deltaTime;
         }
     }
+    removeDeadBlocks();
+}
+
+void GameMap::startLevel() {
+    _levelRunning = true;
+    RealEngine::AssetManager::getInstance().getMusic(_music_name)->play();
+}
+
+void GameMap::stopLevel() {
+    _levelRunning = false;
+    RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+}
+
+void GameMap::unloadLevel() {
+    _levelRunning = false;
+    RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    _blockEntities.clear();
+    _backgroundEntities.clear();
+    _scrollingSpeed  = 0.0f;
+    x_level_position = 0.0f;
+    _isMapLoaded     = false;
 }
 
 void GameMap::removeDeadBlocks() {
@@ -31,3 +54,11 @@ void GameMap::removeDeadBlocks() {
                                         }),
                          _blockEntities.end());
 }
+
+void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
+                            RealEngine::ParallaxSystem&         parallaxSystem) {
+    _backgroundEntities.push_back(background);
+    parallaxSystem.update(_registry, 0.0f);  // this call is to set the background and the scale
+}
+
+}  // namespace rtype

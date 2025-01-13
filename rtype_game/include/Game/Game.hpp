@@ -16,6 +16,7 @@
 #include "Controls.hpp"
 #include "Engine.hpp"
 #include "Game/Background.hpp"
+#include "Game/GameMap.hpp"
 #include "Game/Player/Player.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
@@ -88,14 +89,11 @@ class Game {
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    GameMap                                                           _game_map;
 
-    std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
-    long int                                         _localPlayerUUID;
-    std::chrono::steady_clock::time_point            _startTime;
-    long                                             _serverTime;
-    float                                            _ClientScrollingSpeed;
-    float                                            _ClientX_level_position;
-    bool                                             _isMapLoaded = false;
+    long int                              _localPlayerUUID;
+    std::chrono::steady_clock::time_point _startTime;
+    long                                  _serverTime;
 };
 }  // namespace rtype
 

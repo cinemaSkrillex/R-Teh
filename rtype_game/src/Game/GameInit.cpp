@@ -27,6 +27,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _healthSystem(),
       _parallaxSystem(),
       _destroySystem(),
+      _particleSystem(),
+      _netvarSystem(),
+      _game_map(_registry),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
@@ -52,13 +55,12 @@ void Game::init_all_game() {
     init_sounds();
     init_screen_limits();
 
-    RealEngine::AssetManager::getInstance().getMusic("level_1")->play();
     Background background(_registry, -200.f, 3);
     Background background2(_registry, -100.f, 2);
     Background background3(_registry, -50.f, 1);
-    _backgroundEntities.push_back(background.getEntity());
-    _backgroundEntities.push_back(background2.getEntity());
-    _backgroundEntities.push_back(background3.getEntity());
+    _game_map.addBackground(background.getEntity(), _parallaxSystem);
+    _game_map.addBackground(background2.getEntity(), _parallaxSystem);
+    _game_map.addBackground(background3.getEntity(), _parallaxSystem);
     Player player(_registry, {200, 200}, false);
     _player_entity = player.getEntity();
 }
@@ -200,7 +202,7 @@ void Game::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _parallaxSystem.update(registry, deltaTime);
+        if (_game_map.levelRunning()) _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
