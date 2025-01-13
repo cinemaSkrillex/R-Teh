@@ -34,6 +34,43 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
 
     _netvarSystem.update(_registry, deltaTime);
+    _game_map->updateLevel(deltaTime);
+    auto enemies_to_spawn = _game_map->invokeWaves();
+    for (auto& enemy : enemies_to_spawn) {
+        spawnMob(enemy.name, enemy.position, enemy.angle);
+    }
+    _enemies.erase(
+        std::remove_if(
+            _enemies.begin(), _enemies.end(),
+            [&](const auto& mob) {
+                std::vector<RealEngine::Netvar*> netvars =
+                    _registry.get_components<RealEngine::Netvar>(mob);
+                for (auto& netvar : netvars) {
+                    if (netvar->name != "dropChance") continue;
+                    netvar->value = std::any_cast<float>(netvar->value);
+                    if (std::any_cast<float>(netvar->value) < 0) {
+                        auto powerup  = _registry.spawn_entity();
+                        auto position = _registry.get_component<RealEngine::Position>(mob);
+                        _registry.add_component(powerup,
+                                                RealEngine::Position{position->x, position->y});
+                        _registry.add_component(
+                            powerup, RealEngine::Collision{{0.f, 0.f, 12.f, 12.f},
+                                                           "powerup_shoot",
+                                                           false,
+                                                           RealEngine::CollisionType::PICKABLE,
+                                                           nullptr});
+                    }
+                }
+                return _registry.get_component<RealEngine::Health>(mob) == nullptr;
+            }),
+        _enemies.end());
+
+    _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
+                                  [&](const auto& bullet) {
+                                      return _registry.get_component<RealEngine::Health>(bullet) ==
+                                             nullptr;
+                                  }),
+                   _bullets.end());
 
     for (auto& mob : _enemies) {
         _movementSystem.update(_registry, mob, deltaTime);
@@ -47,7 +84,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     return destroyedEntities;
 };
 
-void GameInstance::movePlayer(long int playerUuid, int direction, float deltaTime) {
+void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
@@ -57,14 +94,20 @@ void GameInstance::movePlayer(long int playerUuid, int direction, float deltaTim
 
     if (!acceleration || !velocity || !position) return;
 
-    // if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
-    // if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
-    // if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
-    // if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
-    // if (direction.top > 0) velocity->vx += (acceleration->ax * 3 * deltaTime);
-    // if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
-    // if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
-    // if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
+    if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
+    if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
+    if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
+    if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
+    if (direction.top > 0) velocity->vx += (acceleration->ax * 3 * deltaTime);
+    if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
+    if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
+    if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
+    if (direction.left == 1 && direction.top == 1) {
+        velocity->vx = 0;
+    }
+    if (direction.width == 1 && direction.height == 1) {
+        velocity->vy = 0;
+    }
 }
 
 void GameInstance::handleSignal(const std::string& message) {

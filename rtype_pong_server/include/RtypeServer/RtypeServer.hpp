@@ -25,6 +25,7 @@
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "ReleaseShootEvent.hpp"
+#include "RtypeServer/Callbacks/MapInitializer.hpp"
 #include "RtypeServer/Callbacks/MobInitializer.hpp"
 #include "RtypeServer/Callbacks/PlayerInitializer.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
