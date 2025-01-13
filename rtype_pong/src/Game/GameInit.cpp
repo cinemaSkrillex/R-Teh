@@ -29,7 +29,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
-      _game_map(_registry),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
@@ -47,7 +46,6 @@ void Game::init_all_game() {
     init_registry();
     init_controls();
     init_systems();
-    init_level("../../assets/sprites/tiles/lv1", "lvl1");
     init_textures();
     set_sprite_opacity();
     init_sprite_sheets();
@@ -163,11 +161,6 @@ void Game::init_textures() {
                                                    "../../assets/sprites/spaceship.png");
 }
 
-void Game::init_level(std::string filepath, std::string foldername) {
-    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
-}
-
 void Game::init_systems() {
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
         _lagCompensationSystem.update(registry, deltaTime);
@@ -202,7 +195,7 @@ void Game::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        if (_game_map.levelRunning()) _parallaxSystem.update(registry, deltaTime);
+        _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
