@@ -32,10 +32,9 @@ GameInstance::GameInstance(bool serverVision)
     if (assetLauncher == true) {
         path = "../assets/maps/";
     }
-    _game_map->loadFromJSON(path + "map.json");
+    _game_map->loadFromJSON(path + "level_1.json");
     rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(600, 100));
     addAndGetEnemy(spaceSphere.getEntity());
-    _game_map->startLevel();
 }
 
 void GameInstance::init_components() {

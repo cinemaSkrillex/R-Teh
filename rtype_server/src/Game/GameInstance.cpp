@@ -111,6 +111,10 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     }
 }
 
-void GameInstance::handleSignal(const std::string& message) {
-    // Do somethin
+void GameInstance::start_level() {
+    if (_game_map->getIsLevelRunning() == false) {
+        _game_map->startLevel();
+    } else {
+        _game_map->stopLevel();
+    }
 }

@@ -74,12 +74,12 @@ class AssetManager {
         try {
             auto it = _spriteSheets.find(id);
             if (it == _spriteSheets.end()) {
-                std::cout << "SpriteSheet not found: " << id << std::endl;
+                // std::cout << "SpriteSheet not found: " << id << std::endl;
                 throw std::runtime_error("SpriteSheet not found: " + id);
             }
             return it->second;
         } catch (const std::exception& e) {
-            std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
+            // std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
             return nullptr;
         }
     }
@@ -214,7 +214,7 @@ class AssetManager {
         try {
             auto it = _musics.find(id);
             if (it == _musics.end()) {
-                std::cout << "Music not found: " << id << std::endl;
+                std::cout << "Music not found: [" << id << "]" << std::endl;
                 throw std::runtime_error("Music not found: " + id);
             }
             return it->second;
