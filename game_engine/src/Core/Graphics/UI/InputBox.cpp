@@ -6,6 +6,7 @@
 */
 
 #include "../include/Core/Graphics/UI/InputBox.hpp"
+#include <iostream>
 
 namespace RealEngine {
 
@@ -14,7 +15,7 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position, const
     box.setSize(size);
     box.setPosition(position);
     box.setFillColor(sf::Color::White);
-    text.setPosition(position.x + 5, position.y + (size.y / 2));
+    text.setPosition(position.x + 10000, position.y + (size.y / 2));
 }
 
 void InputBox::draw(sf::RenderWindow& window) {
@@ -53,7 +54,7 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
 
 void InputBox::setPosition(const sf::Vector2f& position) {
     box.setPosition(position);
-    text.setPosition(position.x + 5, position.y + 5);
+    text.setPosition(position.x + 10000, position.y + 5);
 }
 
 void InputBox::setSize(const sf::Vector2f& size) {
@@ -86,7 +87,8 @@ void InputBox::centerText() {
     sf::FloatRect textBounds = text.getLocalBounds();
     float textPositionX = box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
     float textPositionY = box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    text.setPosition(textPositionX, textPositionY);
+    std::cout << textPositionX << " " << textPositionY << std::endl;
+    text.setPosition(390, (textPositionY + 10));
 }
 
 void InputBox::setContentType(ContentType type) {
