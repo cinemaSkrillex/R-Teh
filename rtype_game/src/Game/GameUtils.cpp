@@ -107,7 +107,8 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     // if difference between position and positionComponent is greater than 2, change sprite
     if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "up";
-    } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    } else if ((position.y > positionComponent->y) &&
+               (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "down";
     } else {
         player_sprite->spriteIndex = "idle";
