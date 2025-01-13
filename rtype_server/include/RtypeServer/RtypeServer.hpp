@@ -93,8 +93,10 @@ class RtypeServer {
 
     void initCallbacks();
     void initEventHandlers();
+    void startAndBroadcastLevel();
 
     void broadcastPlayerState(const Player& player);
+    void broadcastStartLevel();
     void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);

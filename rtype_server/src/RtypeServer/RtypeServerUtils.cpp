@@ -42,6 +42,23 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
     broadcastAllUnreliable(serializedMessage);
 }
 
+void RtypeServer::broadcastStartLevel() {
+    RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
+    levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
+    levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
+
+    // Serialize the LevelSignalMessage
+    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
+
+    // Broadcast the serialized message to all clients
+    broadcastAllReliable(serializedMessage);
+}
+
+void RtypeServer::startAndBroadcastLevel() {
+    _game_instance->getMap()->startLevel();
+    broadcastStartLevel();
+}
+
 void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity) {
     auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
     if (position) {

@@ -57,6 +57,16 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleDestroyEntity(destroyEntityMessage);
             break;
         }
+        case RTypeProtocol::LEVEL_SIGNAL: {
+            RTypeProtocol::LevelSignalMessage levelSignalMessage =
+                RTypeProtocol::deserializeLevelSignal(signal);
+            if (levelSignalMessage.startLevel) {
+                _game_map.startLevel();
+            } else {
+                _game_map.stopLevel();
+            }
+            break;
+        }
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;

@@ -21,6 +21,7 @@ class GameInstance {
     void init_textures();
     void init_sprite_sheets();
     void init_screen_limits();
+    void start_level();
 
     void init_level(std::string filepath, std::string foldername);
 
