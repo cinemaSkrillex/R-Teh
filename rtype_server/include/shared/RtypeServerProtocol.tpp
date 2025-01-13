@@ -101,8 +101,11 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
     std::array<char, BUFFER_SIZE> buffer = {};
     std::size_t                   offset = 0;
 
+    // Serialize base message
     std::memcpy(buffer.data() + offset, &msg, sizeof(BaseMessage));
     offset += sizeof(BaseMessage);
+
+    // Serialize other fields
     std::memcpy(buffer.data() + offset, &msg.scrollingSpeed, sizeof(msg.scrollingSpeed));
     offset += sizeof(msg.scrollingSpeed);
     std::memcpy(buffer.data() + offset, &msg.x_level_position, sizeof(msg.x_level_position));
@@ -114,6 +117,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
     std::memcpy(buffer.data() + offset, &msg.server_tick, sizeof(msg.server_tick));
     offset += sizeof(msg.server_tick);
 
+    // Serialize level_music vector size
     size_t level_music_size = msg.level_music.size();
     std::memcpy(buffer.data() + offset, &level_music_size, sizeof(level_music_size));
     offset += sizeof(level_music_size);
@@ -373,8 +377,11 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     MapMessage  msg;
     std::size_t offset = 0;
 
+    // Deserialize base message
     std::memcpy(&msg, buffer.data() + offset, sizeof(BaseMessage));
     offset += sizeof(BaseMessage);
+
+    // Deserialize other fields
     std::memcpy(&msg.scrollingSpeed, buffer.data() + offset, sizeof(msg.scrollingSpeed));
     offset += sizeof(msg.scrollingSpeed);
     std::memcpy(&msg.x_level_position, buffer.data() + offset, sizeof(msg.x_level_position));
@@ -386,6 +393,7 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     std::memcpy(&msg.server_tick, buffer.data() + offset, sizeof(msg.server_tick));
     offset += sizeof(msg.server_tick);
 
+    // Deserialize level_music vector size
     size_t level_music_size;
     std::memcpy(&level_music_size, buffer.data() + offset, sizeof(level_music_size));
     offset += sizeof(level_music_size);

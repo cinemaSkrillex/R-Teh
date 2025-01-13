@@ -80,7 +80,10 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.isLoaded         = GameMap->isLoaded();
     mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
     mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
-    mapMessage.level_music.assign(GameMap->getMusicName().begin(), GameMap->getMusicName().end());
+    std::string musicName       = GameMap->getMusicName();
+
+    mapMessage.level_music.assign(musicName.begin(), musicName.end());
+
     std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
     const auto& backgrounds = GameMap->getBackgrounds();
     for (const auto& background : backgrounds) {

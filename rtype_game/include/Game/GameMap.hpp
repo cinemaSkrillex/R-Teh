@@ -36,6 +36,11 @@ class GameMap {
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }
     void setIsMapLoaded(bool isMapLoaded) { _isMapLoaded = isMapLoaded; }
+    void setMusicName(const std::string& musicName) {
+        std::cout << "Setting music name: " << musicName << std::endl;
+        _music_name = musicName;
+        std::cout << "Music name set: " << _music_name << std::endl;
+    }
     std::vector<std::shared_ptr<RealEngine::Entity>>& getBlockEntities() { return _blockEntities; }
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }

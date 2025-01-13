@@ -260,13 +260,6 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
     _game_map.setXLevelPosition(parsedPacket.x_level_position);
     _game_map.setIsMapLoaded(parsedPacket.isLoaded);
-    if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
-        _game_map.startLevel();
-        _game_map.synchroniseLevelBlockEntities();
-    } else if (_game_map.levelRunning() == true && parsedPacket.isLevelRunning == false) {
-        _game_map.stopLevel();
-        _game_map.synchroniseLevelBlockEntities();
-    }
     _serverTick = parsedPacket.server_tick;
     std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
               << ", XLevelPosition: " << _game_map.getXLevelPosition()
@@ -280,7 +273,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     }
     std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
     std::cout << "Level music: " << level_music_str << std::endl;
-    RealEngine::AssetManager::getInstance().loadMusic("level_music", level_music_str);
+    _game_map.setMusicName(level_music_str);
 
     // Load backgrounds
     if (parsedPacket.backgrounds.empty()) {
@@ -296,5 +289,12 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
 
         // RealEngine::AssetManager::getInstance().loadTexture(background_str);
         // _game_map.addBackgroundTexture(background_str, background.position);
+    }
+    if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
+        _game_map.startLevel();
+        _game_map.synchroniseLevelBlockEntities();
+    } else if (_game_map.levelRunning() == true && parsedPacket.isLevelRunning == false) {
+        _game_map.stopLevel();
+        _game_map.synchroniseLevelBlockEntities();
     }
 }

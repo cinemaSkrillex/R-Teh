@@ -28,7 +28,7 @@ GameInstance::GameInstance(bool serverVision)
     init_textures();
     init_sprite_sheets();
     init_screen_limits();
-    _game_map->loadFromJSON("../../assets/maps/map.json");
+    _game_map->loadFromJSON("../../assets/maps/level_1.json");
     rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(600, 100));
     addAndGetEnemy(spaceSphere.getEntity());
 }
