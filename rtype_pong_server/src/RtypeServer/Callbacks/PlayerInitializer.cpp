@@ -43,12 +43,12 @@ std::array<char, BUFFER_SIZE> createSynchronizeMessage(
     const std::vector<std::pair<long, sf::Vector2f>>& activePlayerUUIDs) {
     // Populate the SynchronizeMessage structure
     RTypeProtocol::SynchronizeMessage syncMessage;
-    syncMessage.message_type = RTypeProtocol::SYNCHRONIZE;  // Message type
+    syncMessage.message_type = RTypeProtocol::SYNCHRONISE;  // Message type
     syncMessage.uuid         = uuid;                        // Player UUID
     syncMessage.timestamp    = timestamp;                   // Synchronization timestamp
     syncMessage.x            = x;                           // Player X position
     syncMessage.y            = y;                           // Player Y position
-    syncMessage.entities      = activePlayerUUIDs;           // List of active player UUIDs
+    syncMessage.players      = activePlayerUUIDs;           // List of active player UUIDs
 
     // Serialize the message
     return RTypeProtocol::serialize<BUFFER_SIZE>(syncMessage);

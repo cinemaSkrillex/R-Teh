@@ -23,6 +23,11 @@ class Controls {
 
     void moveUp(float deltaTime, RealEngine::Entity entity);
     void moveDown(float deltaTime, RealEngine::Entity entity);
+    void moveLeft(float deltaTime, RealEngine::Entity entity);
+    void moveRight(float deltaTime, RealEngine::Entity entity);
+    void shoot(float deltaTime, RealEngine::Entity entity);
+    void holdShoot(float deltaTime, RealEngine::Entity entity);
+    void releaseShoot(float deltaTime, RealEngine::Entity entity);
 
    private:
     RealEngine::Registry&      _registry;

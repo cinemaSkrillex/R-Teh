@@ -29,7 +29,6 @@ class Game {
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
     ~Game();
     void                                run();
-    void                                updateMap(float deltaTime);
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
@@ -63,6 +62,7 @@ class Game {
     void handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
+    void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
 
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
@@ -88,6 +88,7 @@ class Game {
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    GameMap                                                           _game_map;
 
     long int                              _localPlayerUUID;
     std::chrono::steady_clock::time_point _startTime;

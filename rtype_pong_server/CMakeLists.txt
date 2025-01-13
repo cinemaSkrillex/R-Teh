@@ -58,10 +58,10 @@ configure_file(${CMAKE_SOURCE_DIR}/rtype_pong_server/Config/configpath.h.in ${CM
 
 
 # Ensure the headers are copied before building rtype_game
-add_dependencies(r_type copy_headers_engine_for_pong_server)
-add_dependencies(r_type copy_headers_server_lagcompensation_pong_server)
-add_dependencies(r_type copy_config_pong_server)
-# add_dependencies(r_type copy_assets_server)
+add_dependencies(r_type_pong_server copy_headers_engine_for_pong_server)
+add_dependencies(r_type_pong_server copy_headers_server_lagcompensation_pong_server)
+add_dependencies(r_type_pong_server copy_config_pong_server)
+# add_dependencies(rtype_pong_server copy_assets_server)
 
 
 if (WIN32)

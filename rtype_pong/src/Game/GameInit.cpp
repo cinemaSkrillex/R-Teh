@@ -29,6 +29,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
+      _game_map(_registry),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
@@ -54,9 +55,6 @@ void Game::init_all_game() {
     init_sounds();
     init_screen_limits();
 
-    Background background(_registry, -200.f, "big_stars_background");
-    Background background2(_registry, -100.f, "medium_stars_background");
-    Background background3(_registry, -50.f, "small_stars_background");
     Player player(_registry, {200, 200}, false);
     _player_entity = player.getEntity();
 }
@@ -204,7 +202,7 @@ void Game::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        _parallaxSystem.update(registry, deltaTime);
+        if (_game_map.levelRunning()) _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
@@ -264,6 +262,21 @@ void Game::set_action_handlers() {
     _controlSystem.setActionHandler(RealEngine::Action::Down,
                                     std::bind(&rtype::Controls::moveDown, &_controls,
                                               std::placeholders::_1, std::placeholders::_2));
+    _controlSystem.setActionHandler(RealEngine::Action::Left,
+                                    std::bind(&rtype::Controls::moveLeft, &_controls,
+                                              std::placeholders::_1, std::placeholders::_2));
+    _controlSystem.setActionHandler(RealEngine::Action::Right,
+                                    std::bind(&rtype::Controls::moveRight, &_controls,
+                                              std::placeholders::_1, std::placeholders::_2));
+    _controlSystem.setActionHandler(RealEngine::Action::Action1,
+                                    std::bind(&rtype::Controls::shoot, &_controls,
+                                              std::placeholders::_1, std::placeholders::_2));
+    _controlSystem.setActionHoldHandler(RealEngine::Action::Action1,
+                                        std::bind(&rtype::Controls::holdShoot, &_controls,
+                                                  std::placeholders::_1, std::placeholders::_2));
+    _controlSystem.setActionReleaseHandler(RealEngine::Action::Action1,
+                                           std::bind(&rtype::Controls::releaseShoot, &_controls,
+                                                     std::placeholders::_1, std::placeholders::_2));
 }
 
 void Game::set_sprite_opacity() {
