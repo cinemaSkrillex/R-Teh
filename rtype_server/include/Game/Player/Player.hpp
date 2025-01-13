@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Game/Mobs/Behaviors.hpp"
+#include "Game/Particles.hpp"
 
 namespace rtype {
 class PlayerEntity {

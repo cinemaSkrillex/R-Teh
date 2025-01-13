@@ -102,6 +102,6 @@ void DrawSystem::update(Registry& registry, float deltaTime) {
             sprite.draw(*_window);
         }
     }
-    // updateParticles(registry, deltaTime);
+    updateParticles(registry, deltaTime);
 }
 }  // namespace RealEngine

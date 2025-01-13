@@ -19,6 +19,7 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
             playerHealth->amount -= colliderDamage->amount;
         }
         playerHealth->invincibilityTime = 1.5f;
+        HitEffect hitEffect(registry, {playerPosition->x, playerPosition->y});
     }
 }
 

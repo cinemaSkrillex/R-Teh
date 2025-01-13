@@ -54,20 +54,25 @@ void RtypeServer::handleClientMessages() {
 }
 
 void RtypeServer::initEventHandlers() {
+    eventHandlers[RTypeProtocol::MessageType::SHOOT_EVENT] = std::make_unique<ShootEvent>();
+    eventHandlers[RTypeProtocol::MessageType::HOLD_SHOOT_EVENT] =
+        std::make_unique<HoldShootEvent>();
+    eventHandlers[RTypeProtocol::MessageType::RELEASE_SHOOT_EVENT] =
+        std::make_unique<ReleaseShootEvent>();
 }
 
 void RtypeServer::runGameInstance(float deltaTime) {
     auto destroyedEntities = _game_instance->run(_deltaTime);
     if (!destroyedEntities.empty()) {
-        // RTypeProtocol::DestroyEntityMessage destroyMessage;
-        // destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
-        // destroyMessage.uuid         = 0;
-        // destroyMessage.entity_ids.reserve(destroyedEntities.size());
-        // destroyMessage.entity_ids.insert(destroyMessage.entity_ids.end(), destroyedEntities.begin(),
-        //                                  destroyedEntities.end());
-        // std::array<char, 800> serializedDestroyMessage =
-        //     RTypeProtocol::serialize<800>(destroyMessage);
-        // broadcastAllReliable(serializedDestroyMessage);
+        RTypeProtocol::DestroyEntityMessage destroyMessage;
+        destroyMessage.message_type = RTypeProtocol::MessageType::DESTROY_ENTITY;
+        destroyMessage.uuid         = 0;
+        destroyMessage.entity_ids.reserve(destroyedEntities.size());
+        destroyMessage.entity_ids.insert(destroyMessage.entity_ids.end(), destroyedEntities.begin(),
+                                         destroyedEntities.end());
+        std::array<char, 800> serializedDestroyMessage =
+            RTypeProtocol::serialize<800>(destroyMessage);
+        broadcastAllReliable(serializedDestroyMessage);
     }
 }
 
