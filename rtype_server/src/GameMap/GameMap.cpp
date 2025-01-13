@@ -7,7 +7,7 @@
 
 #include "Game/GameMap.hpp"
 
-GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelStarted(false) {}
+GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _isLevelRunning(false) {}
 
 GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
@@ -39,7 +39,7 @@ Json::Value GameMap::readJSONFile(const std::string& filepath) {
 }
 
 void GameMap::updateLevel(float deltaTime) {
-    // if (!_levelStarted) {
+    // if (!_isLevelRunning) {
     //     return;
     // }
     x_level_position += _scrollingSpeed * deltaTime;
@@ -53,7 +53,7 @@ void GameMap::updateLevel(float deltaTime) {
 }
 
 std::vector<Map::WaveMob> GameMap::invokeWaves() {
-    // if (!_levelStarted) {
+    // if (!_isLevelRunning) {
     //     return {};
     // }
     std::vector<Map::WaveMob> enemiesToSpawn;
@@ -66,6 +66,20 @@ std::vector<Map::WaveMob> GameMap::invokeWaves() {
         }
     }
     return enemiesToSpawn;
+}
+
+void GameMap::unloadLevel() {
+    _isLevelRunning = false;
+    for (auto& block : _blockEntities) {
+        if (block) _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+    }
+    _blockEntities.clear();
+    if (_boss.bossEntity) {
+        _registry.add_component(_boss.bossEntity, RealEngine::AutoDestructible{0.0f});
+    }
+    _scrollingSpeed  = 0.0f;
+    x_level_position = 0.0f;
+    _isLoaded        = false;
 }
 
 void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {

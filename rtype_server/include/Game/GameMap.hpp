@@ -39,6 +39,14 @@ struct Wave {
     sf::Vector2f         startPosition;  // Starting position for the wave
     std::vector<WaveMob> mobs;           // List of mobs in this wave
 };
+
+struct Boss {
+    std::string                         bossType;  // e.g., "boss1" (filename of the boss JSON)
+    sf::Vector2f                        position;  // Starting position for the boss
+    std::shared_ptr<RealEngine::Entity> bossEntity;
+    bool                                triggered = false;
+};
+
 }  // namespace Map
 
 class GameMap {
@@ -59,6 +67,7 @@ class GameMap {
     void addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
     void removeDeadBlocks();
 
+    void unloadLevel();
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
 
     std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
@@ -68,17 +77,20 @@ class GameMap {
     float getXLevelPosition() const { return x_level_position; }
 
    private:
-    std::string                                      _map_name;
-    std::string                                      _music_name;
-    float                                            _scrollingSpeed  = 0.0f;
-    float                                            x_level_position = 0.0f;
-    std::vector<Map::Tile>                           _tiles;
-    std::vector<Map::Wave>                           _waves;
-    std::vector<std::shared_ptr<rtype::Block>>       _blockEntities;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _WaveEntities;
-    RealEngine::Registry&                            _registry;
-    bool                                             _isLoaded = false;
-    bool                                             _levelStarted;
+    RealEngine::Registry&                      _registry;
+    std::string                                _map_name;
+    std::string                                _music_name;
+    float                                      _scrollingSpeed  = 0.0f;
+    float                                      x_level_position = 0.0f;
+    std::vector<Map::Tile>                     _tiles;
+    std::vector<Map::Wave>                     _waves;
+    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
+    std::vector<std::pair<std::string, float>> _backgrounds;
+    bool                                       _endBoss;
+    Map::Boss                                  _boss;
+    sf::Vector2f                               _endPosition;
+    bool                                       _isLoaded = false;
+    bool                                       _isLevelRunning;
 };
 
 #endif /* !GameMap_HPP_ */

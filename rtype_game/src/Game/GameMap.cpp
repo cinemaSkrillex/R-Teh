@@ -40,6 +40,9 @@ void GameMap::stopLevel() {
 void GameMap::unloadLevel() {
     _levelRunning = false;
     RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    for (auto block : _blockEntities) {
+        if (block) _registry.add_component(block, RealEngine::AutoDestructible{0.0f});
+    }
     _blockEntities.clear();
     _backgroundEntities.clear();
     _scrollingSpeed  = 0.0f;
