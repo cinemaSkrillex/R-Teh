@@ -128,16 +128,8 @@ class AssetManager {
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
                                    const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
-        loadTexture(id, filepath);
-        loadSprite(id, id);
-        getSprite(id)->setScale(scale.x, scale.y);
-    }
-
-    void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::IntRect&  rect,
-                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
         try {
-            loadTexture(id, filepath, rect);
+            loadTexture(id, filepath);
             loadSprite(id, id);
             getSprite(id)->setScale(scale.x, scale.y);
         } catch (const std::exception& e) {
@@ -145,6 +137,14 @@ class AssetManager {
                       << std::endl;
             return;
         }
+    }
+
+    void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
+                                   const sf::IntRect&  rect,
+                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
+        loadTexture(id, filepath, rect);
+        loadSprite(id, id);
+        getSprite(id)->setScale(scale.x, scale.y);
     }
 
     void unloadSprite(const std::string& id) { _sprites.erase(id); }
