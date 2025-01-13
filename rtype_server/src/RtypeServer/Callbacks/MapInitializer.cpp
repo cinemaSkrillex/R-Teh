@@ -79,9 +79,7 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.x_level_position = GameMap->getXLevelPosition();
     mapMessage.isLoaded         = GameMap->isLoaded();
     mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
-    std::cout << "Is loaded: " << mapMessage.isLoaded << std::endl;
-    std::cout << "Is level running: " << mapMessage.isLevelRunning << std::endl;
-    mapMessage.server_tick = _serverConfig.getConfigItem<int>("SERVER_TICK");
+    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
 
     return mapMessage;
 }
