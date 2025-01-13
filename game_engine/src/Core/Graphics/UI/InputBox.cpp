@@ -7,14 +7,22 @@
 
 #include "../include/Core/Graphics/UI/InputBox.hpp"
 
+#include <iostream>
+
 namespace RealEngine {
 
-InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& defaultText, const std::string& fontPath, ContentType contentType)
-    : text(defaultText, fontPath), contentType(contentType), characterLimit(256), isActive(false), currentText(defaultText) {
+InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
+                   const std::string& defaultText, const std::string& fontPath,
+                   ContentType contentType)
+    : text(defaultText, fontPath),
+      contentType(contentType),
+      characterLimit(256),
+      isActive(false),
+      currentText(defaultText) {
     box.setSize(size);
     box.setPosition(position);
     box.setFillColor(sf::Color::White);
-    text.setPosition(position.x + 5, position.y + (size.y / 2));
+    text.setPosition(position.x + 10000, position.y + (size.y / 2));
 }
 
 void InputBox::draw(sf::RenderWindow& window) {
@@ -46,35 +54,28 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
         case ContentType::Text:
             return (unicode >= 32 && unicode <= 126) || unicode == '\b';
         case ContentType::Alphanumeric:
-            return ((unicode >= '0' && unicode <= '9') || (unicode >= 'A' && unicode <= 'Z') || (unicode >= 'a' && unicode <= 'z') || unicode == '\b');
+            return ((unicode >= '0' && unicode <= '9') || (unicode >= 'A' && unicode <= 'Z') ||
+                    (unicode >= 'a' && unicode <= 'z') || unicode == '\b');
     }
     return false;
 }
 
 void InputBox::setPosition(const sf::Vector2f& position) {
     box.setPosition(position);
-    text.setPosition(position.x + 5, position.y + 5);
+    text.setPosition(position.x + 10000, position.y + 5);
 }
 
-void InputBox::setSize(const sf::Vector2f& size) {
-    box.setSize(size);
-}
+void InputBox::setSize(const sf::Vector2f& size) { box.setSize(size); }
 
-void InputBox::setFillColor(const sf::Color& color) {
-    box.setFillColor(color);
-}
+void InputBox::setFillColor(const sf::Color& color) { box.setFillColor(color); }
 
 void InputBox::setTextColor(const sf::Color& color) {
     text.setColor(color.r, color.g, color.b, color.a);
 }
 
-void InputBox::setCharacterLimit(size_t limit) {
-    characterLimit = limit;
-}
+void InputBox::setCharacterLimit(size_t limit) { characterLimit = limit; }
 
-std::string InputBox::getText() const {
-    return currentText;
-}
+std::string InputBox::getText() const { return currentText; }
 
 void InputBox::setText(const std::string& text) {
     currentText = text;
@@ -84,18 +85,18 @@ void InputBox::setText(const std::string& text) {
 
 void InputBox::centerText() {
     sf::FloatRect textBounds = text.getLocalBounds();
-    float textPositionX = box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
-    float textPositionY = box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    text.setPosition(textPositionX, textPositionY);
+    float         textPositionX =
+        box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
+    float textPositionY =
+        box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
+    text.setPosition(390, (textPositionY + 10));
 }
 
-void InputBox::setContentType(ContentType type) {
-    contentType = type;
-}
+void InputBox::setContentType(ContentType type) { contentType = type; }
 
 void InputBox::drawDebug(sf::RenderWindow& window) {
     sf::FloatRect bounds = text.getLocalBounds();
-    
+
     sf::RectangleShape debugRect(sf::Vector2f(bounds.width, bounds.height));
     debugRect.setPosition(text.getPosition().x + bounds.left, text.getPosition().y + bounds.top);
     debugRect.setOutlineColor(sf::Color::Red);

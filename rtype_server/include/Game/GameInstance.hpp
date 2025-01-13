@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "Game/Particles.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
 #include "GameMap.hpp"
@@ -68,6 +69,7 @@ class GameInstance {
     RealEngine::HealthSystem       _healthSystem;
     RealEngine::NetvarSystem       _netvarSystem;
     RealEngine::TargetRadiusSystem _targetRadiusSystem;
+    RealEngine::ParticleSystem     _particleSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;

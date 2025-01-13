@@ -28,6 +28,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _rotationSystem.update(_registry, deltaTime);
     // _radiusSystem.update(_registry, deltaTime);
     _targetRadiusSystem.update(_registry);
+    _particleSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
