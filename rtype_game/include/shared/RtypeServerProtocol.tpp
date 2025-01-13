@@ -109,7 +109,55 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
     offset += sizeof(msg.x_level_position);
     std::memcpy(buffer.data() + offset, &msg.isLoaded, sizeof(msg.isLoaded));
     offset += sizeof(msg.isLoaded);
+    std::memcpy(buffer.data() + offset, &msg.isLevelRunning, sizeof(msg.isLevelRunning));
+    offset += sizeof(msg.isLevelRunning);
     std::memcpy(buffer.data() + offset, &msg.server_tick, sizeof(msg.server_tick));
+    offset += sizeof(msg.server_tick);
+
+    size_t level_music_size = msg.level_music.size();
+    std::memcpy(buffer.data() + offset, &level_music_size, sizeof(level_music_size));
+    offset += sizeof(level_music_size);
+
+    // Serialize level_music vector data
+    std::memcpy(buffer.data() + offset, msg.level_music.data(), level_music_size);
+    offset += level_music_size;
+
+    // Serialize backgrounds vector size
+    size_t backgrounds_size = msg.backgrounds.size();
+    std::memcpy(buffer.data() + offset, &backgrounds_size, sizeof(backgrounds_size));
+    offset += sizeof(backgrounds_size);
+
+    // Serialize each background
+    for (const auto& background : msg.backgrounds) {
+        // Serialize background data size
+        size_t data_size = background.data.size();
+        std::memcpy(buffer.data() + offset, &data_size, sizeof(data_size));
+        offset += sizeof(data_size);
+
+        // Serialize background data
+        std::memcpy(buffer.data() + offset, background.data.data(), data_size);
+        offset += data_size;
+
+        // Serialize background position
+        std::memcpy(buffer.data() + offset, &background.position, sizeof(background.position));
+        offset += sizeof(background.position);
+    }
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const LevelSignalMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    std::size_t                   offset = 0;
+
+    // Serialize base message
+    std::memcpy(buffer.data() + offset, &msg, sizeof(BaseMessage));
+    offset += sizeof(BaseMessage);
+
+    // Serialize startLevel
+    std::memcpy(buffer.data() + offset, &msg.startLevel, sizeof(msg.startLevel));
+    offset += sizeof(msg.startLevel);
 
     return buffer;
 }
@@ -123,7 +171,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const NewEntityMessage& m
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
     // Serialize the event type
-    // writeToBuffer(it, msg.event_type);
+    writeToBuffer(it, static_cast<int>(msg.entity_type));
 
     // Serialize the components
     for (const auto& component : msg.components) {
@@ -240,7 +288,9 @@ RTypeProtocol::NewEntityMessage RTypeProtocol::deserializeNewEntityMessage(
     readFromBuffer(it, static_cast<BaseMessage&>(msg));
 
     // Deserialize the event type
-    // readFromBuffer(it, msg.event_type);
+    int entityTypeInt;
+    readFromBuffer(it, entityTypeInt);
+    msg.entity_type = static_cast<EntityType>(entityTypeInt);
 
     // Deserialize each component by reading [componentType, dataLength, rawData]
     while (it + sizeof(int) + sizeof(int) <= buffer.data() + BUFFER_SIZE) {
@@ -331,7 +381,62 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     offset += sizeof(msg.x_level_position);
     std::memcpy(&msg.isLoaded, buffer.data() + offset, sizeof(msg.isLoaded));
     offset += sizeof(msg.isLoaded);
+    std::memcpy(&msg.isLevelRunning, buffer.data() + offset, sizeof(msg.isLevelRunning));
+    offset += sizeof(msg.isLevelRunning);
     std::memcpy(&msg.server_tick, buffer.data() + offset, sizeof(msg.server_tick));
+    offset += sizeof(msg.server_tick);
+
+    size_t level_music_size;
+    std::memcpy(&level_music_size, buffer.data() + offset, sizeof(level_music_size));
+    offset += sizeof(level_music_size);
+
+    // Deserialize level_music vector data
+    msg.level_music.resize(level_music_size);
+    std::memcpy(msg.level_music.data(), buffer.data() + offset, level_music_size);
+    offset += level_music_size;
+
+    // Deserialize backgrounds vector size
+    size_t backgrounds_size;
+    std::memcpy(&backgrounds_size, buffer.data() + offset, sizeof(backgrounds_size));
+    offset += sizeof(backgrounds_size);
+
+    // Deserialize each background
+    for (size_t i = 0; i < backgrounds_size; ++i) {
+        BackgroundData background;
+
+        // Deserialize background data size
+        size_t data_size;
+        std::memcpy(&data_size, buffer.data() + offset, sizeof(data_size));
+        offset += sizeof(data_size);
+
+        // Deserialize background data
+        background.data.resize(data_size);
+        std::memcpy(background.data.data(), buffer.data() + offset, data_size);
+        offset += data_size;
+
+        // Deserialize background position
+        std::memcpy(&background.position, buffer.data() + offset, sizeof(background.position));
+        offset += sizeof(background.position);
+
+        msg.backgrounds.push_back(background);
+    }
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::LevelSignalMessage RTypeProtocol::deserializeLevelSignal(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    LevelSignalMessage msg;
+    std::size_t        offset = 0;
+
+    // Deserialize base message
+    std::memcpy(&msg, buffer.data() + offset, sizeof(BaseMessage));
+    offset += sizeof(BaseMessage);
+
+    // Deserialize startLevel
+    std::memcpy(&msg.startLevel, buffer.data() + offset, sizeof(msg.startLevel));
+    offset += sizeof(msg.startLevel);
 
     return msg;
 }

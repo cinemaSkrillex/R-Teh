@@ -17,6 +17,7 @@ void rtype::Game::run() {
         handleSignal(_clientUDP->get_last_reliable_packet_data());
         handleSignal(_clientUDP->get_last_unreliable_packet_data());
         _registry.run_systems(_deltaTime);
+        _game_map.updateLevel(_deltaTime);
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _window.display();
         auto client_now = std::chrono::steady_clock::now();
@@ -35,37 +36,6 @@ void rtype::Game::run() {
             RTypeProtocol::serialize<800>(playerDirectionMessage);
 
         _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
-        updateMap(_deltaTime);
     }
     exit(0);
-}
-
-void rtype::Game::updateMap(float deltaTime) {
-    // const float fixedTimeStep = 1.0f / _serverTick;
-    // if (!_isMapLoaded) {
-    //     return;
-    // }
-    // _ClientX_level_position += _ClientScrollingSpeed * fixedTimeStep;
-
-    // auto blockTagEntities = _registry.view<RealEngine::BlockTag, RealEngine::Position>();
-    // if (blockTagEntities.empty()) {
-    //     return;
-    // }
-    // for (auto entity : blockTagEntities) {
-    //     if (!entity) {
-    //         continue;
-    //     }
-    //     auto position = _registry.get_component<RealEngine::Position>(entity);
-    //     if (!position) {
-    //         continue;
-    //     }
-    //     if (position->x > INT_MAX) {
-    //         continue;
-    //     }
-    //     if (position->x < 0) {
-    //         _registry.remove_entity(entity);
-    //         continue;
-    //     }
-    //     position->x -= _ClientScrollingSpeed * fixedTimeStep;
-    // }
 }

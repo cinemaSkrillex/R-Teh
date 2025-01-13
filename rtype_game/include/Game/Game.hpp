@@ -29,7 +29,6 @@ class Game {
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
     ~Game();
     void                                run();
-    void                                updateMap(float deltaTime);
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);

@@ -28,9 +28,10 @@ class GameMap {
     void stopLevel();
     void unloadLevel();
 
-    void addBlock(std::shared_ptr<RealEngine::Entity> block) { _blockEntities.push_back(block); }
+    void addBlock(std::shared_ptr<RealEngine::Entity> block) { _blockEntities.emplace_back(block); }
     void addBackground(std::shared_ptr<RealEngine::Entity> background,
                        RealEngine::ParallaxSystem&         parallaxSystem);
+    void synchroniseLevelBlockEntities();
     void removeDeadBlocks();
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }

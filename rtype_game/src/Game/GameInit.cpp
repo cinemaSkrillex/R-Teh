@@ -55,13 +55,6 @@ void Game::init_all_game() {
     init_sounds();
     init_screen_limits();
 
-    Background background(_registry, -200.f, "big_stars_background");
-    Background background2(_registry, -100.f, "medium_stars_background");
-    Background background3(_registry, -50.f, "small_stars_background");
-    _game_map.addBackground(background.getEntity(), _parallaxSystem);
-    _game_map.addBackground(background2.getEntity(), _parallaxSystem);
-    _game_map.addBackground(background3.getEntity(), _parallaxSystem);
-    // _game_map.startLevel();
     Player player(_registry, {200, 200}, false);
     _player_entity = player.getEntity();
 }

@@ -188,7 +188,25 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
         }
     }
     // std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
-    _entities.emplace(parsedPacket.uuid, newEntity);
+    // if (parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK) {
+    //     _game_map.addBlock(newEntity);
+    // } else {
+    //     _entities.emplace(parsedPacket.uuid, newEntity);
+    // }
+
+    switch (parsedPacket.entity_type) {
+        case RTypeProtocol::EntityType::BLOCK:
+            _game_map.addBlock(newEntity);
+            break;
+        case RTypeProtocol::EntityType::BACKGROUND:
+            _game_map.addBackground(newEntity, _parallaxSystem);
+            break;
+        case RTypeProtocol::EntityType::OTHER_ENTITY:
+            _entities.emplace(parsedPacket.uuid, newEntity);
+            break;
+        default:
+            break;
+    }
 }
 
 void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
@@ -215,9 +233,16 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
     _game_map.setXLevelPosition(parsedPacket.x_level_position);
     _game_map.setIsMapLoaded(parsedPacket.isLoaded);
+    if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
+        _game_map.startLevel();
+        _game_map.synchroniseLevelBlockEntities();
+    } else if (_game_map.levelRunning() == true && parsedPacket.isLevelRunning == false) {
+        _game_map.stopLevel();
+        _game_map.synchroniseLevelBlockEntities();
+    }
     _serverTick = parsedPacket.server_tick;
     std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
               << ", XLevelPosition: " << _game_map.getXLevelPosition()
-              << ", isLoaded: " << _game_map.isMapLoaded() << ", ServerTick: " << _serverTick
-              << std::endl;
+              << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
+              << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 }

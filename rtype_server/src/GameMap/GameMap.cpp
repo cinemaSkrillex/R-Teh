@@ -82,6 +82,10 @@ void GameMap::unloadLevel() {
     _isLoaded        = false;
 }
 
+void GameMap::startLevel() { _isLevelRunning = true; }
+
+void GameMap::stopLevel() { _isLevelRunning = false; }
+
 void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
     std::ofstream file(filepath, std::ofstream::binary);
 

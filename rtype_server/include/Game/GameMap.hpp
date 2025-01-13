@@ -59,6 +59,8 @@ class GameMap {
     ~GameMap();
     void                      updateLevel(float deltaTime);
     std::vector<Map::WaveMob> invokeWaves();
+    void                      startLevel();
+    void                      stopLevel();
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
@@ -75,6 +77,7 @@ class GameMap {
     const std::vector<Map::Wave>&               getWaves() const { return _waves; }
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
+    bool  getIsLevelRunning() const { return _isLevelRunning; }
 
    private:
     RealEngine::Registry&                      _registry;

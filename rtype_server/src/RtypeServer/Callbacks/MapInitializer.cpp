@@ -40,6 +40,7 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     RTypeProtocol::NewEntityMessage newTileMessage;
     newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newTileMessage.uuid         = *blockEntity;
+    newTileMessage.entity_type  = RTypeProtocol::EntityType::BLOCK;
 
     auto& registry = _gameInstance->getRegistryRef();
     auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
@@ -77,7 +78,10 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.scrollingSpeed   = GameMap->getScrollingSpeed();
     mapMessage.x_level_position = GameMap->getXLevelPosition();
     mapMessage.isLoaded         = GameMap->isLoaded();
-    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
+    mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
+    std::cout << "Is loaded: " << mapMessage.isLoaded << std::endl;
+    std::cout << "Is level running: " << mapMessage.isLevelRunning << std::endl;
+    mapMessage.server_tick = _serverConfig.getConfigItem<int>("SERVER_TICK");
 
     return mapMessage;
 }

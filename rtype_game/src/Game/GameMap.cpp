@@ -19,9 +19,14 @@ void GameMap::updateLevel(float deltaTime) {
     }
     x_level_position += _scrollingSpeed * deltaTime;
     for (auto& block : _blockEntities) {
+        if (!block) {
+            std::cout << "Block is null" << std::endl;
+            continue;
+        }
         auto* position = _registry.get_component<RealEngine::Position>(block);
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
+            std::cout << "Block position: " << position->x << std::endl;
         }
     }
     removeDeadBlocks();
@@ -60,8 +65,16 @@ void GameMap::removeDeadBlocks() {
 
 void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
                             RealEngine::ParallaxSystem&         parallaxSystem) {
-    _backgroundEntities.push_back(background);
+    _backgroundEntities.emplace_back(background);
     parallaxSystem.update(_registry, 0.0f);  // this call is to set the background and the scale
 }
 
+void GameMap::synchroniseLevelBlockEntities() {
+    for (auto& block : _blockEntities) {
+        auto* position = _registry.get_component<RealEngine::Position>(block);
+        if (position) {
+            position->x += x_level_position;
+        }
+    }
+}
 }  // namespace rtype
