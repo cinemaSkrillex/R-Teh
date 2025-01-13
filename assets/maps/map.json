@@ -90,27 +90,18 @@
                     20.0
                 ]
             }
-        ]
-        // "endCondition": {
-        //     {
-        //     "type": "POSITION",
-        //     "position": [
-        //         1000.5,
-        //         20.0
-        //     ]
-        //     }
-        //     {
-        //         "type": "BOSS",
-        //         "triggerPosition": [
-        //             1000.5,
-        //             20.0
-        //         ],
-        //         "spawnPosition": [
-        //             1000.5,
-        //             20.0
-        //         ],
-        //         "Entity": "boss1"
-        //     }
-        // }
+        ],
+        "endCondition": {
+            "type": "BOSS",
+            "triggerPosition": [
+                1000.5,
+                20.0
+            ],
+            "spawnPosition": [
+                1000.5,
+                20.0
+            ],
+            "Entity": "boss1"
+        }
     }
 }
