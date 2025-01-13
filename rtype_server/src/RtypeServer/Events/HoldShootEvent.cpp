@@ -16,6 +16,9 @@ void HoldShootEvent::execute(const std::array<char, 800>&   buffer,
     if (gameInstance == nullptr) return;
     auto* container =
         gameInstance->getRegistry()->get_component<RealEngine::NetvarContainer>(player.getEntity());
+    if (!container) {
+        return;
+    }
     auto* isHolding = container->getNetvar("isHolding");
 
     isHolding->value = true;

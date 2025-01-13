@@ -199,6 +199,22 @@ void GameInstance::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet("space_sphere", spaceSphereSheet,
                                                             "normal", 0, {16, 14}, false, true, 55,
                                                             {8, 8}, sf::Clock());
+
+    // load mid bullet sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> midBulletSheet;
+    RealEngine::Sprite                                  midBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("mid_bullet")));
+    midBulletSheet.emplace("normal", midBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "mid_bullet", midBulletSheet, "normal", 0, {16, 12}, false, true, 55, {8, 6}, sf::Clock());
+
+    // load big bullet sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> bigBulletSheet;
+    RealEngine::Sprite                                  bigBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("big_bullet")));
+    bigBulletSheet.emplace("normal", bigBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
 }
 
 void GameInstance::init_level(std::string filepath, std::string foldername) {

@@ -145,17 +145,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
             case RTypeProtocol::ComponentList::SPRITE: {
-                // auto spriteSheet =
-                // *(RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str));
-                // //check if spriteSheet is not null
-                // // if not null do:
-                // // _registry.add_component(*newEntity, RealEngine::SpriteSheet{spriteSheet});
-                // //else
-                // auto sprite = *(RealEngine::AssetManager::getInstance().getSprite(sprite_str));
-                // _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
-                // break;
                 std::string sprite_str(component.second.begin(), component.second.end());
-                std::cout << "Sprite: " << sprite_str << "\n";
+                // std::cout << "Sprite: " << sprite_str << "\n";
 
                 auto spriteSheet =
                     RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);

@@ -58,9 +58,21 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
     registry.add_component(
         _entity,
         RealEngine::Velocity{direction.x * speed, direction.y * speed, {500.f, 500.f}, 0.f});
-    registry.add_component(_entity,
-                           RealEngine::SpriteComponent{
-                               *(RealEngine::AssetManager::getInstance().getSprite(spriteName))});
+    // registry.add_component(_entity,
+    //                        RealEngine::SpriteComponent{
+    //                            *(RealEngine::AssetManager::getInstance().getSprite(spriteName))});
+    auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(spriteName);
+    if (spriteSheet) {
+        registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+    } else {
+        auto sprite = RealEngine::AssetManager::getInstance().getSprite(spriteName);
+        if (sprite) {
+            registry.add_component(_entity, RealEngine::SpriteComponent{*sprite});
+        } else {
+            std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << spriteName
+                      << std::endl;
+        }
+    }
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(
         _entity,

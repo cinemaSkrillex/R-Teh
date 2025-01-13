@@ -62,7 +62,7 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
                                    RealEngine::CollisionType::SOLID);
 
     std::string sprite = block->getElement();
-    std::cout << "Sprite: " << sprite << std::endl;
+    // std::cout << "Sprite: " << sprite << std::endl;
     std::vector<char> spriteData(sprite.begin(), sprite.end());
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
 

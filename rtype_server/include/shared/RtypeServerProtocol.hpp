@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "../ECS/Components/Collision.hpp"
+#include "../ECS/Components/Position.hpp"
+#include "../ECS/Components/Velocity.hpp"
 
 namespace RTypeProtocol {
 
