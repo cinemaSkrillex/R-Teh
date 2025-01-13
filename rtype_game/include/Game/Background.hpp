@@ -12,13 +12,12 @@
 namespace rtype {
 class Background {
    public:
-    Background(RealEngine::Registry& registry, float speed, int scale);
+    Background(RealEngine::Registry& registry, float speed, std::string spriteStr);
     ~Background();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 
    private:
     std::shared_ptr<RealEngine::Entity> _entity;
-    RealEngine::Sprite                  _backgroundSprite;
 };
 }  // namespace rtype

@@ -55,12 +55,13 @@ void Game::init_all_game() {
     init_sounds();
     init_screen_limits();
 
-    Background background(_registry, -200.f, 3);
-    Background background2(_registry, -100.f, 2);
-    Background background3(_registry, -50.f, 1);
+    Background background(_registry, -200.f, "big_stars_background");
+    Background background2(_registry, -100.f, "medium_stars_background");
+    Background background3(_registry, -50.f, "small_stars_background");
     _game_map.addBackground(background.getEntity(), _parallaxSystem);
     _game_map.addBackground(background2.getEntity(), _parallaxSystem);
     _game_map.addBackground(background3.getEntity(), _parallaxSystem);
+    // _game_map.startLevel();
     Player player(_registry, {200, 200}, false);
     _player_entity = player.getEntity();
 }
@@ -100,8 +101,14 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale(
         "spaceship_down", "../../assets/sprites/spaceship.png", {0, 15 * 2, 33 * 2, 15});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "stars_background", "../../assets/sprites/backgrounds/stars.png", {1, 1});
-    AssetManagerInstance.getTexture("stars_background")->setRepeated(true);
+        "small_stars_background", "../../assets/sprites/backgrounds/stars.png", {1, 1});
+    AssetManagerInstance.getTexture("small_stars_background")->setRepeated(true);
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "medium_stars_background", "../../assets/sprites/backgrounds/stars.png", {2, 2});
+    AssetManagerInstance.getTexture("medium_stars_background")->setRepeated(true);
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "big_stars_background", "../../assets/sprites/backgrounds/stars.png", {3, 3});
+    AssetManagerInstance.getTexture("big_stars_background")->setRepeated(true);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet",
                                                    "../../assets/sprites/spaceship_bullet.png");
