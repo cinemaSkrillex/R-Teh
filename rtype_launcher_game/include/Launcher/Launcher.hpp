@@ -13,6 +13,7 @@
 #include <thread>
 
 #include "../Client/TCPClient.hpp"
+#include "../Core/Graphics/UI/Button.hpp"
 #include "../Core/Graphics/UI/InputBox.hpp"
 #include "../Core/Graphics/UI/Text.hpp"
 #include "../Core/Window.hpp"
@@ -29,6 +30,5 @@ class Launcher {
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
-    sf::RectangleShape   button;
-    RealEngine::Text     buttonText;
+    RealEngine::Button   button;
 };
