@@ -29,9 +29,6 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     std::string path = "../../assets/maps/";
-    if (assetLauncher == true) {
-        path = "../assets/maps/";
-    }
     _game_map->loadFromJSON(path + "level_1.json");
     rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(600, 100));
     addAndGetEnemy(spaceSphere.getEntity());
@@ -104,9 +101,6 @@ void GameInstance::init_systems() {
 
 void GameInstance::init_textures() {
     std::string path = "../../assets/sprites/";
-    if (assetLauncher == true) {
-        path = "../assets/sprites/";
-    }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
 
     init_level(path + "tiles/lv1", "lvl1");
