@@ -62,7 +62,7 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
 
 void InputBox::setPosition(const sf::Vector2f& position) {
     box.setPosition(position);
-    text.setPosition(position.x + 10000, position.y + 5);
+    text.setPosition(position.x + 5, position.y + 5);
 }
 
 void InputBox::setSize(const sf::Vector2f& size) { box.setSize(size); }
@@ -89,7 +89,8 @@ void InputBox::centerText() {
         box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
     float textPositionY =
         box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    text.setPosition(390, (textPositionY + 10));
+    std::cout << textPositionX << " " << textPositionY << std::endl;
+    text.setPosition((textPositionX + 50), (textPositionY + 10));
 }
 
 void InputBox::setContentType(ContentType type) { contentType = type; }

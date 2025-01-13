@@ -31,6 +31,7 @@ class InputBox {
     void        setContentType(ContentType type);
     void        centerText();
     void        drawDebug(sf::RenderWindow& window);
+    void setFocus(bool focus);
 
    private:
     sf::RectangleShape box;
