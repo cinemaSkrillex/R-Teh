@@ -1,7 +1,14 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** InputBox
+*/
+
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Text.hpp"  // Assurez-vous que le chemin est correct.
+#include "Text.hpp"
 
 namespace RealEngine {
 class InputBox {

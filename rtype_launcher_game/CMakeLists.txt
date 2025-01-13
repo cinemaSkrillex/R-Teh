@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(launcher_game)
+project(rtype_launcher_game)
 
 # Add sources files
 file(GLOB_RECURSE SOURCES
@@ -8,13 +8,13 @@ file(GLOB_RECURSE SOURCES
 )
 
 # Create the binary
-add_executable(l_launcher_game ${SOURCES})
+add_executable(rtype_l_launcher_game ${SOURCES})
 
 # Link lib to binary
-target_link_libraries(l_launcher_game rtype_engine)
-target_link_libraries(l_launcher_game rtype_client)
+target_link_libraries(rtype_l_launcher_game rtype_engine)
+target_link_libraries(rtype_l_launcher_game rtype_client)
 
-target_include_directories(l_launcher_game PUBLIC
+target_include_directories(rtype_l_launcher_game PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
@@ -34,17 +34,17 @@ target_include_directories(l_launcher_game PUBLIC
 add_custom_target(copy_headers_engine_for_game_launcher ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/game_engine/include
-    ${CMAKE_SOURCE_DIR}/launcher_game/include
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_game/include
     )
 
 # Ensure the headers are copied before building rtype_game
-add_dependencies(l_launcher_game copy_headers_engine_for_game_launcher)
+add_dependencies(rtype_l_launcher_game copy_headers_engine_for_game_launcher)
 
 if (WIN32)
 # Copy all DLLs from the bin directory to the output directory
-    add_custom_command(TARGET l_launcher_game POST_BUILD
+    add_custom_command(TARGET rtype_l_launcher_game POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "$<IF:$<CONFIG:Debug>,${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/debug/bin,${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-windows/bin>"
-            $<TARGET_FILE_DIR:l_launcher_game>
+            $<TARGET_FILE_DIR:rtype_l_launcher_game>
     )
 endif()

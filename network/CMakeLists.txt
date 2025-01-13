@@ -81,25 +81,25 @@ add_custom_target(copy_headers ALL
     ${CMAKE_SOURCE_DIR}/game_engine/include/Client
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-    ${CMAKE_SOURCE_DIR}/launcher_server/include/Server
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_server/include/Server
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-    ${CMAKE_SOURCE_DIR}/launcher_game/include/Server
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_game/include/Server
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/DynamicLibrary
-    ${CMAKE_SOURCE_DIR}/launcher_game/include/DynamicLibrary
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_game/include/DynamicLibrary
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/DynamicLibrary
-    ${CMAKE_SOURCE_DIR}/launcher_server/include/DynamicLibrary
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_server/include/DynamicLibrary
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Server
-    ${CMAKE_SOURCE_DIR}/launcher_server/src/Server
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_server/src/Server
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/src/shared
-    ${CMAKE_SOURCE_DIR}/launcher_server/src/shared
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_server/src/shared
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Client
-    ${CMAKE_SOURCE_DIR}/launcher_server/src/Client
+    ${CMAKE_SOURCE_DIR}/rtype_launcher_server/src/Client
 )
 
 # Ensure the headers are copied before building rtype_server and rtype_game
