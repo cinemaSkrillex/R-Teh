@@ -91,7 +91,7 @@ void GameMap::loadFromJSON(const std::string& filepath) {
         _scrollingSpeed =
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
-        _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);  // Clamp from 1 to 1000
+        _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
 
         // Load tiles
         const auto& tiles = root["mapData"]["tiles"];

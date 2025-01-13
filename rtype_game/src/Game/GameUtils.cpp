@@ -139,7 +139,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 // _registry.add_component(*newEntity, RealEngine::SpriteComponent{sprite});
                 // break;
                 std::string sprite_str(component.second.begin(), component.second.end());
-                // std::cout << "Sprite: " << sprite_str << "\n";
+                std::cout << "Sprite: " << sprite_str << "\n";
 
                 auto spriteSheet =
                     RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);

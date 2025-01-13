@@ -14,6 +14,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "Core/Audio/Music.hpp"
+#include "Core/Audio/Sound.hpp"
 #include "Core/Graphics/Rendering/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "Engine.hpp"
@@ -192,6 +194,68 @@ class AssetManager {
         }
     }
 
+    // Musics gestion
+
+    void loadMusic(const std::string& id, const std::string& filePath) {
+        try {
+            auto music = std::make_shared<RealEngine::Music>(filePath);
+            if (!music) {
+                std::cout << "Failed to load music: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load music: " + filePath);
+            }
+            _musics[id] = music;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadMusic: " << id << " - " << e.what() << std::endl;
+        }
+    }
+
+    std::shared_ptr<Music> getMusic(const std::string& id) {
+        try {
+            auto it = _musics.find(id);
+            if (it == _musics.end()) {
+                std::cout << "Music not found: " << id << std::endl;
+                throw std::runtime_error("Music not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get music: " << id << " - " << e.what() << std::endl;
+            return nullptr;
+        }
+    }
+
+    void unloadMusic(const std::string& id) { _musics.erase(id); }
+
+    // Sounds gestion
+
+    void loadSound(const std::string& id, const std::string& filePath) {
+        try {
+            auto sound = std::make_shared<RealEngine::Sound>(filePath);
+            if (sound) {
+                std::cout << "Failed to load sound: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load sound: " + filePath);
+            }
+            _sounds[id] = sound;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadSound: " << id << " - " << e.what() << std::endl;
+        }
+    }
+
+    std::shared_ptr<Sound> getSound(const std::string& id) {
+        try {
+            auto it = _sounds.find(id);
+            if (it == _sounds.end()) {
+                std::cout << "Sound not found: " << id << std::endl;
+                throw std::runtime_error("Sound not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get sound: " << id << " - " << e.what() << std::endl;
+            return nullptr;
+        }
+    }
+
+    void unloadSound(const std::string& id) { _sounds.erase(id); }
+
    private:
     AssetManager()  = default;
     ~AssetManager() = default;
@@ -201,5 +265,7 @@ class AssetManager {
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
     std::unordered_map<std::string, std::shared_ptr<Sprite>>      _sprites;
     std::unordered_map<std::string, std::shared_ptr<SpriteSheet>> _spriteSheets;
+    std::unordered_map<std::string, std::shared_ptr<Music>>       _musics;
+    std::unordered_map<std::string, std::shared_ptr<Sound>>       _sounds;
 };
 }  // namespace RealEngine

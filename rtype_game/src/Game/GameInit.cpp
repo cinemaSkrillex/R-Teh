@@ -48,8 +48,11 @@ void Game::init_all_game() {
     init_textures();
     set_sprite_opacity();
     init_sprite_sheets();
+    init_musics();
+    init_sounds();
     init_screen_limits();
 
+    RealEngine::AssetManager::getInstance().getMusic("level_1")->play();
     Background background(_registry, -200.f, 3);
     Background background2(_registry, -100.f, 2);
     Background background3(_registry, -50.f, 1);
@@ -320,5 +323,15 @@ void Game::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
 }
+
+void Game::init_musics() {
+    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    AssetManagerInstance.loadMusic(
+        "level_1", "../../assets/musics/8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
+    AssetManagerInstance.getMusic("level_1")->setLoop(true);
+    AssetManagerInstance.getMusic("level_1")->setVolume(50);
+}
+
+void Game::init_sounds() { auto& AssetManagerInstance = RealEngine::AssetManager::getInstance(); }
 
 }  // namespace rtype

@@ -45,6 +45,8 @@ class Game {
     void init_systems();
     void init_textures();
     void init_sprite_sheets();
+    void init_musics();
+    void init_sounds();
     void init_screen_limits();
 
     void init_level(std::string filepath, std::string foldername);
