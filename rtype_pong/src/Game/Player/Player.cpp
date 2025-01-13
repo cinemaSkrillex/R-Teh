@@ -134,7 +134,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
             "up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
         _playerSpriteSheet.emplace(
             "down", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
-        registry.add_component(_entity, RealEngine::Position{200.f, 200.f});
+        registry.add_component(_entity, RealEngine::Position{0.f, 100.f});
         registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
         registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
         registry.add_component(_entity, RealEngine::Controllable{});
