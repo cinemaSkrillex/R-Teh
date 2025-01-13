@@ -339,8 +339,20 @@ void Game::init_musics() {
         "level_1", "../../assets/musics/8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
     AssetManagerInstance.getMusic("level_1")->setVolume(50);
+    AssetManagerInstance.loadMusic(
+        "level_2", "../../assets/musics/Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
+    AssetManagerInstance.getMusic("level_2")->setLoop(true);
+    AssetManagerInstance.getMusic("level_2")->setVolume(55);
 }
 
-void Game::init_sounds() { auto& AssetManagerInstance = RealEngine::AssetManager::getInstance(); }
+void Game::init_sounds() {
+    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    AssetManagerInstance.loadSound("shoot", "../../assets/sounds/laserShoot.wav");
+    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/bigLaserShoot.wav");
+    AssetManagerInstance.loadSound("explosion", "../../assets/sounds/explosion.wav");
+    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/hitHurt.wav");
+    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/powerUp.wav");
+    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/blipSelect.wav");
+}
 
 }  // namespace rtype
