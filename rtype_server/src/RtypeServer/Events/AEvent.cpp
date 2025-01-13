@@ -27,6 +27,7 @@ std::array<char, 800> AEvent::createBulletMessage(long int id, sf::Vector2f posi
     RTypeProtocol::NewEntityMessage bulletMessage;
     bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     bulletMessage.uuid         = id;
+    bulletMessage.entity_type  = RTypeProtocol::EntityType::OTHER_ENTITY;
 
     // Serialize position component
     addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::POSITION, position);
