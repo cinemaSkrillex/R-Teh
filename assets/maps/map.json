@@ -1,7 +1,21 @@
 {
     "map_name": "Level 1",
     "scrollingSpeed": 50.0,
-    "background": "TODO: SPRITE_NAME",
+    "backgrounds": [
+        {
+        "sprite": "big_stars_background",
+        "speed": -200.0
+        },
+        {
+        "sprite": "medium_stars_background",
+        "speed": -100.0
+        },
+        {
+        "sprite": "small_stars_background",
+        "speed": -50.0
+        }
+    ],
+    "music": "level_1",
     "mapData": {
         "tiles": [
             {
