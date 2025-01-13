@@ -21,12 +21,6 @@ sf::IntRect Game::getPlayerNormalizedDirection() {
     auto*       velocity      = _registry.get_component<RealEngine::Velocity>(_player_entity);
 
     if (player_sprite && _window.isFocused() && velocity) {
-        if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {
-            direction.left = 1;
-        }
-        if (_controlSystem.isActionPressed(RealEngine::Action::Right)) {
-            direction.top = 1;
-        }
         if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
             direction.width            = 1;
             player_sprite->spriteIndex = "up";
@@ -39,9 +33,6 @@ sf::IntRect Game::getPlayerNormalizedDirection() {
             player_sprite->spriteIndex = "idle";
         }
 
-        if (direction.left == 1 && direction.top == 1) {
-            velocity->vx = 0;
-        }
         if (direction.width == 1 && direction.height == 1) {
             velocity->vy = 0;
         }
