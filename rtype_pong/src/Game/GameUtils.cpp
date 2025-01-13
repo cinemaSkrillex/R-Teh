@@ -34,7 +34,6 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
         }
         case RTypeProtocol::MAP_INFO: {
             RTypeProtocol::MapMessage mapMessage = RTypeProtocol::deserializeMapMessage(signal);
-            handleMapMessage(mapMessage);
             break;
         }
         case RTypeProtocol::PLAYER_MOVE: {
@@ -67,7 +66,6 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
 void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket) {
     const sf::Vector2f position = {parsedPacket.x, parsedPacket.y};
     const long int     uuid     = parsedPacket.uuid;
-    if (_players.find(uuid) != _players.end()) return;
     add_player(uuid, position);
 }
 
@@ -88,37 +86,28 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     const long int     uuid     = parsedPacket.uuid;
     const sf::Vector2f position = {parsedPacket.x, parsedPacket.y};
     float              step     = parsedPacket.step;
-    auto               it       = _players.find(uuid);
 
-    if (it == _players.end()) return;
-    std::shared_ptr<RealEngine::Entity> player = it->second;
+    // TODO: check if player is player or other player
+    // std::shared_ptr<RealEngine::Entity> player = it->second;
     // Update the position component of the player
-    auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(player);
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
-    if (!positionComponent && !interpolationComponent) return;
-    // if (position.y > positionComponent->y) {
-    //     player_sprite->spriteIndex = "down";
-    // } else if (position.y < positionComponent->y) {
+    // auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(player);
+    // auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
+    // auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
+    // if (!positionComponent && !interpolationComponent) return;
+    // if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
     //     player_sprite->spriteIndex = "up";
+    // } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    //     player_sprite->spriteIndex = "down";
     // } else {
     //     player_sprite->spriteIndex = "idle";
     // }
-    // if difference between position and positionComponent is greater than 2, change sprite
-    if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
-        player_sprite->spriteIndex = "up";
-    } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
-        player_sprite->spriteIndex = "down";
-    } else {
-        player_sprite->spriteIndex = "idle";
-    }
-    positionComponent->x                 = interpolationComponent->end.x;
-    positionComponent->y                 = interpolationComponent->end.y;
-    interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    interpolationComponent->end          = position;
-    interpolationComponent->step         = 1.f / step;
-    interpolationComponent->current_step = 0.f;
-    interpolationComponent->reset        = true;
+    // positionComponent->x                 = interpolationComponent->end.x;
+    // positionComponent->y                 = interpolationComponent->end.y;
+    // interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+    // interpolationComponent->end          = position;
+    // interpolationComponent->step         = 1.f / step;
+    // interpolationComponent->current_step = 0.f;
+    // interpolationComponent->reset        = true;
 }
 
 void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) {
@@ -200,56 +189,24 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
     // } else {
     //     _entities.emplace(parsedPacket.uuid, newEntity);
     // }
-
-    switch (parsedPacket.entity_type) {
-        case RTypeProtocol::EntityType::BLOCK:
-            _game_map.addBlock(newEntity);
-            break;
-        case RTypeProtocol::EntityType::BACKGROUND:
-            _game_map.addBackground(newEntity, _parallaxSystem);
-            break;
-        case RTypeProtocol::EntityType::OTHER_ENTITY:
-            _entities.emplace(parsedPacket.uuid, newEntity);
-            break;
-        default:
-            break;
-    }
 }
 
 void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
     for (const auto& entity_id : parsedPacket.entity_ids) {
-        auto it = _entities.find(entity_id);
-        if (it != _entities.end()) {
-            _registry.remove_entity(*it->second);
-            _entities.erase(it);
-            continue;
-        }
-        auto playerIt = _players.find(entity_id);
-        if (playerIt != _players.end()) {
-            _registry.remove_entity(*playerIt->second);
-            _players.erase(playerIt);
-        }
+        // auto it = _entities.find(entity_id);
+        // if (it != _entities.end()) {
+        //     _registry.remove_entity(*it->second);
+        //     _entities.erase(it);
+        //     continue;
+        // }
+        // auto playerIt = _players.find(entity_id);
+        // if (playerIt != _players.end()) {
+        //     _registry.remove_entity(*playerIt->second);
+        //     _players.erase(playerIt);
+        // }
         if (_localPlayerUUID == entity_id) {
             _registry.remove_entity(*_player_entity);
             _player_entity.reset();
         }
     }
-}
-
-void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
-    _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
-    _game_map.setXLevelPosition(parsedPacket.x_level_position);
-    _game_map.setIsMapLoaded(parsedPacket.isLoaded);
-    if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
-        _game_map.startLevel();
-        _game_map.synchroniseLevelBlockEntities();
-    } else if (_game_map.levelRunning() == true && parsedPacket.isLevelRunning == false) {
-        _game_map.stopLevel();
-        _game_map.synchroniseLevelBlockEntities();
-    }
-    _serverTick = parsedPacket.server_tick;
-    std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
-              << ", XLevelPosition: " << _game_map.getXLevelPosition()
-              << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
-              << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 }
