@@ -23,6 +23,7 @@
 namespace RealEngine {
 
 #define DEBUG 0
+#define assetLauncher false
 class AssetManager {
    public:
     static AssetManager& getInstance() {
@@ -212,7 +213,7 @@ class AssetManager {
         try {
             auto it = _musics.find(id);
             if (it == _musics.end()) {
-                std::cout << "Music not found: " << id << std::endl;
+                std::cout << "Music not found: [" << id << "]" << std::endl;
                 throw std::runtime_error("Music not found: " + id);
             }
             return it->second;

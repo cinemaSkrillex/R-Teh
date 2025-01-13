@@ -80,6 +80,19 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.isLoaded         = GameMap->isLoaded();
     mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
     mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
+    std::string musicName       = GameMap->getMusicName();
 
+    mapMessage.level_music.assign(musicName.begin(), musicName.end());
+
+    std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
+    const auto& backgrounds = GameMap->getBackgrounds();
+    for (const auto& background : backgrounds) {
+        RTypeProtocol::BackgroundData bgData;
+        bgData.data.assign(background.first.begin(), background.first.end());
+        bgData.speed = background.second;
+        std::cout << "Background: " << bgData.data.data() << ", Speed: " << bgData.speed
+                  << std::endl;
+        mapMessage.backgrounds.push_back(bgData);
+    }
     return mapMessage;
 }

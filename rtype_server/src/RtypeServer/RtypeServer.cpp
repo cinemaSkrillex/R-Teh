@@ -15,6 +15,7 @@ RtypeServer::RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision)
     initCallbacks();
     initEventHandlers();
     printServerStartupBanner();
+    startAndBroadcastLevel();
 }
 
 RtypeServer::~RtypeServer() {}

@@ -72,13 +72,6 @@ void RtypeServer::printServerStartupBanner() {
     sf::Vector2f player_start_position =
         _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
     int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    auto GameMap               = _game_instance->getMap();
-    auto blockEntities         = GameMap->getBlockEntities();
-    auto waveEntities          = GameMap->getWaves();
-    auto tiles                 = GameMap->getTiles();
-    auto scrollSpeed           = GameMap->getScrollingSpeed();
-    auto XLevelPosition        = GameMap->getXLevelPosition();
-    auto isLoaded              = GameMap->isLoaded();
     auto IP                    = _server->getLocalEndpoint().address().to_string();
     auto PORT                  = _server->getLocalEndpoint().port();
 
@@ -98,17 +91,5 @@ void RtypeServer::printServerStartupBanner() {
                                std::to_string(player_start_position.y) + ")",
                            BOLD_WHITE)
               << std::endl;
-    std::cout << colorText("[GameMap] ScrollingSpeed: ", BOLD_CYAN)
-              << colorText(std::to_string(scrollSpeed), BOLD_WHITE) << std::endl;
-    std::cout << colorText("[GameMap] XLevelPosition: ", BOLD_CYAN)
-              << colorText(std::to_string(XLevelPosition), BOLD_WHITE) << std::endl;
-    std::cout << colorText("[GameMap] BlockEntities: ", BOLD_CYAN)
-              << colorText(std::to_string(blockEntities.size()), BOLD_WHITE) << std::endl;
-    std::cout << colorText("[GameMap] Tiles: ", BOLD_CYAN)
-              << colorText(std::to_string(tiles.size()), BOLD_WHITE) << std::endl;
-    std::cout << colorText("[GameMap] WaveEntities: ", BOLD_CYAN)
-              << colorText(std::to_string(waveEntities.size()), BOLD_WHITE) << std::endl;
-    std::cout << colorText("[GameMap] IsLoaded: ", BOLD_CYAN)
-              << colorText(isLoaded ? "true" : "false", BOLD_WHITE) << std::endl;
     std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
 }

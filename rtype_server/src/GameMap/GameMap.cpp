@@ -110,6 +110,13 @@ void GameMap::loadFromJSON(const std::string& filepath) {
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
         _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
+        _music_name     = root["music"].asString();
+        // for all backgrounds, parse     std::vector<std::pair<std::string, float>> _backgrounds;
+        for (const auto& background : root["backgrounds"]) {
+            std::string background_str = background["sprite"].asString();
+            float       speed          = background["speed"].asFloat();
+            _backgrounds.push_back({background_str, speed});
+        }
 
         // Load tiles
         const auto& tiles = root["mapData"]["tiles"];
@@ -140,7 +147,11 @@ void GameMap::loadFromJSON(const std::string& filepath) {
                                   waveJson["startPosition"][1].asFloat()};
 
             // Load wave contents (from separate JSON file)
-            std::string waveFilePath = "../../assets/maps/waves/" + wave.waveType + ".json";
+            std::string path = "../../assets/maps/waves/";
+            if (assetLauncher == true) {
+                path = "../assets/maps/waves/";
+            }
+            std::string waveFilePath = path + wave.waveType + ".json";
             Json::Value waveRoot     = readJSONFile(waveFilePath);
 
             for (const auto& waveMobJson : waveRoot["wave"]) {
@@ -195,7 +206,11 @@ void GameMap::saveToJSON(const std::string& filepath) {
             contentJson["position"].append(wabeMob.position.y);
             waveRoot["wave"] = contentJson;
         }
-        std::string waveFilePath = "../../assets/maps/waves/" + wave.waveType + ".json";
+        std::string path = "../../assets/maps/waves/";
+        if (assetLauncher == true) {
+            path = "../assets/maps/waves/";
+        }
+        std::string waveFilePath = path + wave.waveType + ".json";
         writeJSONFile(waveFilePath, waveRoot);
 
         root["mapData"]["waves"].append(waveJson);

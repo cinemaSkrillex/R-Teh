@@ -57,6 +57,16 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleDestroyEntity(destroyEntityMessage);
             break;
         }
+        case RTypeProtocol::LEVEL_SIGNAL: {
+            RTypeProtocol::LevelSignalMessage levelSignalMessage =
+                RTypeProtocol::deserializeLevelSignal(signal);
+            if (levelSignalMessage.startLevel) {
+                _game_map.startLevel();
+            } else {
+                _game_map.stopLevel();
+            }
+            break;
+        }
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
@@ -107,7 +117,8 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     // if difference between position and positionComponent is greater than 2, change sprite
     if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "up";
-    } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    } else if ((position.y > positionComponent->y) &&
+               (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "down";
     } else {
         player_sprite->spriteIndex = "idle";
@@ -240,6 +251,36 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
     _game_map.setXLevelPosition(parsedPacket.x_level_position);
     _game_map.setIsMapLoaded(parsedPacket.isLoaded);
+    _serverTick = parsedPacket.server_tick;
+    std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
+              << ", XLevelPosition: " << _game_map.getXLevelPosition()
+              << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
+              << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
+
+    // Load level music
+    if (parsedPacket.level_music.empty()) {
+        std::cout << "No level music found in the map message" << std::endl;
+        return;
+    }
+    std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
+    std::cout << "Level music: " << level_music_str << std::endl;
+    _game_map.setMusicName(level_music_str);
+
+    // Load backgrounds
+    if (parsedPacket.backgrounds.empty()) {
+        std::cout << "No backgrounds found in the map message" << std::endl;
+        return;
+    }
+    for (const auto& bg : parsedPacket.backgrounds) {
+        std::string background_str(bg.data.begin(), bg.data.end());
+        float       speed = bg.speed;
+        std::cout << "Background: " << background_str << ", Speed: " << speed << std::endl;
+        Background background(_registry, speed, background_str);
+        _game_map.addBackground(background.getEntity(), _parallaxSystem);
+
+        // RealEngine::AssetManager::getInstance().loadTexture(background_str);
+        // _game_map.addBackgroundTexture(background_str, background.position);
+    }
     if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
         _game_map.startLevel();
         _game_map.synchroniseLevelBlockEntities();
@@ -247,9 +288,4 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
         _game_map.stopLevel();
         _game_map.synchroniseLevelBlockEntities();
     }
-    _serverTick = parsedPacket.server_tick;
-    std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
-              << ", XLevelPosition: " << _game_map.getXLevelPosition()
-              << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
-              << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 }
