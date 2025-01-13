@@ -9,8 +9,8 @@
 #include <iostream>
 #include <thread>
 
+#include "include/Launcher/Launcher.hpp"
 #include "DynamicLibrary/DynamicLibrary.hpp"
-#include "../include/Launcher/Launcher.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00
@@ -28,4 +28,3 @@ int main() {
 
     return 0;
 }
-
