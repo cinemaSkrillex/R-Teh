@@ -37,7 +37,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEnemy(
 }
 
 void GameInstance::spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle) {
-    float level_speed = _game_map->getScrollingSpeed();
+    float level_speed = 1.0f;
     if (mobName == "directional_canon") {
         rtype::DirectionalCanon directionalCanon(_registry, position, level_speed);
         addAndGetEnemy(directionalCanon.getEntity());

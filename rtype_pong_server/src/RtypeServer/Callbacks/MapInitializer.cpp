@@ -12,20 +12,8 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
         std::cerr << "Error: Game instance is null" << std::endl;
         return;
     }
-    auto GameMap = _gameInstance->getMap();
-    if (!GameMap) {
-        std::cerr << "Error: Server map is null" << std::endl;
-        return;
-    }
 
-    // Send blocks
-    sendEntities(GameMap->getBlockEntities(), "block", sender);
     // sendEntities(GameMap->getWaves(), "wave", sender);
-
-    // Serialize and send map info
-    RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
-    std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
-    _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 
 void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
@@ -68,18 +56,4 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
 
     std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(newTileMessage);
     batchMessages.emplace_back(serializedMessage);
-}
-
-RTypeProtocol::MapMessage MapInitializer::createMapMessage(
-    const std::shared_ptr<GameMap>& GameMap) {
-    RTypeProtocol::MapMessage mapMessage;
-    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
-    mapMessage.uuid             = 0;
-    mapMessage.scrollingSpeed   = GameMap->getScrollingSpeed();
-    mapMessage.x_level_position = GameMap->getXLevelPosition();
-    mapMessage.isLoaded         = GameMap->isLoaded();
-    mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
-    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
-
-    return mapMessage;
 }
