@@ -148,9 +148,6 @@ void GameMap::loadFromJSON(const std::string& filepath) {
 
             // Load wave contents (from separate JSON file)
             std::string path = "../../assets/maps/waves/";
-            if (assetLauncher == true) {
-                path = "../assets/maps/waves/";
-            }
             std::string waveFilePath = path + wave.waveType + ".json";
             Json::Value waveRoot     = readJSONFile(waveFilePath);
 
@@ -207,9 +204,6 @@ void GameMap::saveToJSON(const std::string& filepath) {
             waveRoot["wave"] = contentJson;
         }
         std::string path = "../../assets/maps/waves/";
-        if (assetLauncher == true) {
-            path = "../assets/maps/waves/";
-        }
         std::string waveFilePath = path + wave.waveType + ".json";
         writeJSONFile(waveFilePath, waveRoot);
 

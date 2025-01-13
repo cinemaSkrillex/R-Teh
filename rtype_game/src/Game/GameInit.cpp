@@ -49,6 +49,7 @@ void Game::init_all_game() {
     init_systems();
     std::string path = "../../assets/sprites/";
     if (assetLauncher == true) {
+        std::cout << "ici" << std::endl;
         path = "../assets/sprites/";
     }
     init_level(path + "tiles/lv1", "lvl1");
@@ -129,7 +130,7 @@ void Game::init_textures() {
                                                    path + "backgrounds/stars.png", {3, 3});
     AssetManagerInstance.getTexture("big_stars_background")->setRepeated(true);
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_base_background", "../../assets/sprites/backgrounds/space_base.png", {2, 2});
+        "space_base_background", path + "backgrounds/space_base.png", {2, 2});
     AssetManagerInstance.getTexture("space_base_background")->setRepeated(true);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");
