@@ -13,27 +13,22 @@
 #include <thread>
 
 #include "../Client/TCPClient.hpp"
-#include "../Media/Graphics/UI/Text.hpp"
+#include "../Core/Graphics/UI/Text.hpp"
+#include "../Core/Graphics/UI/InputBox.hpp"
 #include "../Core/Window.hpp"
 
 class Launcher {
-   public:
+public:
     Launcher();
     void run();
 
-   private:
+private:
     void onConnectClick();
     void connectToServer();
-    void handleTextInput(sf::Event event);
 
     RealEngine::Window window;
+    RealEngine::InputBox ipBox;
+    RealEngine::InputBox portBox;
     sf::RectangleShape button;
-    RealEngine::Text   inputTextIP;
-    RealEngine::Text   inputTextPort;
-    sf::RectangleShape inputBoxIP;
-    sf::RectangleShape inputBoxPort;
-    std::string        ipInput;
-    std::string        portInput;
-
-    bool isEditingIP;
+    RealEngine::Text buttonText;
 };
