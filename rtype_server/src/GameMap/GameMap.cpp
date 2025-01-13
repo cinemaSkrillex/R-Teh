@@ -140,7 +140,11 @@ void GameMap::loadFromJSON(const std::string& filepath) {
                                   waveJson["startPosition"][1].asFloat()};
 
             // Load wave contents (from separate JSON file)
-            std::string waveFilePath = "../../assets/maps/waves/" + wave.waveType + ".json";
+            std::string path = "../../assets/maps/waves/";
+            if (assetLauncher == true) {
+                path = "../assets/maps/waves/";
+            }
+            std::string waveFilePath = path + wave.waveType + ".json";
             Json::Value waveRoot     = readJSONFile(waveFilePath);
 
             for (const auto& waveMobJson : waveRoot["wave"]) {
@@ -195,7 +199,11 @@ void GameMap::saveToJSON(const std::string& filepath) {
             contentJson["position"].append(wabeMob.position.y);
             waveRoot["wave"] = contentJson;
         }
-        std::string waveFilePath = "../../assets/maps/waves/" + wave.waveType + ".json";
+        std::string path = "../../assets/maps/waves/";
+        if (assetLauncher == true) {
+            path = "../assets/maps/waves/";
+        }
+        std::string waveFilePath = path + wave.waveType + ".json";
         writeJSONFile(waveFilePath, waveRoot);
 
         root["mapData"]["waves"].append(waveJson);
