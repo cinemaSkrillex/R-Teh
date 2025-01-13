@@ -75,6 +75,10 @@ class GameMap {
     std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
     const std::vector<Map::Tile>&               getTiles() const { return _tiles; }
     const std::vector<Map::Wave>&               getWaves() const { return _waves; }
+    std::string                                 getMapName() const { return _map_name; }
+    std::string                                 getMusicName() const { return _music_name; }
+    std::vector<std::pair<std::string, float>>  getBackgrounds() const { return _backgrounds; }
+
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
     bool  getIsLevelRunning() const { return _isLevelRunning; }

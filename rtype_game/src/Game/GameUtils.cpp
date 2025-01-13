@@ -274,16 +274,24 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
               << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 
     // Load level music
-    if (parsedPacket.level_music.empty()) return;
+    if (parsedPacket.level_music.empty()) {
+        std::cout << "No level music found in the map message" << std::endl;
+        return;
+    }
     std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
+    std::cout << "Level music: " << level_music_str << std::endl;
     RealEngine::AssetManager::getInstance().loadMusic("level_music", level_music_str);
 
     // Load backgrounds
-    if (parsedPacket.backgrounds.empty()) return;
+    if (parsedPacket.backgrounds.empty()) {
+        std::cout << "No backgrounds found in the map message" << std::endl;
+        return;
+    }
     for (const auto& bg : parsedPacket.backgrounds) {
         std::string background_str(bg.data.begin(), bg.data.end());
         float       speed = bg.speed;
-        Background  background(_registry, speed, background_str);
+        std::cout << "Background: " << background_str << ", Speed: " << speed << std::endl;
+        Background background(_registry, speed, background_str);
         _game_map.addBackground(background.getEntity(), _parallaxSystem);
 
         // RealEngine::AssetManager::getInstance().loadTexture(background_str);

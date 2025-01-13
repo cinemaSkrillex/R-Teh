@@ -110,6 +110,13 @@ void GameMap::loadFromJSON(const std::string& filepath) {
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
         _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
+        _music_name     = root["music"].asString();
+        // for all backgrounds, parse     std::vector<std::pair<std::string, float>> _backgrounds;
+        for (const auto& background : root["backgrounds"]) {
+            std::string background_str = background["sprite"].asString();
+            float       speed          = background["speed"].asFloat();
+            _backgrounds.push_back({background_str, speed});
+        }
 
         // Load tiles
         const auto& tiles = root["mapData"]["tiles"];
