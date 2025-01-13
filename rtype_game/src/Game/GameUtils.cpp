@@ -264,6 +264,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     }
     std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
     std::cout << "Level music: " << level_music_str << std::endl;
+    std::cout << "level music size : " << parsedPacket.level_music.size() << std::endl;
     _game_map.setMusicName(level_music_str);
 
     // Load backgrounds
@@ -275,6 +276,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
         std::string background_str(bg.data.begin(), bg.data.end());
         float       speed = bg.speed;
         std::cout << "Background: " << background_str << ", Speed: " << speed << std::endl;
+        std::cout << "Background size : " << bg.data.size() << std::endl;
         Background background(_registry, speed, background_str);
         _game_map.addBackground(background.getEntity(), _parallaxSystem);
 
