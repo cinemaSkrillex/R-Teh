@@ -139,8 +139,8 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
         offset += data_size;
 
         // Serialize background position
-        std::memcpy(buffer.data() + offset, &background.position, sizeof(background.position));
-        offset += sizeof(background.position);
+        std::memcpy(buffer.data() + offset, &background.speed, sizeof(background.speed));
+        offset += sizeof(background.speed);
     }
 
     return buffer;
@@ -415,8 +415,8 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
         offset += data_size;
 
         // Deserialize background position
-        std::memcpy(&background.position, buffer.data() + offset, sizeof(background.position));
-        offset += sizeof(background.position);
+        std::memcpy(&background.speed, buffer.data() + offset, sizeof(background.speed));
+        offset += sizeof(background.speed);
 
         msg.backgrounds.push_back(background);
     }

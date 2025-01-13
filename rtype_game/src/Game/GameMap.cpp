@@ -33,17 +33,23 @@ void GameMap::updateLevel(float deltaTime) {
 
 void GameMap::startLevel() {
     _levelRunning = true;
-    RealEngine::AssetManager::getInstance().getMusic(_music_name)->play();
+    if (!_music_name.empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_music_name)->play();
+    }
 }
 
 void GameMap::stopLevel() {
     _levelRunning = false;
-    RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    if (!_music_name.empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    }
 }
 
 void GameMap::unloadLevel() {
     _levelRunning = false;
-    RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    if (!_music_name.empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    }
     for (auto block : _blockEntities) {
         if (block) _registry.add_component(block, RealEngine::AutoDestructible{0.0f});
     }

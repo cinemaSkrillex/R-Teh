@@ -45,7 +45,7 @@ enum EntityType : int {
 
 struct BackgroundData {
     std::vector<char> data;
-    float             position;
+    float             speed;
 };
 
 // Base message structure (common across all message types)

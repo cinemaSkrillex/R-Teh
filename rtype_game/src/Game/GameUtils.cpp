@@ -117,7 +117,8 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     // if difference between position and positionComponent is greater than 2, change sprite
     if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "up";
-    } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    } else if ((position.y > positionComponent->y) &&
+               (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "down";
     } else {
         player_sprite->spriteIndex = "idle";
@@ -271,4 +272,21 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
               << ", XLevelPosition: " << _game_map.getXLevelPosition()
               << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
               << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
+
+    // Load level music
+    if (parsedPacket.level_music.empty()) return;
+    std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
+    RealEngine::AssetManager::getInstance().loadMusic("level_music", level_music_str);
+
+    // Load backgrounds
+    if (parsedPacket.backgrounds.empty()) return;
+    for (const auto& bg : parsedPacket.backgrounds) {
+        std::string background_str(bg.data.begin(), bg.data.end());
+        float       speed = bg.speed;
+        Background  background(_registry, speed, background_str);
+        _game_map.addBackground(background.getEntity(), _parallaxSystem);
+
+        // RealEngine::AssetManager::getInstance().loadTexture(background_str);
+        // _game_map.addBackgroundTexture(background_str, background.position);
+    }
 }

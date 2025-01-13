@@ -45,7 +45,7 @@ class GameMap {
    private:
     RealEngine::Registry&                            _registry;
     std::string                                      _map_name;
-    std::string                                      _music_name      = "level_1";
+    std::string                                      _music_name      = "";
     float                                            _scrollingSpeed  = 0.0f;
     float                                            x_level_position = 0.0f;
     std::vector<std::shared_ptr<RealEngine::Entity>> _blockEntities;
