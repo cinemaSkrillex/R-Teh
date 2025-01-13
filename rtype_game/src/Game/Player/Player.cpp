@@ -125,21 +125,17 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
 Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool otherPlayer)
     : _entity(registry.spawn_entity()) {
     if (!otherPlayer) {
-        _playerSpriteSheet.emplace(
-            "idle", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
-        _playerSpriteSheet.emplace(
-            "up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
-        _playerSpriteSheet.emplace(
-            "down", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
         registry.add_component(_entity, RealEngine::Position{200.f, 200.f});
         registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
         registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
         registry.add_component(_entity, RealEngine::Controllable{});
         registry.add_component(_entity, RealEngine::Drawable{});
-        registry.add_component(
-            _entity,
-            RealEngine::SpriteSheet{
-                _playerSpriteSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
+        auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship");
+        if (spriteSheet) {
+            registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+        } else {
+            std::cerr << "Failed to load Sprite or SpriteSheet for player" << std::endl;
+        }
         registry.add_component(
             _entity, RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
                                            "spaceship",
@@ -159,9 +155,12 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
         registry.add_component(
             _entity, RealEngine::Interpolation{
                          {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-        registry.add_component(
-            _entity, RealEngine::SpriteComponent{*(
-                         (RealEngine::AssetManager::getInstance().getSprite("spaceship_other")))});
+        auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship_other");
+        if (spriteSheet) {
+            registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+        } else {
+            std::cerr << "Failed to load Sprite or SpriteSheet for player" << std::endl;
+        }
     }
 }
 

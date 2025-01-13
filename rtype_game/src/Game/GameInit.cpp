@@ -93,6 +93,14 @@ void Game::init_textures() {
         "spaceship_idle", "../../assets/sprites/spaceship.png", {0, 15, 32, 15});
     AssetManagerInstance.loadSpriteTextureAndScale(
         "spaceship_down", "../../assets/sprites/spaceship.png", {0, 15 * 2, 33 * 2, 15});
+
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "spaceship_other_up", "../../assets/sprites/spaceship.png", {0, 0, 32 * 2, 15});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "spaceship_other_idle", "../../assets/sprites/spaceship.png", {0, 15, 32, 15});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "spaceship_other_down", "../../assets/sprites/spaceship.png", {0, 15 * 2, 33 * 2, 15});
+
     AssetManagerInstance.loadSpriteTextureAndScale(
         "small_stars_background", "../../assets/sprites/backgrounds/stars.png", {1, 1});
     AssetManagerInstance.getTexture("small_stars_background")->setRepeated(true);
@@ -159,8 +167,6 @@ void Game::init_textures() {
                                                    "../../assets/sprites/big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet",
                                                    "../../assets/sprites/medium_shoot.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other",
-                                                   "../../assets/sprites/spaceship.png");
 }
 
 void Game::init_level(std::string filepath, std::string foldername) {
@@ -280,7 +286,9 @@ void Game::set_action_handlers() {
 }
 
 void Game::set_sprite_opacity() {
-    RealEngine::AssetManager::getInstance().getSprite("spaceship_other")->setOpacity(90);
+    RealEngine::AssetManager::getInstance().getSprite("spaceship_other_up")->setOpacity(90);
+    RealEngine::AssetManager::getInstance().getSprite("spaceship_other_idle")->setOpacity(90);
+    RealEngine::AssetManager::getInstance().getSprite("spaceship_other_down")->setOpacity(90);
 }
 
 void Game::init_sprite_sheets() {
@@ -324,6 +332,28 @@ void Game::init_sprite_sheets() {
     bigBulletSheet.emplace("normal", bigBulletSprite);
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
+
+    // load player spaceship sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> playerSheet;
+    playerSheet.emplace("idle",
+                        *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
+    playerSheet.emplace("up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
+    playerSheet.emplace("down",
+                        *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "spaceship", playerSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock());
+
+    // load other spaceship sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> otherPlayerSheet;
+    otherPlayerSheet.emplace(
+        "idle", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_other_idle")));
+    otherPlayerSheet.emplace(
+        "up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_other_up")));
+    otherPlayerSheet.emplace(
+        "down", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_other_down")));
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("spaceship_other", otherPlayerSheet,
+                                                            "idle", 0, {32, 15}, false, false, 100,
+                                                            {-1, -1}, sf::Clock());
 }
 
 void Game::init_musics() {
