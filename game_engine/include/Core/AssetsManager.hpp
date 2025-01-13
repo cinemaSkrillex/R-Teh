@@ -23,7 +23,7 @@
 namespace RealEngine {
 
 #define DEBUG 0
-#define assetLauncher true
+#define assetLauncher false
 class AssetManager {
    public:
     static AssetManager& getInstance() {
