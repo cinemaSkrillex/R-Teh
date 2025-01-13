@@ -87,7 +87,6 @@ void InputBox::centerText() {
     sf::FloatRect textBounds = text.getLocalBounds();
     float textPositionX = box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
     float textPositionY = box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    std::cout << textPositionX << " " << textPositionY << std::endl;
     text.setPosition(390, (textPositionY + 10));
 }
 
