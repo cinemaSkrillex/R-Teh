@@ -10,7 +10,6 @@
 #include "Engine.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
-#include "GameMap.hpp"
 #include "Mobs/Mobs.hpp"
 
 class GameInstance {
@@ -45,12 +44,6 @@ class GameInstance {
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
-    std::shared_ptr<GameMap>                          getMap() {
-        if (!_game_map) {
-            std::cerr << "Error: _game_map is null" << std::endl;
-        }
-        return _game_map;
-    }
 
    private:
     bool                                _serverVision;
@@ -72,5 +65,4 @@ class GameInstance {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
-    std::shared_ptr<GameMap>                                          _game_map;
 };

@@ -21,17 +21,14 @@ GameInstance::GameInstance(bool serverVision)
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
-      _netvarSystem(),
-      _game_map(std::make_shared<GameMap>(getRegistryRef())) {
+      _netvarSystem() {
     init_components();
     init_systems();
     init_textures();
     init_sprite_sheets();
     init_screen_limits();
-    _game_map->loadFromJSON("../../assets/maps/map.json");
     rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(600, 100));
     addAndGetEnemy(spaceSphere.getEntity());
-    _game_map->startLevel();
 }
 
 void GameInstance::init_components() {

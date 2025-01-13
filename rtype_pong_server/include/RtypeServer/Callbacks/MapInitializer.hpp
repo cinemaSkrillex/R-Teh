@@ -54,7 +54,6 @@ class MapInitializer {
 
     void                      processBlock(const std::shared_ptr<rtype::Block>& block,
                                            std::vector<std::array<char, 800>>&  batchMessages);
-    RTypeProtocol::MapMessage createMapMessage(const std::shared_ptr<GameMap>& GameMap);
 };
 
 #endif /* !MAPINITIALIZER_HPP_ */
