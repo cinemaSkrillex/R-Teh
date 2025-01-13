@@ -51,5 +51,7 @@ void Text::setString(const std::string text) {
     center();
 }
 
+sf::Vector2f Text::getPosition() const { return _text.getPosition(); }
+
 void Text::setCharacterSize(int size) { _text.setCharacterSize(size); }
 }  // namespace RealEngine

@@ -102,6 +102,12 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
     if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
     if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
+    if (direction.left == 1 && direction.top == 1) {
+        velocity->vx = 0;
+    }
+    if (direction.width == 1 && direction.height == 1) {
+        velocity->vy = 0;
+    }
 }
 
 void GameInstance::start_level() {

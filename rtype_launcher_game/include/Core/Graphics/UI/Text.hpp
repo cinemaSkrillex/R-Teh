@@ -21,6 +21,12 @@ class Text : public IRender {
     void setBorderThickness(float thickness);
     void setString(const std::string text);
     void setCharacterSize(int size);
+    std::string getString() const { return _text.getString(); }
+    float getWidth() const { return _text.getGlobalBounds().width; }
+    float getHeight() const { return _text.getLocalBounds().height + _text.getLocalBounds().top; }
+    int getCharacterSize() const { return _text.getCharacterSize(); }
+    sf::FloatRect getLocalBounds() const { return _text.getLocalBounds(); }
+    sf::Vector2f getPosition() const;
 
    private:
     sf::Text _text;

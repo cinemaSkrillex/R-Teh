@@ -103,9 +103,25 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     if (it == _players.end()) return;
     std::shared_ptr<RealEngine::Entity> player = it->second;
     // Update the position component of the player
+    auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(player);
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
     if (!positionComponent && !interpolationComponent) return;
+    // if (position.y > positionComponent->y) {
+    //     player_sprite->spriteIndex = "down";
+    // } else if (position.y < positionComponent->y) {
+    //     player_sprite->spriteIndex = "up";
+    // } else {
+    //     player_sprite->spriteIndex = "idle";
+    // }
+    // if difference between position and positionComponent is greater than 2, change sprite
+    if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+        player_sprite->spriteIndex = "up";
+    } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+        player_sprite->spriteIndex = "down";
+    } else {
+        player_sprite->spriteIndex = "idle";
+    }
     positionComponent->x                 = interpolationComponent->end.x;
     positionComponent->y                 = interpolationComponent->end.y;
     interpolationComponent->start        = {positionComponent->x, positionComponent->y};
