@@ -26,7 +26,6 @@ void GameMap::updateLevel(float deltaTime) {
         auto* position = _registry.get_component<RealEngine::Position>(block);
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
-            std::cout << "Block position: " << position->x << std::endl;
         }
     }
     removeDeadBlocks();
