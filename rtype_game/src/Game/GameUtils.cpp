@@ -270,25 +270,18 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
 }
 
 void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
-    for (const auto& entity : parsedPacket.entities) {
-        long                      entity_id   = entity.first;
-        RTypeProtocol::EntityType entity_type = entity.second;
-
-        std::cout << "entity id: " << entity_id << " type: " << entity_type << std::endl;
-
+    for (const auto& entity_id : parsedPacket.entity_ids) {
         auto it = _entities.find(entity_id);
         if (it != _entities.end()) {
             _registry.remove_entity(*it->second);
             _entities.erase(it);
             continue;
         }
-
         auto playerIt = _players.find(entity_id);
         if (playerIt != _players.end()) {
             _registry.remove_entity(*playerIt->second);
             _players.erase(playerIt);
         }
-
         if (_localPlayerUUID == entity_id) {
             _registry.remove_entity(*_player_entity);
             _player_entity.reset();
