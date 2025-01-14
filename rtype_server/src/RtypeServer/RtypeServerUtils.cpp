@@ -78,7 +78,7 @@ void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Re
     } else {
         entityStateMessage.angle = -1;
     }
-    entityStateMessage.step                               = _deltaTimeBroadcast;
+    entityStateMessage.step      = _deltaTimeBroadcast;
     entityStateMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
 
     // Serialize the EntityUpdateMessage

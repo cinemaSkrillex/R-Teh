@@ -49,7 +49,7 @@ void InputBox::handleEvent(const sf::Event& event) {
 
 bool InputBox::isValidCharacter(uint32_t unicode) const {
     if (currentText.length() >= characterLimit && unicode != '\b') {
-        return false; // Bloque l'ajout si la limite est atteinte
+        return false;  // Bloque l'ajout si la limite est atteinte
     }
 
     switch (contentType) {

@@ -46,7 +46,7 @@ class GameInstance {
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
-    std::shared_ptr<rtype::GameMap>                          getMap() {
+    std::shared_ptr<rtype::GameMap>                   getMap() {
         if (!_game_map) {
             std::cerr << "Error: _game_map is null" << std::endl;
         }
@@ -74,5 +74,5 @@ class GameInstance {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
-    std::shared_ptr<rtype::GameMap>                                          _game_map;
+    std::shared_ptr<rtype::GameMap>                                   _game_map;
 };

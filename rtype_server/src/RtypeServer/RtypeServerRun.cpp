@@ -9,9 +9,9 @@
 #include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
-    auto        log                   = std::make_shared<Log>("RtypeServer.log");
-    int         server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
-    int         server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
+    auto log                   = std::make_shared<Log>("RtypeServer.log");
+    int  server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
+    int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
 
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
