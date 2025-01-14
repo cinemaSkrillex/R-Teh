@@ -36,6 +36,8 @@ enum ComponentList : int {
     AUTO_DESTRUCTIBLE = 0x05,
     DRAWABLE          = 0x06,
     SPRITE            = 0x07,
+    ANGLE             = 0x08,
+    ACCELERATION      = 0x09,
 };
 
 enum EntityType : int {

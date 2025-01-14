@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "../ECS/Components/Collision.hpp"
+#include "../ECS/Components/Position.hpp"
+#include "../ECS/Components/Velocity.hpp"
 
 namespace RTypeProtocol {
 
@@ -34,7 +36,8 @@ enum ComponentList : int {
     AUTO_DESTRUCTIBLE = 0x05,
     DRAWABLE          = 0x06,
     SPRITE            = 0x07,
-    // SPRITESHEET       = 0x08,
+    ANGLE             = 0x08,
+    ACCELERATION      = 0x09,
 };
 
 enum EntityType : int {
@@ -46,7 +49,7 @@ enum EntityType : int {
 
 struct BackgroundData {
     std::vector<char> data;
-    float             position;
+    float             speed;
 };
 
 // Base message structure (common across all message types)

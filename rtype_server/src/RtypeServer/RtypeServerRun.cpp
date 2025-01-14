@@ -78,30 +78,97 @@ void RtypeServer::runGameInstance(float deltaTime) {
     // Broadcast new entities
     // Broadcast the state of all players and entities
 
-    //Get the entities that have the netvar new_entity set to true
-    auto entities = _game_instance->getRegistry()->view<RealEngine::NetvarContainer>();
+    // Get the registry of the game instance
+    auto registry = _game_instance->getRegistry();
+
+    // Get the entities that have the netvar new_entity set to true
+    auto entities = registry->view<RealEngine::NetvarContainer>();
 
     for (auto entity : entities) {
-        auto* netvarContainer = _game_instance->getRegistry()->get_component<RealEngine::NetvarContainer>(entity);
+        auto* netvarContainer =
+            _game_instance->getRegistry()->get_component<RealEngine::NetvarContainer>(entity);
         if (!netvarContainer) continue;
+
         auto newEntity = netvarContainer->netvars.find("new_entity");
-        if (newEntity != netvarContainer->netvars.end()) {
-            auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
-            if (newEntityValue && *newEntityValue) {
-                std::cout << "New entity detected" << std::endl;
-                // auto* spriteName = std::any_cast<std::string>(&netvarContainer->netvars.find("sprite_name")->second.value);
-                // if (spriteName) {
-                //     RTypeProtocol::NewEntityMessage newEntityMessage;
-                //     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-                //     newEntityMessage.uuid         = 0;
-                //     newEntityMessage.entity_id    = entity;
-                //     newEntityMessage.sprite_name  = *spriteName;
-                //     std::array<char, 800> serializedNewEntityMessage =
-                //         RTypeProtocol::serialize<800>(newEntityMessage);
-                //     broadcastAllReliable(serializedNewEntityMessage);
-                // }
+        if (newEntity == netvarContainer->netvars.end()) continue;
+
+        auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
+        if (!newEntityValue || !*newEntityValue) continue;
+
+        std::cout << "New entity detected" << std::endl;
+        RTypeProtocol::NewEntityMessage newEntityMessage;
+        newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+        newEntityMessage.uuid         = entity;
+        newEntityMessage.entity_type  = RTypeProtocol::EntityType::OTHER_ENTITY;
+
+        // Serialize position component
+        auto* position = _game_instance->getRegistry()->get_component<RealEngine::Position>(entity);
+        if (position) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::POSITION,
+                                  sf::Vector2f(position->x, position->y));
+        }
+
+        // Serialize velocity component
+        auto* velocity = _game_instance->getRegistry()->get_component<RealEngine::Velocity>(entity);
+        if (velocity) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::VELOCITY,
+                                  *velocity);
+        }
+
+        // Serialize collision component
+        auto* collision =
+            _game_instance->getRegistry()->get_component<RealEngine::Collision>(entity);
+        if (collision) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::COLLISION,
+                                  *collision);
+        }
+
+        // Serialize auto destructible component
+        auto* autoDestructible =
+            _game_instance->getRegistry()->get_component<RealEngine::AutoDestructible>(entity);
+        if (autoDestructible) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
+                                  *autoDestructible);
+        }
+
+        // Serialize drawable component
+        auto* drawable = _game_instance->getRegistry()->get_component<RealEngine::Drawable>(entity);
+        if (drawable) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::DRAWABLE,
+                                  *drawable);
+        }
+
+        // Serialize sprite component
+        auto spriteName = netvarContainer->netvars.find("sprite_name");
+        if (spriteName != netvarContainer->netvars.end()) {
+            auto* spriteNameValue = std::any_cast<std::string>(&spriteName->second.value);
+            if (spriteNameValue) {
+                std::vector<char> spriteData(spriteNameValue->begin(), spriteNameValue->end());
+                addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::SPRITE,
+                                      spriteData);
             }
         }
+
+        // Serialize angle component
+        auto* rotation = _game_instance->getRegistry()->get_component<RealEngine::Rotation>(entity);
+        if (rotation) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ROTATION,
+                                    *rotation);
+        }
+
+        // Serialize acceleration component
+        auto* acceleration =
+            _game_instance->getRegistry()->get_component<RealEngine::Acceleration>(entity);
+        if (acceleration) {
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ACCELERATION,
+                                  *acceleration);
+        }
+
+        std::array<char, 800> serializedNewEntityMessage =
+            RTypeProtocol::serialize<800>(newEntityMessage);
+        broadcastAllReliable(serializedNewEntityMessage);
+
+        netvarContainer->netvars.erase("new_entity");
     }
 }
 
