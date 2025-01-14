@@ -43,8 +43,7 @@ void Game::init_all_game() {
     init_systems();
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
-        std::cout << "ici" << std::endl;
-        path = "../assets/sprites/r_type";
+        path = "assets/sprites/r_type";
     }
     init_level(path + "tiles/lv1", "lvl1");
     init_textures();
@@ -87,7 +86,7 @@ void Game::init_screen_limits() {
 void Game::init_textures() {
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
-        path = "../assets/sprites/r_type/";
+        path = "assets/sprites/r_type/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up", path + "spaceship.png",
@@ -391,7 +390,7 @@ void Game::init_sprite_sheets() {
 void Game::init_musics() {
     std::string path = "../../assets/musics/";
     if (assetLauncher == true) {
-        path = "../assets/musics/";
+        path = "assets/musics/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadMusic("level_1",
@@ -407,7 +406,7 @@ void Game::init_musics() {
 void Game::init_sounds() {
     std::string path = "../../assets/sounds/";
     if (assetLauncher == true) {
-        path = "../assets/sounds/";
+        path = "assets/sounds/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSound("shoot", path + "laserShoot.wav");
