@@ -89,16 +89,16 @@ void GameInstance::movePlayer(long int playerUuid, int direction, float deltaTim
 
     if (!acceleration || !velocity || !position) return;
 
-    if (direction > 0 && velocity->vy > 50) velocity->vy = 50;   // Moving down
-    if (direction < 0 && velocity->vy < -50) velocity->vy = -50; // Moving up
+    if (direction > 0 && velocity->vy > 50) velocity->vy = 50;    // Moving down
+    if (direction < 0 && velocity->vy < -50) velocity->vy = -50;  // Moving up
 
     // Update the velocity based on the direction and acceleration
     if (direction > 0) {
-        velocity->vy += (acceleration->ay * 3 * deltaTime); // Accelerate down
+        velocity->vy += (acceleration->ay * 3 * deltaTime);  // Accelerate down
     } else if (direction < 0) {
-        velocity->vy -= (acceleration->ay * 3 * deltaTime); // Accelerate up
+        velocity->vy -= (acceleration->ay * 3 * deltaTime);  // Accelerate up
     } else {
-        velocity->vy = 0; // Stop movement when direction is 0
+        velocity->vy = 0;  // Stop movement when direction is 0
     }
 }
 

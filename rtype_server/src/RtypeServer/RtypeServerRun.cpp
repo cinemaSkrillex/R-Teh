@@ -99,8 +99,7 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     // Serialize velocity component
     auto* velocity = registry->get_component<RealEngine::Velocity>(entity);
     if (velocity) {
-        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::VELOCITY,
-                              *velocity);
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::VELOCITY, *velocity);
     }
 
     // Serialize collision component
@@ -120,8 +119,7 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     // Serialize drawable component
     auto* drawable = registry->get_component<RealEngine::Drawable>(entity);
     if (drawable) {
-        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::DRAWABLE,
-                              *drawable);
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::DRAWABLE, *drawable);
     }
 
     // Serialize sprite component
@@ -138,8 +136,7 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     // Serialize angle component
     auto* rotation = registry->get_component<RealEngine::Rotation>(entity);
     if (rotation) {
-        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ROTATION,
-                              *rotation);
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     }
 
     // Serialize acceleration component
