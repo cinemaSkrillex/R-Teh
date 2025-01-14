@@ -304,8 +304,9 @@ void TCPPacketManager::send_directory_to_client(const std::string&             d
     std::cout << "Directory sent successfully: " << directory_name << std::endl;
 }
 
-void TCPPacketManager::send_directory_to_directory(
-    const std::string& directory_path, const asio::ip::tcp::endpoint& endpoint, const std::string& client_target_directory) {
+void TCPPacketManager::send_directory_to_directory(const std::string&             directory_path,
+                                                   const asio::ip::tcp::endpoint& endpoint,
+                                                   const std::string& client_target_directory) {
     namespace fs = std::filesystem;
 
     if (!fs::exists(directory_path) || !fs::is_directory(directory_path)) {
@@ -314,7 +315,8 @@ void TCPPacketManager::send_directory_to_directory(
     }
 
     std::string directory_name = fs::path(directory_path).filename().string();
-    std::cout << "Sending directory: " << directory_name << " to client directory: " << client_target_directory << std::endl;
+    std::cout << "Sending directory: " << directory_name
+              << " to client directory: " << client_target_directory << std::endl;
     std::string header = "TARGET:" + client_target_directory + "\n";
     for (auto& client_socket : _client_sockets) {
         if (client_socket->remote_endpoint() == endpoint) {
@@ -324,7 +326,6 @@ void TCPPacketManager::send_directory_to_directory(
     }
     send_directory_to_client(directory_path, endpoint);
 }
-
 
 void TCPPacketManager::close() {
     _io_context.stop();

@@ -135,10 +135,15 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
         registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
         registry.add_component(_entity, RealEngine::Controllable{});
         registry.add_component(_entity, RealEngine::Drawable{});
-        registry.add_component(
-            _entity,
-            RealEngine::SpriteSheet{
-                _playerSpriteSheet, "idle", 0, {48, 144}, false, false, 100, {-1, -1}, sf::Clock()});
+        registry.add_component(_entity, RealEngine::SpriteSheet{_playerSpriteSheet,
+                                                                "idle",
+                                                                0,
+                                                                {48, 144},
+                                                                false,
+                                                                false,
+                                                                100,
+                                                                {-1, -1},
+                                                                sf::Clock()});
         registry.add_component(
             _entity, RealEngine::Collision{{0.f, 0.f, 48.f * GAME_SCALE, 144.f * GAME_SCALE},
                                            "spaceship",

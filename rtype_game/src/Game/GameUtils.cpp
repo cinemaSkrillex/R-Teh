@@ -196,7 +196,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 _registry.add_component<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
                 break;
             }
-            case RTypeProtocol::ComponentList::ACCELERATION : {
+            case RTypeProtocol::ComponentList::ACCELERATION: {
                 RealEngine::Acceleration acceleration;
                 std::memcpy(&acceleration, component.second.data(), sizeof(acceleration));
                 _registry.add_component(newEntity, RealEngine::Acceleration{acceleration});
