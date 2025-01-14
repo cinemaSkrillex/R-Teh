@@ -25,6 +25,42 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     // Serialize and send map info
     RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
     std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
+
+    RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<800>(serializedMapMessage);
+
+    RTypeProtocol::MapMessage deserializedMapMessage;
+
+    switch (baseMessage.message_type) {
+        case RTypeProtocol::MessageType::MAP_INFO:
+            deserializedMapMessage =
+                RTypeProtocol::deserializeMapMessage<800>(serializedMapMessage);
+            std::cout << "Deserialized map message: " << deserializedMapMessage.message_type
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.uuid << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.scrollingSpeed
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.x_level_position
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.isLoaded
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.isLevelRunning
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.server_tick
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.level_music.data()
+                      << std::endl;
+            std::cout << "Deserialized map message: " << deserializedMapMessage.level_music.size()
+                      << std::endl;
+            for (const auto& bg : deserializedMapMessage.backgrounds) {
+                std::cout << "Deserialized map message: " << bg.data.data() << std::endl;
+                std::cout << "Deserialized map message: " << bg.data.size() << std::endl;
+                std::cout << "Deserialized map message: " << bg.speed << std::endl;
+            }
+            break;
+        default:
+            std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
+            break;
+    }
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 

@@ -205,21 +205,30 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
         }
     }
-    // std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
-    // if (parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK) {
-    //     _game_map.addBlock(newEntity);
-    // } else {
-    //     _entities.emplace(parsedPacket.uuid, newEntity);
-    // }
-
+    if (_entities.find(parsedPacket.uuid) != _entities.end()) {
+        std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
+                  << std::endl;
+        return;
+    }
     switch (parsedPacket.entity_type) {
         case RTypeProtocol::EntityType::BLOCK:
+            if (std::find_if(_game_map.getBlockEntities().begin(),
+                             _game_map.getBlockEntities().end(),
+                             [&parsedPacket](const std::shared_ptr<RealEngine::Entity>& entity) {
+                                 return static_cast<std::size_t>(*entity) == parsedPacket.uuid;
+                             }) != _game_map.getBlockEntities().end()) {
+                std::cerr << "Block entity with UUID " << parsedPacket.uuid
+                          << " already exists in the game map, skipping." << std::endl;
+                _registry.remove_entity(*newEntity);
+                return;
+            }
             _game_map.addBlock(newEntity);
             break;
         case RTypeProtocol::EntityType::BACKGROUND:
             _game_map.addBackground(newEntity, _parallaxSystem);
             break;
         case RTypeProtocol::EntityType::OTHER_ENTITY:
+            std::cout << "Adding entity with UUID: " << parsedPacket.uuid << std::endl;
             _entities.emplace(parsedPacket.uuid, newEntity);
             break;
         default:
