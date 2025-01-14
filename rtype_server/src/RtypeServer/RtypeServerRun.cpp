@@ -74,6 +74,35 @@ void RtypeServer::runGameInstance(float deltaTime) {
             RTypeProtocol::serialize<800>(destroyMessage);
         broadcastAllReliable(serializedDestroyMessage);
     }
+
+    // Broadcast new entities
+    // Broadcast the state of all players and entities
+
+    //Get the entities that have the netvar new_entity set to true
+    auto entities = _game_instance->getRegistry()->view<RealEngine::NetvarContainer>();
+
+    for (auto entity : entities) {
+        auto* netvarContainer = _game_instance->getRegistry()->get_component<RealEngine::NetvarContainer>(entity);
+        if (!netvarContainer) continue;
+        auto newEntity = netvarContainer->netvars.find("new_entity");
+        if (newEntity != netvarContainer->netvars.end()) {
+            auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
+            if (newEntityValue && *newEntityValue) {
+                std::cout << "New entity detected" << std::endl;
+                // auto* spriteName = std::any_cast<std::string>(&netvarContainer->netvars.find("sprite_name")->second.value);
+                // if (spriteName) {
+                //     RTypeProtocol::NewEntityMessage newEntityMessage;
+                //     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+                //     newEntityMessage.uuid         = 0;
+                //     newEntityMessage.entity_id    = entity;
+                //     newEntityMessage.sprite_name  = *spriteName;
+                //     std::array<char, 800> serializedNewEntityMessage =
+                //         RTypeProtocol::serialize<800>(newEntityMessage);
+                //     broadcastAllReliable(serializedNewEntityMessage);
+                // }
+            }
+        }
+    }
 }
 
 void RtypeServer::broadcastStates() {
