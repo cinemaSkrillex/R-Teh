@@ -30,22 +30,22 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
 
     RTypeProtocol::MapMessage deserializedMapMessage;
 
-    switch (baseMessage.message_type) {
-        case RTypeProtocol::MessageType::MAP_INFO:
-            deserializedMapMessage =
-                RTypeProtocol::deserializeMapMessage<800>(serializedMapMessage);
-            std::cout << "Deserialized map message: levelmusic "
-                      << deserializedMapMessage.id_level_music << std::endl;
-            for (const auto& bg : deserializedMapMessage.backgrounds) {
-                std::cout << "Deserialized map message: ID background " << bg.background_id
-                          << std::endl;
-                std::cout << "Deserialized map message: " << bg.speed << std::endl;
-            }
-            break;
-        default:
-            std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
-            break;
-    }
+    // switch (baseMessage.message_type) {
+    //     case RTypeProtocol::MessageType::MAP_INFO:
+    //         deserializedMapMessage =
+    //             RTypeProtocol::deserializeMapMessage<800>(serializedMapMessage);
+    //         std::cout << "Deserialized map message: levelmusic "
+    //                   << deserializedMapMessage.id_level_music << std::endl;
+    //         for (const auto& bg : deserializedMapMessage.backgrounds) {
+    //             std::cout << "Deserialized map message: ID background " << bg.background_id
+    //                       << std::endl;
+    //             std::cout << "Deserialized map message: " << bg.speed << std::endl;
+    //         }
+    //         break;
+    //     default:
+    //         std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
+    //         break;
+    // }
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 
@@ -62,6 +62,7 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newTileMessage.uuid         = *blockEntity;
     newTileMessage.entity_type  = RTypeProtocol::EntityType::BLOCK;
+    std::cout << "Block entity: " << *blockEntity << std::endl;
 
     auto& registry = _gameInstance->getRegistryRef();
     auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
@@ -137,19 +138,5 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         bgData.speed = background.second;
         mapMessage.backgrounds.push_back(bgData);
     }
-    // mapMessage.id_level_music  = GameMap->getMusicId();
-
-    // std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
-    // std::cout << "Level size : " << mapMessage.level_music.size() << std::endl;
-    // const auto& backgrounds = GameMap->getBackgrounds();
-    // for (const auto& background : backgrounds) {
-    //     RTypeProtocol::BackgroundData bgData;
-    //     bgData.data.assign(background.first.begin(), background.first.end());
-    //     bgData.speed = background.second;
-    //     std::cout << "Background: " << bgData.data.data() << ", Speed: " << bgData.speed
-    //               << std::endl;
-    //     std::cout << "Background size: " << bgData.data.size() << std::endl;
-    //     mapMessage.backgrounds.push_back(bgData);
-    // }
     return mapMessage;
 }
