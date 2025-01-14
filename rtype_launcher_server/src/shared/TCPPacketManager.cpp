@@ -172,7 +172,19 @@ void TCPPacketManager::listen_for_server_data() {
 
         std::string data(buffer.data(), length);
         while (!data.empty()) {
-            if (data.rfind("MSG:", 0) == 0) {
+            if (data.rfind("TARGET:", 0) == 0) {
+                size_t end_pos = data.find('\n');
+                if (end_pos == std::string::npos) {
+                    std::cerr << "Malformed target header received." << std::endl;
+                    break;
+                }
+                std::string target_directory = data.substr(7, end_pos - 7);
+                current_directory            = target_directory;
+                std::cout << "Setting client target directory to: " << current_directory
+                          << std::endl;
+                data = data.substr(end_pos + 1);
+
+            } else if (data.rfind("MSG:", 0) == 0) {
                 size_t end_pos = data.find('\n');
                 if (end_pos == std::string::npos) {
                     std::cerr << "Malformed message received." << std::endl;
@@ -291,6 +303,28 @@ void TCPPacketManager::send_directory_to_client(const std::string&             d
 
     std::cout << "Directory sent successfully: " << directory_name << std::endl;
 }
+
+void TCPPacketManager::send_directory_to_directory(
+    const std::string& directory_path, const asio::ip::tcp::endpoint& endpoint, const std::string& client_target_directory) {
+    namespace fs = std::filesystem;
+
+    if (!fs::exists(directory_path) || !fs::is_directory(directory_path)) {
+        std::cerr << "Directory does not exist or is not valid: " << directory_path << std::endl;
+        return;
+    }
+
+    std::string directory_name = fs::path(directory_path).filename().string();
+    std::cout << "Sending directory: " << directory_name << " to client directory: " << client_target_directory << std::endl;
+    std::string header = "TARGET:" + client_target_directory + "\n";
+    for (auto& client_socket : _client_sockets) {
+        if (client_socket->remote_endpoint() == endpoint) {
+            asio::write(*client_socket, asio::buffer(header));
+            break;
+        }
+    }
+    send_directory_to_client(directory_path, endpoint);
+}
+
 
 void TCPPacketManager::close() {
     _io_context.stop();

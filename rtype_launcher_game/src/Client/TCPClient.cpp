@@ -5,7 +5,7 @@
 ** TCPClient.cpp
 */
 
-#include "TCPClient.hpp"
+#include "../../include/Client/TCPClient.hpp"
 
 #include <iostream>
 
