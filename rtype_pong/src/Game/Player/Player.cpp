@@ -129,11 +129,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
     : _entity(registry.spawn_entity()) {
     if (!otherPlayer) {
         _playerSpriteSheet.emplace(
-            "idle", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
-        _playerSpriteSheet.emplace(
-            "up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
-        _playerSpriteSheet.emplace(
-            "down", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
+            "idle", *(RealEngine::AssetManager::getInstance().getSprite("bar_idle")));
         registry.add_component(_entity, RealEngine::Position{0.f, 100.f});
         registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
         registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
@@ -142,9 +138,9 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
         registry.add_component(
             _entity,
             RealEngine::SpriteSheet{
-                _playerSpriteSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
+                _playerSpriteSheet, "idle", 0, {48, 144}, false, false, 100, {-1, -1}, sf::Clock()});
         registry.add_component(
-            _entity, RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+            _entity, RealEngine::Collision{{0.f, 0.f, 48.f * GAME_SCALE, 144.f * GAME_SCALE},
                                            "spaceship",
                                            false,
                                            RealEngine::CollisionType::OTHER,

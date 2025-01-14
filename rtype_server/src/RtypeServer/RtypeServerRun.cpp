@@ -74,6 +74,92 @@ void RtypeServer::runGameInstance(float deltaTime) {
             RTypeProtocol::serialize<800>(destroyMessage);
         broadcastAllReliable(serializedDestroyMessage);
     }
+
+    auto registry = _game_instance->getRegistry();
+    auto entities = registry->view<RealEngine::NetvarContainer>();
+    for (auto entity : entities) {
+        sendNewEntity(entity, registry);
+    }
+}
+
+void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry* registry) {
+    auto* netvarContainer = registry->get_component<RealEngine::NetvarContainer>(entity);
+    if (!netvarContainer) return;
+
+    auto newEntity = netvarContainer->netvars.find("new_entity");
+    if (newEntity == netvarContainer->netvars.end()) return;
+
+    auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
+    if (!newEntityValue || !*newEntityValue) return;
+
+    RTypeProtocol::NewEntityMessage newEntityMessage;
+    newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
+    newEntityMessage.uuid         = entity;
+    newEntityMessage.entity_type  = RTypeProtocol::EntityType::OTHER_ENTITY;
+
+    // Serialize position component
+    auto* position = registry->get_component<RealEngine::Position>(entity);
+    if (position) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::POSITION,
+                              sf::Vector2f(position->x, position->y));
+    }
+
+    // Serialize velocity component
+    auto* velocity = registry->get_component<RealEngine::Velocity>(entity);
+    if (velocity) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::VELOCITY,
+                              *velocity);
+    }
+
+    // Serialize collision component
+    auto* collision = registry->get_component<RealEngine::Collision>(entity);
+    if (collision) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::COLLISION,
+                              *collision);
+    }
+
+    // Serialize auto destructible component
+    auto* autoDestructible = registry->get_component<RealEngine::AutoDestructible>(entity);
+    if (autoDestructible) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE,
+                              *autoDestructible);
+    }
+
+    // Serialize drawable component
+    auto* drawable = registry->get_component<RealEngine::Drawable>(entity);
+    if (drawable) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::DRAWABLE,
+                              *drawable);
+    }
+
+    // Serialize sprite component
+    auto spriteName = netvarContainer->netvars.find("sprite_name");
+    if (spriteName != netvarContainer->netvars.end()) {
+        auto* spriteNameValue = std::any_cast<std::string>(&spriteName->second.value);
+        if (spriteNameValue) {
+            std::vector<char> spriteData(spriteNameValue->begin(), spriteNameValue->end());
+            addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::SPRITE,
+                                  spriteData);
+        }
+    }
+
+    // Serialize angle component
+    auto* rotation = registry->get_component<RealEngine::Rotation>(entity);
+    if (rotation) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ROTATION,
+                              *rotation);
+    }
+
+    // Serialize acceleration component
+    auto* acceleration = registry->get_component<RealEngine::Acceleration>(entity);
+    if (acceleration) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::ACCELERATION,
+                              *acceleration);
+    }
+    std::array<char, 800> serializedNewEntityMessage =
+        RTypeProtocol::serialize<800>(newEntityMessage);
+    broadcastAllReliable(serializedNewEntityMessage);
+    netvarContainer->netvars.erase("new_entity");
 }
 
 void RtypeServer::broadcastStates() {

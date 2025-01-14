@@ -36,6 +36,8 @@ enum ComponentList : int {
     AUTO_DESTRUCTIBLE = 0x05,
     DRAWABLE          = 0x06,
     SPRITE            = 0x07,
+    ANGLE             = 0x08,
+    ACCELERATION      = 0x09,
 };
 
 enum EntityType : int {
@@ -46,8 +48,8 @@ enum EntityType : int {
 };
 
 struct BackgroundData {
-    std::vector<char> data;
-    float             speed;
+    int   background_id;
+    float speed;
 };
 
 // Base message structure (common across all message types)
@@ -95,7 +97,7 @@ struct MapMessage : BaseMessage {
     bool                        isLoaded;
     bool                        isLevelRunning;
     int                         server_tick;
-    std::vector<char>           level_music;
+    int                         id_level_music;
     std::vector<BackgroundData> backgrounds;
 };
 

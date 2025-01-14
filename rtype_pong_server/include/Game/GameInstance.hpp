@@ -35,7 +35,7 @@ class GameInstance {
         std::shared_ptr<RealEngine::Entity> enemyEntity);
     void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
-    void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
+    void movePlayer(long int playerUuid, int direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);

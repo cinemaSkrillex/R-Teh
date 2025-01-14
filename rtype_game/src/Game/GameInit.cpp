@@ -41,10 +41,10 @@ void Game::init_all_game() {
     init_registry();
     init_controls();
     init_systems();
-    std::string path = "../../assets/r_type/sprites/";
+    std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
         std::cout << "ici" << std::endl;
-        path = "../assets/sprites/";
+        path = "../assets/sprites/r_type";
     }
     init_level(path + "tiles/lv1", "lvl1");
     init_textures();
@@ -377,6 +377,15 @@ void Game::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet("heal_powerup", healPowerUpSheet,
                                                             "normal", 0, {16, 16}, false, true, 90,
                                                             {8, 8}, sf::Clock());
+
+    // load smal laser sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> smallLaserSheet;
+    RealEngine::Sprite                                  smallLaserSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("small_laser")));
+    smallLaserSheet.emplace("normal", smallLaserSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("small_laser", smallLaserSheet,
+                                                            "normal", 0, {48, 4}, false, true, 55,
+                                                            {-1, -1}, sf::Clock());
 }
 
 void Game::init_musics() {
