@@ -27,6 +27,8 @@ class Text : public IRender {
     int   getCharacterSize() const { return _text.getCharacterSize(); }
     sf::FloatRect getLocalBounds() const { return _text.getLocalBounds(); }
     sf::Vector2f  getPosition() const;
+    sf::Text&     getText() { return _text; }
+    sf::Font      getFont() { return _font; }
 
    private:
     sf::Text _text;

@@ -44,6 +44,7 @@
 #include "ECS/Components/Position.hpp"
 #include "ECS/Components/Radius.hpp"
 #include "ECS/Components/Rotation.hpp"
+#include "ECS/Components/Score.hpp"
 #include "ECS/Components/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
 #include "ECS/Components/Target.hpp"
