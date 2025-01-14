@@ -41,10 +41,10 @@ void Game::init_all_game() {
     init_registry();
     init_controls();
     init_systems();
-    std::string path = "../../assets/r_type/sprites/";
+    std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
         std::cout << "ici" << std::endl;
-        path = "../assets/sprites/";
+        path = "../assets/sprites/r_type";
     }
     init_level(path + "tiles/lv1", "lvl1");
     init_textures();
