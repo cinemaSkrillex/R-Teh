@@ -107,14 +107,6 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
     if (!positionComponent && !interpolationComponent) return;
-    // if (position.y > positionComponent->y) {
-    //     player_sprite->spriteIndex = "down";
-    // } else if (position.y < positionComponent->y) {
-    //     player_sprite->spriteIndex = "up";
-    // } else {
-    //     player_sprite->spriteIndex = "idle";
-    // }
-    // if difference between position and positionComponent is greater than 2, change sprite
     if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "up";
     } else if ((position.y > positionComponent->y) &&
@@ -166,7 +158,12 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 } else {
                     auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                     if (sprite) {
-                        _registry.add_component(*newEntity, RealEngine::SpriteComponent{*sprite});
+                        _registry.add_component(
+                            *newEntity,
+                            RealEngine::SpriteComponent{
+                                *sprite,
+                                parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK ? 1
+                                                                                             : 0});
                     } else {
                         std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << sprite_str
                                   << std::endl;
@@ -206,18 +203,10 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
         }
     }
     // std::cout << "New entity created with UUID: " << parsedPacket.uuid << std::endl;
-    // if (parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK) {
-    //     _game_map.addBlock(newEntity);
-    // } else {
-    //     _entities.emplace(parsedPacket.uuid, newEntity);
-    // }
 
     switch (parsedPacket.entity_type) {
         case RTypeProtocol::EntityType::BLOCK:
             _game_map.addBlock(newEntity);
-            break;
-        case RTypeProtocol::EntityType::BACKGROUND:
-            _game_map.addBackground(newEntity, _parallaxSystem);
             break;
         case RTypeProtocol::EntityType::OTHER_ENTITY:
             _entities.emplace(parsedPacket.uuid, newEntity);
@@ -257,7 +246,6 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
               << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
               << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 
-    // Load level music
     if (parsedPacket.level_music.empty()) {
         std::cout << "No level music found in the map message" << std::endl;
         return;
@@ -267,7 +255,6 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     std::cout << "level music size : " << parsedPacket.level_music.size() << std::endl;
     _game_map.setMusicName(level_music_str);
 
-    // Load backgrounds
     if (parsedPacket.backgrounds.empty()) {
         std::cout << "No backgrounds found in the map message" << std::endl;
         return;

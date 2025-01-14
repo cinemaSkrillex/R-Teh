@@ -20,8 +20,9 @@ class DrawSystem {
    public:
     DrawSystem(sf::RenderWindow* window = nullptr);
     ~DrawSystem();
-    void updateWithoutDisplay(Registry& registry, float deltaTime);
-    void update(Registry& registry, float deltaTime);
+    std::vector<std::pair<RealEngine::Sprite, int>> updateWithoutDisplay(Registry& registry,
+                                                                         float     deltaTime);
+    void                                            update(Registry& registry, float deltaTime);
 
    private:
     sf::RenderWindow* _window;
