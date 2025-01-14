@@ -143,11 +143,13 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
                                            RealEngine::CollisionType::OTHER,
                                            playerCollisionHandler});
         registry.add_component(_entity, RealEngine::Health{100, 200});
+        registry.add_component(_entity, RealEngine::Score{0});
         registry.add_component(
             _entity,
             RealEngine::NetvarContainer{{
                 {"clignotingTimer", {"float", "clignotingTimer", float(0.f), updateClignotingAnim}},
                 {"clignotingFrameTimer", {"float", "clignotingFrameTimer", float(0.25f), nullptr}},
+                {"hold_shoot", {"float", "hold_shoot", float(0.f), nullptr}},
             }});
     } else {
         registry.add_component(_entity, RealEngine::Position{position.x, position.y});

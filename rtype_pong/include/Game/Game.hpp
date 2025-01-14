@@ -18,6 +18,7 @@
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PlayerUI.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
 #include "PlayerUtils.hpp"
@@ -79,7 +80,7 @@ class Game {
     RealEngine::ParallaxSystem        _parallaxSystem;
     RealEngine::ParticleSystem        _particleSystem;
     RealEngine::NetvarSystem          _netvarSystem;
-    rtype::Controls                   _controls;
+    Controls                          _controls;
 
     std::shared_ptr<RealEngine::Entity> _player_entity;
     std::shared_ptr<RealEngine::Entity> _other_entity;
