@@ -92,7 +92,7 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
 }
 
 RTypeProtocol::MapMessage MapInitializer::createMapMessage(
-    const std::shared_ptr<GameMap>& GameMap) {
+    const std::shared_ptr<ServerMap>& GameMap) {
     RTypeProtocol::MapMessage mapMessage;
     mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
     mapMessage.uuid             = 0;

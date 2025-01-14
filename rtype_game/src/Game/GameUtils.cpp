@@ -67,6 +67,12 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             }
             break;
         }
+        case RTypeProtocol::ENTITY_UPDATE: {
+            RTypeProtocol::EntityUpdateMessage entityUpdateMessage =
+                RTypeProtocol::deserializeEntityUpdate(signal);
+            handleEntityUpdate(entityUpdateMessage);
+            break;
+        }
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
@@ -122,6 +128,31 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     interpolationComponent->step         = 1.f / step;
     interpolationComponent->current_step = 0.f;
     interpolationComponent->reset        = true;
+}
+
+void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket) {
+    auto it = _entities.find(parsedPacket.uuid);
+    if (it == _entities.end()) return;
+    std::shared_ptr<RealEngine::Entity> entity = it->second;
+    auto* positionComponent = _registry.get_component<RealEngine::Position>(entity);
+    auto* rotationComponent = _registry.get_component<RealEngine::Rotation>(entity);
+    // auto* interpolationComponent              =
+    // _registry.get_component<RealEngine::Interpolation>(entity); if (!positionComponent &&
+    // !interpolationComponent) return;
+    if (!positionComponent) return;
+    // positionComponent->x                 = interpolationComponent->end.x;
+    // positionComponent->y                 = interpolationComponent->end.y;
+    positionComponent->x = parsedPacket.x;
+    positionComponent->y = parsedPacket.y;
+
+    // interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+    // interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
+    // interpolationComponent->step         = parsedPacket.step;
+    // interpolationComponent->current_step = 0.f;
+    // interpolationComponent->reset        = true;
+    if (rotationComponent && parsedPacket.angle != -1) {
+        rotationComponent->angle = parsedPacket.angle;
+    }
 }
 
 void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) {
@@ -196,13 +227,12 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 _registry.add_component<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
                 break;
             }
-            case RTypeProtocol::ComponentList::ACCELERATION : {
+            case RTypeProtocol::ComponentList::ACCELERATION: {
                 RealEngine::Acceleration acceleration;
                 std::memcpy(&acceleration, component.second.data(), sizeof(acceleration));
                 _registry.add_component(newEntity, RealEngine::Acceleration{acceleration});
                 break;
             }
-
             default:
                 std::cout << "Unknown component type: " << component.first << "\n";
                 break;

@@ -8,8 +8,11 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "Game/Particles.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PowerUp.hpp"
+#include "GameMap.hpp"
 #include "Mobs/Mobs.hpp"
 
 class GameInstance {
@@ -20,22 +23,21 @@ class GameInstance {
     void init_textures();
     void init_sprite_sheets();
     void init_screen_limits();
+    void start_level();
 
     void init_level(std::string filepath, std::string foldername);
 
     void handleSignal(const std::string& message);
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
-    std::shared_ptr<RealEngine::Entity> addAndGetEntity(sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
                                                         sf::Vector2f direction, float speed,
                                                         std::string spriteName, float damage,
                                                         int health);
-    std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
-        std::shared_ptr<RealEngine::Entity> enemyEntity);
     void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
-    void movePlayer(long int playerUuid, int direction, float deltaTime);
+    void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);
@@ -44,6 +46,12 @@ class GameInstance {
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
+    std::shared_ptr<rtype::GameMap>                          getMap() {
+        if (!_game_map) {
+            std::cerr << "Error: _game_map is null" << std::endl;
+        }
+        return _game_map;
+    }
 
    private:
     bool                                _serverVision;
@@ -61,8 +69,10 @@ class GameInstance {
     RealEngine::HealthSystem       _healthSystem;
     RealEngine::NetvarSystem       _netvarSystem;
     RealEngine::TargetRadiusSystem _targetRadiusSystem;
+    RealEngine::ParticleSystem     _particleSystem;
 
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
+    std::shared_ptr<rtype::GameMap>                                          _game_map;
 };
