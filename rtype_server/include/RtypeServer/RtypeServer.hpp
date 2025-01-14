@@ -107,6 +107,8 @@ class RtypeServer {
     void runGameInstance(float deltaTime);
     void broadcastStates();
 
+    void sendNewEntity(RealEngine::Entity entity, RealEngine::Registry* registry);
+
     void printServerStartupBanner();
 
    public:
