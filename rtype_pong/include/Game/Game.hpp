@@ -32,7 +32,7 @@ class Game {
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
-    sf::IntRect                         getPlayerNormalizedDirection();
+    int                                 getPlayerNormalizedDirection();
 
     std::shared_ptr<UDPClient> _clientUDP;
 
