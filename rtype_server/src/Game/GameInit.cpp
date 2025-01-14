@@ -164,11 +164,11 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
-                                                   {0, 0, 16 * 4, 16});
+                                                   {0, 0, 16 * 4, 16}, {2, 2});
     AssetManagerInstance.loadSpriteTextureAndScale("speed_powerup", path + "power_up.png",
-                                                   {0, 16, 16 * 3, 16});
+                                                   {0, 16, 16 * 3, 16}, {2, 2});
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
-                                                   {0, 32, 16 * 5, 16});
+                                                   {0, 32, 16 * 5, 16}, {2, 2});
 }
 
 void GameInstance::init_sprite_sheets() {
