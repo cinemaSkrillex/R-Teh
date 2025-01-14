@@ -15,10 +15,7 @@ PlayerUI::PlayerUI(RealEngine::Registry& registry, sf::RenderWindow& window)
       _scoreText("", "../../assets/fonts/Early_GameBoy.ttf"),
       _healthText("", "../../assets/fonts/Early_GameBoy.ttf"),
       _beamText("", "../../assets/fonts/Early_GameBoy.ttf"),
-      _playerEntity(nullptr),
-      _playerHealth(nullptr),
-      _playerNetvarContainer(nullptr),
-      _playerScore(nullptr) {
+      _playerEntity(nullptr) {
     float horizontal_panel_center = VIEW_WIDTH / 2;
     float vertical_panel_center   = VIEW_HEIGHT + 50;
     _background.setOrigin({VIEW_WIDTH / 2, 100 / 2});
@@ -65,33 +62,39 @@ PlayerUI::PlayerUI(RealEngine::Registry& registry, sf::RenderWindow& window)
 PlayerUI::~PlayerUI() {}
 
 void PlayerUI::AssignPlayerToUI(std::shared_ptr<RealEngine::Entity> playerEntity) {
-    _playerEntity          = playerEntity;
-    _playerHealth          = _registry.get_component<RealEngine::Health>(_playerEntity);
-    _playerNetvarContainer = _registry.get_component<RealEngine::NetvarContainer>(_playerEntity);
-    _playerScore           = _registry.get_component<RealEngine::Score>(_playerEntity);
+    _playerEntity = playerEntity;
 }
 
 void PlayerUI::update() {
-    if (_playerEntity && _playerHealth && _playerNetvarContainer && _playerScore) {
-        float shootLoadValue =
-            std::any_cast<float>(_playerNetvarContainer->getNetvar("hold_shoot")->value);
-        shootLoadValue = std::clamp(shootLoadValue, 0.0f, 2.0f);
+    auto playerHealth = _registry.get_component<RealEngine::Health>(_playerEntity);
+    auto playerScore  = _registry.get_component<RealEngine::Score>(_playerEntity);
+    auto playerNetvar = _registry.get_component<RealEngine::NetvarContainer>(_playerEntity);
+    if (_playerEntity && playerHealth && playerNetvar && playerScore) {
+        try {
+            float shootLoadValue =
+                std::any_cast<float>(playerNetvar->getNetvar("hold_shoot")->value);
+            float maxShootTime = 0.75f / 2.f;
+            shootLoadValue     = std::clamp(shootLoadValue, 0.0f, maxShootTime);
 
-        if (_playerHealth->amount <= 0) {
-            _score += _playerScore->amount;
-        }
-        _healthBar.setSize(
-            {(GAUGE_WIDTH * float(float(_playerHealth->amount) / float(_playerHealth->maxHealth))),
-             GAUGE_HEIGHT});
-        _scoreText.setString(
-            std::string("Score: \n" + std::to_string(_score + _playerScore->amount)));
-        _healthText.setString(std::string(std::to_string(_playerHealth->amount) + " ~ " +
-                                          std::to_string(_playerHealth->maxHealth) + " HP"));
+            if (playerHealth->amount <= 0) {
+                _score += playerScore->amount;
+            }
+            _healthBar.setSize({(GAUGE_WIDTH * float(float(playerHealth->amount) /
+                                                     float(playerHealth->maxHealth))),
+                                GAUGE_HEIGHT});
+            _scoreText.setString(
+                std::string("Score: \n" + std::to_string(_score + playerScore->amount)));
+            _healthText.setString(std::string(std::to_string(playerHealth->amount) + " ~ " +
+                                              std::to_string(playerHealth->maxHealth) + " HP"));
 
-        if (shootLoadValue) {
-            _shootLoad.setSize({(shootLoadValue / 2.0f) * GAUGE_WIDTH, GAUGE_HEIGHT});
-        } else {
-            _shootLoad.setSize({shootLoadValue * GAUGE_WIDTH, GAUGE_HEIGHT});
+            if (shootLoadValue > 0.f) {
+                _shootLoad.setSize({(shootLoadValue / maxShootTime) * GAUGE_WIDTH, GAUGE_HEIGHT});
+            } else {
+                _shootLoad.setSize({shootLoadValue * GAUGE_WIDTH, GAUGE_HEIGHT});
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Error in UI update : [" << e.what() << "]" << std::endl;
+            std::cerr << e.what() << std::endl;
         }
     }
     _window.draw(_background);

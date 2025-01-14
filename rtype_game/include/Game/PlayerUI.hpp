@@ -27,9 +27,6 @@ class PlayerUI {
     sf::RenderWindow&                   _window;
     RealEngine::Registry&               _registry;
     std::shared_ptr<RealEngine::Entity> _playerEntity;
-    RealEngine::Health*                 _playerHealth;
-    RealEngine::NetvarContainer*        _playerNetvarContainer;
-    RealEngine::Score*                  _playerScore;
     sf::RectangleShape                  _background;
     sf::RectangleShape                  _healthBar;
     sf::RectangleShape                  _emptyHealthBar;

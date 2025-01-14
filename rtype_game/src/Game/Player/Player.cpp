@@ -43,11 +43,9 @@ static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Ent
     auto* timerNetvar = netvars->getNetvar("clignotingFrameTimer");
     float frameTimer  = std::any_cast<float>(timerNetvar->value);
     if (std::any_cast<float>(currentNetvar.value) > 0) {
-        std::cout << "frameTimer: " << frameTimer << std::endl;
         frameTimer -= deltaTime;
         if (frameTimer <= 0.f) {
             for (auto& [key, sprite] : spritesheet->sprites) {
-                std::cout << "Sprite opacity: " << sprite.getOpacity() << std::endl;
                 if (sprite.getOpacity() == 255) {
                     sprite.setOpacity(50);
                 } else {
