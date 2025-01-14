@@ -14,5 +14,6 @@ namespace RealEngine {
 
 struct TargetRadius {
     float size;
+    bool  focusOnTarget = true;
 };
 }  // namespace RealEngine
