@@ -85,6 +85,7 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.level_music.assign(musicName.begin(), musicName.end());
 
     std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
+    std::cout << "Level size : " << mapMessage.level_music.size() << std::endl;
     const auto& backgrounds = GameMap->getBackgrounds();
     for (const auto& background : backgrounds) {
         RTypeProtocol::BackgroundData bgData;
@@ -92,6 +93,7 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         bgData.speed = background.second;
         std::cout << "Background: " << bgData.data.data() << ", Speed: " << bgData.speed
                   << std::endl;
+        std::cout << "Background size: " << bgData.data.size() << std::endl;
         mapMessage.backgrounds.push_back(bgData);
     }
     return mapMessage;

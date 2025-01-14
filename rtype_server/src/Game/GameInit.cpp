@@ -30,8 +30,8 @@ GameInstance::GameInstance(bool serverVision)
     init_screen_limits();
     std::string path = "../../assets/maps/";
     _game_map->loadFromJSON(path + "level_1.json");
-    rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(600, 100));
-    addAndGetEnemy(spaceSphere.getEntity());
+    rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(20, 100));
+    addAndGetEntity(spaceSphere.getEntity());
 }
 
 void GameInstance::init_components() {
@@ -100,8 +100,8 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::init_textures() {
-    std::string path = "../../assets/sprites/";
-    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    std::string path                 = "../../assets/sprites/r_type/";
+    auto&       AssetManagerInstance = RealEngine::AssetManager::getInstance();
 
     init_level(path + "tiles/lv1", "lvl1");
 
@@ -163,6 +163,12 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
+                                                   {0, 0, 16 * 4, 16}, {2, 2});
+    AssetManagerInstance.loadSpriteTextureAndScale("speed_powerup", path + "power_up.png",
+                                                   {0, 16, 16 * 3, 16}, {2, 2});
+    AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
+                                                   {0, 32, 16 * 5, 16}, {2, 2});
 }
 
 void GameInstance::init_sprite_sheets() {
@@ -204,6 +210,30 @@ void GameInstance::init_sprite_sheets() {
     bigBulletSheet.emplace("normal", bigBulletSprite);
     RealEngine::AssetManager::getInstance().loadSpriteSheet(
         "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> shootPowerUpSheet;
+    RealEngine::Sprite                                  shootPowerUpSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("shoot_powerup")));
+    shootPowerUpSheet.emplace("normal", shootPowerUpSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("shoot_powerup", shootPowerUpSheet,
+                                                            "normal", 0, {16, 16}, false, true, 90,
+                                                            {8, 8}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> speedPowerUpSheet;
+    RealEngine::Sprite                                  speedPowerUpSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("speed_powerup")));
+    speedPowerUpSheet.emplace("normal", speedPowerUpSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("speed_powerup", speedPowerUpSheet,
+                                                            "normal", 0, {16, 16}, false, true, 90,
+                                                            {8, 8}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> healPowerUpSheet;
+    RealEngine::Sprite                                  healPowerUpSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("heal_powerup")));
+    healPowerUpSheet.emplace("normal", healPowerUpSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("heal_powerup", healPowerUpSheet,
+                                                            "normal", 0, {16, 16}, false, true, 90,
+                                                            {8, 8}, sf::Clock());
 }
 
 void GameInstance::init_level(std::string filepath, std::string foldername) {

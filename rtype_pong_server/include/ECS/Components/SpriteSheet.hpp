@@ -25,5 +25,6 @@ struct SpriteSheet {
     float        animTime;  // Time in milliseconds before updating the frame.
     sf::Vector2i origin = {-1, -1};
     sf::Clock    animClock;
+    int          zIndex = 0;
 };
 }  // namespace RealEngine

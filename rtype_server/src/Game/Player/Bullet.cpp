@@ -69,8 +69,7 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
         if (sprite) {
             registry.add_component(_entity, RealEngine::SpriteComponent{*sprite});
         } else {
-            std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << spriteName
-                      << std::endl;
+            std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << spriteName << std::endl;
         }
     }
     registry.add_component(_entity, RealEngine::Drawable{});

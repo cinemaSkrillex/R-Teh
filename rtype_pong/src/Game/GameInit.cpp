@@ -255,21 +255,6 @@ void Game::set_action_handlers() {
     _controlSystem.setActionHandler(RealEngine::Action::Down,
                                     std::bind(&rtype::Controls::moveDown, &_controls,
                                               std::placeholders::_1, std::placeholders::_2));
-    _controlSystem.setActionHandler(RealEngine::Action::Left,
-                                    std::bind(&rtype::Controls::moveLeft, &_controls,
-                                              std::placeholders::_1, std::placeholders::_2));
-    _controlSystem.setActionHandler(RealEngine::Action::Right,
-                                    std::bind(&rtype::Controls::moveRight, &_controls,
-                                              std::placeholders::_1, std::placeholders::_2));
-    _controlSystem.setActionHandler(RealEngine::Action::Action1,
-                                    std::bind(&rtype::Controls::shoot, &_controls,
-                                              std::placeholders::_1, std::placeholders::_2));
-    _controlSystem.setActionHoldHandler(RealEngine::Action::Action1,
-                                        std::bind(&rtype::Controls::holdShoot, &_controls,
-                                                  std::placeholders::_1, std::placeholders::_2));
-    _controlSystem.setActionReleaseHandler(RealEngine::Action::Action1,
-                                           std::bind(&rtype::Controls::releaseShoot, &_controls,
-                                                     std::placeholders::_1, std::placeholders::_2));
 }
 
 void Game::set_sprite_opacity() {

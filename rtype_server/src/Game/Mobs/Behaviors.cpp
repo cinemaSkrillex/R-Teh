@@ -353,6 +353,8 @@ void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
 
     if (health) {
         health->amount -= health->maxHealth;
+    } else {
+        registry.add_component(entity, RealEngine::AutoDestructible{0.0f});
     }
 }
 

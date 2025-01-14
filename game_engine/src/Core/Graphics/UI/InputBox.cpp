@@ -62,7 +62,7 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
 
 void InputBox::setPosition(const sf::Vector2f& position) {
     box.setPosition(position);
-    text.setPosition(position.x + 10000, position.y + 5);
+    text.setPosition(position.x + 5, position.y + 5);
 }
 
 void InputBox::setSize(const sf::Vector2f& size) { box.setSize(size); }
@@ -89,8 +89,21 @@ void InputBox::centerText() {
         box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
     float textPositionY =
         box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    text.setPosition(390, (textPositionY + 10));
+    text.setPosition((textPositionX + 50), (textPositionY + 10));
 }
+
+void InputBox::setFocus(bool focus) {
+    isActive = focus;
+
+    if (focus) {
+        box.setOutlineThickness(2);
+        box.setOutlineColor(sf::Color::Blue);
+    } else {
+        box.setOutlineThickness(0);
+    }
+}
+
+sf::FloatRect InputBox::getGlobalBounds() const { return box.getGlobalBounds(); }
 
 void InputBox::setContentType(ContentType type) { contentType = type; }
 

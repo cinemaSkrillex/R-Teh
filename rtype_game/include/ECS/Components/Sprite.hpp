@@ -12,5 +12,6 @@
 namespace RealEngine {
 struct SpriteComponent {
     RealEngine::Sprite sprite;
+    int                zIndex = 0;
 };
 }  // namespace RealEngine

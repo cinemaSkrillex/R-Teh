@@ -113,6 +113,12 @@ class Registry {
         components[*from].reset();
     }
 
+    template <typename Component>
+    void remove_component(Entity const& from) {
+        auto& components = get_components<Component>();
+        components[from].reset();
+    }
+
     template <class... Components, typename Function>
     void add_system(Function&& f) {
         _systems.push_back([this, f = std::forward<Function>(f)](float deltaTime) {
