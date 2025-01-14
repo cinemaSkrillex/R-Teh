@@ -33,38 +33,12 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
     auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
-
     _netvarSystem.update(_registry, deltaTime);
     _game_map->updateLevel(deltaTime);
     auto enemies_to_spawn = _game_map->invokeWaves();
     for (auto& enemy : enemies_to_spawn) {
         spawnMob(enemy.name, enemy.position, enemy.angle);
     }
-    _enemies.erase(
-        std::remove_if(
-            _enemies.begin(), _enemies.end(),
-            [&](const auto& mob) {
-                std::vector<RealEngine::Netvar*> netvars =
-                    _registry.get_components<RealEngine::Netvar>(mob);
-                for (auto& netvar : netvars) {
-                    if (netvar->name != "dropChance") continue;
-                    netvar->value = std::any_cast<float>(netvar->value);
-                    if (std::any_cast<float>(netvar->value) < 0) {
-                        auto powerup  = _registry.spawn_entity();
-                        auto position = _registry.get_component<RealEngine::Position>(mob);
-                        _registry.add_component(powerup,
-                                                RealEngine::Position{position->x, position->y});
-                        _registry.add_component(
-                            powerup, RealEngine::Collision{{0.f, 0.f, 12.f, 12.f},
-                                                           "powerup_shoot",
-                                                           false,
-                                                           RealEngine::CollisionType::PICKABLE,
-                                                           nullptr});
-                    }
-                }
-                return _registry.get_component<RealEngine::Health>(mob) == nullptr;
-            }),
-        _enemies.end());
 
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
                                   [&](const auto& bullet) {
@@ -77,7 +51,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
         _movementSystem.update(_registry, mob, deltaTime);
     }
 
-    // Then update remaining bullets
     for (auto& bullet : _bullets) {
         _movementSystem.update(_registry, bullet, deltaTime);
     }

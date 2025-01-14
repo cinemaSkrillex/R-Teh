@@ -57,11 +57,13 @@ void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
     }
 }
 
-void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Position>();
+std::vector<std::pair<RealEngine::Sprite, int>> DrawSystem::updateWithoutDisplay(Registry& registry,
+                                                                                 float deltaTime) {
+    std::vector<std::pair<RealEngine::Sprite, int>> spritesWithZIndex;
+    auto                                            entities = registry.view<Position>();
 
     if (entities.empty()) {
-        return;
+        return spritesWithZIndex;
     }
     for (auto entity : entities) {
         auto* position    = registry.get_component<Position>(entity);
@@ -70,38 +72,30 @@ void DrawSystem::updateWithoutDisplay(Registry& registry, float deltaTime) {
 
         if (sprite) {
             sprite->sprite.setPosition(position->x, position->y);
+            spritesWithZIndex.emplace_back(sprite->sprite, sprite->zIndex);
         } else if (spritesheet) {
             auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
 
             handleSpriteSheetAnimation(*spritesheet, sprite);
             sprite.setPosition(position->x, position->y);
+            spritesWithZIndex.emplace_back(sprite, spritesheet->zIndex);
         }
     }
+    // std::cout << "Entites" << entities.size() << std::endl;
+    // std::cout << "Drawing " << spritesWithZIndex.size() << " sprites" << std::endl;
+    return spritesWithZIndex;
 }
 
 void DrawSystem::update(Registry& registry, float deltaTime) {
-    auto entities = registry.view<Position>();
-
-    if (entities.empty()) {
-        return;
+    auto spritesWithZIndex = updateWithoutDisplay(registry, deltaTime);
+    std::sort(spritesWithZIndex.begin(), spritesWithZIndex.end(),
+              [](const std::pair<RealEngine::Sprite, int>& a,
+                 const std::pair<RealEngine::Sprite, int>& b) { return a.second < b.second; });
+    for (auto& pair : spritesWithZIndex) {
+        // std::cout << "Drawing sprite with z-index: " << pair.second << std::endl;
+        pair.first.draw(*_window);
     }
-    for (auto entity : entities) {
-        // auto* drawable    = registry.get_component<Drawable>(entity);
-        auto* position    = registry.get_component<Position>(entity);
-        auto* sprite      = registry.get_component<SpriteComponent>(entity);
-        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
-
-        if (sprite) {
-            sprite->sprite.setPosition(position->x, position->y);
-            sprite->sprite.draw(*_window);
-        } else if (spritesheet) {
-            auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);
-
-            handleSpriteSheetAnimation(*spritesheet, sprite);
-            sprite.setPosition(position->x, position->y);
-            sprite.draw(*_window);
-        }
-    }
+    // std::cout << "Drawing particles" << std::endl;
     updateParticles(registry, deltaTime);
 }
 }  // namespace RealEngine

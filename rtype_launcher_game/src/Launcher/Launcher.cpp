@@ -15,13 +15,10 @@ Launcher::Launcher()
             RealEngine::InputBox::ContentType::Text),
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212", "../../../assets/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
-      button(sf::Vector2f(250, 50)),
-      buttonText("Connect to Server", "../../../assets/arial.ttf") {
-    button.setPosition(275, 350);
+      button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
+             "../../../assets/arial.ttf") {
     button.setFillColor(sf::Color::Green);
-    buttonText.setCharacterSize(24);
-    buttonText.setColor(255, 255, 255, 255);
-    buttonText.setPosition(420, 365);
+    button.setTextColor(sf::Color::White);
 
     ipBox.setFillColor(sf::Color::Green);
     portBox.setFillColor(sf::Color::Green);
@@ -33,28 +30,27 @@ void Launcher::run() {
     while (window.isOpen()) {
         sf::Event event;
         while (window.getRenderWindow().pollEvent(event)) {
-            ipBox.handleEvent(event);
-            portBox.handleEvent(event);
-
+            button.handleEvent(event, [this]() { onConnectClick(); });
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (button.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y) &&
-                    event.mouseButton.button == sf::Mouse::Left) {
-                    onConnectClick();
+                ipBox.setFocus(false);
+                portBox.setFocus(false);
+                if (ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    ipBox.setFocus(true);
+                } else if (portBox.getGlobalBounds().contains(event.mouseButton.x,
+                                                              event.mouseButton.y)) {
+                    portBox.setFocus(true);
                 }
             }
-
+            ipBox.handleEvent(event);
+            portBox.handleEvent(event);
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
-
         window.clear();
         ipBox.draw(window.getRenderWindow());
-        // ipBox.drawDebug(window.getRenderWindow());
         portBox.draw(window.getRenderWindow());
-        // portBox.drawDebug(window.getRenderWindow());
-        window.getRenderWindow().draw(button);
-        buttonText.draw(window.getRenderWindow());
+        button.draw(window.getRenderWindow());
         window.display();
     }
 }
@@ -73,8 +69,7 @@ void Launcher::connectToServer() {
         auto tcpclient = std::make_shared<TCPClient>(
             ipBox.getText(), static_cast<unsigned short>(std::stoi(portBox.getText())));
 
-        std::thread ioThread(
-            [&io_context]() { io_context.run(); });
+        std::thread ioThread([&io_context]() { io_context.run(); });
 
         ioThread.join();
         std::this_thread::sleep_for(std::chrono::hours(1));

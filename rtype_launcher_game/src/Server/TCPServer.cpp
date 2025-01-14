@@ -6,6 +6,7 @@
 */
 
 #include "../../include/Server/TCPServer.hpp"
+
 #include <iostream>
 
 TCPServer::TCPServer(unsigned short port)
@@ -13,9 +14,7 @@ TCPServer::TCPServer(unsigned short port)
     _packet_manager->start_server(port);
 }
 
-TCPServer::~TCPServer() {
-    _packet_manager->close();
-}
+TCPServer::~TCPServer() { _packet_manager->close(); }
 
 void TCPServer::setNewClientCallback(
     const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback) {
@@ -30,7 +29,7 @@ void TCPServer::send_file(const std::string& file_path, const asio::ip::tcp::end
     _packet_manager->send_file_to_client(file_path, endpoint);
 }
 
-void TCPServer::send_directory(const std::string& directory_path,
+void TCPServer::send_directory(const std::string&             directory_path,
                                const asio::ip::tcp::endpoint& endpoint) {
     _packet_manager->send_directory_to_client(directory_path, endpoint);
 }

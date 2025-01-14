@@ -11,6 +11,7 @@
 #include "Game/Particles.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PowerUp.hpp"
 #include "GameMap.hpp"
 #include "Mobs/Mobs.hpp"
 
@@ -29,13 +30,11 @@ class GameInstance {
     void handleSignal(const std::string& message);
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
-    std::shared_ptr<RealEngine::Entity> addAndGetEntity(sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
                                                         sf::Vector2f direction, float speed,
                                                         std::string spriteName, float damage,
                                                         int health);
-    std::shared_ptr<RealEngine::Entity> addAndGetEnemy(
-        std::shared_ptr<RealEngine::Entity> enemyEntity);
     void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
