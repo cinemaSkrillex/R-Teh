@@ -22,7 +22,7 @@ void TargetRadiusSystem::update(Registry& registry) {
         auto* entity_radius   = registry.get_component<TargetRadius>(entity);
         auto* entity_target   = registry.get_component<Target>(entity);
 
-        if (entity_target && entity_target->target) continue;
+        if (entity_target && (entity_target->target && entity_radius->focusOnTarget)) continue;
         players_targets.clear();
         for (auto player : player_entities) {
             auto* player_position = registry.get_component<Position>(player);
@@ -39,6 +39,8 @@ void TargetRadiusSystem::update(Registry& registry) {
             int random_index = std::rand() % players_targets.size();
             registry.add_component(entity,
                                    Target{std::make_shared<Entity>(players_targets[random_index])});
+        } else if (players_targets.empty() && (entity_target && !entity_radius->focusOnTarget)) {
+            registry.remove_component<Target>(entity);
         }
     }
 }
