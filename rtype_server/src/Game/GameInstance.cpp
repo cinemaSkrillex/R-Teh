@@ -13,7 +13,6 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 };
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
-    std::cout << "Running game instance" << _enemies.size() << std::endl;
     // _registry.update(deltaTime);
     // Then update remaining mobs
     if (_serverVision) {
@@ -34,7 +33,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
     auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
-    std::cout << "destroyedEntities: " << destroyedEntities.size() << std::endl;
     _netvarSystem.update(_registry, deltaTime);
     _game_map->updateLevel(deltaTime);
     auto enemies_to_spawn = _game_map->invokeWaves();
@@ -50,7 +48,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
                    _bullets.end());
 
     for (auto& mob : _enemies) {
-        std::cout << "Mob: " << *mob << std::endl;
         _movementSystem.update(_registry, mob, deltaTime);
     }
 
