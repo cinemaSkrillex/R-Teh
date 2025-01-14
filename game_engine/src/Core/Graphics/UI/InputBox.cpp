@@ -89,9 +89,21 @@ void InputBox::centerText() {
         box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
     float textPositionY =
         box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    std::cout << textPositionX << " " << textPositionY << std::endl;
     text.setPosition((textPositionX + 50), (textPositionY + 10));
 }
+
+void InputBox::setFocus(bool focus) {
+    isActive = focus;
+
+    if (focus) {
+        box.setOutlineThickness(2);
+        box.setOutlineColor(sf::Color::Blue);
+    } else {
+        box.setOutlineThickness(0);
+    }
+}
+
+sf::FloatRect InputBox::getGlobalBounds() const { return box.getGlobalBounds(); }
 
 void InputBox::setContentType(ContentType type) { contentType = type; }
 

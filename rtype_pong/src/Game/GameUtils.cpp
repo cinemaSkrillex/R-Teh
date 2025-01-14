@@ -94,9 +94,11 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     // auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
     // auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
     // if (!positionComponent && !interpolationComponent) return;
-    // if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    // if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7))
+    // {
     //     player_sprite->spriteIndex = "up";
-    // } else if ((position.y > positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
+    // } else if ((position.y > positionComponent->y) && (std::abs(position.y -
+    // positionComponent->y) > 7)) {
     //     player_sprite->spriteIndex = "down";
     // } else {
     //     player_sprite->spriteIndex = "idle";

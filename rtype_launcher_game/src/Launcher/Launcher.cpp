@@ -30,15 +30,23 @@ void Launcher::run() {
     while (window.isOpen()) {
         sf::Event event;
         while (window.getRenderWindow().pollEvent(event)) {
+            button.handleEvent(event, [this]() { onConnectClick(); });
+            if (event.type == sf::Event::MouseButtonPressed) {
+                ipBox.setFocus(false);
+                portBox.setFocus(false);
+                if (ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    ipBox.setFocus(true);
+                } else if (portBox.getGlobalBounds().contains(event.mouseButton.x,
+                                                              event.mouseButton.y)) {
+                    portBox.setFocus(true);
+                }
+            }
             ipBox.handleEvent(event);
             portBox.handleEvent(event);
-            button.handleEvent(event, [this]() { onConnectClick(); });
-
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
-
         window.clear();
         ipBox.draw(window.getRenderWindow());
         portBox.draw(window.getRenderWindow());
