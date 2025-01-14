@@ -69,8 +69,8 @@ struct PlayerMoveMessage : BaseMessage {
 
 // Player direction message
 struct PlayerDirectionMessage : BaseMessage {
-    sf::IntRect direction;
-    long        timestamp;
+    int  direction;
+    long timestamp;
 };
 
 // Synchronize message

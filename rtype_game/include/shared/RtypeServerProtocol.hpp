@@ -49,8 +49,8 @@ enum EntityType : int {
 };
 
 struct BackgroundData {
-    std::vector<char> data;
-    float             speed;
+    int   background_id;
+    float speed;
 };
 
 // Base message structure (common across all message types)
@@ -98,7 +98,7 @@ struct MapMessage : BaseMessage {
     bool                        isLoaded;
     bool                        isLevelRunning;
     int                         server_tick;
-    std::vector<char>           level_music;
+    int                         id_level_music;
     std::vector<BackgroundData> backgrounds;
 };
 

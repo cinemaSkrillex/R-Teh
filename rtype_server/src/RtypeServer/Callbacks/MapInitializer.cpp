@@ -34,26 +34,11 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
         case RTypeProtocol::MessageType::MAP_INFO:
             deserializedMapMessage =
                 RTypeProtocol::deserializeMapMessage<800>(serializedMapMessage);
-            std::cout << "Deserialized map message: " << deserializedMapMessage.message_type
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.uuid << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.scrollingSpeed
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.x_level_position
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.isLoaded
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.isLevelRunning
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.server_tick
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.level_music.data()
-                      << std::endl;
-            std::cout << "Deserialized map message: " << deserializedMapMessage.level_music.size()
-                      << std::endl;
+            std::cout << "Deserialized map message: levelmusic "
+                      << deserializedMapMessage.id_level_music << std::endl;
             for (const auto& bg : deserializedMapMessage.backgrounds) {
-                std::cout << "Deserialized map message: " << bg.data.data() << std::endl;
-                std::cout << "Deserialized map message: " << bg.data.size() << std::endl;
+                std::cout << "Deserialized map message: ID background " << bg.background_id
+                          << std::endl;
                 std::cout << "Deserialized map message: " << bg.speed << std::endl;
             }
             break;
@@ -117,20 +102,54 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
     mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
     std::string musicName       = GameMap->getMusicName();
+    if (musicName.empty()) {
+        std::cerr << "Error: Music name is empty" << std::endl;
+        return mapMessage;
+    }
+    if (musicName == "level1") {
+        mapMessage.id_level_music = 1;
+    } else if (musicName == "level2") {
+        mapMessage.id_level_music = 2;
+    } else if (musicName == "level3") {
+        mapMessage.id_level_music = 3;
+    } else {
+        mapMessage.id_level_music = 4;
+    }
 
-    mapMessage.level_music.assign(musicName.begin(), musicName.end());
-
-    std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
-    std::cout << "Level size : " << mapMessage.level_music.size() << std::endl;
     const auto& backgrounds = GameMap->getBackgrounds();
     for (const auto& background : backgrounds) {
         RTypeProtocol::BackgroundData bgData;
-        bgData.data.assign(background.first.begin(), background.first.end());
+        if (background.first.empty()) {
+            std::cerr << "Error: Background data is empty" << std::endl;
+            continue;
+        }
+        if (background.first == "big_stars_background") {
+            bgData.background_id = 1;
+        } else if (background.first == "medium_stars_background") {
+            bgData.background_id = 2;
+        } else if (background.first == "small_stars_background") {
+            bgData.background_id = 3;
+        } else if (background.first == "space_base_background") {
+            bgData.background_id = 4;
+        } else {
+            bgData.background_id = 1;
+        }
         bgData.speed = background.second;
-        std::cout << "Background: " << bgData.data.data() << ", Speed: " << bgData.speed
-                  << std::endl;
-        std::cout << "Background size: " << bgData.data.size() << std::endl;
         mapMessage.backgrounds.push_back(bgData);
     }
+    // mapMessage.id_level_music  = GameMap->getMusicId();
+
+    // std::cout << "Level music: " << mapMessage.level_music.data() << std::endl;
+    // std::cout << "Level size : " << mapMessage.level_music.size() << std::endl;
+    // const auto& backgrounds = GameMap->getBackgrounds();
+    // for (const auto& background : backgrounds) {
+    //     RTypeProtocol::BackgroundData bgData;
+    //     bgData.data.assign(background.first.begin(), background.first.end());
+    //     bgData.speed = background.second;
+    //     std::cout << "Background: " << bgData.data.data() << ", Speed: " << bgData.speed
+    //               << std::endl;
+    //     std::cout << "Background size: " << bgData.data.size() << std::endl;
+    //     mapMessage.backgrounds.push_back(bgData);
+    // }
     return mapMessage;
 }

@@ -142,9 +142,15 @@ class AssetManager {
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
                                    const sf::IntRect&  rect,
                                    const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
-        loadTexture(id, filepath, rect);
-        loadSprite(id, id);
-        getSprite(id)->setScale(scale.x, scale.y);
+        try {
+            loadTexture(id, filepath, rect);
+            loadSprite(id, id);
+            getSprite(id)->setScale(scale.x, scale.y);
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadSpriteTextureAndScale: " << id << " - " << e.what()
+                      << std::endl;
+            return;
+        }
     }
 
     void unloadSprite(const std::string& id) { _sprites.erase(id); }
