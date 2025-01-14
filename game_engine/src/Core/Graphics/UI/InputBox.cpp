@@ -13,10 +13,10 @@ namespace RealEngine {
 
 InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
                    const std::string& defaultText, const std::string& fontPath,
-                   ContentType contentType)
+                   ContentType contentType, size_t characterLimit)
     : text(defaultText, fontPath),
       contentType(contentType),
-      characterLimit(256),
+      characterLimit(characterLimit),
       isActive(false),
       currentText(defaultText) {
     box.setSize(size);
@@ -48,6 +48,10 @@ void InputBox::handleEvent(const sf::Event& event) {
 }
 
 bool InputBox::isValidCharacter(uint32_t unicode) const {
+    if (currentText.length() >= characterLimit && unicode != '\b') {
+        return false; // Bloque l'ajout si la limite est atteinte
+    }
+
     switch (contentType) {
         case ContentType::Numeric:
             return (unicode >= '0' && unicode <= '9') || unicode == '\b';
@@ -56,6 +60,8 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
         case ContentType::Alphanumeric:
             return ((unicode >= '0' && unicode <= '9') || (unicode >= 'A' && unicode <= 'Z') ||
                     (unicode >= 'a' && unicode <= 'z') || unicode == '\b');
+        case ContentType::IpAddress:
+            return (unicode >= '0' && unicode <= '9') || unicode == '.' || unicode == '\b';
     }
     return false;
 }
