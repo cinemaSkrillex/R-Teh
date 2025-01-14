@@ -95,7 +95,7 @@ class RtypeServer {
     void initEventHandlers();
 
     void broadcastPlayerState(const Player& player);
-    void broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity);
+    void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
 

@@ -318,13 +318,19 @@ void Game::init_musics() {
 }
 
 void Game::init_sounds() {
+    std::string path = "../../assets/sounds/";
+    if (assetLauncher == true) {
+        path = "../assets/sounds/";
+    }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadSound("shoot", "../../assets/sounds/laserShoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/bigLaserShoot.wav");
-    AssetManagerInstance.loadSound("explosion", "../../assets/sounds/explosion.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/hitHurt.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/powerUp.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/blipSelect.wav");
+    AssetManagerInstance.loadSound("shoot", path + "laserShoot.wav");
+    AssetManagerInstance.loadSound("big_laser_shoot", path + "bigLaserShoot.wav");
+    AssetManagerInstance.loadSound("explosion", path + "explosion.wav");
+    AssetManagerInstance.loadSound("hit_hurt", path + "hitHurt.wav");
+    AssetManagerInstance.loadSound("powerup_shoot", path + "powerup_shoot.wav");
+    AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
+    AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
+    AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
 }
 
 }  // namespace rtype

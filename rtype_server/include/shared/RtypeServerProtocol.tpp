@@ -235,6 +235,24 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage&
 }
 
 template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const EntityUpdateMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the additional fields
+    writeToBuffer(it, msg.x);
+    writeToBuffer(it, msg.y);
+    writeToBuffer(it, msg.angle);
+    writeToBuffer(it, msg.step);
+    writeToBuffer(it, msg.timestamp);
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
 RTypeProtocol::DestroyEntityMessage RTypeProtocol::deserializeDestroyEntity(
     const std::array<char, BUFFER_SIZE>& buffer) {
     DestroyEntityMessage msg;
@@ -394,6 +412,25 @@ RTypeProtocol::LevelSignalMessage RTypeProtocol::deserializeLevelSignal(
     // Deserialize startLevel
     std::memcpy(&msg.startLevel, buffer.data() + offset, sizeof(msg.startLevel));
     offset += sizeof(msg.startLevel);
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::EntityUpdateMessage RTypeProtocol::deserializeEntityUpdate(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    EntityUpdateMessage msg;
+    const char*         it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the additional fields
+    readFromBuffer(it, msg.x);
+    readFromBuffer(it, msg.y);
+    readFromBuffer(it, msg.angle);
+    readFromBuffer(it, msg.step);
+    readFromBuffer(it, msg.timestamp);
 
     return msg;
 }
