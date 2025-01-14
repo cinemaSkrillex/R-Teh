@@ -64,6 +64,8 @@ class Game {
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
     void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
     void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
+    void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
+                         std::shared_ptr<RealEngine::Entity> newEntity);
 
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
