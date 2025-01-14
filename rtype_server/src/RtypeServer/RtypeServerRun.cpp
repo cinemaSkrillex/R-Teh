@@ -12,22 +12,14 @@ void RtypeServer::run() {
     auto        log                   = std::make_shared<Log>("RtypeServer.log");
     int         server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
     int         server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    const float fixedTimeStep   = 1.0f / server_tick;  // MAP fixed time-step (client has the same)
-    float       accumulatedTime = 0.0f;
 
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
-            accumulatedTime += _deltaTime;
 
             handleClientMessages();
             runGameInstance(_deltaTime);
-
-            // while (accumulatedTime >= fixedTimeStep) {
-            //     updateMapState(fixedTimeStep);
-            //     accumulatedTime -= fixedTimeStep;
-            // }
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
@@ -62,6 +54,12 @@ void RtypeServer::initEventHandlers() {
 }
 
 void RtypeServer::runGameInstance(float deltaTime) {
+    auto registry = _game_instance->getRegistry();
+    auto entities = registry->view<RealEngine::NetvarContainer>();
+    for (auto entity : entities) {
+        sendNewEntity(entity, registry);
+    }
+
     auto destroyedEntities = _game_instance->run(_deltaTime);
     if (!destroyedEntities.empty()) {
         RTypeProtocol::DestroyEntityMessage destroyMessage;
@@ -73,12 +71,6 @@ void RtypeServer::runGameInstance(float deltaTime) {
         std::array<char, 800> serializedDestroyMessage =
             RTypeProtocol::serialize<800>(destroyMessage);
         broadcastAllReliable(serializedDestroyMessage);
-    }
-
-    auto registry = _game_instance->getRegistry();
-    auto entities = registry->view<RealEngine::NetvarContainer>();
-    for (auto entity : entities) {
-        sendNewEntity(entity, registry);
     }
 }
 
@@ -168,5 +160,9 @@ void RtypeServer::broadcastStates() {
         broadcastPlayerState(player.second);
     }
     // Broadcast entity states
-    // TODO : Implement entity state broadcasting
+    auto registry = _game_instance->getRegistry();
+    auto entities = registry->view<RealEngine::NetvarContainer>();
+    for (auto entity : entities) {
+        broadcastEntityState(entity, registry);
+    }
 }
