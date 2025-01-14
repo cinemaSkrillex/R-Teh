@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
                 std::cout << "New client connected: " << client_endpoint << std::endl;
                 tcp_server->send_message("UWU1", client_endpoint);
                 tcp_server->send_directory("../rtype_game", client_endpoint);
-                tcp_server->send_directory("../../../assets", client_endpoint);
+                tcp_server->send_directory_to_directory("../../../assets", client_endpoint, "rtype_game");
                 tcp_server->send_message("T'as tout les fichiers", client_endpoint);
             });
         io_context.run();

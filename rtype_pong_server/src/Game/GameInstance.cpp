@@ -79,7 +79,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     return destroyedEntities;
 };
 
-void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {
+void GameInstance::movePlayer(long int playerUuid, int direction, float deltaTime) {
     if (_players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
@@ -89,19 +89,16 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
 
     if (!acceleration || !velocity || !position) return;
 
-    if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
-    if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
-    if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
-    if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
-    if (direction.top > 0) velocity->vx += (acceleration->ax * 3 * deltaTime);
-    if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
-    if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
-    if (direction.height > 0) velocity->vy += (acceleration->ay * 3 * deltaTime);
-    if (direction.left == 1 && direction.top == 1) {
-        velocity->vx = 0;
-    }
-    if (direction.width == 1 && direction.height == 1) {
-        velocity->vy = 0;
+    if (direction > 0 && velocity->vy > 50) velocity->vy = 50;    // Moving down
+    if (direction < 0 && velocity->vy < -50) velocity->vy = -50;  // Moving up
+
+    // Update the velocity based on the direction and acceleration
+    if (direction > 0) {
+        velocity->vy += (acceleration->ay * 3 * deltaTime);  // Accelerate down
+    } else if (direction < 0) {
+        velocity->vy -= (acceleration->ay * 3 * deltaTime);  // Accelerate up
+    } else {
+        velocity->vy = 0;  // Stop movement when direction is 0
     }
 }
 

@@ -45,10 +45,9 @@ void Game::init_all_game() {
     init_registry();
     init_controls();
     init_systems();
-    std::string path = "../../assets/r_type/sprites/";
+    std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
-        std::cout << "ici" << std::endl;
-        path = "../assets/sprites/";
+        path = "assets/sprites/r_type";
     }
     init_level(path + "tiles/lv1", "lvl1");
     init_textures();
@@ -92,7 +91,7 @@ void Game::init_screen_limits() {
 void Game::init_textures() {
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
-        path = "../assets/sprites/r_type/";
+        path = "assets/sprites/r_type/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up", path + "spaceship.png",
@@ -383,12 +382,21 @@ void Game::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet("heal_powerup", healPowerUpSheet,
                                                             "normal", 0, {16, 16}, false, true, 90,
                                                             {8, 8}, sf::Clock());
+
+    // load smal laser sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> smallLaserSheet;
+    RealEngine::Sprite                                  smallLaserSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("small_laser")));
+    smallLaserSheet.emplace("normal", smallLaserSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("small_laser", smallLaserSheet,
+                                                            "normal", 0, {48, 4}, false, true, 55,
+                                                            {-1, -1}, sf::Clock());
 }
 
 void Game::init_musics() {
     std::string path = "../../assets/musics/";
     if (assetLauncher == true) {
-        path = "../assets/musics/";
+        path = "assets/musics/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadMusic("level_1",
@@ -404,17 +412,17 @@ void Game::init_musics() {
 void Game::init_sounds() {
     std::string path = "../../assets/sounds/";
     if (assetLauncher == true) {
-        path = "../assets/sounds/";
+        path = "assets/sounds/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSound("shoot", path + "laserShoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "bigLaserShoot.wav");
+    AssetManagerInstance.loadSound("big_laser_shoot", path + "bigLaserShoot.wav");
     AssetManagerInstance.loadSound("explosion", path + "explosion.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "hitHurt.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_shoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_speed.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_heal.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "blipSelect.wav");
+    AssetManagerInstance.loadSound("hit_hurt", path + "hitHurt.wav");
+    AssetManagerInstance.loadSound("powerup_shoot", path + "powerup_shoot.wav");
+    AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
+    AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
+    AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
 }
 
 }  // namespace rtype

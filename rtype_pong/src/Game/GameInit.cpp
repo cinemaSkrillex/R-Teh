@@ -86,79 +86,80 @@ void Game::init_screen_limits() {
 void Game::init_textures() {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "spaceship_up", "../../assets/sprites/spaceship.png", {0, 0, 32 * 2, 15});
+        "bar_idle", "../../assets/sprites/pong/bar_idle.png", {0, 0, 48, 144});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "spaceship_idle", "../../assets/sprites/spaceship.png", {0, 15, 32, 15});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "spaceship_down", "../../assets/sprites/spaceship.png", {0, 15 * 2, 33 * 2, 15});
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "small_stars_background", "../../assets/sprites/backgrounds/stars.png", {1, 1});
+        "small_stars_background", "../../assets/sprites/r_type/backgrounds/stars.png", {1, 1});
     AssetManagerInstance.getTexture("small_stars_background")->setRepeated(true);
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "medium_stars_background", "../../assets/sprites/backgrounds/stars.png", {2, 2});
+        "medium_stars_background", "../../assets/sprites/r_type/backgrounds/stars.png", {2, 2});
     AssetManagerInstance.getTexture("medium_stars_background")->setRepeated(true);
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "big_stars_background", "../../assets/sprites/backgrounds/stars.png", {3, 3});
+        "big_stars_background", "../../assets/sprites/r_type/backgrounds/stars.png", {3, 3});
     AssetManagerInstance.getTexture("big_stars_background")->setRepeated(true);
 
-    AssetManagerInstance.loadSpriteTextureAndScale("bullet",
-                                                   "../../assets/sprites/spaceship_bullet.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("space_plane",
-                                                   "../../assets/sprites/enemies/space_plane.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("space_drill",
-                                                   "../../assets/sprites/enemies/space_drill.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("space_sphere",
-                                                   "../../assets/sprites/enemies/space_sphere.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("turret_canon",
-                                                   "../../assets/sprites/enemies/turret_canon.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "turret_pedestal", "../../assets/sprites/enemies/turret_pedestal.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("mob_spawner_ship",
-                                                   "../../assets/sprites/enemies/mob_spawner.png");
+        "bullet", "../../assets/sprites/r_type/spaceship_bullet.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "mortar_rocket", "../../assets/sprites/enemies/mortar_rocket.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("robot_boss_minion",
-                                                   "../../assets/sprites/enemies/boss_minion.png");
+        "space_plane", "../../assets/sprites/r_type/enemies/space_plane.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "robot_boss_shoot", "../../assets/sprites/enemies/mini_boss.png", {0, 0, 47, 43});
+        "space_drill", "../../assets/sprites/r_type/enemies/space_drill.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "robot_boss_fordward", "../../assets/sprites/enemies/mini_boss.png", {0, 43, 56, 54});
+        "space_sphere", "../../assets/sprites/r_type/enemies/space_sphere.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "robot_boss_backward", "../../assets/sprites/enemies/mini_boss.png", {0, 97, 49, 50});
+        "turret_canon", "../../assets/sprites/r_type/enemies/turret_canon.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "directional_canon", "../../assets/sprites/enemies/directional_canon.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_bomber",
-                                                   "../../assets/sprites/enemies/eye_bomber.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_minion",
-                                                   "../../assets/sprites/enemies/eye_minion.png");
+        "turret_pedestal", "../../assets/sprites/r_type/enemies/turret_pedestal.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_bigion_normal", "../../assets/sprites/enemies/eye_bigion.png", {0, 0, 23 * 2, 16});
+        "mob_spawner_ship", "../../assets/sprites/r_type/enemies/mob_spawner.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_bigion_angry", "../../assets/sprites/enemies/eye_bigion.png", {0, 16, 21 * 2, 16});
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_boss_short_range",
-                                                   "../../assets/sprites/enemies/the_eye/boss.png",
-                                                   {0, 0, 73 * 3, 55});
+        "mortar_rocket", "../../assets/sprites/r_type/enemies/mortar_rocket.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_boss_mid_range", "../../assets/sprites/enemies/the_eye/boss.png", {0, 55, 91 * 3, 55});
-    AssetManagerInstance.loadSpriteTextureAndScale("eye_boss_long_range",
-                                                   "../../assets/sprites/enemies/the_eye/boss.png",
-                                                   {0, 55 * 2, 81 * 3, 55});
+        "robot_boss_minion", "../../assets/sprites/r_type/enemies/boss_minion.png");
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "eye_laser", "../../assets/sprites/enemies/the_eye/laser_shoot.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("space_vortex",
-                                                   "../../assets/sprites/enemies/space_vortex.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("space_laser",
-                                                   "../../assets/sprites/enemies/laser_shoot.png");
+        "robot_boss_shoot", "../../assets/sprites/r_type/enemies/mini_boss.png", {0, 0, 47, 43});
     AssetManagerInstance.loadSpriteTextureAndScale(
-        "small_laser", "../../assets/sprites/enemies/laser_shoot.png", {1, 1});
-    AssetManagerInstance.loadSpriteTextureAndScale("fireball",
-                                                   "../../assets/sprites/enemies/fireball.png");
+        "robot_boss_fordward", "../../assets/sprites/r_type/enemies/mini_boss.png",
+        {0, 43, 56, 54});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "robot_boss_backward", "../../assets/sprites/r_type/enemies/mini_boss.png",
+        {0, 97, 49, 50});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "directional_canon", "../../assets/sprites/r_type/enemies/directional_canon.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_bomber", "../../assets/sprites/r_type/enemies/eye_bomber.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_minion", "../../assets/sprites/r_type/enemies/eye_minion.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_bigion_normal", "../../assets/sprites/r_type/enemies/eye_bigion.png",
+        {0, 0, 23 * 2, 16});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_bigion_angry", "../../assets/sprites/r_type/enemies/eye_bigion.png",
+        {0, 16, 21 * 2, 16});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_boss_short_range", "../../assets/sprites/r_type/enemies/the_eye/boss.png",
+        {0, 0, 73 * 3, 55});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_boss_mid_range", "../../assets/sprites/r_type/enemies/the_eye/boss.png",
+        {0, 55, 91 * 3, 55});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_boss_long_range", "../../assets/sprites/r_type/enemies/the_eye/boss.png",
+        {0, 55 * 2, 81 * 3, 55});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "eye_laser", "../../assets/sprites/r_type/enemies/the_eye/laser_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "space_vortex", "../../assets/sprites/r_type/enemies/space_vortex.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "space_laser", "../../assets/sprites/r_type/enemies/laser_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "small_laser", "../../assets/sprites/r_type/enemies/laser_shoot.png", {1, 1});
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "fireball", "../../assets/sprites/r_type/enemies/fireball.png");
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet",
-                                                   "../../assets/sprites/big_shoot.png");
+                                                   "../../assets/sprites/r_type/big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet",
-                                                   "../../assets/sprites/medium_shoot.png");
+                                                   "../../assets/sprites/r_type/medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other",
-                                                   "../../assets/sprites/spaceship.png");
+                                                   "../../assets/sprites/r_type/spaceship.png");
 }
 
 void Game::init_systems() {
@@ -317,13 +318,19 @@ void Game::init_musics() {
 }
 
 void Game::init_sounds() {
+    std::string path = "../../assets/sounds/";
+    if (assetLauncher == true) {
+        path = "../assets/sounds/";
+    }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadSound("shoot", "../../assets/sounds/laserShoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/bigLaserShoot.wav");
-    AssetManagerInstance.loadSound("explosion", "../../assets/sounds/explosion.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/hitHurt.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/powerUp.wav");
-    AssetManagerInstance.loadSound("big_explosion", "../../assets/sounds/blipSelect.wav");
+    AssetManagerInstance.loadSound("shoot", path + "laserShoot.wav");
+    AssetManagerInstance.loadSound("big_laser_shoot", path + "bigLaserShoot.wav");
+    AssetManagerInstance.loadSound("explosion", path + "explosion.wav");
+    AssetManagerInstance.loadSound("hit_hurt", path + "hitHurt.wav");
+    AssetManagerInstance.loadSound("powerup_shoot", path + "powerup_shoot.wav");
+    AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
+    AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
+    AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
 }
 
 }  // namespace rtype

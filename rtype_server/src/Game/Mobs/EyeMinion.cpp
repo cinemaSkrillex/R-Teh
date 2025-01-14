@@ -63,7 +63,8 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
         _entity,
         RealEngine::NetvarContainer{
             {{"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
-             {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}}}});
+             {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}},
+             {"new_entity", {"bool", "new_entity", true, nullptr}}}});
 }
 
 EyeMinion::~EyeMinion() {}

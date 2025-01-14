@@ -35,9 +35,8 @@ SmallLaser::SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, fl
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("small_laser"), nullptr}}
-
-            }});
+            {{"sprite_name", {"string", "sprite_name", std::string("small_laser"), nullptr}},
+             {"new_entity", {"bool", "new_entity", true, nullptr}}}});
 }
 
 SmallLaser::~SmallLaser() {}

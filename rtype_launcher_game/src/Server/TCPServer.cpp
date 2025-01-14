@@ -33,3 +33,9 @@ void TCPServer::send_directory(const std::string&             directory_path,
                                const asio::ip::tcp::endpoint& endpoint) {
     _packet_manager->send_directory_to_client(directory_path, endpoint);
 }
+
+void TCPServer::send_directory_to_directory(const std::string&             directory_path,
+                                            const asio::ip::tcp::endpoint& endpoint,
+                                            const std::string& client_target_directory) {
+    _packet_manager->send_directory_to_directory(directory_path, endpoint, client_target_directory);
+}

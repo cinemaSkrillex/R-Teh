@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** GameMap
+** ServerMap
 */
 
-#ifndef GameMap_HPP_
-#define GameMap_HPP_
+#ifndef ServerMap_HPP_
+#define ServerMap_HPP_
 
 #include <json/json.h>
 
@@ -49,14 +49,14 @@ struct Boss {
 
 }  // namespace Map
 
-class GameMap {
+class ServerMap {
     // JSON helpers
     Json::Value readJSONFile(const std::string& filepath);
     void        writeJSONFile(const std::string& filepath, const Json::Value& json);
 
    public:
-    GameMap(RealEngine::Registry& registry);
-    ~GameMap();
+    ServerMap(RealEngine::Registry& registry);
+    ~ServerMap();
     void                      updateLevel(float deltaTime);
     std::vector<Map::WaveMob> invokeWaves();
     void                      startLevel();
@@ -100,4 +100,4 @@ class GameMap {
     bool                                       _isLevelRunning;
 };
 
-#endif /* !GameMap_HPP_ */
+#endif /* !ServerMap_HPP_ */

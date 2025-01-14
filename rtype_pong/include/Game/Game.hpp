@@ -33,6 +33,7 @@ class Game {
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
+    std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::IntRect                         getPlayerNormalizedDirection();
 
     std::shared_ptr<UDPClient> _clientUDP;
@@ -49,6 +50,8 @@ class Game {
     void init_sounds();
     void init_screen_limits();
 
+    void init_level(std::string filepath, std::string foldername);
+
     void register_components();
     void bind_keys();
     void set_action_handlers();
@@ -60,6 +63,8 @@ class Game {
     void handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
+    void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
+    void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
 
     float              _deltaTime = 0.f;
     RealEngine::Window _window;
@@ -82,9 +87,10 @@ class Game {
     RealEngine::NetvarSystem          _netvarSystem;
     Controls                          _controls;
 
-    std::shared_ptr<RealEngine::Entity> _player_entity;
-    std::shared_ptr<RealEngine::Entity> _other_entity;
-    std::shared_ptr<RealEngine::Entity> _ball_entity;
+    std::shared_ptr<RealEngine::Entity>                               _player_entity;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    GameMap                                                           _game_map;
 
     long int                              _localPlayerUUID;
     std::chrono::steady_clock::time_point _startTime;

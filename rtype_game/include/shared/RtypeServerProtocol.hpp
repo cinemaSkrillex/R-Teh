@@ -26,6 +26,7 @@ enum MessageType : int {
     RELEASE_SHOOT_EVENT = 0x09,
     MAP_INFO            = 0x0A,
     LEVEL_SIGNAL        = 0x0B,
+    ENTITY_UPDATE       = 0x0C,
 };
 
 enum ComponentList : int {
@@ -36,6 +37,8 @@ enum ComponentList : int {
     AUTO_DESTRUCTIBLE = 0x05,
     DRAWABLE          = 0x06,
     SPRITE            = 0x07,
+    ANGLE             = 0x08,
+    ACCELERATION      = 0x09,
 };
 
 enum EntityType : int {
@@ -46,8 +49,8 @@ enum EntityType : int {
 };
 
 struct BackgroundData {
-    std::vector<char> data;
-    float             speed;
+    int   background_id;
+    float speed;
 };
 
 // Base message structure (common across all message types)
@@ -95,12 +98,21 @@ struct MapMessage : BaseMessage {
     bool                        isLoaded;
     bool                        isLevelRunning;
     int                         server_tick;
-    std::vector<char>           level_music;
+    int                         id_level_music;
     std::vector<BackgroundData> backgrounds;
 };
 
 struct LevelSignalMessage : BaseMessage {
     bool startLevel;
+};
+
+// Entity update, position, rotation(angle) - should be enough for now
+struct EntityUpdateMessage : BaseMessage {
+    float x;
+    float y;
+    float angle;
+    float step;
+    long  timestamp;
 };
 
 template <std::size_t BUFFER_SIZE>
@@ -131,6 +143,9 @@ std::array<char, BUFFER_SIZE> serialize(const MapMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const LevelSignalMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const EntityUpdateMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -152,6 +167,9 @@ MapMessage deserializeMapMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 template <std::size_t BUFFER_SIZE>
 LevelSignalMessage deserializeLevelSignal(const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+EntityUpdateMessage deserializeEntityUpdate(const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 
