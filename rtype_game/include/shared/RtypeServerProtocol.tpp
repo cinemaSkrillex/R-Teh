@@ -99,52 +99,42 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const DestroyEntityMessag
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
-    std::size_t                   offset = 0;
+    char*                         offset = buffer.data();
 
     // Serialize base message
-    std::memcpy(buffer.data() + offset, &msg, sizeof(BaseMessage));
-    offset += sizeof(BaseMessage);
+    writeToBuffer(offset, static_cast<const BaseMessage&>(msg));
 
     // Serialize other fields
-    std::memcpy(buffer.data() + offset, &msg.scrollingSpeed, sizeof(msg.scrollingSpeed));
-    offset += sizeof(msg.scrollingSpeed);
-    std::memcpy(buffer.data() + offset, &msg.x_level_position, sizeof(msg.x_level_position));
-    offset += sizeof(msg.x_level_position);
-    std::memcpy(buffer.data() + offset, &msg.isLoaded, sizeof(msg.isLoaded));
-    offset += sizeof(msg.isLoaded);
-    std::memcpy(buffer.data() + offset, &msg.isLevelRunning, sizeof(msg.isLevelRunning));
-    offset += sizeof(msg.isLevelRunning);
-    std::memcpy(buffer.data() + offset, &msg.server_tick, sizeof(msg.server_tick));
-    offset += sizeof(msg.server_tick);
+    writeToBuffer(offset, msg.scrollingSpeed);
+    writeToBuffer(offset, msg.x_level_position);
+    writeToBuffer(offset, msg.isLoaded);
+    writeToBuffer(offset, msg.isLevelRunning);
+    writeToBuffer(offset, msg.server_tick);
 
     // Serialize level_music vector size
     size_t level_music_size = msg.level_music.size();
-    std::memcpy(buffer.data() + offset, &level_music_size, sizeof(level_music_size));
-    offset += sizeof(level_music_size);
+    writeToBuffer(offset, level_music_size);
 
     // Serialize level_music vector data
-    std::memcpy(buffer.data() + offset, msg.level_music.data(), level_music_size);
+    std::memcpy(offset, msg.level_music.data(), level_music_size);
     offset += level_music_size;
 
     // Serialize backgrounds vector size
     size_t backgrounds_size = msg.backgrounds.size();
-    std::memcpy(buffer.data() + offset, &backgrounds_size, sizeof(backgrounds_size));
-    offset += sizeof(backgrounds_size);
+    writeToBuffer(offset, backgrounds_size);
 
     // Serialize each background
     for (const auto& background : msg.backgrounds) {
         // Serialize background data size
         size_t data_size = background.data.size();
-        std::memcpy(buffer.data() + offset, &data_size, sizeof(data_size));
-        offset += sizeof(data_size);
+        writeToBuffer(offset, data_size);
 
         // Serialize background data
-        std::memcpy(buffer.data() + offset, background.data.data(), data_size);
+        std::memcpy(offset, background.data.data(), data_size);
         offset += data_size;
 
-        // Serialize background position
-        std::memcpy(buffer.data() + offset, &background.speed, sizeof(background.speed));
-        offset += sizeof(background.speed);
+        // Serialize background speed
+        writeToBuffer(offset, background.speed);
     }
 
     return buffer;
@@ -375,38 +365,30 @@ template <std::size_t BUFFER_SIZE>
 RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
     const std::array<char, BUFFER_SIZE>& buffer) {
     MapMessage  msg;
-    std::size_t offset = 0;
+    const char* offset = buffer.data();
 
     // Deserialize base message
-    std::memcpy(&msg, buffer.data() + offset, sizeof(BaseMessage));
-    offset += sizeof(BaseMessage);
+    readFromBuffer(offset, static_cast<BaseMessage&>(msg));
 
     // Deserialize other fields
-    std::memcpy(&msg.scrollingSpeed, buffer.data() + offset, sizeof(msg.scrollingSpeed));
-    offset += sizeof(msg.scrollingSpeed);
-    std::memcpy(&msg.x_level_position, buffer.data() + offset, sizeof(msg.x_level_position));
-    offset += sizeof(msg.x_level_position);
-    std::memcpy(&msg.isLoaded, buffer.data() + offset, sizeof(msg.isLoaded));
-    offset += sizeof(msg.isLoaded);
-    std::memcpy(&msg.isLevelRunning, buffer.data() + offset, sizeof(msg.isLevelRunning));
-    offset += sizeof(msg.isLevelRunning);
-    std::memcpy(&msg.server_tick, buffer.data() + offset, sizeof(msg.server_tick));
-    offset += sizeof(msg.server_tick);
+    readFromBuffer(offset, msg.scrollingSpeed);
+    readFromBuffer(offset, msg.x_level_position);
+    readFromBuffer(offset, msg.isLoaded);
+    readFromBuffer(offset, msg.isLevelRunning);
+    readFromBuffer(offset, msg.server_tick);
 
     // Deserialize level_music vector size
     size_t level_music_size;
-    std::memcpy(&level_music_size, buffer.data() + offset, sizeof(level_music_size));
-    offset += sizeof(level_music_size);
+    readFromBuffer(offset, level_music_size);
 
     // Deserialize level_music vector data
     msg.level_music.resize(level_music_size);
-    std::memcpy(msg.level_music.data(), buffer.data() + offset, level_music_size);
+    std::memcpy(msg.level_music.data(), offset, level_music_size);
     offset += level_music_size;
 
     // Deserialize backgrounds vector size
     size_t backgrounds_size;
-    std::memcpy(&backgrounds_size, buffer.data() + offset, sizeof(backgrounds_size));
-    offset += sizeof(backgrounds_size);
+    readFromBuffer(offset, backgrounds_size);
 
     // Deserialize each background
     for (size_t i = 0; i < backgrounds_size; ++i) {
@@ -414,17 +396,15 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
 
         // Deserialize background data size
         size_t data_size;
-        std::memcpy(&data_size, buffer.data() + offset, sizeof(data_size));
-        offset += sizeof(data_size);
+        readFromBuffer(offset, data_size);
 
         // Deserialize background data
         background.data.resize(data_size);
-        std::memcpy(background.data.data(), buffer.data() + offset, data_size);
+        std::memcpy(background.data.data(), offset, data_size);
         offset += data_size;
 
-        // Deserialize background position
-        std::memcpy(&background.speed, buffer.data() + offset, sizeof(background.speed));
-        offset += sizeof(background.speed);
+        // Deserialize background speed
+        readFromBuffer(offset, background.speed);
 
         msg.backgrounds.push_back(background);
     }
