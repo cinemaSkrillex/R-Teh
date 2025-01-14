@@ -28,32 +28,23 @@ class MapInitializer {
     template <typename T>
     void sendEntities(const std::vector<T>& entities, const std::string& type,
                       const asio::ip::udp::endpoint& sender) {
-        constexpr size_t                   BATCH_SIZE = 25;
-        std::vector<std::array<char, 800>> batchMessages;
-        batchMessages.reserve(BATCH_SIZE);
-
         for (const auto& entity : entities) {
             if (type == "block") {
-                processBlock(entity, batchMessages);
-                if (batchMessages.size() == BATCH_SIZE) {
-                    processBatchMessages(batchMessages, type, sender);
-                }
-            }
-            processBatchMessages(batchMessages, type, sender);
-        }
-    }
-
-    void processBatchMessages(const std::vector<std::array<char, 800>>& batchMessages,
-                              const std::string& type, const asio::ip::udp::endpoint& sender) {
-        for (const auto& message : batchMessages) {
-            for (const auto& client : _UdpServer->getClients()) {
-                _UdpServer->send_reliable_packet(message, client);
+                std::array<char, 800> message;
+                processBlock(entity, message);
+                processMessage(message, sender);
             }
         }
     }
 
-    void                      processBlock(const std::shared_ptr<rtype::Block>& block,
-                                           std::vector<std::array<char, 800>>&  batchMessages);
+    void processMessage(const std::array<char, 800>&   message,
+                        const asio::ip::udp::endpoint& sender) {
+        for (const auto& client : _UdpServer->getClients()) {
+            _UdpServer->send_reliable_packet(message, client);
+        }
+    }
+
+    void processBlock(const std::shared_ptr<rtype::Block>& block, std::array<char, 800>& message);
     RTypeProtocol::MapMessage createMapMessage(const std::shared_ptr<ServerMap>& GameMap);
 };
 
