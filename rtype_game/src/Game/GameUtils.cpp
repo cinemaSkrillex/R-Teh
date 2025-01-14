@@ -245,17 +245,20 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
     }
     switch (parsedPacket.entity_type) {
         case RTypeProtocol::EntityType::BLOCK:
-            if (std::find_if(_game_map.getBlockEntities().begin(),
-                             _game_map.getBlockEntities().end(),
-                             [&parsedPacket](const std::shared_ptr<RealEngine::Entity>& entity) {
-                                 return static_cast<std::size_t>(*entity) == parsedPacket.uuid;
-                             }) != _game_map.getBlockEntities().end()) {
+            if (std::find_if(
+                    _game_map.getBlockEntities().begin(), _game_map.getBlockEntities().end(),
+                    [&parsedPacket](
+                        const std::pair<long int, std::shared_ptr<RealEngine::Entity>>& block) {
+                        return block.first == parsedPacket.uuid;
+                    }) != _game_map.getBlockEntities().end()) {
                 std::cerr << "Block entity with UUID " << parsedPacket.uuid
                           << " already exists in the game map, skipping." << std::endl;
                 _registry.remove_entity(*newEntity);
                 return;
             }
-            _game_map.addBlock(newEntity);
+            std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " << *newEntity
+                      << std::endl;
+            _game_map.addBlock(newEntity, parsedPacket.uuid);
             break;
         case RTypeProtocol::EntityType::OTHER_ENTITY:
             std::cout << "Adding entity with UUID: " << parsedPacket.uuid << std::endl;
@@ -267,18 +270,25 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
 }
 
 void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket) {
-    for (const auto& entity_id : parsedPacket.entity_ids) {
+    for (const auto& entity : parsedPacket.entities) {
+        long                      entity_id   = entity.first;
+        RTypeProtocol::EntityType entity_type = entity.second;
+
+        std::cout << "entity id: " << entity_id << " type: " << entity_type << std::endl;
+
         auto it = _entities.find(entity_id);
         if (it != _entities.end()) {
             _registry.remove_entity(*it->second);
             _entities.erase(it);
             continue;
         }
+
         auto playerIt = _players.find(entity_id);
         if (playerIt != _players.end()) {
             _registry.remove_entity(*playerIt->second);
             _players.erase(playerIt);
         }
+
         if (_localPlayerUUID == entity_id) {
             _registry.remove_entity(*_player_entity);
             _player_entity.reset();

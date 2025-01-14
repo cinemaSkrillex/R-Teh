@@ -19,11 +19,11 @@ void GameMap::updateLevel(float deltaTime) {
     }
     x_level_position += _scrollingSpeed * deltaTime;
     for (auto& block : _blockEntities) {
-        if (!block) {
+        if (!block.second) {
             std::cout << "Block is null" << std::endl;
             continue;
         }
-        auto* position = _registry.get_component<RealEngine::Position>(block);
+        auto* position = _registry.get_component<RealEngine::Position>(block.second);
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
         }
@@ -51,7 +51,9 @@ void GameMap::unloadLevel() {
         RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
     }
     for (auto block : _blockEntities) {
-        if (block) _registry.add_component(block, RealEngine::AutoDestructible{0.0f});
+        if (block.second) {
+            _registry.add_component(block.second, RealEngine::AutoDestructible{0.0f});
+        }
     }
     _blockEntities.clear();
     _backgroundEntities.clear();
@@ -61,11 +63,12 @@ void GameMap::unloadLevel() {
 }
 
 void GameMap::removeDeadBlocks() {
-    _blockEntities.erase(std::remove_if(_blockEntities.begin(), _blockEntities.end(),
-                                        [](const std::shared_ptr<RealEngine::Entity>& block) {
-                                            return block == nullptr;
-                                        }),
-                         _blockEntities.end());
+    _blockEntities.erase(
+        std::remove_if(_blockEntities.begin(), _blockEntities.end(),
+                       [](const std::pair<long int, std::shared_ptr<RealEngine::Entity>>& block) {
+                           return block.second == nullptr;
+                       }),
+        _blockEntities.end());
 }
 
 void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
@@ -76,7 +79,8 @@ void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
 
 void GameMap::synchroniseLevelBlockEntities() {
     for (auto& block : _blockEntities) {
-        auto* position = _registry.get_component<RealEngine::Position>(block);
+        auto  posBlock = block.second;
+        auto* position = _registry.get_component<RealEngine::Position>(posBlock);
         if (position) {
             position->x += x_level_position;
         }
