@@ -129,8 +129,8 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("big_stars_background",
                                                    path + "backgrounds/stars.png", {3, 3});
     AssetManagerInstance.getTexture("big_stars_background")->setRepeated(true);
-    AssetManagerInstance.loadSpriteTextureAndScale(
-        "space_base_background", path + "backgrounds/space_base.png", {2, 2});
+    AssetManagerInstance.loadSpriteTextureAndScale("space_base_background",
+                                                   path + "backgrounds/space_base.png", {2, 2});
     AssetManagerInstance.getTexture("space_base_background")->setRepeated(true);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");

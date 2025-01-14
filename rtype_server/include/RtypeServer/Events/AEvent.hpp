@@ -5,11 +5,11 @@
 #ifndef AEVENT_HPP
 #define AEVENT_HPP
 
+#include <SFML/System/Vector2.hpp>
 #include <array>
 #include <string>
-#include <SFML/System/Vector2.hpp>
-#include "../ECS/Components/Velocity.hpp"
 
+#include "../ECS/Components/Velocity.hpp"
 #include "IEvent.hpp"
 
 class AEvent : public IEvent {

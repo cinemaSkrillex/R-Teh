@@ -17,7 +17,8 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
     auto               bullet =
         gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "mid_bullet", 15.f, 20);
 
-    std::array<char, 800> serializedEventMessage = createBulletMessage(*bullet, bullet_position, "mid_bullet");
+    std::array<char, 800> serializedEventMessage =
+        createBulletMessage(*bullet, bullet_position, "mid_bullet");
     broadcastAllReliable(serializedEventMessage, server);
 }
 
@@ -29,7 +30,8 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
     auto               bullet =
         gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 25.f, 50);
 
-    std::array<char, 800> serializedEventMessage = createBulletMessage(*bullet, bullet_position, "big_bullet");
+    std::array<char, 800> serializedEventMessage =
+        createBulletMessage(*bullet, bullet_position, "big_bullet");
     broadcastAllReliable(serializedEventMessage, server);
 }
 

@@ -100,8 +100,8 @@ void GameInstance::init_systems() {
 }
 
 void GameInstance::init_textures() {
-    std::string path = "../../assets/sprites/";
-    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    std::string path                 = "../../assets/sprites/";
+    auto&       AssetManagerInstance = RealEngine::AssetManager::getInstance();
 
     init_level(path + "tiles/lv1", "lvl1");
 

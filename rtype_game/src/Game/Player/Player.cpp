@@ -155,7 +155,8 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
         registry.add_component(
             _entity, RealEngine::Interpolation{
                          {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-        auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship_other");
+        auto spriteSheet =
+            RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship_other");
         if (spriteSheet) {
             registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
         } else {
