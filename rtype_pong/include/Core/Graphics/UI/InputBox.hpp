@@ -8,7 +8,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-
 #include "Text.hpp"
 
 namespace RealEngine {
@@ -31,6 +30,8 @@ class InputBox {
     void        setContentType(ContentType type);
     void        centerText();
     void        drawDebug(sf::RenderWindow& window);
+    void        setFocus(bool focus);
+    sf::FloatRect getGlobalBounds() const;
 
    private:
     sf::RectangleShape box;
