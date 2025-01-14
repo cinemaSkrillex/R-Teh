@@ -15,7 +15,6 @@ Background::Background(RealEngine::Registry& registry, float speed, std::string 
         _entity, RealEngine::SpriteComponent{
                      *(RealEngine::AssetManager::getInstance().getSprite(sprite_str)), -1});
     registry.add_component(_entity, RealEngine::Parallax{speed, sf::Vector2f(800.0f, 600.0f)});
-    registry.add_component(_entity, RealEngine::Drawable{});
 }
 
 Background::~Background() {}

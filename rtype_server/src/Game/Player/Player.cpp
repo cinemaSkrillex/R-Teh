@@ -23,6 +23,28 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
     }
 }
 
+static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity entity,
+                              RealEngine::Entity bonus) {
+    auto* playerHealth = registry.get_component<RealEngine::Health>(entity);
+    auto* bonusType    = registry.get_component<RealEngine::NetvarContainer>(bonus);
+
+    if (playerHealth && bonusType) {
+        auto* type = bonusType->getNetvar("powerup_type");
+        if (std::any_cast<int>(type->value) == 0) {
+            playerHealth->amount += 10;
+        }
+        if (std::any_cast<int>(type->value) == 1) {
+            auto* playerContainer = registry.get_component<RealEngine::NetvarContainer>(entity);
+            std::cout << "Player shoot bonus" << std::endl;
+        }
+        if (std::any_cast<int>(type->value) == 2) {
+            auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+            velocity->maxSpeed.x += 50.0f;
+            velocity->maxSpeed.y += 50.0f;
+        }
+    }
+}
+
 static void playerCollisionHandler(RealEngine::CollisionType collisionType,
                                    RealEngine::Registry& registry, RealEngine::Entity collider,
                                    RealEngine::Entity entity) {
@@ -33,6 +55,7 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
             selfDestruct(registry, entity);
             break;
         case RealEngine::CollisionType::PICKABLE:
+            playerBonusEffect(registry, entity, collider);
             break;
         case RealEngine::CollisionType::OTHER:
             break;

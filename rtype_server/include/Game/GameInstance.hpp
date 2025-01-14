@@ -11,6 +11,7 @@
 #include "Game/Particles.hpp"
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PowerUp.hpp"
 #include "GameMap.hpp"
 #include "Mobs/Mobs.hpp"
 
