@@ -260,30 +260,48 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
               << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
               << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 
-    if (parsedPacket.level_music.empty()) {
-        std::cout << "No level music found in the map message" << std::endl;
-        return;
+    if (parsedPacket.id_level_music != -1) {
+        std::string level_music_str;
+        switch (parsedPacket.id_level_music) {
+            case 1:
+                level_music_str = "level_1";
+                break;
+            case 2:
+                level_music_str = "level_2";
+                break;
+            case 3:
+                level_music_str = "level_3";
+                break;
+            default:
+                level_music_str = "level_1";
+                break;
+        }
+        _game_map.setMusicName(level_music_str);
     }
-    std::string level_music_str(parsedPacket.level_music.begin(), parsedPacket.level_music.end());
-    std::cout << "Level music: " << level_music_str << std::endl;
-    std::cout << "level music size : " << parsedPacket.level_music.size() << std::endl;
-    _game_map.setMusicName(level_music_str);
 
-    if (parsedPacket.backgrounds.empty()) {
-        std::cout << "No backgrounds found in the map message" << std::endl;
-        return;
-    }
     for (const auto& bg : parsedPacket.backgrounds) {
-        std::string background_str(bg.data.begin(), bg.data.end());
-        float       speed = bg.speed;
-        std::cout << "Background: " << background_str << ", Speed: " << speed << std::endl;
-        std::cout << "Background size : " << bg.data.size() << std::endl;
-        Background background(_registry, speed, background_str);
+        std::string backgroundStr;
+        switch (bg.background_id) {
+            case 1:
+                backgroundStr = "big_stars_background";
+                break;
+            case 2:
+                backgroundStr = "medium_stars_background";
+                break;
+            case 3:
+                backgroundStr = "small_stars_background";
+                break;
+            case 4:
+                backgroundStr = "space_base_background";
+                break;
+            default:
+                backgroundStr = "big_stars_background";
+                break;
+        }
+        Background background(_registry, bg.speed, backgroundStr);
         _game_map.addBackground(background.getEntity(), _parallaxSystem);
-
-        // RealEngine::AssetManager::getInstance().loadTexture(background_str);
-        // _game_map.addBackgroundTexture(background_str, background.position);
     }
+
     if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
         _game_map.startLevel();
         _game_map.synchroniseLevelBlockEntities();
