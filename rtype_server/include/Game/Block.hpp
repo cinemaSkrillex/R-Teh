@@ -16,7 +16,7 @@ namespace rtype {
 class Block {
    public:
     Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
-          float rotation);
+          float rotation, float scrollingSpeed);
     ~Block();
     std::shared_ptr<RealEngine::Entity> getEntity() { return _blockEntity; }
     const std::string&                  getElement() const { return _element; }

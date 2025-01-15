@@ -92,7 +92,6 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     RTypeProtocol::NewEntityMessage newEntityMessage;
     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newEntityMessage.uuid         = entity;
-    newEntityMessage.entity_type  = RTypeProtocol::EntityType::OTHER_ENTITY;
 
     // Serialize position component
     auto* position = registry->get_component<RealEngine::Position>(entity);
