@@ -11,6 +11,7 @@
 #include <asio.hpp>
 #include <string>
 #include <thread>
+#include <regex>
 
 #include "../Client/TCPClient.hpp"
 #include "../Core/Graphics/UI/Button.hpp"
@@ -22,6 +23,8 @@ class Launcher {
    public:
     Launcher();
     void run();
+    bool isValidIp(const std::string& ip);
+    bool isValidPort(const std::string& port);
 
    private:
     void onConnectClick();
