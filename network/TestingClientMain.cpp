@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         // io_context.run();
 
         // for how long the client will run:
-        std::this_thread::sleep_for(std::chrono::seconds(100000000));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         std::cout << "Client stopped" << std::endl;
         exit(0);
     } catch (const std::exception& e) {
