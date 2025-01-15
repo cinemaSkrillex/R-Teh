@@ -9,9 +9,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <asio.hpp>
+#include <regex>
 #include <string>
 #include <thread>
-#include <regex>
 
 #include "../Client/TCPClient.hpp"
 #include "../Core/Graphics/UI/Button.hpp"

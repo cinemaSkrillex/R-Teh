@@ -155,8 +155,8 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
         rotationComponent->angle = parsedPacket.angle;
     }
     if (interpolationComponent) {
-        positionComponent->x = interpolationComponent->end.x;
-        positionComponent->y = interpolationComponent->end.y;
+        positionComponent->x                 = interpolationComponent->end.x;
+        positionComponent->y                 = interpolationComponent->end.y;
         interpolationComponent->start        = {positionComponent->x, positionComponent->y};
         interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
         interpolationComponent->step         = 1.f / parsedPacket.step;
