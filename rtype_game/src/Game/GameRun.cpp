@@ -9,17 +9,24 @@
 
 void rtype::Game::run() {
     while (_window.isOpen()) {
+        if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / 10) {
+            _broadcastClock.restart();
+            for (int i = 0; i < 100; i++) {
+                handleSignal(_clientUDP->get_last_reliable_packet_data());
+                handleSignal(_clientUDP->get_last_unreliable_packet_data());
+            }
+        }
+
         if (_clock.getElapsedTime().asMilliseconds() <= 1000 / 60) continue;
 
         _deltaTime = _clock.restart().asSeconds();
         _window.update();
         _window.clear();
-        handleSignal(_clientUDP->get_last_reliable_packet_data());
-        handleSignal(_clientUDP->get_last_unreliable_packet_data());
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _registry.run_systems(_deltaTime);
         _game_map.updateLevel(_deltaTime);
         // const sf::IntRect direction = getPlayerNormalizedDirection();
+        _playerUI.update();
         _window.display();
         auto client_now = std::chrono::steady_clock::now();
         long client_elapsed_time =

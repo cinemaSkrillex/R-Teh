@@ -43,11 +43,9 @@ static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Ent
     auto* timerNetvar = netvars->getNetvar("clignotingFrameTimer");
     float frameTimer  = std::any_cast<float>(timerNetvar->value);
     if (std::any_cast<float>(currentNetvar.value) > 0) {
-        std::cout << "frameTimer: " << frameTimer << std::endl;
         frameTimer -= deltaTime;
         if (frameTimer <= 0.f) {
             for (auto& [key, sprite] : spritesheet->sprites) {
-                std::cout << "Sprite opacity: " << sprite.getOpacity() << std::endl;
                 if (sprite.getOpacity() == 255) {
                     sprite.setOpacity(50);
                 } else {
@@ -143,11 +141,13 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
                                            RealEngine::CollisionType::OTHER,
                                            playerCollisionHandler});
         registry.add_component(_entity, RealEngine::Health{100, 200});
+        registry.add_component(_entity, RealEngine::Score{0});
         registry.add_component(
             _entity,
             RealEngine::NetvarContainer{{
                 {"clignotingTimer", {"float", "clignotingTimer", float(0.f), updateClignotingAnim}},
                 {"clignotingFrameTimer", {"float", "clignotingFrameTimer", float(0.25f), nullptr}},
+                {"hold_shoot", {"float", "hold_shoot", float(0.f), nullptr}},
             }});
     } else {
         registry.add_component(_entity, RealEngine::Position{position.x, position.y});

@@ -17,4 +17,4 @@ The protocol is defined in the `rtype_server/include/shared/RTypeServerProtocol.
 
 ## Message structure
 
-TODO: Add message structure
+[Binary_protocol](binary_protocol.md)

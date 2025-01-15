@@ -12,8 +12,12 @@ namespace rtype {
 Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     : _clientUDP(clientUDP),
       _deltaTime(0.f),
-      _window("SKRILLEX client_port: " + std::to_string(client_port), sf::Vector2u(800, 600)),
+      _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2),
+            sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
+      _window("SKRILLEX client_port: " + std::to_string(client_port),
+              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view),
       _clock(),
+      _playerUI(_registry, _window.getRenderWindow()),
       _controls(_registry, clientUDP),
       _lagCompensationSystem(),
       _movementSystem(),
@@ -55,6 +59,7 @@ void Game::init_all_game() {
 
     Player player(_registry, {200, 200}, false);
     _player_entity = player.getEntity();
+    _playerUI.AssignPlayerToUI(_player_entity);
 }
 
 void Game::init_registry() { register_components(); }
@@ -245,6 +250,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::Netvar>();
     _registry.register_component<RealEngine::NetvarContainer>();
+    _registry.register_component<RealEngine::Score>();
 }
 
 void Game::bind_keys() {
@@ -410,13 +416,13 @@ void Game::init_sounds() {
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSound("shoot", path + "laserShoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "bigLaserShoot.wav");
+    AssetManagerInstance.loadSound("big_laser_shoot", path + "bigLaserShoot.wav");
     AssetManagerInstance.loadSound("explosion", path + "explosion.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "hitHurt.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_shoot.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_speed.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "powerup_heal.wav");
-    AssetManagerInstance.loadSound("big_explosion", path + "blipSelect.wav");
+    AssetManagerInstance.loadSound("hit_hurt", path + "hitHurt.wav");
+    AssetManagerInstance.loadSound("powerup_shoot", path + "powerup_shoot.wav");
+    AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
+    AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
+    AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
 }
 
 }  // namespace rtype

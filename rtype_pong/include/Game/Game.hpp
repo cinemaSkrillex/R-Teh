@@ -18,6 +18,7 @@
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PlayerUI.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
 #include "PlayerUtils.hpp"
@@ -32,7 +33,8 @@ class Game {
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
-    int                                 getPlayerNormalizedDirection();
+    std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
+    sf::IntRect                         getPlayerNormalizedDirection();
 
     std::shared_ptr<UDPClient> _clientUDP;
 
@@ -48,6 +50,8 @@ class Game {
     void init_sounds();
     void init_screen_limits();
 
+    void init_level(std::string filepath, std::string foldername);
+
     void register_components();
     void bind_keys();
     void set_action_handlers();
@@ -59,11 +63,18 @@ class Game {
     void handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
+    void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
+    void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
+    void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
+                         std::shared_ptr<RealEngine::Entity> newEntity);
 
     float              _deltaTime = 0.f;
+    RealEngine::View   _view;
     RealEngine::Window _window;
     sf::Clock          _clock;
+    sf::Clock          _broadcastClock;
     int                _serverTick;
+    PlayerUI           _playerUI;
 
     RealEngine::Registry              _registry;
     RealEngine::LagCompensationSystem _lagCompensationSystem;
@@ -81,13 +92,15 @@ class Game {
     RealEngine::NetvarSystem          _netvarSystem;
     rtype::Controls                   _controls;
 
-    std::shared_ptr<RealEngine::Entity> _player_entity;
-    std::shared_ptr<RealEngine::Entity> _other_entity;
-    std::shared_ptr<RealEngine::Entity> _ball_entity;
+    std::shared_ptr<RealEngine::Entity>                               _player_entity;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
+    GameMap                                                           _game_map;
 
     long int                              _localPlayerUUID;
     std::chrono::steady_clock::time_point _startTime;
     long                                  _serverTime;
+    long int                              _packetsReceived = 0;
 };
 }  // namespace rtype
 

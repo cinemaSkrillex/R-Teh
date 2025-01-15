@@ -2,16 +2,17 @@
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
-** GameMap
+** ServerMap
 */
 
-#include "Game/GameMap.hpp"
+#include "Game/ServerMap.hpp"
 
-GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _isLevelRunning(false) {}
+ServerMap::ServerMap(RealEngine::Registry& registry)
+    : _registry(registry), _isLevelRunning(false) {}
 
-GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
+ServerMap::~ServerMap() { std::cout << "ServerMap destroyed" << std::endl; }
 
-Json::Value GameMap::readJSONFile(const std::string& filepath) {
+Json::Value ServerMap::readJSONFile(const std::string& filepath) {
     try {
         if (!std::filesystem::exists(filepath)) {
             throw std::runtime_error("JSON file does not exist: " + filepath);
@@ -38,7 +39,7 @@ Json::Value GameMap::readJSONFile(const std::string& filepath) {
     }
 }
 
-void GameMap::updateLevel(float deltaTime) {
+void ServerMap::updateLevel(float deltaTime) {
     // if (!_isLevelRunning) {
     //     return;
     // }
@@ -52,7 +53,7 @@ void GameMap::updateLevel(float deltaTime) {
     removeDeadBlocks();
 }
 
-std::vector<Map::WaveMob> GameMap::invokeWaves() {
+std::vector<Map::WaveMob> ServerMap::invokeWaves() {
     // if (!_isLevelRunning) {
     //     return {};
     // }
@@ -68,7 +69,7 @@ std::vector<Map::WaveMob> GameMap::invokeWaves() {
     return enemiesToSpawn;
 }
 
-void GameMap::unloadLevel() {
+void ServerMap::unloadLevel() {
     _isLevelRunning = false;
     for (auto& block : _blockEntities) {
         if (block) _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
@@ -82,11 +83,11 @@ void GameMap::unloadLevel() {
     _isLoaded        = false;
 }
 
-void GameMap::startLevel() { _isLevelRunning = true; }
+void ServerMap::startLevel() { _isLevelRunning = true; }
 
-void GameMap::stopLevel() { _isLevelRunning = false; }
+void ServerMap::stopLevel() { _isLevelRunning = false; }
 
-void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
+void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
     std::ofstream file(filepath, std::ofstream::binary);
 
     if (!file.is_open()) {
@@ -102,7 +103,7 @@ void GameMap::writeJSONFile(const std::string& filepath, const Json::Value& json
     file.close();
 }
 
-void GameMap::loadFromJSON(const std::string& filepath) {
+void ServerMap::loadFromJSON(const std::string& filepath) {
     Json::Value root = readJSONFile(filepath);
     try {
         _map_name = root["map_name"].asString();
@@ -171,7 +172,7 @@ void GameMap::loadFromJSON(const std::string& filepath) {
     _isLoaded = true;
 }
 
-void GameMap::saveToJSON(const std::string& filepath) {
+void ServerMap::saveToJSON(const std::string& filepath) {
     Json::Value root;
 
     // Save map name
@@ -213,7 +214,7 @@ void GameMap::saveToJSON(const std::string& filepath) {
     writeJSONFile(filepath, root);
 }
 
-void GameMap::removeDeadBlocks() {
+void ServerMap::removeDeadBlocks() {
     _blockEntities.erase(
         std::remove_if(_blockEntities.begin(), _blockEntities.end(),
                        [](const std::shared_ptr<rtype::Block>& block) { return block == nullptr; }),

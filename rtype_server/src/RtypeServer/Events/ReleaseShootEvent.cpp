@@ -10,33 +10,49 @@
 #include "RtypeServer.hpp"
 
 void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
-                                          const asio::ip::udp::endpoint& client, Player& player,
-                                          RtypeServer* server) {
+                                          const asio::ip::udp::endpoint& client,
+                                          ServerPlayer& player, RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto               bullet =
-        gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "mid_bullet", 15.f, 20);
+    float              bulletDamage    = 10.f;
+    try {
+        bulletDamage = std::any_cast<float>(player.getNetvar("shootDamage")->value);
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    float bulletSpeed = 600.f;
+    auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "mid_bullet",
+                                                      bulletDamage * 1.5f, int(bulletDamage) * 2,
+                                                      *(player.getEntity()));
 
-    std::array<char, 800> serializedEventMessage =
-        createBulletMessage(*bullet, bullet_position, "mid_bullet");
+    std::array<char, 800> serializedEventMessage = createBulletMessage(
+        *bullet, bullet_position, "mid_bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
     broadcastAllReliable(serializedEventMessage, server);
 }
 
 void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
-                                       const asio::ip::udp::endpoint& client, Player& player,
+                                       const asio::ip::udp::endpoint& client, ServerPlayer& player,
                                        RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto               bullet =
-        gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 25.f, 50);
+    float              bulletDamage    = 10.f;
+    try {
+        bulletDamage = std::any_cast<float>(player.getNetvar("shootDamage")->value);
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    float bulletSpeed = 700.f;
+    auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "big_bullet",
+                                                      bulletDamage * 2.5f, int(bulletDamage) * 5,
+                                                      *(player.getEntity()));
 
-    std::array<char, 800> serializedEventMessage =
-        createBulletMessage(*bullet, bullet_position, "big_bullet");
+    std::array<char, 800> serializedEventMessage = createBulletMessage(
+        *bullet, bullet_position, "big_bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
     broadcastAllReliable(serializedEventMessage, server);
 }
 
 void ReleaseShootEvent::execute(const std::array<char, 800>&   buffer,
-                                const asio::ip::udp::endpoint& client, Player& player,
+                                const asio::ip::udp::endpoint& client, ServerPlayer& player,
                                 RtypeServer* server) {
     auto  gameInstance = server->getGameInstance();
     auto* container =

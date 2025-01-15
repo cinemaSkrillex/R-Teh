@@ -16,6 +16,7 @@ void rtype::Game::run() {
         _window.clear();
         handleSignal(_clientUDP->get_last_reliable_packet_data());
         handleSignal(_clientUDP->get_last_unreliable_packet_data());
+        std::cout << "Received " << _packetsReceived << " packets" << std::endl;
         _registry.run_systems(_deltaTime);
         _window.display();
         auto client_now = std::chrono::steady_clock::now();

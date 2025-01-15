@@ -21,11 +21,11 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetEntity(
 }
 
 std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f position,
-                                                                  sf::Vector2f direction,
                                                                   float        speed,
                                                                   std::string  spriteName,
-                                                                  float damage, int health) {
-    rtype::Bullet bullet(_registry, position, direction, speed, spriteName, damage, health);
+                                                                  float damage, int health,
+                                                                  size_t playerID) {
+    rtype::Bullet bullet(_registry, position, speed, spriteName, damage, health, playerID);
     _bullets.push_back(bullet.getEntity());
     return bullet.getEntity();
 }

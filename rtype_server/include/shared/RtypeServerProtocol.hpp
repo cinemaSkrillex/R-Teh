@@ -15,17 +15,20 @@ namespace RTypeProtocol {
 
 // Enum for message types
 enum MessageType : int {
-    NEW_CLIENT          = 0x01,
-    PLAYER_MOVE         = 0x02,
-    NEW_ENTITY          = 0x03,
-    SYNCHRONISE         = 0x04,
-    PLAYER_DIRECTION    = 0x05,
-    DESTROY_ENTITY      = 0x06,
-    SHOOT_EVENT         = 0x07,
-    HOLD_SHOOT_EVENT    = 0x08,
-    RELEASE_SHOOT_EVENT = 0x09,
-    MAP_INFO            = 0x0A,
-    LEVEL_SIGNAL        = 0x0B,
+    NEW_CLIENT           = 0x01,
+    PLAYER_MOVE          = 0x02,
+    NEW_ENTITY           = 0x03,
+    SYNCHRONISE          = 0x04,
+    PLAYER_DIRECTION     = 0x05,
+    DESTROY_ENTITY       = 0x06,
+    SHOOT_EVENT          = 0x07,
+    HOLD_SHOOT_EVENT     = 0x08,
+    RELEASE_SHOOT_EVENT  = 0x09,
+    MAP_INFO             = 0x0A,
+    LEVEL_SIGNAL         = 0x0B,
+    ENTITY_UPDATE        = 0x0C,
+    PLAYER_UPDATE_SCORE  = 0x0D,
+    PLAYER_UPDATE_HEALTH = 0x0E,
 };
 
 enum ComponentList : int {
@@ -105,6 +108,19 @@ struct LevelSignalMessage : BaseMessage {
     bool startLevel;
 };
 
+// Entity update, position, rotation(angle) - should be enough for now
+struct EntityUpdateMessage : BaseMessage {
+    float x;
+    float y;
+    float angle;
+    float step;
+    long  timestamp;
+};
+
+struct OneIntMessage : BaseMessage {
+    int value;  // can be used for any integer value (e.g. score, health, etc.)
+};
+
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
 
@@ -133,6 +149,12 @@ std::array<char, BUFFER_SIZE> serialize(const MapMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const LevelSignalMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const EntityUpdateMessage& msg);
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const OneIntMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -154,6 +176,12 @@ MapMessage deserializeMapMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 template <std::size_t BUFFER_SIZE>
 LevelSignalMessage deserializeLevelSignal(const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+EntityUpdateMessage deserializeEntityUpdate(const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+OneIntMessage deserializeOneIntMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 

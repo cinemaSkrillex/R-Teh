@@ -20,7 +20,6 @@ This project is a multiplayer game engine, running games like R-TYPE.
 - Main language: C++
 - Graphic library: SFML
 - Network protocol: TCP/UDP using Asio
-- Scripting language: Lua
 
 #### Tools and Systems
 - Build system: CMake

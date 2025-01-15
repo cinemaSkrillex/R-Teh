@@ -10,7 +10,7 @@
 #include "RtypeServer.hpp"
 
 void HoldShootEvent::execute(const std::array<char, 800>&   buffer,
-                             const asio::ip::udp::endpoint& client, Player& player,
+                             const asio::ip::udp::endpoint& client, ServerPlayer& player,
                              RtypeServer* server) {
     auto gameInstance = server->getGameInstance();
     if (gameInstance == nullptr) return;

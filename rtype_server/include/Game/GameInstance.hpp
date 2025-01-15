@@ -12,8 +12,8 @@
 #include "Game/Player/Bullet.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PowerUp.hpp"
-#include "GameMap.hpp"
 #include "Mobs/Mobs.hpp"
+#include "ServerMap.hpp"
 
 class GameInstance {
    public:
@@ -31,22 +31,23 @@ class GameInstance {
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
-    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
-                                                        sf::Vector2f direction, float speed,
+    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position, float speed,
                                                         std::string spriteName, float damage,
-                                                        int health);
-    void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
+                                                        int health, size_t playerID);
 
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);
+    void                            manageInGameEntities(std::vector<Map::WaveMob>       enemies_to_spawn,
+                                                         std::vector<RealEngine::Entity> destroyedEntities);
+    void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
-    std::shared_ptr<GameMap>                          getMap() {
+    std::shared_ptr<ServerMap>                        getMap() {
         if (!_game_map) {
             std::cerr << "Error: _game_map is null" << std::endl;
         }
@@ -74,5 +75,5 @@ class GameInstance {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
-    std::shared_ptr<GameMap>                                          _game_map;
+    std::shared_ptr<ServerMap>                                        _game_map;
 };

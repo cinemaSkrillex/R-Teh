@@ -14,7 +14,7 @@ std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_p
     return std::to_string(elapsed);  // in milliseconds
 }
 
-void RtypeServer::broadcastPlayerState(const Player& player) {
+void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     // Get the player's position
     std::shared_ptr<RealEngine::Entity> entity = player.getEntity();
     if (!entity) {
@@ -59,16 +59,33 @@ void RtypeServer::startAndBroadcastLevel() {
     broadcastStartLevel();
 }
 
-void RtypeServer::broadcastEntityState(int uuid, const std::shared_ptr<RealEngine::Entity> entity) {
-    auto* position = _game_instance->getRegistryRef().get_component<RealEngine::Position>(*entity);
-    if (position) {
-        std::string message = "Event:Entity_position Uuid:" + std::to_string(uuid) +
-                              " Step:" + std::to_string(_deltaTimeBroadcast) + " Position:(" +
-                              std::to_string(position->x) + "," + std::to_string(position->y) + ")";
-        for (auto client : _server->getClients()) {
-            // _server->send_unreliable_packet(message, client);
-        }
+void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) {
+    // broadcast position, angle
+    auto* position = registry->get_component<RealEngine::Position>(entity);
+    auto* rotation = registry->get_component<RealEngine::Rotation>(entity);
+
+    if (!position) {
+        return;
     }
+
+    RTypeProtocol::EntityUpdateMessage entityStateMessage = {};
+    entityStateMessage.message_type                       = RTypeProtocol::ENTITY_UPDATE;
+    entityStateMessage.uuid                               = entity;
+    entityStateMessage.x                                  = position->x;
+    entityStateMessage.y                                  = position->y;
+    if (rotation) {
+        entityStateMessage.angle = rotation->angle;
+    } else {
+        entityStateMessage.angle = -1;
+    }
+    entityStateMessage.step      = _deltaTimeBroadcast;
+    entityStateMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
+
+    // Serialize the EntityUpdateMessage
+    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(entityStateMessage);
+
+    // Broadcast the serialized message to all clients
+    broadcastAllUnreliable(serializedMessage);
 }
 
 void RtypeServer::broadcastAllReliable(const std::array<char, 800>& message) {

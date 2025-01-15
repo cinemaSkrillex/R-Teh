@@ -3,22 +3,22 @@
         {
             "mobName": "eye_minion",
             "position": [
-                100.5,
-                20.0
-            ]
-        },
-        {
-            "mobName": "eye_minion",
-            "position": [
-                300.5,
-                20.0
+                500.5,
+                100.0
             ]
         },
         {
             "mobName": "eye_minion",
             "position": [
                 500.5,
-                20.0
+                300.0
+            ]
+        },
+        {
+            "mobName": "eye_minion",
+            "position": [
+                500.5,
+                500.0
             ]
         }
     ]

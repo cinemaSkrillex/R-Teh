@@ -28,7 +28,9 @@ class GameMap {
     void stopLevel();
     void unloadLevel();
 
-    void addBlock(std::shared_ptr<RealEngine::Entity> block) { _blockEntities.emplace_back(block); }
+    void addBlock(std::shared_ptr<RealEngine::Entity> block, long int blockId) {
+        _blockEntities.emplace_back(std::make_pair(blockId, block));
+    }
     void addBackground(std::shared_ptr<RealEngine::Entity> background,
                        RealEngine::ParallaxSystem&         parallaxSystem);
     void synchroniseLevelBlockEntities();
@@ -36,6 +38,11 @@ class GameMap {
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }
     void setIsMapLoaded(bool isMapLoaded) { _isMapLoaded = isMapLoaded; }
+    void setMusicName(const std::string& musicName) {
+        std::cout << "Setting music name: " << musicName << std::endl;
+        _music_name = musicName;
+        std::cout << "Music name set: " << _music_name << std::endl;
+    }
     std::vector<std::shared_ptr<RealEngine::Entity>>& getBlockEntities() { return _blockEntities; }
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
@@ -45,7 +52,7 @@ class GameMap {
    private:
     RealEngine::Registry&                            _registry;
     std::string                                      _map_name;
-    std::string                                      _music_name      = "level_1";
+    std::string                                      _music_name      = "";
     float                                            _scrollingSpeed  = 0.0f;
     float                                            x_level_position = 0.0f;
     std::vector<std::shared_ptr<RealEngine::Entity>> _blockEntities;

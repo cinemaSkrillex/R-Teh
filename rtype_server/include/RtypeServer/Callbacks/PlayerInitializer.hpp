@@ -13,7 +13,7 @@
 #include "../RtypeServer.hpp"
 #include "UDPServer.hpp"
 
-class Player;
+class ServerPlayer;
 class RtypeServer;
 class GameInstance;
 class UDPServer;
@@ -22,7 +22,7 @@ class PlayerInitializer {
    public:
     explicit PlayerInitializer(RtypeServer* server) : _server(server) {}
 
-    Player initializePlayer(const asio::ip::udp::endpoint& sender);
+    ServerPlayer initializePlayer(const asio::ip::udp::endpoint& sender);
 
    private:
     long getCurrentTime() {
