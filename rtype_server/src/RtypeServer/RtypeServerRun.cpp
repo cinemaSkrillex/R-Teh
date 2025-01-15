@@ -12,7 +12,6 @@ void RtypeServer::run() {
     auto log                   = std::make_shared<Log>("RtypeServer.log");
     int  server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
     int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    int  server_test_tick      = 5;
 
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
@@ -26,20 +25,15 @@ void RtypeServer::run() {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
             broadcastStates();
         }
-        if (_gameClock.getElapsedTime().asMilliseconds() > 1000 / server_test_tick) {
-            _gameClock.restart();
-            auto registry = _game_instance->getRegistry();
-            auto entities = registry->view<RealEngine::NetvarContainer>();
-            for (auto entity : entities) {
-                broadcastEntityState(entity, registry);
-            }
-        }
     }
 }
 
 void RtypeServer::handleClientMessages() {
     for (const auto& client : _server->getClients()) {
-        auto&       player   = _players.at(client);
+        auto& player = _players.at(client);
+        if (!player.getEntity()) {
+            continue;
+        }
         const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
 
         for (const auto& message : messages) {
@@ -164,13 +158,20 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
 
 void RtypeServer::broadcastStates() {
     // Broadcast the state of all players
+    long int packet_sent = 0;
     for (const auto& player : _players) {
+        if (!player.second.getEntity()) {
+            continue;
+        }
         broadcastPlayerState(player.second);
+        packet_sent++;
     }
     // Broadcast entity states
-    // auto registry = _game_instance->getRegistry();
-    // auto entities = registry->view<RealEngine::NetvarContainer>();
-    // for (auto entity : entities) {
-    //     broadcastEntityState(entity, registry);
-    // }
+    auto registry = _game_instance->getRegistry();
+    auto entities = registry->view<RealEngine::NetvarContainer>();
+    for (auto entity : entities) {
+        broadcastEntityState(entity, registry);
+        packet_sent++;
+    }
+    // std::cout << "Sent " << packet_sent << " packets" << std::endl;
 }

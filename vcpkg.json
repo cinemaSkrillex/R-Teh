@@ -4,9 +4,6 @@
   "dependencies": [
     "sfml",
     "asio",
-    "sol2",
-    "lua",
-    "lz4",
     "jsoncpp"
   ]
 }

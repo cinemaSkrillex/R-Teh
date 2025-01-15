@@ -10,7 +10,7 @@
 #include "RtypeServer.hpp"
 
 void ShootEvent::execute(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                         Player& player, RtypeServer* server) {
+                         ServerPlayer& player, RtypeServer* server) {
     auto  game_instance = server->getGameInstance();
     auto* container     = game_instance->getRegistry()->get_component<RealEngine::NetvarContainer>(
         player.getEntity());
