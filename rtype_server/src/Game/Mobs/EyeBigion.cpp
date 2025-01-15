@@ -42,6 +42,7 @@ EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, noBehavior, true});
     registry.add_component(_entity, RealEngine::Damage{40});
     registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
+    registry.add_component(_entity, RealEngine::Score{50});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{

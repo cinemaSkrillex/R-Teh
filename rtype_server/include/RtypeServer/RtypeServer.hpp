@@ -56,6 +56,16 @@ class Player {
         }
         return {component->x, component->y};
     }
+    RealEngine::Netvar* getNetvar(const std::string& name) {
+        RealEngine::NetvarContainer* container =
+            _registry->get_component<RealEngine::NetvarContainer>(*_entity);
+        if (!container) {
+            std::cout << "Error: Player entity does not have a NetvarContainer component"
+                      << std::endl;
+            return nullptr;
+        }
+        return container->getNetvar(name);
+    }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
     void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
     long int getLastTimestamp() const { return _last_update; }

@@ -30,8 +30,6 @@ GameInstance::GameInstance(bool serverVision)
     init_screen_limits();
     std::string path = "../../assets/maps/";
     _game_map->loadFromJSON(path + "level_1.json");
-    rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(20, 100));
-    addAndGetEntity(spaceSphere.getEntity());
 }
 
 void GameInstance::init_components() {
@@ -55,6 +53,7 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::Particle>();
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::TargetRadius>();
+    _registry.register_component<RealEngine::Score>();
 }
 
 void GameInstance::init_systems() {

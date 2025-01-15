@@ -9,6 +9,23 @@
 
 namespace rtype {
 
+static void addScoreToPlayer(RealEngine::Registry& registry, RealEngine::Entity entity,
+                             RealEngine::Entity collider) {
+    auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
+    auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto  playerID      = std::any_cast<size_t>(container->getNetvar("playerID")->value);
+
+    if (container && colliderScore) {
+        std::shared_ptr<RealEngine::Entity> player = registry.entity_from_index(playerID);
+        if (player) {
+            auto* playerScore = registry.get_component<RealEngine::Score>(*player);
+            if (playerScore) {
+                playerScore->toAdd += colliderScore->amount;
+            }
+        }
+    }
+}
+
 static void bulletTakesDamage(RealEngine::CollisionType collisionType,
                               RealEngine::Registry& registry, RealEngine::Entity collider,
                               RealEngine::Entity entity) {
@@ -18,8 +35,10 @@ static void bulletTakesDamage(RealEngine::CollisionType collisionType,
 
     if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
         selfDestruct(registry, entity);
+        addScoreToPlayer(registry, entity, collider);
     } else {
         health->amount -= damage->amount;
+        if (health->amount <= 0) addScoreToPlayer(registry, entity, collider);
     }
 }
 
@@ -51,16 +70,11 @@ static void bulletHandleCollision(RealEngine::CollisionType collisionType,
     }
 }
 
-Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector2f direction,
-               float speed, std::string spriteName, float damage, int health)
+Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, float speed,
+               std::string spriteName, float damage, int health, size_t playerID)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(
-        _entity,
-        RealEngine::Velocity{direction.x * speed, direction.y * speed, {500.f, 500.f}, 0.f});
-    // registry.add_component(_entity,
-    //                        RealEngine::SpriteComponent{
-    //                            *(RealEngine::AssetManager::getInstance().getSprite(spriteName))});
+    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {speed, speed}, 0.f});
     auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(spriteName);
     if (spriteSheet) {
         registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
@@ -83,6 +97,9 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, sf::Vector
     registry.add_component(_entity, RealEngine::AutoDestructible{5});
     registry.add_component(_entity, RealEngine::Damage{damage});
     registry.add_component(_entity, RealEngine::Health{health, health});
+    registry.add_component(_entity, RealEngine::NetvarContainer{{
+                                        {"playerID", {"size_t", "playerID", playerID, nullptr}},
+                                    }});
 }
 
 Bullet::~Bullet() {}

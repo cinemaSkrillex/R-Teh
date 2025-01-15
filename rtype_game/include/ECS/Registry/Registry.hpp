@@ -75,7 +75,7 @@ class Registry {
 
     void                    remove_entity(Entity const& entity);
     std::shared_ptr<Entity> spawn_entity();
-    Entity                  entity_from_index(std::size_t idx);
+    std::shared_ptr<Entity> entity_from_index(std::size_t idx);
     bool                    is_valid(Entity const& e) const;
     void                    kill_entity(Entity const& e);
 
