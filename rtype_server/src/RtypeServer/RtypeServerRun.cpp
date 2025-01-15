@@ -9,10 +9,10 @@
 #include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
-    auto        log                   = std::make_shared<Log>("RtypeServer.log");
-    int         server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
-    int         server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    int         server_test_tick      = 5;
+    auto log                   = std::make_shared<Log>("RtypeServer.log");
+    int  server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
+    int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
+    int  server_test_tick      = 5;
 
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
@@ -39,7 +39,10 @@ void RtypeServer::run() {
 
 void RtypeServer::handleClientMessages() {
     for (const auto& client : _server->getClients()) {
-        auto&       player   = _players.at(client);
+        auto& player = _players.at(client);
+        if (!player.getEntity()) {
+            continue;
+        }
         const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
 
         for (const auto& message : messages) {
@@ -163,6 +166,9 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
 void RtypeServer::broadcastStates() {
     // Broadcast the state of all players
     for (const auto& player : _players) {
+        if (!player.second.getEntity()) {
+            continue;
+        }
         broadcastPlayerState(player.second);
     }
     // Broadcast entity states
