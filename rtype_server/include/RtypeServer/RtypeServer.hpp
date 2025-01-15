@@ -30,6 +30,7 @@
 #include "RtypeServer/Callbacks/PlayerInitializer.hpp"
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
+#include "SceneManager.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
 #include "ShootEvent.hpp"
@@ -83,17 +84,19 @@ class RtypeServer {
     std::shared_ptr<UDPServer>                          _server;
     std::shared_ptr<GameInstance>                       _game_instance;
     ServerConfig                                        _server_config;
+    RealEngine::SceneManager                            _scene_manager;
     std::unordered_map<asio::ip::udp::endpoint, Player> _players;
     float                                               _deltaTime;
     float                                               _deltaTimeBroadcast;
     sf::Clock                                           _clock;
     sf::Clock                                           _broadcastClock;
-    sf::Clock                                           _gameClock; //TEST
+    sf::Clock                                           _gameClock;  // TEST
     std::chrono::steady_clock::time_point               _startTime;
     std::unordered_map<int, std::unique_ptr<IEvent>>    eventHandlers;
 
     void initCallbacks();
     void initEventHandlers();
+    void initScenes();
     void startAndBroadcastLevel();
 
     void broadcastPlayerState(const Player& player);
@@ -111,6 +114,8 @@ class RtypeServer {
     void sendNewEntity(RealEngine::Entity entity, RealEngine::Registry* registry);
 
     void printServerStartupBanner();
+
+    void updateScene();
 
    public:
     RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision);
