@@ -48,6 +48,7 @@ class Game {
     void init_sprite_sheets();
     void init_musics();
     void init_sounds();
+    void init_fonts();
     void init_screen_limits();
 
     void init_level(std::string filepath, std::string foldername);
@@ -56,6 +57,7 @@ class Game {
     void bind_keys();
     void set_action_handlers();
     void set_sprite_opacity();
+    void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color);
 
     // GameSignals
     void handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
@@ -96,6 +98,7 @@ class Game {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
     GameMap                                                           _game_map;
+    std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;
     std::chrono::steady_clock::time_point _startTime;

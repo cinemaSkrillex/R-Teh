@@ -207,6 +207,37 @@ class AssetManager {
         }
     }
 
+    // Fonts gestion
+
+    void loadFont(const std::string& id, const std::string& filePath) {
+        try {
+            auto font = std::make_shared<sf::Font>();
+            if (!font->loadFromFile(filePath)) {
+                std::cout << "Failed to load font: " << filePath << std::endl;
+                throw std::runtime_error("Failed to load font: " + filePath);
+            }
+            _fonts[id] = font;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to loadFont: " << id << " - " << e.what() << std::endl;
+        }
+    }
+
+    std::shared_ptr<sf::Font> getFont(const std::string& id) {
+        try {
+            auto it = _fonts.find(id);
+            if (it == _fonts.end()) {
+                std::cout << "Font not found: " << id << std::endl;
+                throw std::runtime_error("Font not found: " + id);
+            }
+            return it->second;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to get font: " << id << " - " << e.what() << std::endl;
+            return nullptr;
+        }
+    }
+
+    void unloadFont(const std::string& id) { _fonts.erase(id); }
+
     // Musics gestion
 
     void loadMusic(const std::string& id, const std::string& filePath) {
@@ -278,6 +309,7 @@ class AssetManager {
     std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
     std::unordered_map<std::string, std::shared_ptr<Sprite>>      _sprites;
     std::unordered_map<std::string, std::shared_ptr<SpriteSheet>> _spriteSheets;
+    std::unordered_map<std::string, std::shared_ptr<sf::Font>>    _fonts;
     std::unordered_map<std::string, std::shared_ptr<Music>>       _musics;
     std::unordered_map<std::string, std::shared_ptr<Sound>>       _sounds;
 };
