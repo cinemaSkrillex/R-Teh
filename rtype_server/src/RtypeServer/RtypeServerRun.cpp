@@ -12,7 +12,6 @@ void RtypeServer::run() {
     auto  log                   = std::make_shared<Log>("RtypeServer.log");
     int   server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
     int   server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    int   server_test_tick      = 5;
     float changeScene           = 5.f;
     bool  changedScene          = false;
 
