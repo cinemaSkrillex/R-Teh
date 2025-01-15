@@ -45,7 +45,7 @@ void TCPServer::send_fin(const asio::ip::tcp::endpoint& endpoint) {
     for (auto& client_socket : _packet_manager->get_client_sockets()) {
         if (client_socket->remote_endpoint() == endpoint) {
             asio::write(*client_socket, asio::buffer(fin_message));
-            client_socket->close();  // Fermez le socket après l'envoi de "FIN"
+            client_socket->close();
             std::cout << "Sent FIN message to client and closed socket: " << endpoint << std::endl;
             break;
         }
