@@ -16,10 +16,9 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
             playerHealth->regenerationTimer    = 0.0f;
             playerHealth->regenerationTime     = colliderDamage->effectDuration;
         } else {
-            playerHealth->amount -= colliderDamage->amount;
+            playerHealth->damage += colliderDamage->amount;
         }
         playerHealth->invincibilityTime = 1.5f;
-        HitEffect hitEffect(registry, {playerPosition->x, playerPosition->y});
     }
 }
 
@@ -35,7 +34,10 @@ static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity
         }
         if (std::any_cast<int>(type->value) == 1) {
             auto* playerContainer = registry.get_component<RealEngine::NetvarContainer>(entity);
-            std::cout << "Player shoot bonus" << std::endl;
+            if (playerContainer) {
+                auto* shootDamage  = playerContainer->getNetvar("shootDamage");
+                shootDamage->value = std::any_cast<float>(shootDamage->value) + 5.0f;
+            }
         }
         if (std::any_cast<int>(type->value) == 2) {
             auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
@@ -137,14 +139,6 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
     registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_entity, RealEngine::Controllable{});
     registry.add_component(_entity, RealEngine::Health{100, 200});
-    registry.add_component(_entity,
-                           RealEngine::NetvarContainer{{
-                               {"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
-                               {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
-                               {"isHolding", {"bool", "isHolding", false, nullptr}},
-                               {"invincibilityAnimTimer",
-                                {"float", "invincibilityAnimTimer", 0.0f, updateInvincibilityAnim}},
-                           }});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{
@@ -155,6 +149,15 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
                                                  false,
                                                  RealEngine::CollisionType::PLAYER,
                                                  playerCollisionHandler});
+    registry.add_component(_entity,
+                           RealEngine::NetvarContainer{{
+                               {"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
+                               {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
+                               {"isHolding", {"bool", "isHolding", false, nullptr}},
+                               {"invincibilityAnimTimer",
+                                {"float", "invincibilityAnimTimer", 0.0f, updateInvincibilityAnim}},
+                               {"shootDamage", {"float", "shootDamage", 10.0f, nullptr}},
+                           }});
 }
 
 PlayerEntity::~PlayerEntity() {}

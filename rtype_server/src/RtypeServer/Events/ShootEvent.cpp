@@ -24,7 +24,8 @@ void ShootEvent::execute(const std::array<char, 800>& buffer, const asio::ip::ud
     netvar->value = 0.5f;
 
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = game_instance->addAndGetBullet(bullet_position, {1, 0}, 500, "bullet", 10.f, 10);
+    auto bullet = game_instance->addAndGetBullet(bullet_position, 500, "bullet", 10.f, 10,
+                                                 *(player.getEntity()));
 
     std::array<char, 800> serializedEventMessage =
         createBulletMessage(*bullet, bullet_position, "bullet");

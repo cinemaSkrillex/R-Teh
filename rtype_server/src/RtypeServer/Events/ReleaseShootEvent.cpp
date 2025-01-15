@@ -14,8 +14,8 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
                                           RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto               bullet =
-        gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "mid_bullet", 15.f, 20);
+    auto bullet = gameInstance->addAndGetBullet(bullet_position, 500, "mid_bullet", 15.f, 20,
+                                                *(player.getEntity()));
 
     std::array<char, 800> serializedEventMessage =
         createBulletMessage(*bullet, bullet_position, "mid_bullet");
@@ -27,8 +27,8 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
                                        RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto               bullet =
-        gameInstance->addAndGetBullet(bullet_position, {1, 0}, 500, "big_bullet", 25.f, 50);
+    auto bullet = gameInstance->addAndGetBullet(bullet_position, 500, "big_bullet", 25.f, 50,
+                                                *(player.getEntity()));
 
     std::array<char, 800> serializedEventMessage =
         createBulletMessage(*bullet, bullet_position, "big_bullet");

@@ -20,11 +20,16 @@ void Registry::remove_entity(Entity const& entity) {
 
 std::shared_ptr<Entity> Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
 
-Entity Registry::entity_from_index(std::size_t idx) {
+std::shared_ptr<Entity> Registry::entity_from_index(std::size_t idx) {
     if (idx >= _entity_manager.size()) {
         throw std::out_of_range("entity_from_index: Entity index out of range");
     }
-    return _entity_manager.entity_from_index(idx);
+    RealEngine::Entity e      = _entity_manager.entity_from_index(idx);
+    auto               entity = std::make_shared<RealEngine::Entity>(e);
+    if (!entity) {
+        throw std::runtime_error("entity_from_index: Invalid entity");
+    }
+    return entity;
 }
 
 void Registry::kill_entity(Entity const& e) {

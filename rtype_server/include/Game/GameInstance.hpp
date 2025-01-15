@@ -31,10 +31,9 @@ class GameInstance {
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
-    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position,
-                                                        sf::Vector2f direction, float speed,
+    std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position, float speed,
                                                         std::string spriteName, float damage,
-                                                        int health);
+                                                        int health, size_t playerID);
     void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
