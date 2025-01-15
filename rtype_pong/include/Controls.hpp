@@ -1,19 +1,16 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** Controls
+*/
+
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
+#include <RtypeServerProtocol.hpp>
 
 #include "Client/UDPClient.hpp"
-#include "Core/Graphics/Rendering/Sprite.hpp"
-#include "ECS/Components/Acceleration.hpp"
-#include "ECS/Components/AutoDestructible.hpp"
-#include "ECS/Components/Controllable.hpp"
-#include "ECS/Components/Drawable.hpp"
-#include "ECS/Components/Position.hpp"
-#include "ECS/Components/Sprite.hpp"
-#include "ECS/Components/Velocity.hpp"
-#include "ECS/Registry/Registry.hpp"
-#include "ECS/Systems/ControlSystem.hpp"
-#include "Macros.hpp"
+#include "Engine.hpp"
 
 namespace rtype {
 class Controls {

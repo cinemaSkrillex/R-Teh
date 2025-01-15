@@ -18,6 +18,7 @@
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
 #include "Game/Player/Player.hpp"
+#include "Game/PlayerUI.hpp"
 #include "Log.hpp"
 #include "Macros.hpp"
 #include "PlayerUtils.hpp"
@@ -64,11 +65,15 @@ class Game {
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
     void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
     void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
+    void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
+                         std::shared_ptr<RealEngine::Entity> newEntity);
 
     float              _deltaTime = 0.f;
+    RealEngine::View   _view;
     RealEngine::Window _window;
     sf::Clock          _clock;
     int                _serverTick;
+    PlayerUI           _playerUI;
 
     RealEngine::Registry              _registry;
     RealEngine::LagCompensationSystem _lagCompensationSystem;

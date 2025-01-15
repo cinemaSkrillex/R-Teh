@@ -11,12 +11,12 @@
 
 Launcher::Launcher()
     : window("Game Launcher", sf::Vector2u(800, 600)),
-      ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1", "../../../assets/arial.ttf",
-            RealEngine::InputBox::ContentType::Text),
-      portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212", "../../../assets/arial.ttf",
-              RealEngine::InputBox::ContentType::Numeric),
+      ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1",
+            "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Text),
+      portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
+              "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
-             "../../../assets/arial.ttf") {
+             "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 

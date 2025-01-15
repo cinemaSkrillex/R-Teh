@@ -42,9 +42,7 @@ void RtypeServer::broadcastPlayerState(const Player& player) {
     broadcastAllUnreliable(serializedMessage);
 }
 
-
-void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) {
-}
+void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) {}
 
 void RtypeServer::broadcastAllReliable(const std::array<char, 800>& message) {
     for (const auto& client : _server->getClients()) {

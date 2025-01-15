@@ -7,7 +7,8 @@
 
 #include "Game/ServerMap.hpp"
 
-ServerMap::ServerMap(RealEngine::Registry& registry) : _registry(registry), _isLevelRunning(false) {}
+ServerMap::ServerMap(RealEngine::Registry& registry)
+    : _registry(registry), _isLevelRunning(false) {}
 
 ServerMap::~ServerMap() { std::cout << "ServerMap destroyed" << std::endl; }
 

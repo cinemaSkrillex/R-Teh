@@ -28,7 +28,9 @@ class GameMap {
     void stopLevel();
     void unloadLevel();
 
-    void addBlock(std::shared_ptr<RealEngine::Entity> block) { _blockEntities.emplace_back(block); }
+    void addBlock(std::shared_ptr<RealEngine::Entity> block, long int blockId) {
+        _blockEntities.emplace_back(std::make_pair(blockId, block));
+    }
     void addBackground(std::shared_ptr<RealEngine::Entity> background,
                        RealEngine::ParallaxSystem&         parallaxSystem);
     void synchroniseLevelBlockEntities();
@@ -41,22 +43,24 @@ class GameMap {
         _music_name = musicName;
         std::cout << "Music name set: " << _music_name << std::endl;
     }
-    std::vector<std::shared_ptr<RealEngine::Entity>>& getBlockEntities() { return _blockEntities; }
+    std::vector<std::pair<long int, std::shared_ptr<RealEngine::Entity>>>& getBlockEntities() {
+        return _blockEntities;
+    }
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
     bool  isMapLoaded() const { return _isMapLoaded; }
     bool  levelRunning() const { return _levelRunning; }
 
    private:
-    RealEngine::Registry&                            _registry;
-    std::string                                      _map_name;
-    std::string                                      _music_name      = "";
-    float                                            _scrollingSpeed  = 0.0f;
-    float                                            x_level_position = 0.0f;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _blockEntities;
-    std::vector<std::shared_ptr<RealEngine::Entity>> _backgroundEntities;
-    bool                                             _levelRunning;
-    bool                                             _isMapLoaded = false;
+    RealEngine::Registry&                                                 _registry;
+    std::string                                                           _map_name;
+    std::string                                                           _music_name      = "";
+    float                                                                 _scrollingSpeed  = 0.0f;
+    float                                                                 x_level_position = 0.0f;
+    std::vector<std::pair<long int, std::shared_ptr<RealEngine::Entity>>> _blockEntities;
+    std::vector<std::shared_ptr<RealEngine::Entity>>                      _backgroundEntities;
+    bool                                                                  _levelRunning;
+    bool                                                                  _isMapLoaded = false;
 };
 }  // namespace rtype
 

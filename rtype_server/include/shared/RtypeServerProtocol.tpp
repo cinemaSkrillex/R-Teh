@@ -435,4 +435,33 @@ RTypeProtocol::EntityUpdateMessage RTypeProtocol::deserializeEntityUpdate(
     return msg;
 }
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const OneIntMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the integer value
+    writeToBuffer(it, msg.value);
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::OneIntMessage RTypeProtocol::deserializeOneIntMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    OneIntMessage msg;
+    const char*   it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the integer value
+    readFromBuffer(it, msg.value);
+
+    return msg;
+}
+
 #endif  // RTYPESERVERPROTOCOL_TPP_
