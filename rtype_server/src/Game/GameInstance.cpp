@@ -22,28 +22,33 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
         auto* netvarContainer = _registry.get_component<RealEngine::NetvarContainer>(entity);
         auto* position        = _registry.get_component<RealEngine::Position>(entity);
         if (netvarContainer) {
-            float spawnProbability =
-                std::any_cast<float>(netvarContainer->getNetvar("powerup_drop")->value);
-            std::cout << "spawnProbability: " << spawnProbability << std::endl;
-            if (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) <
-                spawnProbability / 100.0f) {
-                int powerupType =
-                    std::any_cast<int>(netvarContainer->getNetvar("powerup_type")->value);
-                rtype::PowerUp powerup =
-                    rtype::PowerUp(_registry, {position->x, position->y}, rtype::bonusType::HEAL);
-                switch (powerupType) {
-                    case 1:
-                        powerup = rtype::PowerUp(_registry, {position->x, position->y},
-                                                 rtype::bonusType::SHOOT);
-                        break;
-                    case 2:
-                        powerup = rtype::PowerUp(_registry, {position->x, position->y},
-                                                 rtype::bonusType::SPEED);
-                        break;
-                    default:
-                        break;
+            auto powerupDropNetvar = netvarContainer->getNetvar("powerup_drop");
+            if (powerupDropNetvar && powerupDropNetvar->value.type() == typeid(float)) {
+                float spawnProbability = std::any_cast<float>(powerupDropNetvar->value);
+                std::cout << "spawnProbability: " << spawnProbability << std::endl;
+                if (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) <
+                    spawnProbability / 100.0f) {
+                    std::cout << "spawned powerup" << std::endl;
+                    rtype::PowerUp powerup = rtype::PowerUp(_registry, {position->x, position->y},
+                                                            rtype::bonusType::HEAL);
+                    auto           powerupTypeNetvar = netvarContainer->getNetvar("powerup_type");
+                    if (powerupTypeNetvar && powerupTypeNetvar->value.type() == typeid(int)) {
+                        int powerupType = std::any_cast<int>(powerupTypeNetvar->value);
+                        switch (powerupType) {
+                            case 1:
+                                powerup = rtype::PowerUp(_registry, {position->x, position->y},
+                                                         rtype::bonusType::SHOOT);
+                                break;
+                            case 2:
+                                powerup = rtype::PowerUp(_registry, {position->x, position->y},
+                                                         rtype::bonusType::SPEED);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    addAndGetEntity(powerup.getEntity());
                 }
-                addAndGetEntity(powerup.getEntity());
             }
         }
     }
