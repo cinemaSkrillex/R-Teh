@@ -41,6 +41,7 @@ enum ComponentList : int {
     SPRITE            = 0x07,
     ANGLE             = 0x08,
     ACCELERATION      = 0x09,
+    INTERPOLATION     = 0x0A,
 };
 
 enum EntityType : int {

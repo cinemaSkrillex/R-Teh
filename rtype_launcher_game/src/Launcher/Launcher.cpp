@@ -55,7 +55,6 @@ void Launcher::run() {
     }
 }
 
-
 bool Launcher::isValidIp(const std::string& ip) {
     const std::regex ip_pattern(
         R"(^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$)");
@@ -67,9 +66,8 @@ bool Launcher::isValidPort(const std::string& port) {
     return std::regex_match(port, port_pattern);
 }
 
-
 void Launcher::onConnectClick() {
-    std::string ip = ipBox.getText();
+    std::string ip   = ipBox.getText();
     std::string port = portBox.getText();
 
     if (!isValidIp(ip)) {
@@ -82,13 +80,12 @@ void Launcher::onConnectClick() {
         return;
     }
 
-    std::cout << "Button clicked, connecting to server with IP: " << ip
-              << " and port: " << port << std::endl;
+    std::cout << "Button clicked, connecting to server with IP: " << ip << " and port: " << port
+              << std::endl;
 
     std::thread clientThread(&Launcher::connectToServer, this);
     clientThread.detach();
 }
-
 
 void Launcher::connectToServer() {
     try {

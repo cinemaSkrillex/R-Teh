@@ -41,6 +41,9 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Drawable{});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("eye_minion");
     registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});

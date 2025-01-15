@@ -85,7 +85,6 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             std::cout << "Player health: " << playerUpdateHealthMessage.value << std::endl;
             break;
         }
-
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
@@ -144,33 +143,38 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
 }
 
 void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket) {
-    auto it = _entities.find(parsedPacket.uuid);
+    auto it       = _entities.find(parsedPacket.uuid);
     auto playerIt = _players.find(parsedPacket.uuid);
     if (playerIt != _players.end()) return;
     if (it == _entities.end()) return;
     std::shared_ptr<RealEngine::Entity> entity = it->second;
-    auto* positionComponent = _registry.get_component<RealEngine::Position>(entity);
-    auto* rotationComponent = _registry.get_component<RealEngine::Rotation>(entity);
-    // auto* interpolationComponent              =
-    // _registry.get_component<RealEngine::Interpolation>(entity); if (!positionComponent &&
-    // !interpolationComponent) return;
-    if (!positionComponent) return;
-    // positionComponent->x                 = interpolationComponent->end.x;
-    // positionComponent->y                 = interpolationComponent->end.y;
-    positionComponent->x = parsedPacket.x;
-    positionComponent->y = parsedPacket.y;
-
-    // interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    // interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
-    // interpolationComponent->step         = parsedPacket.step;
-    // interpolationComponent->current_step = 0.f;
-    // interpolationComponent->reset        = true;
+    auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
+    auto* rotationComponent      = _registry.get_component<RealEngine::Rotation>(entity);
+    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
     if (rotationComponent && parsedPacket.angle != -1) {
         rotationComponent->angle = parsedPacket.angle;
+    }
+    if (interpolationComponent) {
+        positionComponent->x                 = interpolationComponent->end.x;
+        positionComponent->y                 = interpolationComponent->end.y;
+        interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+        interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
+        interpolationComponent->step         = 1.f / parsedPacket.step;
+        interpolationComponent->current_step = 0.f;
+        interpolationComponent->reset        = true;
+    } else {
+        if (!positionComponent) return;
+        positionComponent->x = parsedPacket.x;
+        positionComponent->y = parsedPacket.y;
     }
 }
 
 void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) {
+    if (_entities.find(parsedPacket.uuid) != _entities.end()) {
+        std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
+                  << std::endl;
+        return;
+    }
     auto newEntity = _registry.spawn_entity();
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
@@ -181,14 +185,15 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
+            case RTypeProtocol::ComponentList::INTERPOLATION: {
+                RealEngine::Interpolation interpolation;
+                std::memcpy(&interpolation, component.second.data(), sizeof(interpolation));
+                _registry.add_component(newEntity, RealEngine::Interpolation{interpolation});
+                break;
+            }
             case RTypeProtocol::ComponentList::VELOCITY: {
                 RealEngine::Velocity velocity;
                 std::memcpy(&velocity, component.second.data(), sizeof(velocity));
-                // std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << "),
-                // MaxSpeed:
-                // ("
-                //           << velocity.maxSpeed.x << ", " << velocity.maxSpeed.y
-                //           << "), AirFrictionForce: " << velocity.airFrictionForce << "\n";
                 _registry.add_component(
                     newEntity, RealEngine::Velocity{velocity.vx, velocity.vy, velocity.maxSpeed,
                                                     velocity.airFrictionForce});
@@ -253,11 +258,6 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 std::cout << "Unknown component type: " << component.first << "\n";
                 break;
         }
-    }
-    if (_entities.find(parsedPacket.uuid) != _entities.end()) {
-        std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
-                  << std::endl;
-        return;
     }
     addEntityToGame(parsedPacket, newEntity);
 }
