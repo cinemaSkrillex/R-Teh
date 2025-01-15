@@ -28,7 +28,9 @@ static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity
     auto* bonusType    = registry.get_component<RealEngine::NetvarContainer>(bonus);
 
     if (playerHealth && bonusType) {
-        auto* type = bonusType->getNetvar("powerup_type");
+        auto* type        = bonusType->getNetvar("powerup_type");
+        auto* bonusScore  = registry.get_component<RealEngine::Score>(bonus);
+        auto* playerScore = registry.get_component<RealEngine::Score>(entity);
         if (std::any_cast<int>(type->value) == 0) {
             playerHealth->amount += 10;
         }
@@ -43,6 +45,9 @@ static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity
             auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
             velocity->maxSpeed.x += 50.0f;
             velocity->maxSpeed.y += 50.0f;
+        }
+        if (playerScore && bonusScore) {
+            playerScore->toAdd += bonusScore->amount;
         }
     }
 }

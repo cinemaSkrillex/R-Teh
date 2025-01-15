@@ -53,6 +53,21 @@ PowerUp::PowerUp(RealEngine::Registry& registry, sf::Vector2f pos, bonusType typ
         registry.add_component(_entity, RealEngine::AutoDestructible{10});
     }
     registry.add_component(_entity, RealEngine::AI{rushTowardsTarget, noBehavior, true});
+    int score = 0;
+    switch (type) {
+        case HEAL:
+            score = 20;
+            break;
+        case SHOOT:
+            score = 100;
+            break;
+        case SPEED:
+            score = 150;
+            break;
+        default:
+            break;
+    }
+    registry.add_component(_entity, RealEngine::Score{score});
     registry.add_component(
         _entity, RealEngine::NetvarContainer{
                      {{"sprite_name", {"string", "sprite_name", sprite_name, nullptr}},
