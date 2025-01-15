@@ -74,7 +74,7 @@ Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, float spee
                std::string spriteName, float damage, int health, size_t playerID)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {500.f, 500.f}, 0.f});
+    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {speed, speed}, 0.f});
     auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(spriteName);
     if (spriteSheet) {
         registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});

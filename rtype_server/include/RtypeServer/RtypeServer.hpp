@@ -55,6 +55,16 @@ class Player {
         }
         return {component->x, component->y};
     }
+    RealEngine::Netvar* getNetvar(const std::string& name) {
+        RealEngine::NetvarContainer* container =
+            _registry->get_component<RealEngine::NetvarContainer>(*_entity);
+        if (!container) {
+            std::cout << "Error: Player entity does not have a NetvarContainer component"
+                      << std::endl;
+            return nullptr;
+        }
+        return container->getNetvar(name);
+    }
     const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
     void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
     long int getLastTimestamp() const { return _last_update; }
@@ -88,7 +98,7 @@ class RtypeServer {
     float                                               _deltaTimeBroadcast;
     sf::Clock                                           _clock;
     sf::Clock                                           _broadcastClock;
-    sf::Clock                                           _gameClock; //TEST
+    sf::Clock                                           _gameClock;  // TEST
     std::chrono::steady_clock::time_point               _startTime;
     std::unordered_map<int, std::unique_ptr<IEvent>>    eventHandlers;
 

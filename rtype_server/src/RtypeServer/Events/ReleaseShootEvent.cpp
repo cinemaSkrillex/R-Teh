@@ -14,8 +14,16 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
                                           RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = gameInstance->addAndGetBullet(bullet_position, 500, "mid_bullet", 15.f, 20,
-                                                *(player.getEntity()));
+    float              bulletDamage    = 10.f;
+    try {
+        bulletDamage = std::any_cast<float>(player.getNetvar("shootDamage")->value);
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    auto bullet =
+        gameInstance->addAndGetBullet(bullet_position, 600, "mid_bullet", bulletDamage * 1.5f,
+                                      int(bulletDamage) * 2, *(player.getEntity()));
 
     std::array<char, 800> serializedEventMessage =
         createBulletMessage(*bullet, bullet_position, "mid_bullet");
@@ -27,8 +35,16 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
                                        RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = gameInstance->addAndGetBullet(bullet_position, 500, "big_bullet", 25.f, 50,
-                                                *(player.getEntity()));
+    float              bulletDamage    = 10.f;
+    try {
+        bulletDamage = std::any_cast<float>(player.getNetvar("shootDamage")->value);
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    auto bullet =
+        gameInstance->addAndGetBullet(bullet_position, 750, "big_bullet", bulletDamage * 2.5f,
+                                      int(bulletDamage) * 5, *(player.getEntity()));
 
     std::array<char, 800> serializedEventMessage =
         createBulletMessage(*bullet, bullet_position, "big_bullet");
