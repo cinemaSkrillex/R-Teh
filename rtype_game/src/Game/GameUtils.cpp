@@ -145,6 +145,8 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
 
 void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket) {
     auto it = _entities.find(parsedPacket.uuid);
+    auto playerIt = _players.find(parsedPacket.uuid);
+    if (playerIt != _players.end()) return;
     if (it == _entities.end()) return;
     std::shared_ptr<RealEngine::Entity> entity = it->second;
     auto* positionComponent = _registry.get_component<RealEngine::Position>(entity);
