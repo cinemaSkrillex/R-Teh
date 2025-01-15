@@ -16,6 +16,7 @@ DestroySystem::DestroySystem() {}
 void DestroySystem::killEntity(Registry& registry, Entity entity) {
     if (registry.is_valid(entity)) {
         _deadEntities.push_back(entity);
+        // registry.remove_entity(entity);
     }
 }
 
