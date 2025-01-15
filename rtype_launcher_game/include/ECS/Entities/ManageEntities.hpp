@@ -18,9 +18,11 @@ class ManageEntities {
    public:
     std::shared_ptr<Entity> spawn_entity();
 
-    Entity entity_from_index(std::size_t idx);
-    void   kill_entity(Entity const& e);
-    bool   is_valid(Entity const& e) const;
+    Entity              entity_from_index(std::size_t idx);
+    void                kill_entity(Entity const& e);
+    std::vector<Entity> get_dead_entities() { return _dead_entities; }
+    void                clear_dead_entities() { _dead_entities.clear(); }
+    bool                is_valid(Entity const& e) const;
 
     std::size_t size() const;
 

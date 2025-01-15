@@ -25,10 +25,13 @@ class Button {
     void setFillColor(const sf::Color& color);
     void setTextColor(const sf::Color& color);
     void setLabel(const std::string& labelText);
+    void setVisible(bool visible) { _visible = visible; }
+    bool isVisible() const { return _visible; }
     void centerText();
 
    private:
     sf::RectangleShape box;
     Text               label;
+    bool               _visible;
 };
 }  // namespace RealEngine

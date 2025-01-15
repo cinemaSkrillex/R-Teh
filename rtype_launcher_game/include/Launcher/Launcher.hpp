@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <asio.hpp>
+#include <regex>
 #include <string>
 #include <thread>
 
@@ -22,6 +23,8 @@ class Launcher {
    public:
     Launcher();
     void run();
+    bool isValidIp(const std::string& ip);
+    bool isValidPort(const std::string& port);
 
    private:
     void onConnectClick();

@@ -16,6 +16,13 @@ class DestroySystem {
    public:
     DestroySystem();
     ~DestroySystem() = default;
-    std::vector<Entity> update(Registry& registry, float deltaTime);
+    void                killEntity(Registry& registry, Entity entity);
+    bool                autoDestroy(Registry& registry, Entity entity, float deltaTime);
+    bool                healthDestroy(Registry& registry, Entity entity);
+    void                update(Registry& registry, float deltaTime);
+    std::vector<Entity> getDeadEntities() { return _deadEntities; }
+
+   private:
+    std::vector<Entity> _deadEntities;
 };
 }  // namespace RealEngine

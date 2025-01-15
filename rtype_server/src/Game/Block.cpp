@@ -30,7 +30,7 @@ static void collisionHandler(RealEngine::CollisionType collisionType,
 }
 
 Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
-             float rotation)
+             float rotation, float scrollingSpeed)
     : _blockEntity(registry.spawn_entity()),
       _blockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
       _element(spriteName) {
@@ -40,9 +40,14 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
     }
 
     registry.add_component(_blockEntity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _blockEntity, RealEngine::Interpolation{
+                          {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_blockEntity, RealEngine::SpriteComponent{_blockSprite});
     registry.add_component(_blockEntity, RealEngine::Rotation{rotation});
     registry.add_component(_blockEntity, RealEngine::Drawable{});
+    registry.add_component(_blockEntity,
+                           RealEngine::Velocity{scrollingSpeed, 0.0f, {0.0f, 0.0f}, 0.0f});
     registry.add_component(_blockEntity,
                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                  spriteName,
@@ -53,7 +58,8 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
         _blockEntity,
         RealEngine::NetvarContainer{
             {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
-             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}}}});
+             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
+             {"new_entity", {"bool", "new_entity", true, nullptr}}}});
 }
 
 Block::~Block() {}

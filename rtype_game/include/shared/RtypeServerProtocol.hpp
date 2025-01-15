@@ -41,6 +41,7 @@ enum ComponentList : int {
     SPRITE            = 0x07,
     ANGLE             = 0x08,
     ACCELERATION      = 0x09,
+    INTERPOLATION     = 0x0A,
 };
 
 enum EntityType : int {
@@ -86,8 +87,7 @@ struct SynchronizeMessage : BaseMessage {
 // Event message structure
 struct NewEntityMessage : BaseMessage {
     std::vector<std::pair<ComponentList, std::vector<char>>>
-               components;  // Component ID and serialized data
-    EntityType entity_type;
+        components;  // Component ID and serialized data
 };
 
 struct DestroyEntityMessage : BaseMessage {
