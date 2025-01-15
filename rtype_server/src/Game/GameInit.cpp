@@ -30,20 +30,6 @@ GameInstance::GameInstance(bool serverVision)
     init_screen_limits();
     std::string path = "../../assets/maps/";
     _game_map->loadFromJSON(path + "level_1.json");
-    rtype::SpaceSphere spaceSphere(_registry, sf::Vector2f(20, 100));
-    addAndGetEntity(spaceSphere.getEntity());
-    rtype::PowerUp powerUp(_registry, sf::Vector2f(100, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp.getEntity());
-    rtype::PowerUp powerUp2(_registry, sf::Vector2f(110, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp2.getEntity());
-    rtype::PowerUp powerUp3(_registry, sf::Vector2f(120, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp3.getEntity());
-    rtype::PowerUp powerUp4(_registry, sf::Vector2f(130, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp4.getEntity());
-    rtype::PowerUp powerUp5(_registry, sf::Vector2f(140, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp5.getEntity());
-    rtype::PowerUp powerUp6(_registry, sf::Vector2f(150, 100), rtype::bonusType::SHOOT);
-    addAndGetEntity(powerUp6.getEntity());
 }
 
 void GameInstance::init_components() {
