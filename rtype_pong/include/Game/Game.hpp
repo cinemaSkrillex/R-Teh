@@ -65,11 +65,16 @@ class Game {
     void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
     void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
     void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
+    void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
+                         std::shared_ptr<RealEngine::Entity> newEntity);
 
     float              _deltaTime = 0.f;
+    RealEngine::View   _view;
     RealEngine::Window _window;
     sf::Clock          _clock;
+    sf::Clock          _broadcastClock;
     int                _serverTick;
+    PlayerUI           _playerUI;
 
     RealEngine::Registry              _registry;
     RealEngine::LagCompensationSystem _lagCompensationSystem;
@@ -85,7 +90,7 @@ class Game {
     RealEngine::ParallaxSystem        _parallaxSystem;
     RealEngine::ParticleSystem        _particleSystem;
     RealEngine::NetvarSystem          _netvarSystem;
-    Controls                          _controls;
+    rtype::Controls                   _controls;
 
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
@@ -95,6 +100,7 @@ class Game {
     long int                              _localPlayerUUID;
     std::chrono::steady_clock::time_point _startTime;
     long                                  _serverTime;
+    long int                              _packetsReceived = 0;
 };
 }  // namespace rtype
 

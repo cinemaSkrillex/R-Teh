@@ -57,7 +57,6 @@ class RtypeServer {
     float                                                     _deltaTimeBroadcast;
     sf::Clock                                                 _clock;
     sf::Clock                                                 _broadcastClock;
-    sf::Clock                                                 _gameClock;  // TEST
     std::chrono::steady_clock::time_point                     _startTime;
     std::unordered_map<int, std::unique_ptr<IEvent>>          eventHandlers;
 
