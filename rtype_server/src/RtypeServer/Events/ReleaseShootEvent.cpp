@@ -10,8 +10,8 @@
 #include "RtypeServer.hpp"
 
 void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
-                                          const asio::ip::udp::endpoint& client, Player& player,
-                                          RtypeServer* server) {
+                                          const asio::ip::udp::endpoint& client,
+                                          ServerPlayer& player, RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
     float              bulletDamage    = 10.f;
@@ -31,7 +31,7 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
 }
 
 void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
-                                       const asio::ip::udp::endpoint& client, Player& player,
+                                       const asio::ip::udp::endpoint& client, ServerPlayer& player,
                                        RtypeServer* server) {
     auto               gameInstance    = server->getGameInstance();
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
@@ -52,7 +52,7 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
 }
 
 void ReleaseShootEvent::execute(const std::array<char, 800>&   buffer,
-                                const asio::ip::udp::endpoint& client, Player& player,
+                                const asio::ip::udp::endpoint& client, ServerPlayer& player,
                                 RtypeServer* server) {
     auto  gameInstance = server->getGameInstance();
     auto* container =

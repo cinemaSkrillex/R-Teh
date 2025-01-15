@@ -14,7 +14,7 @@ std::string RtypeServer::formatTimestamp(const std::chrono::steady_clock::time_p
     return std::to_string(elapsed);  // in milliseconds
 }
 
-void RtypeServer::broadcastPlayerState(const Player& player) {
+void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     // Get the player's position
     std::shared_ptr<RealEngine::Entity> entity = player.getEntity();
     if (!entity) {

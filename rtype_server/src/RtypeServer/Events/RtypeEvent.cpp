@@ -8,7 +8,7 @@
 #include "../../include/RtypeServer/RtypeServer.hpp"
 
 void RtypeServer::runEvent(const std::array<char, 800>&   buffer,
-                           const asio::ip::udp::endpoint& client, Player& player) {
+                           const asio::ip::udp::endpoint& client, ServerPlayer& player) {
     auto baseMessage = RTypeProtocol::deserialize<800>(buffer);
     auto it          = eventHandlers.find(baseMessage.message_type);
     if (it != eventHandlers.end()) {

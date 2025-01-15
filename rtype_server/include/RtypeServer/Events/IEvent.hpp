@@ -11,13 +11,13 @@
 #include <asio.hpp>
 
 class RtypeServer;
-class Player;
+class ServerPlayer;
 
 class IEvent {
    public:
-    virtual ~IEvent()                                         = default;
+    virtual ~IEvent()                                               = default;
     virtual void execute(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                         Player& player, RtypeServer* server) = 0;
+                         ServerPlayer& player, RtypeServer* server) = 0;
 };
 
 #endif  // IEVENT_H

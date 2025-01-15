@@ -33,6 +33,7 @@
 #include "SceneManager.hpp"
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
+#include "ServerPlayer.hpp"
 #include "ShootEvent.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -45,71 +46,27 @@
 
 const float SNAP_TRESHOLD = 3.5f;
 
-class Player {
-   public:
-    long int     getUUID() const { return _uuid; }
-    sf::Vector2f getPosition() const {
-        RealEngine::Position* component = _registry->get_component<RealEngine::Position>(*_entity);
-        if (!component) {
-            std::cout << "Error: Player entity does not have a Position component" << std::endl;
-            return {0, 0};
-        }
-        return {component->x, component->y};
-    }
-    RealEngine::Netvar* getNetvar(const std::string& name) {
-        RealEngine::NetvarContainer* container =
-            _registry->get_component<RealEngine::NetvarContainer>(*_entity);
-        if (!container) {
-            std::cout << "Error: Player entity does not have a NetvarContainer component"
-                      << std::endl;
-            return nullptr;
-        }
-        return container->getNetvar(name);
-    }
-    const std::vector<sf::Vector2f>& getPositions() const { return _positions; }
-    void     setLastTimestamp(long int timestamp) { _last_update = timestamp; }
-    long int getLastTimestamp() const { return _last_update; }
-    void     setPositionByUuid(long int uuid, sf::Vector2f position);
-    std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
-    std::shared_ptr<RealEngine::Entity> getEntity() const { return _entity; }
-
-   private:
-    long int                            _uuid;
-    std::vector<sf::Vector2f>           _positions;
-    std::shared_ptr<RealEngine::Entity> _entity;
-    RealEngine::Registry*               _registry;
-    long                                _last_update;
-
-   public:
-    Player(/* args */);
-    Player(long int uuid, long int timestamp, std::shared_ptr<RealEngine::Entity> _player_entity,
-           RealEngine::Registry* registry);
-    ~Player();
-};
-
-static std::vector<Player> PLAYERS = {};
-
 class RtypeServer {
    private:
-    std::shared_ptr<UDPServer>                          _server;
-    std::shared_ptr<GameInstance>                       _game_instance;
-    ServerConfig                                        _server_config;
-    RealEngine::SceneManager                            _scene_manager;
-    std::unordered_map<asio::ip::udp::endpoint, Player> _players;
-    float                                               _deltaTime;
-    float                                               _deltaTimeBroadcast;
-    sf::Clock                                           _clock;
-    sf::Clock                                           _broadcastClock;
-    sf::Clock                                           _gameClock;  // TEST
-    std::chrono::steady_clock::time_point               _startTime;
-    std::unordered_map<int, std::unique_ptr<IEvent>>    eventHandlers;
+    std::shared_ptr<UDPServer>                                _server;
+    std::shared_ptr<GameInstance>                             _game_instance;
+    ServerConfig                                              _server_config;
+    RealEngine::SceneManager                                  _scene_manager;
+    std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> _players;
+    float                                                     _deltaTime;
+    float                                                     _deltaTimeBroadcast;
+    sf::Clock                                                 _clock;
+    sf::Clock                                                 _broadcastClock;
+    sf::Clock                                                 _gameClock;  // TEST
+    std::chrono::steady_clock::time_point                     _startTime;
+    std::unordered_map<int, std::unique_ptr<IEvent>>          eventHandlers;
 
     void initCallbacks();
     void initEventHandlers();
     void initScenes();
     void startAndBroadcastLevel();
 
-    void broadcastPlayerState(const Player& player);
+    void broadcastPlayerState(const ServerPlayer& player);
     void broadcastStartLevel();
     void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
     void broadcastAllReliable(const std::array<char, 800>& message);
@@ -133,12 +90,12 @@ class RtypeServer {
 
     void run();
     void runEvent(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                  Player& player);
+                  ServerPlayer& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
-                       Player& player);
-    ServerConfig                                        getServerConfig() { return _server_config; }
-    std::unordered_map<asio::ip::udp::endpoint, Player> getPlayers() { return _players; }
-    std::shared_ptr<GameInstance>                       getGameInstance() { return _game_instance; }
-    std::shared_ptr<UDPServer>                          getServer() { return _server; }
-    std::chrono::steady_clock::time_point               getStartTime() { return _startTime; }
+                       ServerPlayer& player);
+    ServerConfig getServerConfig() { return _server_config; }
+    std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> getPlayers() { return _players; }
+    std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
+    std::shared_ptr<UDPServer>            getServer() { return _server; }
+    std::chrono::steady_clock::time_point getStartTime() { return _startTime; }
 };
