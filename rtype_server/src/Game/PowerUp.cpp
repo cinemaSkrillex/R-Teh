@@ -71,6 +71,7 @@ PowerUp::PowerUp(RealEngine::Registry& registry, sf::Vector2f pos, bonusType typ
     registry.add_component(
         _entity, RealEngine::NetvarContainer{
                      {{"sprite_name", {"string", "sprite_name", sprite_name, nullptr}},
+                      {"new_entity", {"bool", "new_entity", true, nullptr}},
                       {"powerup_type", {"int", "type", static_cast<int>(type), nullptr}}}});
 }
 
