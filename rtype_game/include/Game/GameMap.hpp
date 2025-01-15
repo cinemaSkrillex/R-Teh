@@ -39,7 +39,6 @@ class GameMap {
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }
     void setIsMapLoaded(bool isMapLoaded) { _isMapLoaded = isMapLoaded; }
     void setMusicName(const std::string& musicName) {
-        std::cout << "Setting music name: " << musicName << std::endl;
         _music_name = musicName;
         std::cout << "Music name set: " << _music_name << std::endl;
     }

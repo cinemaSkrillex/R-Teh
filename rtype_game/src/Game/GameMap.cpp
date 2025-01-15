@@ -9,12 +9,14 @@
 
 namespace rtype {
 
-GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelRunning(false) {}
+GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelRunning(false) {
+    std::cout << "GameMap created" << std::endl;
+}
 
 GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
 void GameMap::updateLevel(float deltaTime) {
-    if (!_levelRunning) {
+    if (_levelRunning == false) {
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
@@ -40,6 +42,7 @@ void GameMap::startLevel() {
 
 void GameMap::stopLevel() {
     _levelRunning = false;
+    std::cout << "STOP Level started" << "_levelRunning: " << _levelRunning << std::endl;
     if (!_music_name.empty()) {
         RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
     }
@@ -79,6 +82,10 @@ void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
 
 void GameMap::synchroniseLevelBlockEntities() {
     for (auto& block : _blockEntities) {
+        if (!block.second) {
+            std::cout << "Block is null" << std::endl;
+            continue;
+        }
         auto  posBlock = block.second;
         auto* position = _registry.get_component<RealEngine::Position>(posBlock);
         if (position) {

@@ -144,7 +144,7 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
 }
 
 void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket) {
-    auto it = _entities.find(parsedPacket.uuid);
+    auto it       = _entities.find(parsedPacket.uuid);
     auto playerIt = _players.find(parsedPacket.uuid);
     if (playerIt != _players.end()) return;
     if (it == _entities.end()) return;
@@ -177,7 +177,9 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
-                // std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+                // std::cout << "Position: (" << position.x << ", " << position.y
+                //           << "entity : " << parsedPacket.uuid << "newEntity" << *newEntity <<
+                //           ")\n";
                 _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
@@ -358,12 +360,12 @@ void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPack
                 _registry.remove_entity(*newEntity);
                 return;
             }
-            std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " << *newEntity
-                      << std::endl;
+            // std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " <<
+            // *newEntity
+            //           << std::endl;
             _game_map.addBlock(newEntity, parsedPacket.uuid);
             break;
         case RTypeProtocol::EntityType::OTHER_ENTITY:
-            std::cout << "Adding entity with UUID: " << parsedPacket.uuid << std::endl;
             _entities.emplace(parsedPacket.uuid, newEntity);
             break;
         default:
