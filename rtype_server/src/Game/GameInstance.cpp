@@ -60,7 +60,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
 
 void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime) {
     if (_players.empty() || _players.find(playerUuid) == _players.end()) return;
-    if (_players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
     auto* acceleration = _registry.get_component<RealEngine::Acceleration>(player);
