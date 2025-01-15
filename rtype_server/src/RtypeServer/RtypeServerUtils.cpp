@@ -46,6 +46,7 @@ void RtypeServer::broadcastStartLevel() {
     RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
     levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
     levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
+    std::cout << "startLevel: " << levelSignalMessage.startLevel << std::endl;
 
     // Serialize the LevelSignalMessage
     std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);

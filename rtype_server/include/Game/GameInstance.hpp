@@ -27,8 +27,6 @@ class GameInstance {
 
     void init_level(std::string filepath, std::string foldername);
 
-    void handleSignal(const std::string& message);
-
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position, float speed,

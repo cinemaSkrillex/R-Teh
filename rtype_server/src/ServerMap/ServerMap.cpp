@@ -40,9 +40,9 @@ Json::Value ServerMap::readJSONFile(const std::string& filepath) {
 }
 
 void ServerMap::updateLevel(float deltaTime) {
-    // if (!_isLevelRunning) {
-    //     return;
-    // }
+    if (!_isLevelRunning) {
+        return;
+    }
     x_level_position += _scrollingSpeed * deltaTime;
     for (auto& block : _blockEntities) {
         auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());

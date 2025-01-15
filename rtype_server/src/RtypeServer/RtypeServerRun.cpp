@@ -9,15 +9,24 @@
 #include "../../include/shared/RtypeServerProtocol.hpp"
 
 void RtypeServer::run() {
-    auto log                   = std::make_shared<Log>("RtypeServer.log");
-    int  server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
-    int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    int  server_test_tick      = 5;
+    auto  log                   = std::make_shared<Log>("RtypeServer.log");
+    int   server_tick           = _server_config.getConfigItem<int>("SERVER_TICK");
+    int   server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
+    int   server_test_tick      = 5;
+    float changeScene           = 5.f;
+    bool  changedScene          = false;
 
     while (true) {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
+
+            changeScene -= _deltaTime;
+            if (changeScene < 0 && !changedScene) {
+                _scene_manager.switchScene(SceneType::GAME);
+                updateScene();
+                changedScene = true;
+            }
 
             handleClientMessages();
             runGameInstance(_deltaTime);

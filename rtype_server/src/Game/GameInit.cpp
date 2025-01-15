@@ -28,8 +28,6 @@ GameInstance::GameInstance(bool serverVision)
     init_textures();
     init_sprite_sheets();
     init_screen_limits();
-    std::string path = "../../assets/maps/";
-    _game_map->loadFromJSON(path + "level_1.json");
 }
 
 void GameInstance::init_components() {

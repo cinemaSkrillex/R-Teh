@@ -17,7 +17,7 @@ RtypeServer::RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision)
     initEventHandlers();
     printServerStartupBanner();
     initScenes();
-    _scene_manager.switchScene(SceneType::GAME);
+    _scene_manager.switchScene(SceneType::WAITING);
     updateScene();
 }
 
