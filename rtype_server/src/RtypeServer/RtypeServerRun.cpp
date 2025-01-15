@@ -99,6 +99,13 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
                               sf::Vector2f(position->x, position->y));
     }
 
+    // Serialize interpolation component
+    auto* interpolation = registry->get_component<RealEngine::Interpolation>(entity);
+    if (interpolation) {
+        addComponentToMessage(newEntityMessage, RTypeProtocol::ComponentList::INTERPOLATION,
+                              *interpolation);
+    }
+
     // Serialize velocity component
     auto* velocity = registry->get_component<RealEngine::Velocity>(entity);
     if (velocity) {
