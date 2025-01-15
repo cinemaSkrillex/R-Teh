@@ -56,9 +56,9 @@ void ParticleSystem::update(Registry& registry, float deltaTime) {
             emitter->particles.end());
 
         // Destroy entity if emission duration has passed and no particles are left
-        if (emitter->elapsedTime >= emitter->emissionDuration && emitter->particles.empty()) {
-            registry.kill_entity(entity);
-        }
+        // if (emitter->elapsedTime >= emitter->emissionDuration && emitter->particles.empty()) {
+        //     registry.kill_entity(entity);
+        // }
     }
 }
 

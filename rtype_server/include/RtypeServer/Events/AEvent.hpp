@@ -18,7 +18,6 @@ class AEvent : public IEvent {
     void broadcastAllUnreliable(const std::array<char, 800>& message, RtypeServer* server);
     std::array<char, 800> createBulletMessage(long int id, sf::Vector2f position,
                                               std::string          sprite_name,
-                                              RealEngine::Velocity velocity = {
-                                                  500, 0, {500, 500}, 0});
+                                              RealEngine::Velocity velocity);
 };
 #endif  // AEVENT_HPP

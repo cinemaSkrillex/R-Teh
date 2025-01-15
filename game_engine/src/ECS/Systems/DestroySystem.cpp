@@ -13,15 +13,13 @@ namespace RealEngine {
 
 DestroySystem::DestroySystem() {}
 
-static void killEntity(Registry& registry, Entity entity, std::vector<Entity>& destroyedEntities) {
+void DestroySystem::killEntity(Registry& registry, Entity entity) {
     if (registry.is_valid(entity)) {
-        destroyedEntities.push_back(entity);
-        registry.kill_entity(entity);
+        _deadEntities.push_back(entity);
     }
 }
 
-static bool autoDestroy(Registry& registry, Entity entity, float deltaTime,
-                        std::vector<Entity>& destroyedEntities) {
+bool DestroySystem::autoDestroy(Registry& registry, Entity entity, float deltaTime) {
     auto* destructible = registry.get_component<AutoDestructible>(entity);
 
     if (destructible) {
@@ -29,14 +27,14 @@ static bool autoDestroy(Registry& registry, Entity entity, float deltaTime,
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
                 if (registry.is_valid(entity)) {
-                    killEntity(registry, entity, destroyedEntities);
+                    killEntity(registry, entity);
                     return true;
                 }
             }
         }
         if (destructible->kill) {
             if (registry.is_valid(entity)) {
-                killEntity(registry, entity, destroyedEntities);
+                killEntity(registry, entity);
                 return true;
             }
         }
@@ -47,14 +45,13 @@ static bool autoDestroy(Registry& registry, Entity entity, float deltaTime,
     return false;
 }
 
-static bool healthDestroy(Registry& registry, Entity entity,
-                          std::vector<Entity>& destroyedEntities) {
+bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
     auto* health = registry.get_component<Health>(entity);
 
     if (health) {
         if (health->amount <= 0) {
             if (registry.is_valid(entity)) {
-                killEntity(registry, entity, destroyedEntities);
+                killEntity(registry, entity);
                 return true;
             }
         }
@@ -62,17 +59,20 @@ static bool healthDestroy(Registry& registry, Entity entity,
     return false;
 }
 
-std::vector<Entity> DestroySystem::update(Registry& registry, float deltaTime) {
-    std::vector<Entity> destroyedEntities;
-    auto                entities = registry.view<>();
+void DestroySystem::update(Registry& registry, float deltaTime) {
+    auto entities = registry.view<>();
 
+    for (auto& entity : _deadEntities) {
+        registry.remove_entity(entity);
+    }
+    _deadEntities.clear();
     if (entities.empty()) {
-        return destroyedEntities;
+        return;
     }
     for (auto entity : entities) {
-        if (autoDestroy(registry, entity, deltaTime, destroyedEntities)) continue;
-        if (healthDestroy(registry, entity, destroyedEntities)) continue;
+        if (autoDestroy(registry, entity, deltaTime)) continue;
+        if (healthDestroy(registry, entity)) continue;
     }
-    return destroyedEntities;
 }
+
 }  // namespace RealEngine
