@@ -12,6 +12,49 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
     _movementSystem.update(_registry, entity, deltaTime);
 };
 
+void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_to_spawn,
+                                        std::vector<RealEngine::Entity> destroyedEntities) {
+    for (auto& enemy : enemies_to_spawn) {
+        spawnMob(enemy.name, enemy.position, enemy.angle);
+    }
+    for (auto& entity : destroyedEntities) {
+        std::cout << "Entity destroyed" << std::endl;
+        auto* netvarContainer = _registry.get_component<RealEngine::NetvarContainer>(entity);
+        auto* position        = _registry.get_component<RealEngine::Position>(entity);
+        if (netvarContainer) {
+            float spawnProbability =
+                std::any_cast<float>(netvarContainer->getNetvar("powerup_drop")->value);
+            std::cout << "spawnProbability: " << spawnProbability << std::endl;
+            if (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) <
+                spawnProbability / 100.0f) {
+                int powerupType =
+                    std::any_cast<int>(netvarContainer->getNetvar("powerup_type")->value);
+                rtype::PowerUp powerup =
+                    rtype::PowerUp(_registry, {position->x, position->y}, rtype::bonusType::HEAL);
+                switch (powerupType) {
+                    case 1:
+                        powerup = rtype::PowerUp(_registry, {position->x, position->y},
+                                                 rtype::bonusType::SHOOT);
+                        break;
+                    case 2:
+                        powerup = rtype::PowerUp(_registry, {position->x, position->y},
+                                                 rtype::bonusType::SPEED);
+                        break;
+                    default:
+                        break;
+                }
+                addAndGetEntity(powerup.getEntity());
+            }
+        }
+    }
+    _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
+                                  [&](const auto& bullet) {
+                                      return _registry.get_component<RealEngine::Health>(bullet) ==
+                                             nullptr;
+                                  }),
+                   _bullets.end());
+}
+
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
     // Then update remaining mobs
@@ -32,20 +75,13 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _collisionSystem.update(_registry, deltaTime);
     _healthSystem.update(_registry, deltaTime);
     _netvarSystem.update(_registry, deltaTime);
-    auto destroyedEntities = _destroySystem.update(_registry, deltaTime);
+    _destroySystem.update(_registry, deltaTime);
+    auto destroyedEntities = _destroySystem.getDeadEntities();
     _netvarSystem.update(_registry, deltaTime);
     _game_map->updateLevel(deltaTime);
     auto enemies_to_spawn = _game_map->invokeWaves();
-    for (auto& enemy : enemies_to_spawn) {
-        spawnMob(enemy.name, enemy.position, enemy.angle);
-    }
 
-    _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
-                                  [&](const auto& bullet) {
-                                      return _registry.get_component<RealEngine::Health>(bullet) ==
-                                             nullptr;
-                                  }),
-                   _bullets.end());
+    manageInGameEntities(enemies_to_spawn, destroyedEntities);
 
     for (auto& mob : _enemies) {
         _movementSystem.update(_registry, mob, deltaTime);

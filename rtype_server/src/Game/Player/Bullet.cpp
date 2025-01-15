@@ -36,9 +36,9 @@ static void bulletTakesDamage(RealEngine::CollisionType collisionType,
     if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
         selfDestruct(registry, entity);
         addScoreToPlayer(registry, entity, collider);
-    } else {
-        health->amount -= damage->amount;
-        if (health->amount <= 0) addScoreToPlayer(registry, entity, collider);
+        // } else {
+        //     health->amount -= damage->amount;
+        //     if (health->amount <= 0) addScoreToPlayer(registry, entity, collider);
     }
 }
 

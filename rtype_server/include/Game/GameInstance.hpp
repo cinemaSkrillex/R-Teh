@@ -34,12 +34,14 @@ class GameInstance {
     std::shared_ptr<RealEngine::Entity> addAndGetBullet(sf::Vector2f position, float speed,
                                                         std::string spriteName, float damage,
                                                         int health, size_t playerID);
-    void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     void movePlayer(long int playerUuid, sf::IntRect direction, float deltaTime);
 
     void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entity, float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);
+    void                            manageInGameEntities(std::vector<Map::WaveMob>       enemies_to_spawn,
+                                                         std::vector<RealEngine::Entity> destroyedEntities);
+    void spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle);
 
     RealEngine::Registry* getRegistry() { return &_registry; }
     RealEngine::Registry& getRegistryRef() { return _registry; }

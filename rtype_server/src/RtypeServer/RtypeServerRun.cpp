@@ -75,6 +75,8 @@ void RtypeServer::runGameInstance(float deltaTime) {
             RTypeProtocol::serialize<800>(destroyMessage);
         broadcastAllReliable(serializedDestroyMessage);
     }
+    for (auto entity : destroyedEntities) {
+    }
 }
 
 void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry* registry) {

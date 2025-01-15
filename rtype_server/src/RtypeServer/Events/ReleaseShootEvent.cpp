@@ -20,13 +20,13 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
+    float bulletSpeed = 600.f;
+    auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "mid_bullet",
+                                                      bulletDamage * 1.5f, int(bulletDamage) * 2,
+                                                      *(player.getEntity()));
 
-    auto bullet =
-        gameInstance->addAndGetBullet(bullet_position, 600, "mid_bullet", bulletDamage * 1.5f,
-                                      int(bulletDamage) * 2, *(player.getEntity()));
-
-    std::array<char, 800> serializedEventMessage =
-        createBulletMessage(*bullet, bullet_position, "mid_bullet");
+    std::array<char, 800> serializedEventMessage = createBulletMessage(
+        *bullet, bullet_position, "mid_bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
     broadcastAllReliable(serializedEventMessage, server);
 }
 
@@ -41,13 +41,13 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
+    float bulletSpeed = 700.f;
+    auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "big_bullet",
+                                                      bulletDamage * 2.5f, int(bulletDamage) * 5,
+                                                      *(player.getEntity()));
 
-    auto bullet =
-        gameInstance->addAndGetBullet(bullet_position, 750, "big_bullet", bulletDamage * 2.5f,
-                                      int(bulletDamage) * 5, *(player.getEntity()));
-
-    std::array<char, 800> serializedEventMessage =
-        createBulletMessage(*bullet, bullet_position, "big_bullet");
+    std::array<char, 800> serializedEventMessage = createBulletMessage(
+        *bullet, bullet_position, "big_bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
     broadcastAllReliable(serializedEventMessage, server);
 }
 
