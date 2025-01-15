@@ -28,12 +28,13 @@ void ShootEvent::execute(const std::array<char, 800>& buffer, const asio::ip::ud
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
+    float              bulletSpeed     = 500.f;
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
-    auto bullet = game_instance->addAndGetBullet(bullet_position, 500, "bullet", bulletDamage,
-                                                 int(bulletDamage), *(player.getEntity()));
+    auto               bullet =
+        game_instance->addAndGetBullet(bullet_position, bulletSpeed, "bullet", bulletDamage,
+                                       int(bulletDamage), *(player.getEntity()));
 
-    std::array<char, 800> serializedEventMessage =
-        createBulletMessage(*bullet, bullet_position, "bullet");
+    std::array<char, 800> serializedEventMessage = createBulletMessage(
+        *bullet, bullet_position, "bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
     broadcastAllReliable(serializedEventMessage, server);
 }

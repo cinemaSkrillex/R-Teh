@@ -52,6 +52,7 @@ void GameInstance::init_components() {
     _registry.register_component<RealEngine::ParticleEmitter>();
     _registry.register_component<RealEngine::TargetRadius>();
     _registry.register_component<RealEngine::Score>();
+    _registry.register_component<RealEngine::Interpolation>();
 }
 
 void GameInstance::init_systems() {

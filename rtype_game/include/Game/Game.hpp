@@ -72,6 +72,7 @@ class Game {
     RealEngine::View   _view;
     RealEngine::Window _window;
     sf::Clock          _clock;
+    sf::Clock          _broadcastClock;
     int                _serverTick;
     PlayerUI           _playerUI;
 

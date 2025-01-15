@@ -28,7 +28,9 @@ class GameMap {
     void stopLevel();
     void unloadLevel();
 
-    void addBlock(std::shared_ptr<RealEngine::Entity> block) { _blockEntities.emplace_back(block); }
+    void addBlock(std::shared_ptr<RealEngine::Entity> block, long int blockId) {
+        _blockEntities.emplace_back(std::make_pair(blockId, block));
+    }
     void addBackground(std::shared_ptr<RealEngine::Entity> background,
                        RealEngine::ParallaxSystem&         parallaxSystem);
     void synchroniseLevelBlockEntities();
