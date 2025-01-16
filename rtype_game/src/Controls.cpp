@@ -52,22 +52,33 @@ void Controls::shoot(float deltaTime, RealEngine::Entity entity) {
 
 void Controls::holdShoot(float deltaTime, RealEngine::Entity entity) {
     auto* container = _registry.get_component<RealEngine::NetvarContainer>(entity);
+    if (!container->getNetvar("hold_shoot")) {
+        container->addNetvar("hold_shoot", RealEngine::Netvar{"float", "hold_shoot", 0.f, nullptr});
+    }
+    float hold_shoot = std::any_cast<float>(container->getNetvar("hold_shoot")->value);
+    container->getNetvar("hold_shoot")->value = std::any_cast<float>(hold_shoot + deltaTime);
+    auto* position = _registry.get_component<RealEngine::Position>(entity);
+    if (position) {
+        if (!_registry.get_component<RealEngine::ParticleEmitter>(entity)) {
+            ParticlesClass particle({position->x, position->y}, ParticleType::SHOOT_LOAD);
+            _registry.add_component(entity, particle.getParticle());
+        }
+    }
     RTypeProtocol::BaseMessage eventMessage;
     eventMessage.message_type = RTypeProtocol::MessageType::HOLD_SHOOT_EVENT;
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);
-    float hold_shoot = std::any_cast<float>(container->getNetvar("hold_shoot")->value);
-    container->getNetvar("hold_shoot")->value = std::any_cast<float>(hold_shoot + deltaTime);
 }
 
 void Controls::releaseShoot(float deltaTime, RealEngine::Entity entity) {
     auto* container = _registry.get_component<RealEngine::NetvarContainer>(entity);
+    if (container) container->getNetvar("hold_shoot")->value = std::any_cast<float>(0.f);
+    _registry.remove_component<RealEngine::ParticleEmitter>(entity);
     RTypeProtocol::BaseMessage eventMessage;
     eventMessage.message_type = RTypeProtocol::MessageType::RELEASE_SHOOT_EVENT;
 
     std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);
-    container->getNetvar("hold_shoot")->value = std::any_cast<float>(0.f);
 }
 }  // namespace rtype

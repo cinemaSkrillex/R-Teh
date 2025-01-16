@@ -134,6 +134,11 @@ void TCPPacketManager::handle_file_reception(std::string&       data,
     file.close();
 }
 
+const std::vector<std::shared_ptr<asio::ip::tcp::socket>>& TCPPacketManager::get_client_sockets()
+    const {
+    return _client_sockets;
+}
+
 void TCPPacketManager::handle_directory_reception(const std::string& directory_name,
                                                   const std::string& parent_directory) {
     std::string full_path =
@@ -159,6 +164,10 @@ void TCPPacketManager::listen_for_server_data() {
     std::vector<std::string> directory_stack;
 
     while (true) {
+        if (!_socket->is_open()) {
+            std::cout << "Socket is closed. Exiting loop." << std::endl;
+            break;
+        }
         std::size_t length = _socket->read_some(asio::buffer(buffer), ec);
         if (ec) {
             if (ec == asio::error::eof) {
@@ -193,7 +202,11 @@ void TCPPacketManager::listen_for_server_data() {
                 std::string message = data.substr(4, end_pos - 4);
                 std::cout << "Message received: " << message << std::endl;
                 data = data.substr(end_pos + 1);
-
+            } else if (data.rfind("FIN", 0) == 0) {
+                std::cout << "Server finished sending data." << std::endl;
+                _socket->close();
+                _io_context.stop();
+                return;  // Assurez-vous de sortir immédiatement de la fonction
             } else if (data.rfind("FILE:", 0) == 0) {
                 handle_file_reception(data, current_directory);
             } else if (data.rfind("DIR:", 0) == 0) {

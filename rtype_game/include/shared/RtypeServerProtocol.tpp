@@ -184,9 +184,6 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const NewEntityMessage& m
     // Serialize the base message
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
-    // Serialize the event type
-    writeToBuffer(it, static_cast<int>(msg.entity_type));
-
     // Serialize the components
     for (const auto& component : msg.components) {
         // Store the component type as an integer
@@ -318,11 +315,6 @@ RTypeProtocol::NewEntityMessage RTypeProtocol::deserializeNewEntityMessage(
 
     // Deserialize the base message
     readFromBuffer(it, static_cast<BaseMessage&>(msg));
-
-    // Deserialize the event type
-    int entityTypeInt;
-    readFromBuffer(it, entityTypeInt);
-    msg.entity_type = static_cast<EntityType>(entityTypeInt);
 
     // Deserialize each component by reading [componentType, dataLength, rawData]
     while (it + sizeof(int) + sizeof(int) <= buffer.data() + BUFFER_SIZE) {

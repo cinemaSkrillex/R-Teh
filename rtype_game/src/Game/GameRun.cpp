@@ -27,12 +27,24 @@ void rtype::Game::run() {
         _game_map.updateLevel(_deltaTime);
         // const sf::IntRect direction = getPlayerNormalizedDirection();
         _playerUI.update();
+
+        _temporaryTexts.erase(
+            std::remove_if(_temporaryTexts.begin(), _temporaryTexts.end(),
+                           [](const std::shared_ptr<RealEngine::TemporaryText>& text) {
+                               return text->isFinished();
+                           }),
+            _temporaryTexts.end());
+
+        for (auto& text : _temporaryTexts) {
+            text->update(_deltaTime);
+            text->draw(_window.getRenderWindow());
+        }
+
         _window.display();
         auto client_now = std::chrono::steady_clock::now();
         long client_elapsed_time =
             std::chrono::duration_cast<std::chrono::milliseconds>(client_now - _startTime).count();
-        long delta_time = client_elapsed_time - _serverTime;
-        // Create a PlayerDirectionMessage
+        long                                  delta_time = client_elapsed_time - _serverTime;
         RTypeProtocol::PlayerDirectionMessage playerDirectionMessage;
         playerDirectionMessage.message_type = RTypeProtocol::PLAYER_DIRECTION;
         playerDirectionMessage.uuid         = _localPlayerUUID;

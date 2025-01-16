@@ -33,7 +33,6 @@ void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
         RTypeProtocol::NewEntityMessage eventMessage;
         eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
         eventMessage.uuid         = *mob;
-        eventMessage.entity_type  = RTypeProtocol::EntityType::OTHER_ENTITY;
 
         // Serialize position and velocity component
         addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);

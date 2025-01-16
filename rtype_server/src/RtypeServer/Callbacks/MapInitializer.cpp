@@ -41,12 +41,12 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     RTypeProtocol::NewEntityMessage newTileMessage;
     newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newTileMessage.uuid         = *blockEntity;
-    newTileMessage.entity_type  = RTypeProtocol::EntityType::BLOCK;
     std::cout << "Block entity: " << *blockEntity << std::endl;
 
-    auto& registry = _gameInstance->getRegistryRef();
-    auto* position = registry.get_component<RealEngine::Position>(*blockEntity);
-    auto* rotation = registry.get_component<RealEngine::Rotation>(*blockEntity);
+    auto& registry      = _gameInstance->getRegistryRef();
+    auto* position      = registry.get_component<RealEngine::Position>(*blockEntity);
+    auto* rotation      = registry.get_component<RealEngine::Rotation>(*blockEntity);
+    auto* Interpolation = registry.get_component<RealEngine::Interpolation>(*blockEntity);
     if (!position || position->x < 0) {
         std::cerr << "Error: Block position is null" << std::endl;
         return;
@@ -58,6 +58,8 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
+    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::INTERPOLATION,
+                          *Interpolation);
 
     sf::FloatRect bounds = {0, 0, 16, 8};
     addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,

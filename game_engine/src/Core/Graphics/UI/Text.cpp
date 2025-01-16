@@ -1,9 +1,23 @@
+/*
+** EPITECH PROJECT, 2025
+** R-Teh
+** File description:
+** Text
+*/
+
 #include "../include/Core/Graphics/UI/Text.hpp"
 
+#include <iostream>
 namespace RealEngine {
 
 Text::Text(const std::string text, const std::string fontPath) {
-    loadFile(fontPath);
+    loadFont(fontPath);
+    setString(text);
+    center();
+}
+
+Text::Text(const std::string text, sf::Font font) {
+    _text.setFont(font);
     setString(text);
     center();
 }
@@ -12,7 +26,7 @@ Text::~Text() {}
 
 void Text::draw(sf::RenderWindow& window) { window.draw(_text); }
 
-void Text::loadFile(const std::string filePath) {
+void Text::loadFont(const std::string filePath) {
     _font.loadFromFile(filePath);
     _text.setFont(_font);
 }
@@ -34,6 +48,15 @@ void Text::rotate(float angle) { _text.rotate(angle); }
 
 void Text::center() {
     _text.setOrigin(_text.getGlobalBounds().width / 2, _text.getGlobalBounds().height / 2);
+}
+
+void Text::setOpacity(int opacity) {
+    sf::Color color = _text.getFillColor();
+    color.a         = opacity;
+    _text.setFillColor(color);
+    color   = _text.getOutlineColor();
+    color.a = opacity;
+    _text.setOutlineColor(color);
 }
 
 void Text::setColor(float r, float g, float b, float a) {

@@ -5,6 +5,7 @@
 
 #include "Client/UDPClient.hpp"
 #include "Engine.hpp"
+#include "Game/Particles.hpp"
 
 namespace rtype {
 class Controls {
