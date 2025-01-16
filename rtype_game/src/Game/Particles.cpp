@@ -79,14 +79,14 @@ Explosion::Explosion(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::ParticleEmitter{{},
                                                                 {position.x, position.y},
-                                                                {10, 0},
+                                                                {3, 0},
                                                                 2.0f,
                                                                 5.0f,
-                                                                sf::Color::White,
-                                                                sf::Color::Transparent,
+                                                                sf::Color::Yellow,
+                                                                sf::Color{255, 0, 0, 0},
                                                                 2.0f,
                                                                 0.0f});
-    registry.add_component(_entity, RealEngine::AutoDestructible{2.0f});
+    registry.add_component(_entity, RealEngine::AutoDestructible{4.0f});
 }
 
 Explosion::~Explosion() {}

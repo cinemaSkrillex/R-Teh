@@ -14,7 +14,7 @@ class Music : public IAudio {
     void replay();
     void setReplayPoint(float seconds);
     bool isPlaying();
-    void loadFile(const std::string filePath) override;
+    bool loadFile(const std::string filePath) override;
     void setVolume(float volume) override;
     void setPitch(float pitch) override;
     void setLoop(bool loop);
