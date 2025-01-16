@@ -42,6 +42,7 @@ class TCPPacketManager {
     void close();
 
     std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
+    const std::vector<std::shared_ptr<asio::ip::tcp::socket>>&          get_client_sockets() const;
 
    private:
     void accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);

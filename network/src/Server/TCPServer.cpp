@@ -39,3 +39,15 @@ void TCPServer::send_directory_to_directory(const std::string&             direc
                                             const std::string& client_target_directory) {
     _packet_manager->send_directory_to_directory(directory_path, endpoint, client_target_directory);
 }
+
+void TCPServer::send_fin(const asio::ip::tcp::endpoint& endpoint) {
+    std::string fin_message = "FIN\n";
+    for (auto& client_socket : _packet_manager->get_client_sockets()) {
+        if (client_socket->remote_endpoint() == endpoint) {
+            asio::write(*client_socket, asio::buffer(fin_message));
+            client_socket->close();
+            std::cout << "Sent FIN message to client and closed socket: " << endpoint << std::endl;
+            break;
+        }
+    }
+}

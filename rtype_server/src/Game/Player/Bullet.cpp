@@ -11,17 +11,21 @@ namespace rtype {
 
 static void addScoreToPlayer(RealEngine::Registry& registry, RealEngine::Entity entity,
                              RealEngine::Entity collider) {
+    std::cout << "Add score to player" << std::endl;
     auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
     auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto  playerID      = std::any_cast<size_t>(container->getNetvar("playerID")->value);
-
-    if (container && colliderScore) {
-        std::shared_ptr<RealEngine::Entity> player = registry.entity_from_index(playerID);
-        if (player) {
-            auto* playerScore = registry.get_component<RealEngine::Score>(*player);
-            if (playerScore) {
-                playerScore->toAdd += colliderScore->amount;
-            }
+    if (!container) return;
+    auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
+    auto player   = registry.entity_from_index(playerID);
+    if (!player) return;
+    auto playerScore = registry.get_component<RealEngine::Score>(*player);
+    auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
+    if (playerScore && playerNetvarContainer) {
+        // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;
+        playerScore->amount += colliderScore->amount;
+        auto score_health_update = playerNetvarContainer->getNetvar("score_health_update");
+        if (score_health_update) {
+            score_health_update->value = true;
         }
     }
 }
@@ -35,7 +39,7 @@ static void bulletTakesDamage(RealEngine::CollisionType collisionType,
 
     if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
         selfDestruct(registry, entity);
-        addScoreToPlayer(registry, entity, collider);
+        // addScoreToPlayer(registry, entity, collider);
         // } else {
         //     health->amount -= damage->amount;
         //     if (health->amount <= 0) addScoreToPlayer(registry, entity, collider);

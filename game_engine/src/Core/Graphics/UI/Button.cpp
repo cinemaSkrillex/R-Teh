@@ -19,8 +19,10 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
 }
 
 void Button::draw(sf::RenderWindow& window) {
-    window.draw(box);
-    label.draw(window);
+    if (!_visible) {
+        window.draw(box);
+        label.draw(window);
+    }
 }
 
 void Button::handleEvent(const sf::Event& event, std::function<void()> onClick) {

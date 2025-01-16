@@ -26,6 +26,7 @@ class TCPServer {
     void send_directory_to_directory(const std::string&             directory_path,
                                      const asio::ip::tcp::endpoint& endpoint,
                                      const std::string&             client_target_directory);
+    void send_fin(const asio::ip::tcp::endpoint& endpoint);
 
    private:
     std::shared_ptr<TCPPacketManager> _packet_manager;

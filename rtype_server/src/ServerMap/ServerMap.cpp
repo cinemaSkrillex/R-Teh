@@ -130,7 +130,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
             _tiles.push_back(tile);
             if (tile.type == "BLOCK") {
                 auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
-                                                            tile.rotation);
+                                                            tile.rotation, _scrollingSpeed);
                 _blockEntities.push_back(block);
             }
         }

@@ -35,6 +35,8 @@ int main(int argc, char* argv[]) {
                 // tcpserver->send_directory("../../../assets", client_endpoint);
                 tcpserver->send_directory("../rtype_game", client_endpoint);
                 tcpserver->send_directory_to_directory("../../../assets", client_endpoint, "rtype_game");
+                std::this_thread::sleep_for(std::chrono::seconds(5));
+                tcpserver->send_fin(client_endpoint);
             });
         // auto             server = std::make_shared<UDPServer>(io_context, port);
 
