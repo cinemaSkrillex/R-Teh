@@ -17,8 +17,8 @@ Launcher::Launcher()
               "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
              "../../../assets/fonts/arial.ttf"),
-        launchButton(sf::Vector2f(350, 60), sf::Vector2f(270, 265), "Launch Game",
-                     "../../../assets/fonts/arial.ttf") {
+      launchButton(sf::Vector2f(350, 60), sf::Vector2f(270, 265), "Launch Game",
+                   "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
@@ -30,7 +30,6 @@ Launcher::Launcher()
     ipBox.centerText();
     portBox.centerText();
 }
-
 
 void Launcher::run() {
     while (window.isOpen()) {
@@ -61,7 +60,6 @@ void Launcher::run() {
     }
 }
 
-
 bool Launcher::isValidIp(const std::string& ip) {
     const std::regex ip_pattern(
         R"(^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$)");
@@ -73,9 +71,7 @@ bool Launcher::isValidPort(const std::string& port) {
     return std::regex_match(port, port_pattern);
 }
 
-void Launcher::launchGame() {
-    std::cout << "Launching game" << std::endl;
-}
+void Launcher::launchGame() { std::cout << "Launching game" << std::endl; }
 
 void Launcher::onConnectClick() {
     std::string ip   = ipBox.getText();

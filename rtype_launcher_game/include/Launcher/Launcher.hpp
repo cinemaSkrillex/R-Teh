@@ -36,5 +36,5 @@ class Launcher {
     RealEngine::InputBox portBox;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
-    bool clientStopped = false;
+    bool                 clientStopped = false;
 };
