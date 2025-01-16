@@ -29,9 +29,12 @@ class Launcher {
    private:
     void onConnectClick();
     void connectToServer();
+    void launchGame();
 
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
     RealEngine::Button   button;
+    RealEngine::Button   launchButton;
+    bool clientStopped = false;
 };

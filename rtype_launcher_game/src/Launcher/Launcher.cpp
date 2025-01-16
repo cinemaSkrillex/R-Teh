@@ -16,44 +16,51 @@ Launcher::Launcher()
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
               "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
-             "../../../assets/fonts/arial.ttf") {
+             "../../../assets/fonts/arial.ttf"),
+        launchButton(sf::Vector2f(350, 60), sf::Vector2f(270, 265), "Launch Game",
+                     "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
     ipBox.setFillColor(sf::Color::Green);
     portBox.setFillColor(sf::Color::Green);
+
+    launchButton.setFillColor(sf::Color::Green);
+    launchButton.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
 }
+
 
 void Launcher::run() {
     while (window.isOpen()) {
         sf::Event event;
         while (window.getRenderWindow().pollEvent(event)) {
-            button.handleEvent(event, [this]() { onConnectClick(); });
-            if (event.type == sf::Event::MouseButtonPressed) {
-                ipBox.setFocus(false);
-                portBox.setFocus(false);
-                if (ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
-                    ipBox.setFocus(true);
-                } else if (portBox.getGlobalBounds().contains(event.mouseButton.x,
-                                                              event.mouseButton.y)) {
-                    portBox.setFocus(true);
-                }
+            if (!clientStopped) {
+                button.handleEvent(event, [this]() { onConnectClick(); });
+                ipBox.handleEvent(event);
+                portBox.handleEvent(event);
+            } else {
+                launchButton.handleEvent(event, [this]() { launchGame(); });
             }
-            ipBox.handleEvent(event);
-            portBox.handleEvent(event);
+
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
+
         window.clear();
-        ipBox.draw(window.getRenderWindow());
-        portBox.draw(window.getRenderWindow());
-        button.draw(window.getRenderWindow());
+        if (!clientStopped) {
+            ipBox.draw(window.getRenderWindow());
+            portBox.draw(window.getRenderWindow());
+            button.draw(window.getRenderWindow());
+        } else {
+            launchButton.draw(window.getRenderWindow());
+        }
         window.display();
     }
 }
+
 
 bool Launcher::isValidIp(const std::string& ip) {
     const std::regex ip_pattern(
@@ -64,6 +71,10 @@ bool Launcher::isValidIp(const std::string& ip) {
 bool Launcher::isValidPort(const std::string& port) {
     const std::regex port_pattern(R"(^\d{4}$)");
     return std::regex_match(port, port_pattern);
+}
+
+void Launcher::launchGame() {
+    std::cout << "Launching game" << std::endl;
 }
 
 void Launcher::onConnectClick() {
@@ -97,8 +108,9 @@ void Launcher::connectToServer() {
         std::thread ioThread([&io_context]() { io_context.run(); });
 
         ioThread.join();
-        std::this_thread::sleep_for(std::chrono::hours(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         std::cout << "Client stopped" << std::endl;
+        clientStopped = true;
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
