@@ -241,16 +241,15 @@ class AssetManager {
     // Sounds gestion
 
     void loadSound(const std::string& id, const std::string& filePath) {
-        try {
-            auto sound = std::make_shared<RealEngine::Sound>(filePath);
-            if (sound) {
-                // std::cout << "Failed to load sound: " << filePath << std::endl;
-                throw std::runtime_error("Failed to load sound: " + filePath);
-            }
-            _sounds[id] = sound;
-        } catch (const std::exception& e) {
-            std::cerr << "Failed to loadSound: " << id << " - " << e.what() << std::endl;
+        // try {
+        auto sound = std::make_shared<RealEngine::Sound>();
+        if (!sound->loadFile(filePath)) {
+            throw std::runtime_error("Failed to load sound: " + filePath);
         }
+        _sounds[id] = sound;
+        // } catch (const std::exception& e) {
+        //     std::cerr << "Failed to loadSound: " << id << " - " << e.what() << std::endl;
+        // }
     }
 
     std::shared_ptr<Sound> getSound(const std::string& id) {
@@ -279,6 +278,6 @@ class AssetManager {
     std::unordered_map<std::string, std::shared_ptr<Sprite>>      _sprites;
     std::unordered_map<std::string, std::shared_ptr<SpriteSheet>> _spriteSheets;
     std::unordered_map<std::string, std::shared_ptr<Music>>       _musics;
-    std::unordered_map<std::string, std::shared_ptr<Sound>>       _sounds;
+    std::unordered_map<std::string, std::shared_ptr<sf::Sound>>   _sounds;
 };
 }  // namespace RealEngine

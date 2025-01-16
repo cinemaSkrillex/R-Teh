@@ -13,9 +13,13 @@ Music::Music(const std::string filePath) {
 
 Music::~Music() {}
 
-void Music::loadFile(const std::string filePath) {
-    _music.openFromFile(filePath);
+bool Music::loadFile(const std::string filePath) {
+    if (!_music.openFromFile(filePath)) {
+        throw std::runtime_error("Failed to load music: " + filePath);
+        return false;
+    }
     setLoop(true);
+    return true;
 }
 
 void Music::update() {
