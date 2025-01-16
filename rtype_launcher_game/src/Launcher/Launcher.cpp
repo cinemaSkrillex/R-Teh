@@ -34,7 +34,7 @@ Launcher::Launcher()
 void Launcher::run() {
     while (window.isOpen()) {
         sf::Event event;
-        while (window.getRenderWindow().pollEvent(event)) {
+        while (window.getRenderTexture().pollEvent(event)) {
             if (!clientStopped) {
                 button.handleEvent(event, [this]() { onConnectClick(); });
                 ipBox.handleEvent(event);
@@ -50,11 +50,11 @@ void Launcher::run() {
 
         window.clear();
         if (!clientStopped) {
-            ipBox.draw(window.getRenderWindow());
-            portBox.draw(window.getRenderWindow());
-            button.draw(window.getRenderWindow());
+            ipBox.draw(window.getRenderTexture());
+            portBox.draw(window.getRenderTexture());
+            button.draw(window.getRenderTexture());
         } else {
-            launchButton.draw(window.getRenderWindow());
+            launchButton.draw(window.getRenderTexture());
         }
         window.display();
     }

@@ -16,7 +16,7 @@ namespace rtype {
 
 class PlayerUI {
    public:
-    PlayerUI(RealEngine::Registry& registry, sf::RenderWindow& window);
+    PlayerUI(RealEngine::Registry& registry, sf::RenderTexture& window);
     ~PlayerUI();
     void  AssignPlayerToUI(std::shared_ptr<RealEngine::Entity> playerEntity);
     bool& getHoldShoot() { return _holdShoot; }
@@ -24,7 +24,7 @@ class PlayerUI {
 
    private:
     int                                 _score;
-    sf::RenderWindow&                   _window;
+    sf::RenderTexture&                  _window;
     RealEngine::Registry&               _registry;
     std::shared_ptr<RealEngine::Entity> _playerEntity;
     sf::RectangleShape                  _background;

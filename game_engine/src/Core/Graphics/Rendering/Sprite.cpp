@@ -22,7 +22,7 @@ void Sprite::loadImage(sf::Image image) {
     _sprite.setTexture(*_texture);
 }
 
-void Sprite::draw(sf::RenderWindow& window) { window.draw(_sprite); }
+void Sprite::draw(sf::RenderTexture& window) { window.draw(_sprite); }
 
 void Sprite::disappear() { _sprite.setColor(sf::Color::Transparent); }
 

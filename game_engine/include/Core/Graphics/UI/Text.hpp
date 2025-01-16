@@ -8,7 +8,7 @@ class Text : public IRender {
     Text(const std::string text, const std::string fontPath);
     Text(const std::string text, sf::Font font);
     ~Text();
-    void        draw(sf::RenderWindow& window);
+    void        draw(sf::RenderTexture& window);
     void        loadFont(const std::string filePath);
     void        disappear() override;
     void        setPosition(float x, float y) override;

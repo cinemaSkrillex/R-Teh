@@ -18,14 +18,14 @@
 namespace RealEngine {
 class DrawSystem {
    public:
-    DrawSystem(sf::RenderWindow* window = nullptr);
+    DrawSystem(sf::RenderTexture* window = nullptr);
     ~DrawSystem();
     std::vector<std::pair<RealEngine::Sprite, int>> updateWithoutDisplay(Registry& registry,
                                                                          float     deltaTime);
     void                                            update(Registry& registry, float deltaTime);
 
    private:
-    sf::RenderWindow* _window;
+    sf::RenderTexture* _window;
 
     void updateParticles(Registry& registry, float deltaTime);
 };

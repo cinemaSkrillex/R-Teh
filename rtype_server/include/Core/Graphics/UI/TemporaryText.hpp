@@ -21,7 +21,7 @@ class TemporaryText {
 
     Text& getText() { return _text; }
     void  update(float deltaTime);
-    void  draw(sf::RenderWindow& window) { _text.draw(window); }
+    void  draw(sf::RenderTexture& window) { _text.draw(window); }
     bool  isFinished() const;
 
    private:

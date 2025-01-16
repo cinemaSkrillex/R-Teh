@@ -24,7 +24,7 @@ Text::Text(const std::string text, sf::Font font) {
 
 Text::~Text() {}
 
-void Text::draw(sf::RenderWindow& window) { window.draw(_text); }
+void Text::draw(sf::RenderTexture& window) { window.draw(_text); }
 
 void Text::loadFont(const std::string filePath) {
     _font.loadFromFile(filePath);

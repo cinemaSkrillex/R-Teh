@@ -9,7 +9,7 @@
 
 namespace RealEngine {
 
-DrawSystem::DrawSystem(sf::RenderWindow* window) : _window(window) {}
+DrawSystem::DrawSystem(sf::RenderTexture* window) : _window(window) {}
 
 DrawSystem::~DrawSystem() {
     if (_window) {
