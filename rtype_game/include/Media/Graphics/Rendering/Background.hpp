@@ -6,21 +6,21 @@
 namespace RealEngine {
 class ABackground : public IRender {
    public:
-    ABackground()                               = default;
-    ~ABackground()                              = default;
-    virtual void update(float deltaTime)        = 0;
-    virtual void draw(sf::RenderWindow& window) = 0;
-    virtual void setPosition(float x, float y)  = 0;
-    virtual void setSize(float x, float y)      = 0;
-    virtual void setScale(float x, float y)     = 0;
-    virtual void setRotation(float angle)       = 0;
+    ABackground()                                = default;
+    ~ABackground()                               = default;
+    virtual void update(float deltaTime)         = 0;
+    virtual void draw(sf::RenderTexture& window) = 0;
+    virtual void setPosition(float x, float y)   = 0;
+    virtual void setSize(float x, float y)       = 0;
+    virtual void setScale(float x, float y)      = 0;
+    virtual void setRotation(float angle)        = 0;
 };
 
 class SolidColorBackground : public ABackground {
    public:
     SolidColorBackground(float r, float g, float b, float a);
     void update(float deltaTime) = 0;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderTexture& window) override;
     void setPosition(float x, float y) override;
     void setSize(float x, float y) override;
     void setScale(float x, float y) override;
@@ -35,7 +35,7 @@ class ScrollingBackground : public ABackground {
    public:
     ScrollingBackground(sf::Image image);
     void update(float deltaTime) override;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderTexture& window) override;
     void setPosition(float x, float y) override;
     void setSize(float x, float y) override;
     void setScale(float x, float y) override;
@@ -61,7 +61,7 @@ class ImageBackground : public ABackground {
    public:
     ImageBackground(sf::Image image);
     void update(float deltaTime) = 0;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderTexture& window) override;
     void setPosition(float x, float y) override;
     void setSize(float x, float y) override;
     void setScale(float x, float y) override;
@@ -80,7 +80,7 @@ class ParallaxBackground : public ABackground {
    public:
     ParallaxBackground(sf::Image image, int layers);
     void update(float deltaTime) override;
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderTexture& window) override;
     void setPosition(float x, float y) override;
     void setSize(float x, float y) override;
     void setScale(float x, float y) override;

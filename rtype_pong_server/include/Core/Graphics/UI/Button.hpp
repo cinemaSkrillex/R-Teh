@@ -18,7 +18,7 @@ class Button {
     Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& labelText,
            const std::string& fontPath);
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderTexture& window);
     void handleEvent(const sf::Event& event, std::function<void()> onClick);
     void setPosition(const sf::Vector2f& position);
     void setSize(const sf::Vector2f& size);

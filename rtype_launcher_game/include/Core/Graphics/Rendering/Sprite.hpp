@@ -12,7 +12,7 @@ class Sprite : public IRender {
     Sprite(const std::shared_ptr<sf::Texture> texture);
     Sprite(const std::shared_ptr<sf::Texture>, sf::IntRect textureRect);
     ~Sprite();
-    void                         draw(sf::RenderWindow& window);
+    void                         draw(sf::RenderTexture& window);
     void                         loadFile(const std::string filePath);
     void                         loadImage(sf::Image image);
     void                         reloadSprite();

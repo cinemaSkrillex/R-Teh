@@ -37,7 +37,7 @@ void rtype::Game::run() {
 
         for (auto& text : _temporaryTexts) {
             text->update(_deltaTime);
-            text->draw(_window.getRenderWindow());
+            text->draw(_window.getRenderTexture());
         }
 
         _window.display();

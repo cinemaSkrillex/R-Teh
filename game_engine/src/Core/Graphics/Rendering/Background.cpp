@@ -20,7 +20,7 @@ SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {
 
 void SolidColorBackground::update(float deltaTime) {}
 
-void SolidColorBackground::draw(sf::RenderWindow& window) { window.draw(_shape); }
+void SolidColorBackground::draw(sf::RenderTexture& window) { window.draw(_shape); }
 
 void SolidColorBackground::setPosition(float x, float y) { _shape.setPosition(x, y); }
 
@@ -57,7 +57,7 @@ void ScrollingBackground::update(float deltaTime) {
     if (position.y <= -_textureSize.y || position.y >= _textureSize.y) reinitPosition(false, true);
 }
 
-void ScrollingBackground::draw(sf::RenderWindow& window) { window.draw(_sprite); }
+void ScrollingBackground::draw(sf::RenderTexture& window) { window.draw(_sprite); }
 
 void ScrollingBackground::setPosition(float x, float y) { _sprite.setPosition(x, y); }
 
@@ -114,7 +114,7 @@ ImageBackground::ImageBackground(sf::Image image) {
 
 void ImageBackground::update(float deltaTime) {}
 
-void ImageBackground::draw(sf::RenderWindow& window) { window.draw(_sprite); }
+void ImageBackground::draw(sf::RenderTexture& window) { window.draw(_sprite); }
 
 void ImageBackground::setPosition(float x, float y) { _sprite.setPosition(x, y); }
 
@@ -148,7 +148,7 @@ ParallaxBackground::ParallaxBackground(sf::Image image, int layers) {
 
 void ParallaxBackground::update(float deltaTime) {}
 
-void ParallaxBackground::draw(sf::RenderWindow& window) {
+void ParallaxBackground::draw(sf::RenderTexture& window) {
     for (const auto& sprite : _sprites) {
         window.draw(sprite.getSprite());
     }

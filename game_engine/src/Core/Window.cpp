@@ -10,6 +10,11 @@ Window::Window(const std::string title, const sf::Vector2u size)
     _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
     _window.setFramerateLimit(60);
     _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
+    if (!_renderTexture.create(_size.x, _size.y)) {
+        throw std::runtime_error("Impossible de créer la RenderTexture");
+    }
+    _renderTexture.setSmooth(false);
+    loadShader();
 }
 
 Window::Window(const std::string title, const sf::Vector2u size, View view)
@@ -17,13 +22,30 @@ Window::Window(const std::string title, const sf::Vector2u size, View view)
     _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
     _window.setFramerateLimit(60);
     _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
+    if (!_renderTexture.create(_size.x, _size.y)) {
+        throw std::runtime_error("Impossible de créer la RenderTexture");
+    }
+    _renderTexture.setSmooth(false);
+    loadShader();
 }
 
 Window::~Window() { _window.close(); }
 
-void Window::clear() { _window.clear(); }
+void Window::clear() { _renderTexture.clear(); }
 
-void Window::display() { _window.display(); }
+void Window::display() {
+    _renderTexture.display();
+
+    sf::Sprite renderedScene(_renderTexture.getTexture());
+
+    _shader.setUniform("texture", sf::Shader::CurrentTexture);
+    _shader.setUniform("saturation", _saturation);
+    _shader.setUniform("gamma", _gamma);
+
+    _window.clear();
+    _window.draw(renderedScene, &_shader);
+    _window.display();
+}
 
 void Window::update() {
     _window.setView(_view.getView());
@@ -80,6 +102,30 @@ void Window::update() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F1)) {
         setStyle(sf::Style::Fullscreen | sf::Style::None);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::U)) {
+        setGamma(1.0f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::I)) {
+        setGamma(_gamma - 0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O)) {
+        setGamma(_gamma + 0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::J)) {
+        setSaturation(1.0f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::K)) {
+        setSaturation(_saturation - 0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L)) {
+        setSaturation(_saturation + 0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
+        setVueSmooth(true);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::M)) {
+        setVueSmooth(false);
+    }
     if (_event.type == sf::Event::Resized) {
         _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
     }
@@ -108,5 +154,19 @@ void Window::setView(sf::View& view) { _window.setView(view); }
 bool Window::isOpen() { return _window.isOpen(); }
 
 bool Window::isFocused() { return _window.hasFocus(); }
+
+void Window::setSaturation(float saturation) {
+    _saturation = std::max(0.0f, std::min(2.0f, saturation));
+}
+
+void Window::setGamma(float gamma) { _gamma = std::max(0.1f, std::min(5.0f, gamma)); }
+
+void Window::setVueSmooth(bool smooth) { _renderTexture.setSmooth(smooth); }
+
+void Window::loadShader() {
+    if (!_shader.loadFromFile("../../assets/shaders/display_options.frag", sf::Shader::Fragment)) {
+        throw std::runtime_error("Impossible de charger le shader");
+    }
+}
 
 };  // namespace RealEngine

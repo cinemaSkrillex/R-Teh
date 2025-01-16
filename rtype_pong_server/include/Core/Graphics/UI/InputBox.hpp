@@ -20,7 +20,7 @@ class InputBox {
              const std::string& fontPath, ContentType contentType = ContentType::Text,
              size_t characterLimit = 256);
 
-    void          draw(sf::RenderWindow& window);
+    void          draw(sf::RenderTexture& window);
     void          handleEvent(const sf::Event& event);
     void          setPosition(const sf::Vector2f& position);
     void          setSize(const sf::Vector2f& size);
@@ -31,7 +31,7 @@ class InputBox {
     void          setText(const std::string& text);
     void          setContentType(ContentType type);
     void          centerText();
-    void          drawDebug(sf::RenderWindow& window);
+    void          drawDebug(sf::RenderTexture& window);
     void          setFocus(bool focus);
     sf::FloatRect getGlobalBounds() const;
 

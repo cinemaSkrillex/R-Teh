@@ -18,7 +18,7 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
     centerText();
 }
 
-void Button::draw(sf::RenderWindow& window) {
+void Button::draw(sf::RenderTexture& window) {
     if (!_visible) {
         window.draw(box);
         label.draw(window);

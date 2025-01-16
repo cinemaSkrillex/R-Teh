@@ -25,7 +25,7 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
     text.setPosition(position.x + 10000, position.y + (size.y / 2));
 }
 
-void InputBox::draw(sf::RenderWindow& window) {
+void InputBox::draw(sf::RenderTexture& window) {
     window.draw(box);
     text.draw(window);
 }
@@ -113,7 +113,7 @@ sf::FloatRect InputBox::getGlobalBounds() const { return box.getGlobalBounds(); 
 
 void InputBox::setContentType(ContentType type) { contentType = type; }
 
-void InputBox::drawDebug(sf::RenderWindow& window) {
+void InputBox::drawDebug(sf::RenderTexture& window) {
     sf::FloatRect bounds = text.getLocalBounds();
 
     sf::RectangleShape debugRect(sf::Vector2f(bounds.width, bounds.height));

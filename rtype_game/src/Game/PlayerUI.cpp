@@ -8,7 +8,7 @@
 #include "Game/PlayerUI.hpp"
 
 namespace rtype {
-PlayerUI::PlayerUI(RealEngine::Registry& registry, sf::RenderWindow& window)
+PlayerUI::PlayerUI(RealEngine::Registry& registry, sf::RenderTexture& window)
     : _registry(registry),
       _window(window),
       _score(0),

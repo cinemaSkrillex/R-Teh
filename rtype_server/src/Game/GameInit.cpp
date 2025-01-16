@@ -14,7 +14,7 @@ GameInstance::GameInstance(bool serverVision)
                                                                    sf::Vector2u(800, 600))
                             : nullptr),
       _registry(),
-      _drawSystem(_serverVision ? &_window->getRenderWindow() : nullptr),
+      _drawSystem(_serverVision ? &_window->getRenderTexture() : nullptr),
       _movementSystem(),
       _collisionSystem(),
       _aiSystem(),
