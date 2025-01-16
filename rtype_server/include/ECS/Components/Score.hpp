@@ -10,6 +10,5 @@
 namespace RealEngine {
 struct Score {
     int amount;
-    int toAdd = 0;
 };
 }  // namespace RealEngine

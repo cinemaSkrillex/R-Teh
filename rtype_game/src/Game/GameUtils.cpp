@@ -73,16 +73,12 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             handleEntityUpdate(entityUpdateMessage);
             break;
         }
-        case RTypeProtocol::PLAYER_UPDATE_SCORE: {
-            RTypeProtocol::OneIntMessage playerUpdateScoreMessage =
-                RTypeProtocol::deserializeOneIntMessage(signal);
-            std::cout << "Player score: " << playerUpdateScoreMessage.value << std::endl;
-            break;
-        }
-        case RTypeProtocol::PLAYER_UPDATE_HEALTH: {
-            RTypeProtocol::OneIntMessage playerUpdateHealthMessage =
-                RTypeProtocol::deserializeOneIntMessage(signal);
-            std::cout << "Player health: " << playerUpdateHealthMessage.value << std::endl;
+        case RTypeProtocol::PLAYER_UPDATE_DATA: {
+            RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage =
+                RTypeProtocol::deserializePlayerUpdateDataMessage(signal);
+            std::cout << "Player UUID: " << playerUpdateDataMessage.uuid
+                      << ", Score: " << playerUpdateDataMessage.score
+                      << ", Health: " << playerUpdateDataMessage.health << std::endl;
             break;
         }
         default:

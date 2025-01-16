@@ -464,4 +464,35 @@ RTypeProtocol::OneIntMessage RTypeProtocol::deserializeOneIntMessage(
     return msg;
 }
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerUpdateDataMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the integer values
+    writeToBuffer(it, msg.score);
+    writeToBuffer(it, msg.health);
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::PlayerUpdateDataMessage RTypeProtocol::deserializePlayerUpdateDataMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    PlayerUpdateDataMessage msg;
+    const char*             it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the integer values
+    readFromBuffer(it, msg.score);
+    readFromBuffer(it, msg.health);
+
+    return msg;
+}
+
 #endif  // RTYPESERVERPROTOCOL_TPP_

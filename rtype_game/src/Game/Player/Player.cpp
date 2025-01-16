@@ -140,7 +140,7 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
                                            false,
                                            RealEngine::CollisionType::OTHER,
                                            playerCollisionHandler});
-        registry.add_component(_entity, RealEngine::Health{100, 200});
+        registry.add_component(_entity, RealEngine::Health{100, 200, *_entity});
         registry.add_component(_entity, RealEngine::Score{0});
         registry.add_component(
             _entity,

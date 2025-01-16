@@ -67,6 +67,7 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
                      {"new_entity", {"bool", "new_entity", true, nullptr}},
                      {"powerup_drop", {"float", "powerup_drop", 70.f, nullptr}},
                  }});
+    registry.add_component(_entity, RealEngine::Score{50});
 }
 
 EyeMinion::~EyeMinion() {}

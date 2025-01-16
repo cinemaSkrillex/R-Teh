@@ -97,7 +97,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const DestroyEntityMessag
 }
 
 template <std::size_t BUFFER_SIZE>
-std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapMessage& msg) {
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const MapMessage& msg) {
     std::array<char, BUFFER_SIZE> buffer = {};
     char*                         offset = buffer.data();
 
@@ -110,14 +110,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
     writeToBuffer(offset, msg.isLoaded);
     writeToBuffer(offset, msg.isLevelRunning);
     writeToBuffer(offset, msg.server_tick);
-
-    // Serialize level_music vector size
-    size_t level_music_size = msg.level_music.size();
-    writeToBuffer(offset, level_music_size);
-
-    // Serialize level_music vector data
-    std::memcpy(offset, msg.level_music.data(), level_music_size);
-    offset += level_music_size;
+    writeToBuffer(offset, msg.id_level_music);
 
     // Serialize backgrounds vector size
     size_t backgrounds_size = msg.backgrounds.size();
@@ -125,19 +118,46 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const RTypeProtocol::MapM
 
     // Serialize each background
     for (const auto& background : msg.backgrounds) {
-        // Serialize background data size
-        size_t data_size = background.data.size();
-        writeToBuffer(offset, data_size);
-
-        // Serialize background data
-        std::memcpy(offset, background.data.data(), data_size);
-        offset += data_size;
+        // Serialize background ID
+        writeToBuffer(offset, background.background_id);
 
         // Serialize background speed
         writeToBuffer(offset, background.speed);
     }
 
     return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    MapMessage  msg;
+    const char* offset = buffer.data();
+
+    readFromBuffer(offset, static_cast<BaseMessage&>(msg));
+
+    // Deserialize other fields
+    readFromBuffer(offset, msg.scrollingSpeed);
+    readFromBuffer(offset, msg.x_level_position);
+    readFromBuffer(offset, msg.isLoaded);
+    readFromBuffer(offset, msg.isLevelRunning);
+    readFromBuffer(offset, msg.server_tick);
+    readFromBuffer(offset, msg.id_level_music);
+
+    size_t backgrounds_size;
+    readFromBuffer(offset, backgrounds_size);
+
+    for (size_t i = 0; i < backgrounds_size; ++i) {
+        BackgroundData background;
+
+        readFromBuffer(offset, background.background_id);
+
+        readFromBuffer(offset, background.speed);
+
+        msg.backgrounds.push_back(background);
+    }
+
+    return msg;
 }
 
 template <std::size_t BUFFER_SIZE>
@@ -380,57 +400,6 @@ RTypeProtocol::BaseMessage RTypeProtocol::deserialize(const std::array<char, BUF
 }
 
 template <std::size_t BUFFER_SIZE>
-RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
-    const std::array<char, BUFFER_SIZE>& buffer) {
-    MapMessage  msg;
-    const char* offset = buffer.data();
-
-    // Deserialize base message
-    readFromBuffer(offset, static_cast<BaseMessage&>(msg));
-
-    // Deserialize other fields
-    readFromBuffer(offset, msg.scrollingSpeed);
-    readFromBuffer(offset, msg.x_level_position);
-    readFromBuffer(offset, msg.isLoaded);
-    readFromBuffer(offset, msg.isLevelRunning);
-    readFromBuffer(offset, msg.server_tick);
-
-    // Deserialize level_music vector size
-    size_t level_music_size;
-    readFromBuffer(offset, level_music_size);
-
-    // Deserialize level_music vector data
-    msg.level_music.resize(level_music_size);
-    std::memcpy(msg.level_music.data(), offset, level_music_size);
-    offset += level_music_size;
-
-    // Deserialize backgrounds vector size
-    size_t backgrounds_size;
-    readFromBuffer(offset, backgrounds_size);
-
-    // Deserialize each background
-    for (size_t i = 0; i < backgrounds_size; ++i) {
-        BackgroundData background;
-
-        // Deserialize background data size
-        size_t data_size;
-        readFromBuffer(offset, data_size);
-
-        // Deserialize background data
-        background.data.resize(data_size);
-        std::memcpy(background.data.data(), offset, data_size);
-        offset += data_size;
-
-        // Deserialize background speed
-        readFromBuffer(offset, background.speed);
-
-        msg.backgrounds.push_back(background);
-    }
-
-    return msg;
-}
-
-template <std::size_t BUFFER_SIZE>
 RTypeProtocol::LevelSignalMessage RTypeProtocol::deserializeLevelSignal(
     const std::array<char, BUFFER_SIZE>& buffer) {
     LevelSignalMessage msg;
@@ -462,6 +431,66 @@ RTypeProtocol::EntityUpdateMessage RTypeProtocol::deserializeEntityUpdate(
     readFromBuffer(it, msg.angle);
     readFromBuffer(it, msg.step);
     readFromBuffer(it, msg.timestamp);
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const OneIntMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the integer value
+    writeToBuffer(it, msg.value);
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::OneIntMessage RTypeProtocol::deserializeOneIntMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    OneIntMessage msg;
+    const char*   it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the integer value
+    readFromBuffer(it, msg.value);
+
+    return msg;
+}
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const PlayerUpdateDataMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer = {};
+    char*                         it     = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(it, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the integer values
+    writeToBuffer(it, msg.score);
+    writeToBuffer(it, msg.health);
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::PlayerUpdateDataMessage RTypeProtocol::deserializePlayerUpdateDataMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    PlayerUpdateDataMessage msg;
+    const char*             it = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the integer values
+    readFromBuffer(it, msg.score);
+    readFromBuffer(it, msg.health);
 
     return msg;
 }
