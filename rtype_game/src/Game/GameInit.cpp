@@ -37,7 +37,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2},
+    display_temporary_text("Welcome to R-Type", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2},
                            sf::Color::Yellow);
 }
 
