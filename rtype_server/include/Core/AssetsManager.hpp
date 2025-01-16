@@ -273,9 +273,8 @@ class AssetManager {
 
     void loadSound(const std::string& id, const std::string& filePath) {
         try {
-            auto sound = std::make_shared<RealEngine::Sound>(filePath);
-            if (sound) {
-                // std::cout << "Failed to load sound: " << filePath << std::endl;
+            auto sound = std::make_shared<RealEngine::Sound>();
+            if (!sound->loadFile(filePath)) {
                 throw std::runtime_error("Failed to load sound: " + filePath);
             }
             _sounds[id] = sound;

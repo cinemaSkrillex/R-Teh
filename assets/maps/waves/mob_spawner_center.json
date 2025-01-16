@@ -1,0 +1,11 @@
+{
+    "wave": [
+        {
+            "mobName": "mob_spawner_ship",
+            "position": [
+                600.0,
+                300.0
+            ]
+        }
+    ]
+}

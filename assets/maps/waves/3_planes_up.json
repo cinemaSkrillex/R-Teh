@@ -1,0 +1,25 @@
+{
+    "wave": [
+        {
+            "mobName": "space_plane",
+            "position": [
+                500.0,
+                170.0
+            ]
+        },
+        {
+            "mobName": "space_plane",
+            "position": [
+                600.0,
+                150.0
+            ]
+        },
+        {
+            "mobName": "space_plane",
+            "position": [
+                700.0,
+                130.0
+            ]
+        }
+    ]
+}

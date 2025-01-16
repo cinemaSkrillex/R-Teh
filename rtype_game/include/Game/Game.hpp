@@ -58,7 +58,7 @@ class Game {
     void bind_keys();
     void set_action_handlers();
     void set_sprite_opacity();
-    void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color);
+    void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color, int size);
 
     // GameSignals
     void handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
@@ -70,6 +70,7 @@ class Game {
     void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
     void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                          std::shared_ptr<RealEngine::Entity> newEntity);
+    void handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket);
 
     float              _deltaTime = 0.f;
     RealEngine::View   _view;

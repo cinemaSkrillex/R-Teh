@@ -37,8 +37,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
-    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2},
-                           sf::Color::Yellow);
+    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2}, sf::Color::Yellow,
+                           30);
 }
 
 Game::~Game() {}
@@ -251,6 +251,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Damage>();
     _registry.register_component<RealEngine::Parallax>();
     _registry.register_component<RealEngine::ParticleEmitter>();
+    _registry.register_component<RealEngine::Particle>();
     _registry.register_component<RealEngine::Netvar>();
     _registry.register_component<RealEngine::NetvarContainer>();
     _registry.register_component<RealEngine::Score>();
@@ -430,13 +431,18 @@ void Game::init_sounds() {
     AssetManagerInstance.loadSound("hit_hurt", path + "hitHurt.wav");
     AssetManagerInstance.loadSound("powerup_shoot", path + "powerup_shoot.wav");
     AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
-    AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
+    AssetManagerInstance.loadSound("powerup_heal", path + "powerup_heal.wav");
     AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
+    return;
 }
 
 void Game::init_fonts() {
+    std::string path = "../../assets/fonts/";
+    if (assetLauncher == true) {
+        path = "assets/fonts/";
+    }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadFont("pixel", "../../assets/fonts/Early_GameBoy.ttf");
+    AssetManagerInstance.loadFont("pixel", path + "Early_GameBoy.ttf");
 }
 
 }  // namespace rtype

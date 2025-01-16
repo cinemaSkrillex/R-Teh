@@ -5,7 +5,7 @@
 
 #include "Client/UDPClient.hpp"
 #include "Engine.hpp"
-#include "Game/Particles.hpp"
+#include "Particles.hpp"
 
 namespace rtype {
 class Controls {
@@ -24,5 +24,6 @@ class Controls {
    private:
     RealEngine::Registry&      _registry;
     std::shared_ptr<UDPClient> _client;
+    float                      _particlesTimer;
 };
 }  // namespace rtype

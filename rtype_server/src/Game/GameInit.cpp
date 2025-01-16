@@ -102,6 +102,7 @@ void GameInstance::init_textures() {
     auto&       AssetManagerInstance = RealEngine::AssetManager::getInstance();
 
     init_level(path + "tiles/lv1", "lvl1");
+    init_level(path + "tiles/lv2", "lvl2");
 
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up", path + "spaceship.png",
                                                    {0, 0, 32 * 2, 15});

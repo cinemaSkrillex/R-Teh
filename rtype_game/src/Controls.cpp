@@ -10,7 +10,7 @@
 namespace rtype {
 
 Controls::Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> client)
-    : _registry(registry), _client(client) {}
+    : _registry(registry), _client(client), _particlesTimer(0.1f) {}
 
 Controls::~Controls() {}
 
@@ -58,11 +58,10 @@ void Controls::holdShoot(float deltaTime, RealEngine::Entity entity) {
     float hold_shoot = std::any_cast<float>(container->getNetvar("hold_shoot")->value);
     container->getNetvar("hold_shoot")->value = std::any_cast<float>(hold_shoot + deltaTime);
     auto* position = _registry.get_component<RealEngine::Position>(entity);
-    if (position) {
-        if (!_registry.get_component<RealEngine::ParticleEmitter>(entity)) {
-            ParticlesClass particle({position->x, position->y}, ParticleType::SHOOT_LOAD);
-            _registry.add_component(entity, particle.getParticle());
-        }
+    _particlesTimer -= deltaTime;
+    if (position && _particlesTimer <= 0) {
+        ShootLoad(_registry, {position->x + 32.f, position->y + 7.5f});
+        _particlesTimer = 0.1f;
     }
     RTypeProtocol::BaseMessage eventMessage;
     eventMessage.message_type = RTypeProtocol::MessageType::HOLD_SHOOT_EVENT;

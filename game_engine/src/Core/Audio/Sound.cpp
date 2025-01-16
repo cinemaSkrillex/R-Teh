@@ -3,16 +3,31 @@
 namespace RealEngine {
 Sound::Sound(const std::string filePath) { loadFile(filePath); }
 
+Sound::Sound() {}
+
 Sound::~Sound() {}
 
-void Sound::loadFile(const std::string filePath) {
-    _buffer.loadFromFile(filePath);
+bool Sound::loadFile(const std::string filePath) {
+    if (!_buffer.loadFromFile(filePath)) {
+        throw std::runtime_error("Failed to load sound: " + filePath);
+        return false;
+    }
     _sound.setBuffer(_buffer);
+    return true;
 }
 
-void Sound::play() { _sound.play(); }
+void Sound::play() {
+    if (_isPlaying) {
+        stop();
+    }
+    _sound.play();
+    _isPlaying = true;
+}
 
-void Sound::stop() { _sound.stop(); }
+void Sound::stop() {
+    _sound.stop();
+    _isPlaying = false;
+}
 
 void Sound::setVolume(float volume) {
     _volume = volume;

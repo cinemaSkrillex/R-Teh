@@ -27,4 +27,31 @@ class ParticlesClass {
     RealEngine::ParticleEmitter _particle;
 };
 
+class Explosion {
+   public:
+    Explosion(RealEngine::Registry& registry, sf::Vector2f position);
+    ~Explosion();
+
+   private:
+    std::shared_ptr<RealEngine::Entity> _entity;
+};
+
+class HitEffect {
+   public:
+    HitEffect(RealEngine::Registry& registry, sf::Vector2f position);
+    ~HitEffect();
+
+   private:
+    std::shared_ptr<RealEngine::Entity> _entity;
+};
+
+class ShootLoad {
+   public:
+    ShootLoad(RealEngine::Registry& registry, sf::Vector2f position);
+    ~ShootLoad();
+
+   private:
+    std::shared_ptr<RealEngine::Entity> _entity;
+};
+
 }  // namespace rtype
