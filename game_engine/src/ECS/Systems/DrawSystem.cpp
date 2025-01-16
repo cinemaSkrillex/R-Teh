@@ -47,6 +47,7 @@ void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
     auto particleEmitters = registry.view<ParticleEmitter>();
 
     for (auto entity : particleEmitters) {
+        std::cout << "Drawing particles" << std::endl;
         auto* emitter = registry.get_component<ParticleEmitter>(entity);
         for (const auto& particle : emitter->particles) {
             sf::CircleShape shape(particle.size);

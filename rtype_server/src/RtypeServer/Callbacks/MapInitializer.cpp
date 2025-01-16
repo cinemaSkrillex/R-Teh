@@ -89,11 +89,11 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         std::cerr << "Error: Music name is empty" << std::endl;
         return mapMessage;
     }
-    if (musicName == "level_1") {
+    if (musicName == "level1") {
         mapMessage.id_level_music = 1;
-    } else if (musicName == "level_2") {
+    } else if (musicName == "level2") {
         mapMessage.id_level_music = 2;
-    } else if (musicName == "level_3") {
+    } else if (musicName == "level3") {
         mapMessage.id_level_music = 3;
     } else {
         mapMessage.id_level_music = 4;

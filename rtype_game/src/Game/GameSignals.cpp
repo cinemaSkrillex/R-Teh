@@ -76,7 +76,9 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
         case RTypeProtocol::PLAYER_UPDATE_DATA: {
             RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage =
                 RTypeProtocol::deserializePlayerUpdateDataMessage(signal);
-            handlePlayerValues(playerUpdateDataMessage);
+            std::cout << "Player UUID: " << playerUpdateDataMessage.uuid
+                      << ", Score: " << playerUpdateDataMessage.score
+                      << ", Health: " << playerUpdateDataMessage.health << std::endl;
             break;
         }
         default:
@@ -136,38 +138,6 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     interpolationComponent->reset        = true;
 }
 
-void rtype::Game::handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket) {
-    auto* position        = _registry.get_component<RealEngine::Position>(_player_entity);
-    auto* healthComponent = _registry.get_component<RealEngine::Health>(_player_entity);
-    if (healthComponent) {
-        auto healthDiff = healthComponent->amount - parsedPacket.health;
-        if (healthDiff > 0 && position) {
-            RealEngine::AssetManager::getInstance().getSound("hit_hurt")->play();
-            HitEffect(_registry, {position->x, position->y});
-            auto* container = _registry.get_component<RealEngine::NetvarContainer>(_player_entity);
-            if (container && container->getNetvar("clignotingTimer")) {
-                container->getNetvar("clignotingTimer")->value = 1.5f;
-            }
-            display_temporary_text(std::to_string(healthDiff), {position->x, position->y},
-                                   sf::Color::Red, 20);
-        } else if (healthDiff < 0 && position) {
-            RealEngine::AssetManager::getInstance().getSound("powerup_heal")->play();
-            display_temporary_text(std::to_string(abs(healthDiff)), {position->x, position->y},
-                                   sf::Color::Green, 20);
-        }
-        healthComponent->amount = parsedPacket.health;
-    }
-    auto* scoreComponent = _registry.get_component<RealEngine::Score>(_player_entity);
-    if (scoreComponent) {
-        auto scoreDiff = parsedPacket.score - scoreComponent->amount;
-        if (scoreDiff > 0 && position) {
-            display_temporary_text(std::to_string(scoreDiff), {position->x, position->y},
-                                   sf::Color::Yellow, 20);
-        }
-        scoreComponent->amount = parsedPacket.score;
-    }
-}
-
 void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket) {
     auto it       = _entities.find(parsedPacket.uuid);
     auto playerIt = _players.find(parsedPacket.uuid);
@@ -181,8 +151,8 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
         rotationComponent->angle = parsedPacket.angle;
     }
     if (interpolationComponent) {
-        positionComponent->x                 = interpolationComponent->end.x;
-        positionComponent->y                 = interpolationComponent->end.y;
+        positionComponent->x = interpolationComponent->end.x;
+        positionComponent->y = interpolationComponent->end.y;
         interpolationComponent->start        = {positionComponent->x, positionComponent->y};
         interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
         interpolationComponent->step         = 1.f / parsedPacket.step;
@@ -240,8 +210,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                     //         RealEngine::SpriteComponent{
                     //             *sprite,
                     //             parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK ? 1
-                    //                                                                          :
-                    //                                                                          0});
+                    //                                                                          : 0});
                     auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                     if (sprite) {
                         _registry.add_component(*newEntity,
@@ -304,20 +273,10 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
         }
         auto playerIt = _players.find(entity_id);
         if (playerIt != _players.end()) {
-            auto* position = _registry.get_component<RealEngine::Position>(*playerIt->second);
-            Explosion(_registry, {position->x, position->y});
-            RealEngine::AssetManager::getInstance().getSound("explosion")->play();
             _registry.remove_entity(*playerIt->second);
             _players.erase(playerIt);
         }
         if (_localPlayerUUID == entity_id) {
-            auto* position = _registry.get_component<RealEngine::Position>(*_player_entity);
-            auto* health   = _registry.get_component<RealEngine::Health>(*_player_entity);
-            Explosion(_registry, {position->x, position->y});
-            RealEngine::AssetManager::getInstance().getSound("explosion")->play();
-            if (health) {
-                health->amount = 0;
-            }
             _registry.remove_entity(*_player_entity);
             _player_entity.reset();
         }
@@ -400,8 +359,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
 //                 _registry.remove_entity(*newEntity);
 //                 return;
 //             }
-//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " <<
-//             *newEntity
+//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " << *newEntity
 //                       << std::endl;
 //             _game_map.addBlock(newEntity, parsedPacket.uuid);
 //             break;
