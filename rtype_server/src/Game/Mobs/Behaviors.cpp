@@ -345,6 +345,7 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
         } else {
             health->amount -= damage->amount;
         }
+        health->lastDamager = collider;
     }
 }
 

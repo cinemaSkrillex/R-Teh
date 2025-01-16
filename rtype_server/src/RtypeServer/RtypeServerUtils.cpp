@@ -22,6 +22,40 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     }
     auto& registry = _game_instance->getRegistryRef();
     auto* position = registry.get_component<RealEngine::Position>(*entity);
+    auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(*entity);
+
+    if (netvarContainer) {
+        auto* score_health_update = netvarContainer->getNetvar("score_health_update");
+        if (score_health_update) {
+            if (std::any_cast<bool>(score_health_update->value)) {
+                std::cout << "Score health update" << std::endl;
+                auto* score = registry.get_component<RealEngine::Score>(*entity);
+                auto* health = registry.get_component<RealEngine::Health>(*entity);
+
+                RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage = {};
+                playerUpdateDataMessage.message_type                            = RTypeProtocol::PLAYER_UPDATE_DATA;
+                playerUpdateDataMessage.uuid                                    = player.getUUID();
+                if (score) {
+                    playerUpdateDataMessage.score = score->amount;
+                } else {
+                    playerUpdateDataMessage.score = -1;
+                }
+                if (health) {
+                    playerUpdateDataMessage.health = health->amount;
+                } else {
+                    playerUpdateDataMessage.health = -1;
+                }
+
+                // Serialize the PlayerUpdateDataMessage
+                std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(playerUpdateDataMessage);
+
+                // Broadcast the serialized message to all clients
+                broadcastAllReliable(serializedMessage);
+                score_health_update->value = false;
+            }
+        }
+    }
+
     if (!position) {
         return;
     }
