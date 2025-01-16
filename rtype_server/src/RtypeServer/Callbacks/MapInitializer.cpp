@@ -29,8 +29,8 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 
-void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
-                                  std::array<char, 800>&               message) {
+void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
+                                  std::array<char, 800>&                   message) {
     auto blockEntity = block->getEntity();
 
     if (!blockEntity) {

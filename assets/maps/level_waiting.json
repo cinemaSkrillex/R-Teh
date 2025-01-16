@@ -1,0 +1,24 @@
+{
+    "map_name": "Waiting_level",
+    "scrollingSpeed": 0.0,
+    "backgrounds": [
+        {
+            "sprite": "space_base_background",
+            "speed": -100.0
+        }
+    ],
+    "music": "wii_music",
+    "mapData": {
+        "tiles": [
+            {
+                "type": "WAITING_BLOCK",
+                "element": "lvl1_block_1",
+                "position": [
+                    200.5,
+                    300.0
+                ],
+                "rotation": 90.0
+            }
+        ]
+    }
+}

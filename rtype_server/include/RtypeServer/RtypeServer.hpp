@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "Events/IEvent.hpp"
-#include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
+#include "Game/Level/Block.hpp"
 #include "GenerateUuid.hpp"
 #include "HoldShootEvent.hpp"
 #include "Log.hpp"

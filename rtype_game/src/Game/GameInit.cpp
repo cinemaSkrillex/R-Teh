@@ -402,14 +402,20 @@ void Game::init_musics() {
         path = "assets/musics/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    // level 1 music
     AssetManagerInstance.loadMusic("level_1",
                                    path + "8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
     AssetManagerInstance.getMusic("level_1")->setVolume(50);
+    // level 2 music
     AssetManagerInstance.loadMusic("level_2",
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
     AssetManagerInstance.getMusic("level_2")->setLoop(true);
     AssetManagerInstance.getMusic("level_2")->setVolume(55);
+    // waiting room music
+    AssetManagerInstance.loadMusic("wii_music", path + "wii_music.ogg");
+    AssetManagerInstance.getMusic("wii_music")->setLoop(true);
+    AssetManagerInstance.getMusic("wii_music")->setVolume(30);
 }
 
 void Game::init_sounds() {
