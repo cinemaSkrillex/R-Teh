@@ -37,6 +37,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     init_all_game();
+    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2},
+                           sf::Color::Yellow);
 }
 
 Game::~Game() {}
@@ -55,6 +57,7 @@ void Game::init_all_game() {
     init_sprite_sheets();
     init_musics();
     init_sounds();
+    init_fonts();
     init_screen_limits();
 
     Player player(_registry, {200, 200}, false);
@@ -423,6 +426,11 @@ void Game::init_sounds() {
     AssetManagerInstance.loadSound("powerup_speed", path + "powerup_speed.wav");
     AssetManagerInstance.loadSound("pewerup_heal", path + "powerup_heal.wav");
     AssetManagerInstance.loadSound("blip_select", path + "blipSelect.wav");
+}
+
+void Game::init_fonts() {
+    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
+    AssetManagerInstance.loadFont("pixel", "../../assets/fonts/Early_GameBoy.ttf");
 }
 
 }  // namespace rtype
