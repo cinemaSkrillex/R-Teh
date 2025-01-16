@@ -75,4 +75,52 @@ RealEngine::ParticleEmitter ParticlesClass::create_shoot_destroy(sf::Vector2f po
                                        0.0f};
 }
 
+Explosion::Explosion(RealEngine::Registry& registry, sf::Vector2f position)
+    : _entity(registry.spawn_entity()) {
+    registry.add_component(_entity, RealEngine::ParticleEmitter{{},
+                                                                {position.x, position.y},
+                                                                {10, 0},
+                                                                2.0f,
+                                                                5.0f,
+                                                                sf::Color::White,
+                                                                sf::Color::Transparent,
+                                                                2.0f,
+                                                                0.0f});
+    registry.add_component(_entity, RealEngine::AutoDestructible{2.0f});
+}
+
+Explosion::~Explosion() {}
+
+HitEffect::HitEffect(RealEngine::Registry& registry, sf::Vector2f position)
+    : _entity(registry.spawn_entity()) {
+    registry.add_component(_entity, RealEngine::ParticleEmitter{{},
+                                                                {position.x, position.y},
+                                                                {1, 0},
+                                                                2.0f,
+                                                                5.0f,
+                                                                sf::Color::White,
+                                                                sf::Color::Transparent,
+                                                                0.2f,
+                                                                0.0f});
+    registry.add_component(_entity, RealEngine::AutoDestructible{2.0f});
+}
+
+HitEffect::~HitEffect() {}
+
+ShootLoad::ShootLoad(RealEngine::Registry& registry, sf::Vector2f position)
+    : _entity(registry.spawn_entity()) {
+    registry.add_component(_entity, RealEngine::ParticleEmitter{{},
+                                                                {position.x, position.y},
+                                                                {3, 0},
+                                                                1.4f,
+                                                                1.5f,
+                                                                sf::Color::Cyan,
+                                                                sf::Color{0, 0, 255, 0},
+                                                                0.25f,
+                                                                0.0f});
+    registry.add_component(_entity, RealEngine::AutoDestructible{2.0f});
+}
+
+ShootLoad::~ShootLoad() {}
+
 }  // namespace rtype
