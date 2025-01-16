@@ -9,7 +9,23 @@
 
 namespace rtype {
 
+// std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::Vector2f position)
+// {
+//     Player new_player(_registry, position, true);
+//     _players.emplace(player_uuid, new_player.getEntity());
+//     return _players.at(player_uuid);
+// }
 std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::Vector2f position) {
+    // Check if the player already exists
+    auto it = _players.find(player_uuid);
+    if (it != _players.end()) {
+        // Player already exists, return the existing player
+        std::cout << "Player with UUID " << player_uuid
+                  << " already exists. Returning existing player." << std::endl;
+        return it->second;
+    }
+
+    // Player does not exist, add the new player
     Player new_player(_registry, position, true);
     _players.emplace(player_uuid, new_player.getEntity());
     return _players.at(player_uuid);

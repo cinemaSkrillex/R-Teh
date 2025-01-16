@@ -23,6 +23,11 @@ target_include_directories(r_type_server PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Callbacks
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Events
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Scenes
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Game/Level
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Game
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Game/Mobs
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Game/Player
         ${CMAKE_CURRENT_SOURCE_DIR}/Config
         ${CMAKE_BINARY_DIR}/rtype_server/Config
 )

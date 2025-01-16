@@ -20,12 +20,12 @@ void RtypeServer::run() {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
 
-            changeScene -= _deltaTime;
-            if (changeScene < 0 && !changedScene) {
-                _scene_manager.switchScene(SceneType::GAME);
-                updateScene();
-                changedScene = true;
-            }
+            // changeScene -= _deltaTime;
+            // if (changeScene < 0 && !changedScene) {
+            //     _scene_manager.switchScene(SceneType::GAME);
+            //     updateScene();
+            //     changedScene = true;
+            // }
 
             handleClientMessages();
             runGameInstance(_deltaTime);

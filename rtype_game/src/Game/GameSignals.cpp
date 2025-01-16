@@ -22,7 +22,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             // Deserialize the PlayerMoveMessage (which is used for new client)
             RTypeProtocol::PlayerMoveMessage newClientMessage =
                 RTypeProtocol::deserializePlayerMove(signal);
-
+            std::cout << "New client connected: " << newClientMessage.uuid << std::endl;
             handleNewClient(newClientMessage);
             break;
         }
@@ -96,7 +96,8 @@ void rtype::Game::handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket)
 }
 
 void rtype::Game::handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPacket) {
-    _localPlayerUUID            = parsedPacket.uuid;
+    _localPlayerUUID = parsedPacket.uuid;
+    std::cout << "Synchronize message received: uuid: " << _localPlayerUUID << std::endl;
     _serverTime                 = parsedPacket.timestamp;
     auto client_now             = std::chrono::steady_clock::now();
     _startTime                  = client_now - std::chrono::milliseconds(_serverTime);
@@ -151,8 +152,8 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
         rotationComponent->angle = parsedPacket.angle;
     }
     if (interpolationComponent) {
-        positionComponent->x = interpolationComponent->end.x;
-        positionComponent->y = interpolationComponent->end.y;
+        positionComponent->x                 = interpolationComponent->end.x;
+        positionComponent->y                 = interpolationComponent->end.y;
         interpolationComponent->start        = {positionComponent->x, positionComponent->y};
         interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
         interpolationComponent->step         = 1.f / parsedPacket.step;
@@ -210,7 +211,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                     //         RealEngine::SpriteComponent{
                     //             *sprite,
                     //             parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK ? 1
-                    //                                                                          : 0});
+                    //                                                                          :
+                    //                                                                          0});
                     auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                     if (sprite) {
                         _registry.add_component(*newEntity,
@@ -359,7 +361,8 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
 //                 _registry.remove_entity(*newEntity);
 //                 return;
 //             }
-//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " << *newEntity
+//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " <<
+//             *newEntity
 //                       << std::endl;
 //             _game_map.addBlock(newEntity, parsedPacket.uuid);
 //             break;

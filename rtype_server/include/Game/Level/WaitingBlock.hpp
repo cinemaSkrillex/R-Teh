@@ -11,20 +11,6 @@
 
 namespace rtype {
 
-// class WaitingBlock {
-//    public:
-//     WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position,
-//                  const std::string& spriteName, float rotation,
-//                  RealEngine::CollisionType collisionType);
-//     ~WaitingBlock();
-//     std::shared_ptr<RealEngine::Entity> getEntity() { return _waitingEntity; }
-//     const std::string&                  getElement() const { return _element; }
-
-//    private:
-//     std::shared_ptr<RealEngine::Entity> _waitingEntity;
-//     RealEngine::Sprite                  _waitingBlockSprite;
-//     std::string                         _element;
-// };
 class WaitingBlock : public BaseBlock {
    public:
     WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position,

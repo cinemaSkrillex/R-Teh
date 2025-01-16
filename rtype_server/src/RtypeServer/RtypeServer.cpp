@@ -12,13 +12,11 @@ RtypeServer::RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision)
       _game_instance(std::make_shared<GameInstance>(server_vision)),
       _server_config(),
       _startTime(std::chrono::steady_clock::now()),
-      _scene_manager(_game_instance->getRegistryRef()) {
+      _scene_manager() {
     initCallbacks();
     initEventHandlers();
     printServerStartupBanner();
     initScenes();
-    _scene_manager.switchScene(SceneType::WAITING);
-    updateScene();
 }
 
 RtypeServer::~RtypeServer() {}
