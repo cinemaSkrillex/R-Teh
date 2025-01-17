@@ -15,34 +15,9 @@ void WaitingBlock::waitingBlockCollisionHandler(RealEngine::CollisionType collis
                                                 RealEngine::Entity        entity) {
     switch (collisionType) {
         case RealEngine::CollisionType::PLAYER:
-            auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-            if (container) {
-                try {
-                    int value = std::any_cast<int>(container->getNetvar("playersInBox")->value);
-                    value += 1;
-                    container->getNetvar("playersInBox")->value = value;
-                    std::cout << "getnetvar value: [" << value << "]" << std::endl;
-                    std::cout << "container value: ["
-                              << std::any_cast<int>(container->getNetvar("playersInBox")->value)
-                              << "]" << std::endl;
-                } catch (const std::bad_any_cast& e) {
-                    std::cerr << "Bad any cast: " << e.what() << std::endl;
-                }
-            }
-            std::cout << "WaitingBlock collision with player" << std::endl;
-            // player is a controllable so we can add some logic here to know what to do
-            // who collided probably.. etc..
+            _playersInBox++;
             break;
     }
-}
-
-/*static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
-                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
-    currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
-*/
-static void ReinitPlayersInBox(RealEngine::Registry& registry, RealEngine::Entity& entity,
-                               RealEngine::Netvar& currentNetvar, float deltaTime) {
-    currentNetvar.value = int(0);
 }
 
 void WaitingBlock::initialize(RealEngine::Registry& registry, sf::Vector2f position,
@@ -73,16 +48,11 @@ void WaitingBlock::initialize(RealEngine::Registry& registry, sf::Vector2f posit
                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4))});
     registry.add_component(
         _waitingEntity,
-        RealEngine::NetvarContainer{{
-            {"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
-            {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
-            {"new_entity", {"bool", "new_entity", true, nullptr}},
-            {"goToLevel", {"bool", "goToLevel", false, nullptr}},
-            {
-                "playersInBox",
-                {"int", "playersInBox", 0, ReinitPlayersInBox},
-            },
-        }});
+        RealEngine::NetvarContainer{
+            {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
+             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
+             {"new_entity", {"bool", "new_entity", true, nullptr}},
+             {"change_scene_timer", {"float", "goToLevel", float(0.f), nullptr}}}});
 }
 
 WaitingBlock::WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position,
@@ -90,7 +60,8 @@ WaitingBlock::WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position
                            RealEngine::CollisionType collisionType)
     : _waitingEntity(registry.spawn_entity()),
       _waitingBlockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
-      _element(spriteName) {
+      _element(spriteName),
+      _playersInBox(0) {
     initialize(registry, position, spriteName, rotation, 0, collisionType);
 }
 

@@ -124,6 +124,14 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("space_base_background",
                                                    path + "backgrounds/space_base.png", {2, 2});
     AssetManagerInstance.getTexture("space_base_background")->setRepeated(true);
+    // waiting room background
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "front_line_base", path + "backgrounds/front_line_base.png", {2, 2});
+    AssetManagerInstance.getTexture("front_line_base")->setRepeated(true);
+    // waiting room zone
+    AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
+                                                   {0.5, 0.5});
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(150);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_plane", path + "enemies/space_plane.png");
@@ -412,16 +420,16 @@ void Game::init_musics() {
     AssetManagerInstance.loadMusic("level_1",
                                    path + "8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
-    AssetManagerInstance.getMusic("level_1")->setVolume(0);
+    AssetManagerInstance.getMusic("level_1")->setVolume(90);
     // level 2 music
     AssetManagerInstance.loadMusic("level_2",
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
     AssetManagerInstance.getMusic("level_2")->setLoop(true);
     AssetManagerInstance.getMusic("level_2")->setVolume(55);
     // waiting room music
-    AssetManagerInstance.loadMusic("wii_music", path + "wii_music.ogg");
-    AssetManagerInstance.getMusic("wii_music")->setLoop(true);
-    AssetManagerInstance.getMusic("wii_music")->setVolume(30);
+    AssetManagerInstance.loadMusic("waiting_room", path + "waiting_room.ogg");
+    AssetManagerInstance.getMusic("waiting_room")->setLoop(true);
+    AssetManagerInstance.getMusic("waiting_room")->setVolume(30);
 }
 
 void Game::init_sounds() {

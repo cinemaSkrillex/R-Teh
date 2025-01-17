@@ -25,7 +25,8 @@ class WaitingBlock : public BaseBlock {
     void waitingBlockCollisionHandler(RealEngine::CollisionType collisionType,
                                       RealEngine::Registry& registry, RealEngine::Entity collider,
                                       RealEngine::Entity entity);
-
+    int  getPlayersInBox() { return _playersInBox; }
+    void ReinitPlayersInBox() { _playersInBox = 0; }
     std::shared_ptr<RealEngine::Entity> getEntity() override { return _waitingEntity; }
     const std::string&                  getElement() const override { return _element; }
 
@@ -33,6 +34,7 @@ class WaitingBlock : public BaseBlock {
     std::shared_ptr<RealEngine::Entity> _waitingEntity;
     RealEngine::Sprite                  _waitingBlockSprite;
     std::string                         _element;
+    int                                 _playersInBox;
 };
 
 }  // namespace rtype

@@ -20,11 +20,13 @@
 class WaitingRoomScene : public Scene {
    public:
     WaitingRoomScene(std::shared_ptr<GameInstance> gameInstance, RtypeServer* server,
-                     ServerConfig& serverConfig, std::shared_ptr<UDPServer> UdpServer)
+                     ServerConfig& serverConfig, std::shared_ptr<UDPServer> UdpServer,
+                     RealEngine::SceneManager& scene_manager)
         : _gameInstance(gameInstance),
           _server(server),
           _serverConfig(serverConfig),
-          _UdpServer(UdpServer) {}
+          _UdpServer(UdpServer),
+          _scene_manager(scene_manager) {}
 
     void handleNewClient(const asio::ip::udp::endpoint& sender) {
         auto playerInitializer = std::make_shared<PlayerInitializer>(_server);
@@ -53,15 +55,55 @@ class WaitingRoomScene : public Scene {
         std::cout << "Initializing WAITING scene" << std::endl;
     }
 
-    void update(float deltaTime) override {}
+    void update(float deltaTime) override {
+        auto map    = _gameInstance->getMap();
+        auto blocks = map->getBlockEntities();
+        // find all the WaitingBlock entities and send them to the new client
+        for (const auto& block : blocks) {
+            auto waitingBlock = std::dynamic_pointer_cast<rtype::WaitingBlock>(block);
+            if (waitingBlock) {
+                auto waitingBlockEntity = *waitingBlock->getEntity();
+                int  playerInBox        = waitingBlock->getPlayersInBox();
+                auto container =
+                    _gameInstance->getRegistryRef().get_component<RealEngine::NetvarContainer>(
+                        waitingBlockEntity);
 
-    void render() override {}
+                float timer =
+                    std::any_cast<float>(container->getNetvar("change_scene_timer")->value);
+
+                if (playerInBox > 0 && playerInBox == _UdpServer->getClients().size()) {
+                    timer -= deltaTime;
+                    if (timer <= 0) {
+                        std::cout << "All players are ready" << std::endl;
+                        _scene_manager.changeScene(RealEngine::SceneType::GAME,
+                                                   _gameInstance->getRegistryRef());
+                    }
+                    container->getNetvar("change_scene_timer")->value = timer;
+                    std::cout << "IN PLAYER BOXTimer: " << timer << std::endl;
+                    std::cout << "std::any_cast<float>(container->getNetvar(\"change_scene_timer\")"
+                                 "->value): "
+                              << std::any_cast<float>(
+                                     container->getNetvar("change_scene_timer")->value)
+                              << std::endl;
+
+                } else if (playerInBox < _UdpServer->getClients().size()) {
+                    container->getNetvar("change_scene_timer")->value = 3.0f;
+                }
+            }
+            waitingBlock->ReinitPlayersInBox();
+        }
+    }
+
+    void render() override {
+        // Render logic for WAITING scene
+    }
 
    private:
     std::shared_ptr<GameInstance> _gameInstance;
     RtypeServer*                  _server;
     ServerConfig                  _serverConfig;
     std::shared_ptr<UDPServer>    _UdpServer;
+    RealEngine::SceneManager&     _scene_manager;
 };
 
 #endif /* !WAITINGROOMSCENE_HPP_ */

@@ -114,6 +114,8 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
             bgData.background_id = 3;
         } else if (background.first == "space_base_background") {
             bgData.background_id = 4;
+        } else if (background.first == "front_line_base") {
+            bgData.background_id = 5;
         } else {
             bgData.background_id = 1;
         }

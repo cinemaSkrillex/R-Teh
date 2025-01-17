@@ -5,6 +5,7 @@
 ** RtypeServerScenes
 */
 
+#include "GameScene.hpp"
 #include "MenuScene.hpp"
 #include "RtypeServer.hpp"
 #include "WaitingRoomScene.hpp"
@@ -16,33 +17,25 @@ void RtypeServer::notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& s
         if (waitingRoomScene) {
             waitingRoomScene->handleNewClient(sender);
         }
-        auto map    = _game_instance->getMap();
-        auto blocks = map->getBlockEntities();
-        // find all the WaitingBlock entities and send them to the new client
-        for (const auto& block : blocks) {
-            auto waitingBlock = std::dynamic_pointer_cast<rtype::WaitingBlock>(block);
-            if (waitingBlock) {
-                // Send the waitingBlock to the new client
-                std::cout << "Found WaitingBlock entity: " << waitingBlock->getEntity()
-                          << std::endl;
-                // Add your logic to send the waitingBlock to the new client
-            }
-        }
     }
 }
 
 void RtypeServer::initScenes() {
-    _scene_manager.registerScene(RealEngine::SceneType::WAITING,
-                                 [this](RealEngine::Registry& registry) {
-                                     return std::make_shared<WaitingRoomScene>(
-                                         _game_instance, this, _server_config, _server);
-                                 });
+    _scene_manager.registerScene(
+        RealEngine::SceneType::WAITING, [this](RealEngine::Registry& registry) {
+            return std::make_shared<WaitingRoomScene>(_game_instance, this, _server_config, _server,
+                                                      _scene_manager);
+        });
 
     _scene_manager.changeScene(RealEngine::SceneType::WAITING, _game_instance->getRegistryRef());
 
     _scene_manager.registerScene(
         RealEngine::SceneType::MENU, [this](RealEngine::Registry& registry) {
             return std::make_shared<MenuScene>(_game_instance, this, _server_config, _server);
+        });
+    _scene_manager.registerScene(
+        RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
+            return std::make_shared<GameScene>(_game_instance, this, _server_config, _server);
         });
     // _scene_manager.registerScene(SceneType::WAITING, [this](RealEngine::Registry& registry) {
     //     // Initialization logic for WAITING scene
@@ -85,23 +78,24 @@ void RtypeServer::initScenes() {
     //     std::cout << "Initializing MENU scene" << std::endl;
     // });
 
-    // _scene_manager.registerScene(SceneType::GAME, [this](RealEngine::Registry& registry) {
-    //     // Initialization logic for GAME scene
-    //     // works but right now we don't use it
-    //     std::cout << "Initializing GAME scene" << std::endl;
-    //     auto        gameMap = _game_instance->getMap();
-    //     std::string path    = "../../assets/maps/";
-    //     gameMap->loadFromJSON(path + "level_1.json");
-    //     auto mapInitializer =
-    //         std::make_shared<MapInitializer>(_game_instance, _server, _server_config);
-    //     auto mobInitializer = std::make_shared<MobInitializer>(_game_instance, _server);
+    // _scene_manager.registerScene(
+    //     RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
+    //         // Initialization logic for GAME scene
+    //         // works but right now we don't use it
+    //         std::cout << "Initializing GAME scene" << std::endl;
+    //         auto        gameMap = _game_instance->getMap();
+    //         std::string path    = "../../assets/maps/";
+    //         gameMap->loadFromJSON(path + "level_1.json");
+    //         auto mapInitializer =
+    //             std::make_shared<MapInitializer>(_game_instance, _server, _server_config);
+    //         auto mobInitializer = std::make_shared<MobInitializer>(_game_instance, _server);
 
-    //     startAndBroadcastLevel();
-    //     for (auto& client : _server->getClients()) {
-    //         mapInitializer->initializeMap(client);
-    //         mobInitializer->initializeMobs(client);
-    //     }
-    // });
+    //         startAndBroadcastLevel();
+    //         for (auto& client : _server->getClients()) {
+    //             mapInitializer->initializeMap(client);
+    //             mobInitializer->initializeMobs(client);
+    //         }
+    //     });
 
     // _scene_manager.registerScene(SceneType::PAUSE, [this](RealEngine::Registry& registry) {
     //     // Initialization logic for PAUSE scene

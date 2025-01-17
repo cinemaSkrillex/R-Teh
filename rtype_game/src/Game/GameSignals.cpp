@@ -307,6 +307,9 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
             case 3:
                 level_music_str = "level_3";
                 break;
+            case 4:
+                level_music_str = "waiting_room";
+                break;
             default:
                 level_music_str = "level_1";
                 break;
@@ -328,6 +331,9 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 break;
             case 4:
                 backgroundStr = "space_base_background";
+                break;
+            case 5:
+                backgroundStr = "front_line_base";
                 break;
             default:
                 backgroundStr = "big_stars_background";
