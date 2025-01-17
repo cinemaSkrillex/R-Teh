@@ -25,6 +25,7 @@
 #include "../Core/Graphics/UI/Text.hpp"
 #include "../Core/Window.hpp"
 
+#define LauncherFont false
 class Launcher {
    public:
     Launcher();
