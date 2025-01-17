@@ -128,10 +128,11 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale(
         "front_line_base", path + "backgrounds/front_line_base.png", {2, 2});
     AssetManagerInstance.getTexture("front_line_base")->setRepeated(true);
+    AssetManagerInstance.getSprite("front_line_base")->setOpacity(100);
     // waiting room zone
     AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
                                                    {0.5, 0.5});
-    AssetManagerInstance.getSprite("ready_zone")->setOpacity(150);
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_plane", path + "enemies/space_plane.png");
