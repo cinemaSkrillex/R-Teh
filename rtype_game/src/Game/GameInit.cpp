@@ -52,6 +52,7 @@ void Game::init_all_game() {
         path = "assets/sprites/r_type";
     }
     init_level(path + "tiles/lv1", "lvl1");
+    init_level(path + "tiles/lv2", "lvl2");
     init_textures();
     set_sprite_opacity();
     init_sprite_sheets();
