@@ -21,7 +21,6 @@
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
 #include "Log.hpp"
-#include "Macros.hpp"
 #include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"
 

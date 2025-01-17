@@ -8,7 +8,7 @@
 #pragma once
 
 #define M_PI 3.14159265358979323846
-#define GAME_SCALE 3.0f
+#define GAME_SCALE 2.0f
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>

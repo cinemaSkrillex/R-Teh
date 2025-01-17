@@ -163,16 +163,19 @@ void Game::init_textures() {
                                                    path + "enemies/space_vortex.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_laser", path + "enemies/laser_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("small_laser", path + "enemies/laser_shoot.png",
-                                                   {1, 1});
+                                                   {GAME_SCALE - 2, GAME_SCALE - 2});
     AssetManagerInstance.loadSpriteTextureAndScale("fireball", path + "enemies/fireball.png");
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
-                                                   {0, 0, 16 * 4, 16}, {2, 2});
+                                                   {0, 0, 16 * 4, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("speed_powerup", path + "power_up.png",
-                                                   {0, 16, 16 * 3, 16}, {2, 2});
+                                                   {0, 16, 16 * 3, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
-                                                   {0, 32, 16 * 5, 16}, {2, 2});
+                                                   {0, 32, 16 * 5, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
 }
 
 void Game::init_level(std::string filepath, std::string foldername) {

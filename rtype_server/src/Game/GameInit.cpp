@@ -29,7 +29,7 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     std::string path = "../../assets/maps/";
-    _game_map->loadFromJSON(path + "level_2.json");
+    _game_map->loadFromJSON(path + "level_1.json");
 }
 
 void GameInstance::init_components() {
@@ -112,9 +112,6 @@ void GameInstance::init_textures() {
                                                    {0, 15, 32, 15});
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_down", path + "spaceship.png",
                                                    {0, 15 * 2, 33 * 2, 15});
-    AssetManagerInstance.loadSpriteTextureAndScale("stars_background",
-                                                   path + "backgrounds/stars.png", {1, 1});
-    AssetManagerInstance.getTexture("stars_background")->setRepeated(true);
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_plane", path + "enemies/space_plane.png");
@@ -165,11 +162,14 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
-                                                   {0, 0, 16 * 4, 16}, {2, 2});
+                                                   {0, 0, 16 * 4, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("speed_powerup", path + "power_up.png",
-                                                   {0, 16, 16 * 3, 16}, {2, 2});
+                                                   {0, 16, 16 * 3, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
-                                                   {0, 32, 16 * 5, 16}, {2, 2});
+                                                   {0, 32, 16 * 5, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
 }
 
 void GameInstance::init_sprite_sheets() {
