@@ -16,6 +16,18 @@ void RtypeServer::notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& s
         if (waitingRoomScene) {
             waitingRoomScene->handleNewClient(sender);
         }
+        auto map    = _game_instance->getMap();
+        auto blocks = map->getBlockEntities();
+        // find all the WaitingBlock entities and send them to the new client
+        for (const auto& block : blocks) {
+            auto waitingBlock = std::dynamic_pointer_cast<rtype::WaitingBlock>(block);
+            if (waitingBlock) {
+                // Send the waitingBlock to the new client
+                std::cout << "Found WaitingBlock entity: " << waitingBlock->getEntity()
+                          << std::endl;
+                // Add your logic to send the waitingBlock to the new client
+            }
+        }
     }
 }
 

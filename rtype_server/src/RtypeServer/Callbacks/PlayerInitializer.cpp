@@ -7,21 +7,6 @@
 
 #include "PlayerInitializer.hpp"
 
-// ServerPlayer PlayerInitializer::initializePlayer(const asio::ip::udp::endpoint& sender) {
-//     auto gameInstance = _server->getGameInstance();
-//     long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-//                             std::chrono::steady_clock::now() - _server->getStartTime())
-//                             .count();
-//     sf::Vector2f player_start_position =
-//         _server->getServerConfig().getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
-//     auto         playerEntity = gameInstance->addAndGetPlayer(player_start_position);
-//     ServerPlayer player =
-//         ServerPlayer(*playerEntity, elapsed_time, playerEntity, gameInstance->getRegistry());
-
-//     sendNewClientMessages(sender, *playerEntity, player_start_position, elapsed_time);
-//     sendSynchronizeMessage(sender, *playerEntity, player_start_position, elapsed_time);
-//     return player;
-// }
 ServerPlayer PlayerInitializer::initializePlayer(const asio::ip::udp::endpoint& sender) {
     auto         gameInstance = _server->getGameInstance();
     sf::Vector2f player_start_position =

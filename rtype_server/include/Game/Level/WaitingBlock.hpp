@@ -22,6 +22,10 @@ class WaitingBlock : public BaseBlock {
                     const std::string& spriteName, float rotation, float scrollingSpeed,
                     RealEngine::CollisionType collisionType) override;
 
+    void waitingBlockCollisionHandler(RealEngine::CollisionType collisionType,
+                                      RealEngine::Registry& registry, RealEngine::Entity collider,
+                                      RealEngine::Entity entity);
+
     std::shared_ptr<RealEngine::Entity> getEntity() override { return _waitingEntity; }
     const std::string&                  getElement() const override { return _element; }
 

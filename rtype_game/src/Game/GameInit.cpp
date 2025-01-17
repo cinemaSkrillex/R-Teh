@@ -412,7 +412,7 @@ void Game::init_musics() {
     AssetManagerInstance.loadMusic("level_1",
                                    path + "8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
-    AssetManagerInstance.getMusic("level_1")->setVolume(50);
+    AssetManagerInstance.getMusic("level_1")->setVolume(0);
     // level 2 music
     AssetManagerInstance.loadMusic("level_2",
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
