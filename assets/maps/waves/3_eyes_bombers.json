@@ -1,0 +1,25 @@
+{
+    "wave": [
+        {
+            "mobName": "eye_bomber",
+            "position": [
+                500.5,
+                100.0
+            ]
+        },
+        {
+            "mobName": "eye_bomber",
+            "position": [
+                500.5,
+                300.0
+            ]
+        },
+        {
+            "mobName": "eye_bomber",
+            "position": [
+                500.5,
+                500.0
+            ]
+        }
+    ]
+}
