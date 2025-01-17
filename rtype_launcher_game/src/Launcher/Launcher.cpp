@@ -23,7 +23,9 @@ Launcher::Launcher()
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
-                   LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
+                   LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
+        LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
+        GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
@@ -36,6 +38,14 @@ Launcher::Launcher()
     ipBox.centerText();
     portBox.centerText();
     portBoxClient.centerText();
+
+    LauncherText.setCharacterSize(50);
+    LauncherText.setPosition(350, 50);
+    LauncherText.setColor(255, 255, 255, 255);
+
+    GameLauncherText.setCharacterSize(50);
+    GameLauncherText.setPosition(350, 90);
+    GameLauncherText.setColor(255, 255, 255, 255);
 }
 
 void Launcher::run() {
@@ -63,11 +73,13 @@ void Launcher::run() {
             ipBox.draw(window.getRenderTexture());
             portBox.draw(window.getRenderTexture());
             button.draw(window.getRenderTexture());
+            LauncherText.draw(window.getRenderTexture());
         } else {
             launchButton.draw(window.getRenderTexture());
             ipBox.draw(window.getRenderTexture());
             portBox.draw(window.getRenderTexture());
             portBoxClient.draw(window.getRenderTexture());
+            GameLauncherText.draw(window.getRenderTexture());
         }
         window.display();
     }
@@ -105,6 +117,8 @@ void Launcher::launchGame() {
 }
 
 void Launcher::onConnectClick() {
+
+
     std::string ip   = ipBox.getText();
     std::string port = portBox.getText();
 
