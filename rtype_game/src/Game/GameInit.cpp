@@ -15,7 +15,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2),
             sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
       _window("SKRILLEX client_port: " + std::to_string(client_port),
-              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view),
+              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view, assetLauncher ? "assets/shaders/display_options.frag" : "../../assets/shaders/display_options.frag"),
       _clock(),
       _playerUI(_registry, _window.getRenderTexture()),
       _controls(_registry, clientUDP),
