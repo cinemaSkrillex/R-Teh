@@ -8,19 +8,34 @@
 #include "PlayerInitializer.hpp"
 
 ServerPlayer PlayerInitializer::initializePlayer(const asio::ip::udp::endpoint& sender) {
-    auto gameInstance = _server->getGameInstance();
-    long elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::steady_clock::now() - _server->getStartTime())
-                            .count();
+    auto         gameInstance = _server->getGameInstance();
     sf::Vector2f player_start_position =
         _server->getServerConfig().getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
-    auto         playerEntity = gameInstance->addAndGetPlayer(player_start_position);
+    auto playerEntity = gameInstance->addAndGetPlayer(player_start_position);
+    long elapsed_time = getElapsedTime();
+
     ServerPlayer player =
         ServerPlayer(*playerEntity, elapsed_time, playerEntity, gameInstance->getRegistry());
 
-    sendNewClientMessages(sender, *playerEntity, player_start_position, elapsed_time);
-    sendSynchronizeMessage(sender, *playerEntity, player_start_position, elapsed_time);
     return player;
+}
+
+long PlayerInitializer::getElapsedTime() const {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() -
+                                                                 _server->getStartTime())
+        .count();
+}
+
+void PlayerInitializer::sendNewClientMessage(const asio::ip::udp::endpoint& sender,
+                                             const ServerPlayer&            player) {
+    std::cout << "Sending new client UUID: " << player.getUUID() << std::endl;
+    sendNewClientMessages(sender, *player.getEntity(), player.getPosition(), getElapsedTime());
+}
+
+void PlayerInitializer::sendSynchronizeMessage(const asio::ip::udp::endpoint& sender,
+                                               const ServerPlayer&            player) {
+    std::cout << "Sending synchronize UUID: " << player.getUUID() << std::endl;
+    sendSynchronizeMessage(sender, *player.getEntity(), player.getPosition(), getElapsedTime());
 }
 
 template <std::size_t BUFFER_SIZE>
@@ -69,6 +84,7 @@ void PlayerInitializer::sendNewClientMessages(const asio::ip::udp::endpoint& sen
                 std::cout << "Player UUID is null" << std::endl;
                 continue;
             }
+            std::cout << "Player UUID: " << currentPlayer.getUUID() << std::endl;
             serializedMessage =
                 createNewClientMessage<800>(playerEntity, player_start_pos, timestamp);
             UdpServer->send_reliable_packet(serializedMessage, client);
@@ -92,12 +108,16 @@ void PlayerInitializer::sendSynchronizeMessage(const asio::ip::udp::endpoint& se
             std::cout << "Player UUID is null" << std::endl;
             continue;
         }
-        std::cout << "Player UUID: " << current_player.getUUID() << std::endl;
+        // skip the current player
+        if (current_player.getUUID() == playerEntity) {
+            continue;
+        }
+        std::cout << "active current player Player UUID: " << current_player.getUUID() << std::endl;
         activePlayerUUIDs.emplace_back(current_player.getUUID(), current_player.getPosition());
     }
     synchronizeMessage =
         createSynchronizeMessage<800>(playerEntity, timestamp, player_start_position.x,
                                       player_start_position.y, activePlayerUUIDs);
-
+    std::cout << "Sending synchronize message" << std::endl;
     UdpServer->send_reliable_packet(synchronizeMessage, sender);
 }

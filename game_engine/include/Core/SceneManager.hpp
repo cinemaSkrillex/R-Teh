@@ -1,42 +1,41 @@
-/*
-** EPITECH PROJECT, 2025
-** R-Teh
-** File description:
-** SceneManager
-*/
-
 #ifndef SCENEMANAGER_HPP_
 #define SCENEMANAGER_HPP_
 
-#pragma once
-
 #include <functional>
+#include <memory>
 #include <unordered_map>
 
-enum class SceneType { WAITING, MENU, GAME, PAUSE };
+#include "Scene.hpp"
 
 namespace RealEngine {
-class Registry;
+
+enum class SceneType { WAITING, MENU, GAME };
 
 class SceneManager {
    public:
-    SceneManager(RealEngine::Registry& registry);
+    void registerScene(SceneType                                                    type,
+                       std::function<std::shared_ptr<Scene>(RealEngine::Registry&)> createScene) {
+        _sceneFactories[type] = createScene;
+    }
 
-    // Switches to the specified scene
-    void switchScene(SceneType scene);
+    void changeScene(SceneType type, RealEngine::Registry& registry) {
+        auto it = _sceneFactories.find(type);
+        if (it != _sceneFactories.end()) {
+            _currentScene = it->second(registry);
+        }
+    }
 
-    // Updates the current scene
-    void updateCurrentScene();
+    std::shared_ptr<Scene> getCurrentScene() const { return _currentScene; }
 
-    // Registers a scene and its update logic
-    void registerScene(SceneType scene, std::function<void(RealEngine::Registry&)> updateLogic);
+    SceneType getCurrentSceneType() const { return _currentSceneType; }
 
    private:
-    RealEngine::Registry& _registry;
-    SceneType             _currentScene;
-
-    // Map to hold scene-specific update logic
-    std::unordered_map<SceneType, std::function<void(RealEngine::Registry&)>> _sceneUpdateLogic;
+    std::unordered_map<SceneType, std::function<std::shared_ptr<Scene>(RealEngine::Registry&)>>
+                           _sceneFactories;
+    std::shared_ptr<Scene> _currentScene;
+    SceneType              _currentSceneType;
 };
+
 }  // namespace RealEngine
-#endif /* !SCENEMANAGER_HPP_ */
+
+#endif /* SCENEMANAGER_HPP_ */

@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "Events/IEvent.hpp"
-#include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
+#include "Game/Level/Block.hpp"
 #include "GenerateUuid.hpp"
 #include "HoldShootEvent.hpp"
 #include "Log.hpp"
@@ -63,14 +63,13 @@ class RtypeServer {
     void initCallbacks();
     void initEventHandlers();
     void initScenes();
-    void startAndBroadcastLevel();
 
-    void broadcastPlayerState(const ServerPlayer& player);
-    void broadcastStartLevel();
-    void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
-    void broadcastAllReliable(const std::array<char, 800>& message);
-    void broadcastAllUnreliable(const std::array<char, 800>& message);
-
+    void        broadcastPlayerState(const ServerPlayer& player);
+    void        broadcastStartLevel();
+    void        broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
+    void        broadcastAllReliable(const std::array<char, 800>& message);
+    void        broadcastAllUnreliable(const std::array<char, 800>& message);
+    void        notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender);
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
     void handleClientMessages();
@@ -81,8 +80,6 @@ class RtypeServer {
 
     void printServerStartupBanner();
 
-    void updateScene();
-
    public:
     RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision);
     ~RtypeServer();
@@ -92,8 +89,10 @@ class RtypeServer {
                   ServerPlayer& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        ServerPlayer& player);
+    void startAndBroadcastLevel();
     ServerConfig getServerConfig() { return _server_config; }
     std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> getPlayers() { return _players; }
+    ServerPlayer getPlayer(const asio::ip::udp::endpoint& endpoint) { return _players[endpoint]; }
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }
     std::chrono::steady_clock::time_point getStartTime() { return _startTime; }

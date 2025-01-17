@@ -29,8 +29,8 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
 }
 
-void MapInitializer::processBlock(const std::shared_ptr<rtype::Block>& block,
-                                  std::array<char, 800>&               message) {
+void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
+                                  std::array<char, 800>&                   message) {
     auto blockEntity = block->getEntity();
 
     if (!blockEntity) {
@@ -89,11 +89,11 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         std::cerr << "Error: Music name is empty" << std::endl;
         return mapMessage;
     }
-    if (musicName == "level_1") {
+    if (musicName == "level1") {
         mapMessage.id_level_music = 1;
-    } else if (musicName == "level_2") {
+    } else if (musicName == "level2") {
         mapMessage.id_level_music = 2;
-    } else if (musicName == "level_3") {
+    } else if (musicName == "level3") {
         mapMessage.id_level_music = 3;
     } else {
         mapMessage.id_level_music = 4;
@@ -114,6 +114,8 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
             bgData.background_id = 3;
         } else if (background.first == "space_base_background") {
             bgData.background_id = 4;
+        } else if (background.first == "front_line_base") {
+            bgData.background_id = 5;
         } else {
             bgData.background_id = 1;
         }

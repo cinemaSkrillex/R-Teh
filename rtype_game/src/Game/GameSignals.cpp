@@ -346,6 +346,9 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
             case 3:
                 level_music_str = "level_3";
                 break;
+            case 4:
+                level_music_str = "waiting_room";
+                break;
             default:
                 level_music_str = "level_1";
                 break;
@@ -368,6 +371,9 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
             case 4:
                 backgroundStr = "space_base_background";
                 break;
+            case 5:
+                backgroundStr = "front_line_base";
+                break;
             default:
                 backgroundStr = "big_stars_background";
                 break;
@@ -385,34 +391,6 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     }
 }
 
-// void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
-//                                   std::shared_ptr<RealEngine::Entity> newEntity) {
-//     switch (parsedPacket.entity_type) {
-//         case RTypeProtocol::EntityType::BLOCK:
-//             if (std::find_if(
-//                     _game_map.getBlockEntities().begin(), _game_map.getBlockEntities().end(),
-//                     [&parsedPacket](
-//                         const std::pair<long int, std::shared_ptr<RealEngine::Entity>>& block) {
-//                         return block.first == parsedPacket.uuid;
-//                     }) != _game_map.getBlockEntities().end()) {
-//                 std::cerr << "Block entity with UUID " << parsedPacket.uuid
-//                           << " already exists in the game map, skipping." << std::endl;
-//                 _registry.remove_entity(*newEntity);
-//                 return;
-//             }
-//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " <<
-//             *newEntity
-//                       << std::endl;
-//             _game_map.addBlock(newEntity, parsedPacket.uuid);
-//             break;
-//         case RTypeProtocol::EntityType::OTHER_ENTITY:
-//             std::cout << "Adding entity with UUID: " << parsedPacket.uuid << std::endl;
-//             _entities.emplace(parsedPacket.uuid, newEntity);
-//             break;
-//         default:
-//             break;
-//     }
-// }
 void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                                   std::shared_ptr<RealEngine::Entity> newEntity) {
     _entities.emplace(parsedPacket.uuid, newEntity);

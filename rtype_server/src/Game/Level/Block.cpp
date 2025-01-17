@@ -5,35 +5,34 @@
 ** Block
 */
 
-#include "Game/Block.hpp"
+#include "../../../include/Game/Level/Block.hpp"
 
 namespace rtype {
 
 static void collisionHandler(RealEngine::CollisionType collisionType,
                              RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
-    return;
-    auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
+    // // we don't know why there is a return here
+    // return;
+    // auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
 
-    if (collisionType != RealEngine::CollisionType::SCREEN) return;
-    if (!autoDestructible) {
-        auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-        if (container) {
-            bool destroy_out_of_screen =
-                std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value);
-            if (!destroy_out_of_screen) {
-                registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
-            }
-        }
-    }
-    autoDestructible->kill = false;
+    // if (collisionType != RealEngine::CollisionType::SCREEN) return;
+    // if (!autoDestructible) {
+    //     auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    //     if (container) {
+    //         bool destroy_out_of_screen =
+    //             std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value);
+    //         if (!destroy_out_of_screen) {
+    //             registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
+    //         }
+    //     }
+    // }
+    // autoDestructible->kill = false;
 }
 
-Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
-             float rotation, float scrollingSpeed)
-    : _blockEntity(registry.spawn_entity()),
-      _blockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
-      _element(spriteName) {
+void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
+                       const std::string& spriteName, float rotation, float scrollingSpeed,
+                       RealEngine::CollisionType collisionType) {
     if (position.x < 0 || position.y < 0 || rotation < 0) {
         std::cerr << "Error: Block position is null" << std::endl;
         return;
@@ -52,7 +51,7 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                  spriteName,
                                                  false,
-                                                 RealEngine::CollisionType::SOLID,
+                                                 collisionType,
                                                  collisionHandler});
     registry.add_component(
         _blockEntity,
@@ -62,6 +61,13 @@ Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::s
              {"new_entity", {"bool", "new_entity", true, nullptr}}}});
 }
 
+Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
+             float rotation, float scrollingSpeed, RealEngine::CollisionType collisionType)
+    : _blockEntity(registry.spawn_entity()),
+      _blockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
+      _element(spriteName) {
+    initialize(registry, position, spriteName, rotation, scrollingSpeed, collisionType);
+}
 Block::~Block() {}
 
 }  // namespace rtype

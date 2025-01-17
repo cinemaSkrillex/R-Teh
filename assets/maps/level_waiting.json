@@ -1,0 +1,24 @@
+{
+    "map_name": "Waiting_level",
+    "scrollingSpeed": 0.0,
+    "backgrounds": [
+        {
+            "sprite": "front_line_base",
+            "speed": 0.0
+        }
+    ],
+    "music": "waiting_room",
+    "mapData": {
+        "tiles": [
+            {
+                "type": "WAITING_BLOCK",
+                "element": "ready_zone",
+                "position": [
+                    400.0,
+                    300.0
+                ],
+                "rotation": 0.0
+            }
+        ]
+    }
+}

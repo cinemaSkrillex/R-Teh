@@ -40,9 +40,9 @@ Json::Value ServerMap::readJSONFile(const std::string& filepath) {
 }
 
 void ServerMap::updateLevel(float deltaTime) {
-    // if (!_isLevelRunning) {
-    //     return;
-    // }
+    if (!_isLevelRunning) {
+        return;
+    }
     x_level_position += _scrollingSpeed * deltaTime;
     for (auto& block : _blockEntities) {
         auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());
@@ -110,7 +110,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
         _scrollingSpeed =
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
-        _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
+        _scrollingSpeed = std::clamp(_scrollingSpeed, 0.0f, 1000.0f);
         _music_name     = root["music"].asString();
         // for all backgrounds, parse     std::vector<std::pair<std::string, float>> _backgrounds;
         for (const auto& background : root["backgrounds"]) {
@@ -130,8 +130,15 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
             _tiles.push_back(tile);
             if (tile.type == "BLOCK") {
                 auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
-                                                            tile.rotation, _scrollingSpeed);
+                                                            tile.rotation, _scrollingSpeed,
+                                                            RealEngine::CollisionType::SOLID);
                 _blockEntities.push_back(block);
+            }
+            if (tile.type == "WAITING_BLOCK") {
+                auto waitingBlock = std::make_shared<rtype::WaitingBlock>(
+                    _registry, tile.position, tile.element, tile.rotation,
+                    RealEngine::CollisionType::OTHER);
+                _blockEntities.push_back(waitingBlock);
             }
         }
     } catch (const std::exception& e) {
@@ -215,8 +222,9 @@ void ServerMap::saveToJSON(const std::string& filepath) {
 }
 
 void ServerMap::removeDeadBlocks() {
-    _blockEntities.erase(
-        std::remove_if(_blockEntities.begin(), _blockEntities.end(),
-                       [](const std::shared_ptr<rtype::Block>& block) { return block == nullptr; }),
-        _blockEntities.end());
+    _blockEntities.erase(std::remove_if(_blockEntities.begin(), _blockEntities.end(),
+                                        [](const std::shared_ptr<rtype::BaseBlock>& block) {
+                                            return block == nullptr;
+                                        }),
+                         _blockEntities.end());
 }

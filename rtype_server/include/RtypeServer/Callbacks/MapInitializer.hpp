@@ -8,7 +8,7 @@
 #ifndef MAPINITIALIZER_HPP_
 #define MAPINITIALIZER_HPP_
 
-#include "RtypeServer.hpp"
+#include "../RtypeServer.hpp"
 #include "ServerConfig.hpp"
 #include "UDPServer.hpp"
 
@@ -44,7 +44,8 @@ class MapInitializer {
         }
     }
 
-    void processBlock(const std::shared_ptr<rtype::Block>& block, std::array<char, 800>& message);
+    void                      processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
+                                           std::array<char, 800>&                   message);
     RTypeProtocol::MapMessage createMapMessage(const std::shared_ptr<ServerMap>& GameMap);
 };
 

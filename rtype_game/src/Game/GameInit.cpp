@@ -125,6 +125,16 @@ void Game::init_textures() {
                                                    path + "backgrounds/space_base.png", {2, 2});
     AssetManagerInstance.getTexture("space_base_background")->setRepeated(true);
 
+    // waiting room background
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "front_line_base", path + "backgrounds/front_line_base.png", {2, 2});
+    AssetManagerInstance.getTexture("front_line_base")->setRepeated(true);
+    AssetManagerInstance.getSprite("front_line_base")->setOpacity(100);
+    // waiting room zone
+    AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
+                                                   {0.5, 0.5});
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
+
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_plane", path + "enemies/space_plane.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_drill", path + "enemies/space_drill.png");
@@ -417,6 +427,11 @@ void Game::init_musics() {
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
     AssetManagerInstance.getMusic("level_2")->setLoop(true);
     AssetManagerInstance.getMusic("level_2")->setVolume(55);
+
+    // waiting room music
+    AssetManagerInstance.loadMusic("waiting_room", path + "waiting_room.ogg");
+    AssetManagerInstance.getMusic("waiting_room")->setLoop(true);
+    AssetManagerInstance.getMusic("waiting_room")->setVolume(30);
 }
 
 void Game::init_sounds() {

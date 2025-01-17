@@ -7,6 +7,7 @@
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
 #include "../../include/shared/RtypeServerProtocol.hpp"
+#include "WaitingRoomScene.hpp"
 
 void RtypeServer::run() {
     auto log                   = std::make_shared<Log>("RtypeServer.log");
@@ -17,6 +18,14 @@ void RtypeServer::run() {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
+
+            if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::WAITING) {
+                auto waitingRoomScene =
+                    std::dynamic_pointer_cast<WaitingRoomScene>(_scene_manager.getCurrentScene());
+                if (waitingRoomScene) {
+                    waitingRoomScene->update(_deltaTime);
+                }
+            }
 
             handleClientMessages();
             runGameInstance(_deltaTime);
