@@ -64,7 +64,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // Then update remaining mobs
     if (_serverVision) {
         _window->clear();
-        _window->update();
+        _window->update(deltaTime);
         _drawSystem.update(_registry, deltaTime);
         _window->display();
     } else {

@@ -52,7 +52,7 @@ void ServerMap::updateLevel(float deltaTime) {
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
         stopLevel();
-    } else if (bossAtEnd() && _boss.triggered && _bossEntity == nullptr) {
+    } else if (bossAtEnd() && _boss.triggered && _boss.bossEntity == nullptr) {
         std::cout << "Boss entity is null" << std::endl;
         stopLevel();
     }
