@@ -7,16 +7,17 @@
 
 #pragma once
 
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <SFML/Graphics.hpp>
 #include <asio.hpp>
+#include <cstring>
+#include <iostream>
 #include <regex>
 #include <string>
 #include <thread>
-#include <iostream>
-#include <unistd.h>  
-#include <sys/wait.h>   
-#include <cstring>    
-#include <sys/stat.h>  
 
 #include "../Client/TCPClient.hpp"
 #include "../Core/Graphics/UI/Button.hpp"

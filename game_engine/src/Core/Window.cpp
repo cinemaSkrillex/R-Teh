@@ -27,7 +27,8 @@ Window::Window(const std::string title, const sf::Vector2u size, View view)
     _renderTexture.setSmooth(false);
 }
 
-Window::Window(const std::string title, const sf::Vector2u size, View view, const std::string shaderPath)
+Window::Window(const std::string title, const sf::Vector2u size, View view,
+               const std::string shaderPath)
     : _title(title), _size(size), _style(sf::Style::Default), _view(view) {
     _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
     _window.setFramerateLimit(60);

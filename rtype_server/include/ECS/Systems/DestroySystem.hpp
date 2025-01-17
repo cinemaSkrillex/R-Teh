@@ -9,9 +9,9 @@
 
 #include "../include/ECS/Components/AutoDestructible.hpp"
 #include "../include/ECS/Components/Health.hpp"
-#include "../include/ECS/Components/Score.hpp"
-#include "../include/ECS/Components/NetvarContainer.hpp"
 #include "../include/ECS/Components/Netvar.hpp"
+#include "../include/ECS/Components/NetvarContainer.hpp"
+#include "../include/ECS/Components/Score.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
 
 namespace RealEngine {

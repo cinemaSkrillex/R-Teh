@@ -10,7 +10,8 @@ class Window {
    public:
     Window(const std::string title, const sf::Vector2u size);
     Window(const std::string title, const sf::Vector2u size, RealEngine::View view);
-    Window(const std::string title, const sf::Vector2u size, RealEngine::View view, const std::string shaderPath);
+    Window(const std::string title, const sf::Vector2u size, RealEngine::View view,
+           const std::string shaderPath);
     ~Window();
 
     void               clear();

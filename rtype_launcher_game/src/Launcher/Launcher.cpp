@@ -15,8 +15,8 @@ Launcher::Launcher()
             "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::IpAddress),
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
               "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
-        portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
-              "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
+      portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
+                    "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
              "../../../assets/fonts/arial.ttf"),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
@@ -100,7 +100,8 @@ void Launcher::launchGame() {
             exit(1);
         }
 
-        const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(), portBoxClient.getText().c_str(), nullptr};
+        const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(),
+                              portBoxClient.getText().c_str(), nullptr};
         execvp("./r_type", const_cast<char* const*>(args));
         std::cerr << "Failure in execvp: " << strerror(errno) << std::endl;
         exit(1);
@@ -118,7 +119,6 @@ void Launcher::launchGame() {
         }
     }
 }
-
 
 void Launcher::onConnectClick() {
     std::string ip   = ipBox.getText();
