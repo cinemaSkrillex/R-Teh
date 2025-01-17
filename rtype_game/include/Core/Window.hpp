@@ -10,6 +10,8 @@ class Window {
    public:
     Window(const std::string title, const sf::Vector2u size);
     Window(const std::string title, const sf::Vector2u size, RealEngine::View view);
+    Window(const std::string title, const sf::Vector2u size, RealEngine::View view,
+           const std::string shaderPath);
     ~Window();
 
     void               clear();
@@ -24,7 +26,7 @@ class Window {
     bool               isFocused();
     void               setSaturation(float saturation);
     void               setGamma(float gamma);
-    void               loadShader();
+    void               loadShader(const std::string shaderPath);
     void               setVueSmooth(bool smooth);
     sf::RenderWindow&  getRenderWindow() { return _window; }
     sf::RenderTexture& getRenderTexture() { return _renderTexture; }

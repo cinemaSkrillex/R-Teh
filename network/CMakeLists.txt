@@ -109,24 +109,6 @@ add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Client
     ${CMAKE_SOURCE_DIR}/rtype_launcher_server/src/Client
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
-    ${CMAKE_SOURCE_DIR}/rtype_pong_server/include/Client
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-    ${CMAKE_SOURCE_DIR}/rtype_pong_server/include/Server
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
-    ${CMAKE_SOURCE_DIR}/rtype_pong_server/include/shared
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
-    ${CMAKE_SOURCE_DIR}/rtype_pong/include/Client
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-    ${CMAKE_SOURCE_DIR}/rtype_pong/include/Server
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
-    ${CMAKE_SOURCE_DIR}/rtype_pong/include/shared
 )
 
 # Ensure the headers are copied before building rtype_server and rtype_game

@@ -12,43 +12,209 @@
         "tiles": [
             {
                 "type": "BLOCK",
-                "element": "lvl1_block_1",
+                "element": "lvl2_block_1",
                 "position": [
                     1000.5,
                     300.0
                 ],
-                "rotation": 90.0
+                "rotation": 0.0
             },
             {
                 "type": "BLOCK",
-                "element": "lvl1_block_1",
+                "element": "lvl2_block_5",
                 "position": [
-                    500.0,
+                    1000.5,
+                    570.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_4",
+                "position": [
+                    1000.5,
+                    30.0
+                ],
+                "rotation": 180.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_4",
+                "position": [
+                    1200.5,
+                    30.0
+                ],
+                "rotation": 180.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_6",
+                "position": [
+                    1500.5,
+                    550.0
+                ],
+                "rotation": 340.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_6",
+                "position": [
+                    1690.5,
+                    550.0
+                ],
+                "rotation": 340.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_6",
+                "position": [
+                    1810.5,
+                    550.0
+                ],
+                "rotation": 340.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_6",
+                "position": [
+                    2200.5,
+                    450.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_6",
+                "position": [
+                    2200.5,
+                    200.0
+                ],
+                "rotation": 180.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_little_obstacle",
+                "position": [
+                    2910.5,
+                    170.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_round_obstacle",
+                "position": [
+                    2910.5,
+                    200.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_little_obstacle",
+                "position": [
+                    3280.0,
+                    170.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_round_obstacle",
+                "position": [
+                    3480.0,
+                    320.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_little_obstacle",
+                "position": [
+                    3480.0,
+                    320.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_round_obstacle",
+                "position": [
+                    3880.0,
+                    500.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_block_3",
+                "position": [
+                    4050.0,
+                    250.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_small_barrier",
+                "position": [
+                    4050.0,
+                    200.0
+                ],
+                "rotation": 0.0
+            },
+            {
+                "type": "BLOCK",
+                "element": "lvl2_small_barrier",
+                "position": [
+                    4050.0,
                     300.0
                 ],
-                "rotation": 90.0
-            }
+                "rotation": 180.0
+            },
         ],
         "waves": [
             {
-                "waveType": "wave1",
+                "waveType": "3_eyes_minions",
                 "startPosition": [
                     100.5,
                     20.0
                 ]
-            }
+            },
+            {
+                "waveType": "3_eyes_minions",
+                "startPosition": [
+                    300.5,
+                    20.0
+                ]
+            },
+            {
+                "waveType": "3_eyes_bombers",
+                "startPosition": [
+                    300.5,
+                    20.0
+                ]
+            },
+            {
+                "waveType": "2_eyes_bigions",
+                "startPosition": [
+                    500.5,
+                    20.0
+                ]
+            },
+
         ],
         "endCondition": {
             "type": "BOSS",
             "triggerPosition": [
-                1000.5,
+                2000.5,
                 20.0
             ],
             "spawnPosition": [
                 1000.5,
                 20.0
             ],
-            "Entity": "eye_boss"
+            "Entity": "eye_minion"
         }
     }
 }

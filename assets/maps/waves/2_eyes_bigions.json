@@ -1,0 +1,18 @@
+{
+    "wave": [
+        {
+            "mobName": "eye_bigion",
+            "position": [
+                500.5,
+                100.0
+            ]
+        },
+        {
+            "mobName": "eye_bigion",
+            "position": [
+                500.5,
+                500.0
+            ]
+        }
+    ]
+}

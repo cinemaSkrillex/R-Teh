@@ -15,7 +15,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2),
             sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
       _window("SKRILLEX client_port: " + std::to_string(client_port),
-              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view),
+              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view,
+              assetLauncher ? "assets/shaders/display_options.frag"
+                            : "../../assets/shaders/display_options.frag"),
       _clock(),
       _playerUI(_registry, _window.getRenderTexture()),
       _controls(_registry, clientUDP),
@@ -49,9 +51,10 @@ void Game::init_all_game() {
     init_systems();
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
-        path = "assets/sprites/r_type";
+        path = "assets/sprites/r_type/";
     }
     init_level(path + "tiles/lv1", "lvl1");
+    init_level(path + "tiles/lv2", "lvl2");
     init_textures();
     set_sprite_opacity();
     init_sprite_sheets();
@@ -163,16 +166,19 @@ void Game::init_textures() {
                                                    path + "enemies/space_vortex.png");
     AssetManagerInstance.loadSpriteTextureAndScale("space_laser", path + "enemies/laser_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("small_laser", path + "enemies/laser_shoot.png",
-                                                   {1, 1});
+                                                   {GAME_SCALE - 2, GAME_SCALE - 2});
     AssetManagerInstance.loadSpriteTextureAndScale("fireball", path + "enemies/fireball.png");
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
-                                                   {0, 0, 16 * 4, 16}, {2, 2});
+                                                   {0, 0, 16 * 4, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("speed_powerup", path + "power_up.png",
-                                                   {0, 16, 16 * 3, 16}, {2, 2});
+                                                   {0, 16, 16 * 3, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
-                                                   {0, 32, 16 * 5, 16}, {2, 2});
+                                                   {0, 32, 16 * 5, 16},
+                                                   {GAME_SCALE - 1, GAME_SCALE - 1});
 }
 
 void Game::init_level(std::string filepath, std::string foldername) {

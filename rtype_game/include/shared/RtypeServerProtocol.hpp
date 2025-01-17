@@ -29,7 +29,7 @@ enum MessageType : int {
     ENTITY_UPDATE       = 0x0C,
     // PLAYER_UPDATE_SCORE  = 0x0D,
     // PLAYER_UPDATE_HEALTH = 0x0E,
-    PLAYER_UPDATE_DATA  = 0x0D,
+    PLAYER_UPDATE_DATA = 0x0D,
 };
 
 enum ComponentList : int {
@@ -193,7 +193,8 @@ template <std::size_t BUFFER_SIZE>
 OneIntMessage deserializeOneIntMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 template <std::size_t BUFFER_SIZE>
-PlayerUpdateDataMessage deserializePlayerUpdateDataMessage(const std::array<char, BUFFER_SIZE>& buffer);
+PlayerUpdateDataMessage deserializePlayerUpdateDataMessage(
+    const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 

@@ -20,8 +20,8 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     if (!entity) {
         return;
     }
-    auto& registry = _game_instance->getRegistryRef();
-    auto* position = registry.get_component<RealEngine::Position>(*entity);
+    auto& registry        = _game_instance->getRegistryRef();
+    auto* position        = registry.get_component<RealEngine::Position>(*entity);
     auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(*entity);
 
     if (netvarContainer) {
@@ -29,12 +29,12 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
         if (score_health_update) {
             if (std::any_cast<bool>(score_health_update->value)) {
                 std::cout << "Score health update" << std::endl;
-                auto* score = registry.get_component<RealEngine::Score>(*entity);
+                auto* score  = registry.get_component<RealEngine::Score>(*entity);
                 auto* health = registry.get_component<RealEngine::Health>(*entity);
 
                 RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage = {};
-                playerUpdateDataMessage.message_type                            = RTypeProtocol::PLAYER_UPDATE_DATA;
-                playerUpdateDataMessage.uuid                                    = player.getUUID();
+                playerUpdateDataMessage.message_type = RTypeProtocol::PLAYER_UPDATE_DATA;
+                playerUpdateDataMessage.uuid         = player.getUUID();
                 if (score) {
                     playerUpdateDataMessage.score = score->amount;
                 } else {
@@ -47,7 +47,8 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
                 }
 
                 // Serialize the PlayerUpdateDataMessage
-                std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(playerUpdateDataMessage);
+                std::array<char, 800> serializedMessage =
+                    RTypeProtocol::serialize<800>(playerUpdateDataMessage);
 
                 // Broadcast the serialized message to all clients
                 broadcastAllReliable(serializedMessage);

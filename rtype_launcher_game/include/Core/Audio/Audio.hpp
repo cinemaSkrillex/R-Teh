@@ -10,7 +10,7 @@ class IAudio {
     ~IAudio()                                         = default;
     virtual void play()                               = 0;
     virtual void stop()                               = 0;
-    virtual void loadFile(const std::string filePath) = 0;
+    virtual bool loadFile(const std::string filePath) = 0;
     virtual void setVolume(float volume)              = 0;
     virtual void setPitch(float pitch)                = 0;
 };
