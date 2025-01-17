@@ -41,10 +41,10 @@ struct Wave {
 };
 
 struct Boss {
-    std::string                         bossType;  // e.g., "boss1" (filename of the boss JSON)
-    sf::Vector2f                        position;  // Starting position for the boss
-    std::shared_ptr<RealEngine::Entity> bossEntity;
-    bool                                triggered = false;
+    std::string                         bossType   = "";  // e.g., "eye_boss" make the entity spawn
+    sf::Vector2f                        position   = {-1, -1};  // Starting position for the boss
+    std::shared_ptr<RealEngine::Entity> bossEntity = nullptr;
+    bool                                triggered  = false;
 };
 
 }  // namespace Map
@@ -58,9 +58,13 @@ class ServerMap {
     ServerMap(RealEngine::Registry& registry);
     ~ServerMap();
     void                      updateLevel(float deltaTime);
-    std::vector<Map::WaveMob> invokeWaves();
-    void                      startLevel();
-    void                      stopLevel();
+    std::vector<Map::WaveMob> invokeLevelMobs();
+    bool bossAtEnd() const { return _boss.position.x != -1 && _boss.position.y != -1; }
+    void setBossEntity(std::shared_ptr<RealEngine::Entity> bossEntity) {
+        _boss.bossEntity = bossEntity;
+    }
+    void startLevel();
+    void stopLevel();
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
@@ -95,8 +99,8 @@ class ServerMap {
     std::vector<std::pair<std::string, float>> _backgrounds;
     bool                                       _endBoss;
     Map::Boss                                  _boss;
-    sf::Vector2f                               _endPosition;
-    bool                                       _isLoaded = false;
+    sf::Vector2f                               _endPosition = {-1, -1};
+    bool                                       _isLoaded    = false;
     bool                                       _isLevelRunning;
 };
 

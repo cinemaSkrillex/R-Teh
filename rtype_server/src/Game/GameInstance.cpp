@@ -25,7 +25,6 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
             auto powerupDropNetvar = netvarContainer->getNetvar("powerup_drop");
             if (powerupDropNetvar && powerupDropNetvar->value.type() == typeid(float)) {
                 float spawnProbability = std::any_cast<float>(powerupDropNetvar->value);
-                std::cout << "spawnProbability: " << spawnProbability << std::endl;
                 if (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) <
                     spawnProbability / 100.0f) {
                     std::cout << "spawned powerup" << std::endl;
@@ -84,7 +83,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     auto destroyedEntities = _destroySystem.getDeadEntities();
     _netvarSystem.update(_registry, deltaTime);
     _game_map->updateLevel(deltaTime);
-    auto enemies_to_spawn = _game_map->invokeWaves();
+    auto enemies_to_spawn = _game_map->invokeLevelMobs();
 
     manageInGameEntities(enemies_to_spawn, destroyedEntities);
 

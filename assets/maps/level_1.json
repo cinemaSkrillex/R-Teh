@@ -630,13 +630,13 @@
             "type": "BOSS",
             "triggerPosition": [
                 1000.5,
-                20.0
+                0.0
             ],
             "spawnPosition": [
-                1000.5,
-                20.0
+                1500.5,
+                200.0
             ],
-            "Entity": "boss1"
+            "Entity": "eye_minion"
         }
     }
 }

@@ -46,22 +46,22 @@ bool DestroySystem::autoDestroy(Registry& registry, Entity entity, float deltaTi
     return false;
 }
 
-    // auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
-    // auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
-    // if (!container) return;
-    // auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
-    // auto player   = registry.entity_from_index(playerID);
-    // if (!player) return;
-    // auto playerScore = registry.get_component<RealEngine::Score>(*player);
-    // auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
-    // if (playerScore && playerNetvarContainer) {
-    //     // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;
-    //     playerScore->amount += colliderScore->amount;
-    //     auto score_health_update = playerNetvarContainer->getNetvar("score_health_update");
-    //     if (score_health_update) {
-    //         score_health_update->value = true;
-    //     }
-    // }
+// auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
+// auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
+// if (!container) return;
+// auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
+// auto player   = registry.entity_from_index(playerID);
+// if (!player) return;
+// auto playerScore = registry.get_component<RealEngine::Score>(*player);
+// auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
+// if (playerScore && playerNetvarContainer) {
+//     // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;
+//     playerScore->amount += colliderScore->amount;
+//     auto score_health_update = playerNetvarContainer->getNetvar("score_health_update");
+//     if (score_health_update) {
+//         score_health_update->value = true;
+//     }
+// }
 
 bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
     auto* health = registry.get_component<Health>(entity);
@@ -70,6 +70,7 @@ bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
 
     if (registry.is_valid(entity)) {
         killEntity(registry, entity);
+        std::cout << "Entity destroyed" << entity << std::endl;
     }
 
     std::shared_ptr<Entity> playerBullet = registry.entity_from_index(health->lastDamager);
@@ -83,7 +84,7 @@ bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
     auto player   = registry.entity_from_index(playerID);
     if (!player) return true;
 
-    auto playerScore = registry.get_component<Score>(player);
+    auto playerScore           = registry.get_component<Score>(player);
     auto playerNetvarContainer = registry.get_component<NetvarContainer>(player);
     if (!playerScore || !playerNetvarContainer) return true;
 

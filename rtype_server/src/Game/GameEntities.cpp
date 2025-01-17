@@ -30,47 +30,62 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
     return bullet.getEntity();
 }
 
-void GameInstance::spawnMob(const std::string& mobName, const sf::Vector2f& position, float angle) {
-    float level_speed = _game_map->getScrollingSpeed();
+void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, float angle) {
+    float                               level_speed = _game_map->getScrollingSpeed();
+    std::shared_ptr<RealEngine::Entity> mobEntity   = nullptr;
+    bool                                invoke_boss = false;
+    if (mobName.rfind("boss_", 0) == 0) {
+        mobName     = mobName.substr(5);
+        invoke_boss = true;
+        std::cout << "mobName: " << mobName << std::endl;
+        std::cout << "invoke_boss: " << position.x << " " << position.y << std::endl;
+    }
     if (mobName == "directional_canon") {
         rtype::DirectionalCanon directionalCanon(_registry, position, level_speed);
-        addAndGetEntity(directionalCanon.getEntity());
+        mobEntity = directionalCanon.getEntity();
     } else if (mobName == "eye_bigion") {
         rtype::EyeBigion eyeBigion(_registry, position);
-        addAndGetEntity(eyeBigion.getEntity());
+        mobEntity = eyeBigion.getEntity();
     } else if (mobName == "eye_boss") {
         rtype::EyeBoss eyeBoss(_registry, position);
-        addAndGetEntity(eyeBoss.getEntity());
+        mobEntity = eyeBoss.getEntity();
     } else if (mobName == "eye_bomber") {
         rtype::EyeBomber eyeBomber(_registry, position);
-        addAndGetEntity(eyeBomber.getEntity());
+        mobEntity = eyeBomber.getEntity();
     } else if (mobName == "eye_minion") {
         rtype::EyeMinion eyeMinion(_registry, position);
-        addAndGetEntity(eyeMinion.getEntity());
+        mobEntity = eyeMinion.getEntity();
     } else if (mobName == "mob_spawner_ship") {
         rtype::MobSpawnerShip mobSpawnerShip(_registry, position);
-        addAndGetEntity(mobSpawnerShip.getEntity());
+        mobEntity = mobSpawnerShip.getEntity();
     } else if (mobName == "mortar") {
         rtype::Mortar mortar(_registry, position);
-        addAndGetEntity(mortar.getEntity());
+        mobEntity = mortar.getEntity();
     } else if (mobName == "robot_boss_minion") {
         rtype::RobotBossMinion robotBossMinion(_registry, position);
-        addAndGetEntity(robotBossMinion.getEntity());
+        mobEntity = robotBossMinion.getEntity();
     } else if (mobName == "robot_mini_boss") {
         rtype::RobotMiniBoss robotMiniBoss(_registry, position);
-        addAndGetEntity(robotMiniBoss.getEntity());
+        mobEntity = robotMiniBoss.getEntity();
     } else if (mobName == "space_drill") {
         rtype::SpaceDrill spaceDrill(_registry, position);
-        addAndGetEntity(spaceDrill.getEntity());
+        mobEntity = spaceDrill.getEntity();
     } else if (mobName == "space_plane") {
         rtype::SpacePlane spacePlane(_registry, position);
-        addAndGetEntity(spacePlane.getEntity());
+        mobEntity = spacePlane.getEntity();
     } else if (mobName == "space_sphere") {
         rtype::SpaceSphere spaceSphere(_registry, position);
-        addAndGetEntity(spaceSphere.getEntity());
+        mobEntity = spaceSphere.getEntity();
     } else if (mobName == "wall_turret") {
         rtype::WallTurret turretCanon(_registry, position, 0, level_speed);
-        addAndGetEntity(turretCanon.getCannonEntity());
+        mobEntity = turretCanon.getCannonEntity();
         addAndGetEntity(turretCanon.getPedestalEntity());
+    }
+    if (mobEntity) {
+        if (invoke_boss) {
+            std::cout << "Setting boss entity nb: " << *mobEntity << std::endl;
+            _game_map->setBossEntity(mobEntity);
+        }
+        addAndGetEntity(mobEntity);
     }
 }
