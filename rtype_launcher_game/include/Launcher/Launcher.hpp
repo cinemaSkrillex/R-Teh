@@ -44,8 +44,8 @@ class Launcher {
     RealEngine::InputBox portBoxClient;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
-    RealEngine::Text    LauncherText;
-    RealEngine::Text    GameLauncherText;
-    bool                 clientStopped = false;
-    bool                connectedButtonClicked = false;
+    RealEngine::Text     LauncherText;
+    RealEngine::Text     GameLauncherText;
+    bool                 clientStopped          = false;
+    bool                 connectedButtonClicked = false;
 };

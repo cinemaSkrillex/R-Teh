@@ -24,8 +24,8 @@ Launcher::Launcher()
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-        LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-        GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
+      LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
+      GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
