@@ -12,6 +12,11 @@
 #include <regex>
 #include <string>
 #include <thread>
+#include <iostream>
+#include <unistd.h>  
+#include <sys/wait.h>   
+#include <cstring>    
+#include <sys/stat.h>  
 
 #include "../Client/TCPClient.hpp"
 #include "../Core/Graphics/UI/Button.hpp"
@@ -34,6 +39,7 @@ class Launcher {
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
+    RealEngine::InputBox portBoxClient;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
     bool                 clientStopped = false;

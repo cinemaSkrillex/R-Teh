@@ -12,23 +12,27 @@
 Launcher::Launcher()
     : window("Game Launcher", sf::Vector2u(800, 600)),
       ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1",
-            "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Text),
+            "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::IpAddress),
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
+              "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
+        portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
               "../../../assets/fonts/arial.ttf", RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
              "../../../assets/fonts/arial.ttf"),
-      launchButton(sf::Vector2f(350, 60), sf::Vector2f(270, 265), "Launch Game",
+      launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
                    "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
     ipBox.setFillColor(sf::Color::Green);
     portBox.setFillColor(sf::Color::Green);
+    portBoxClient.setFillColor(sf::Color::Green);
 
     launchButton.setFillColor(sf::Color::Green);
     launchButton.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
+    portBoxClient.centerText();
 }
 
 void Launcher::run() {
@@ -41,6 +45,9 @@ void Launcher::run() {
                 portBox.handleEvent(event);
             } else {
                 launchButton.handleEvent(event, [this]() { launchGame(); });
+                ipBox.handleEvent(event);
+                portBox.handleEvent(event);
+                portBoxClient.handleEvent(event);
             }
 
             if (event.type == sf::Event::Closed) {
@@ -55,6 +62,9 @@ void Launcher::run() {
             button.draw(window.getRenderTexture());
         } else {
             launchButton.draw(window.getRenderTexture());
+            ipBox.draw(window.getRenderTexture());
+            portBox.draw(window.getRenderTexture());
+            portBoxClient.draw(window.getRenderTexture());
         }
         window.display();
     }
@@ -71,7 +81,44 @@ bool Launcher::isValidPort(const std::string& port) {
     return std::regex_match(port, port_pattern);
 }
 
-void Launcher::launchGame() { std::cout << "Launching game" << std::endl; }
+void Launcher::launchGame() {
+    std::cout << "Launching game" << std::endl;
+
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        std::cerr << "Failure in fork: " << strerror(errno) << std::endl;
+        exit(1);
+    } else if (pid == 0) {
+        if (chdir("rtype_game") == -1) {
+            std::cerr << "Failure in chdir: " << strerror(errno) << std::endl;
+            exit(1);
+        }
+
+        if (chmod("./r_type", S_IRWXU) == -1) {
+            std::cerr << "Failure in chmod: " << strerror(errno) << std::endl;
+            exit(1);
+        }
+
+        const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(), portBoxClient.getText().c_str(), nullptr};
+        execvp("./r_type", const_cast<char* const*>(args));
+        std::cerr << "Failure in execvp: " << strerror(errno) << std::endl;
+        exit(1);
+    } else {
+        window.close();
+        int status;
+        wait(&status);
+        if (WIFEXITED(status)) {
+            int exit_status = WEXITSTATUS(status);
+            std::cout << "The game exited with return code: " << exit_status << std::endl;
+            exit(exit_status);
+        } else {
+            std::cerr << "The child process did not terminate normally" << std::endl;
+            exit(1);
+        }
+    }
+}
+
 
 void Launcher::onConnectClick() {
     std::string ip   = ipBox.getText();
