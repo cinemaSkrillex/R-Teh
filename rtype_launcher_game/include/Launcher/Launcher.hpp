@@ -47,4 +47,5 @@ class Launcher {
     RealEngine::Text    LauncherText;
     RealEngine::Text    GameLauncherText;
     bool                 clientStopped = false;
+    bool                connectedButtonClicked = false;
 };

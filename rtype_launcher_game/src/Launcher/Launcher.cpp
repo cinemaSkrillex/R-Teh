@@ -117,7 +117,11 @@ void Launcher::launchGame() {
 }
 
 void Launcher::onConnectClick() {
+    if (connectedButtonClicked) {
+        return;
+    }
 
+    connectedButtonClicked = true;
 
     std::string ip   = ipBox.getText();
     std::string port = portBox.getText();
@@ -149,7 +153,7 @@ void Launcher::connectToServer() {
         std::thread ioThread([&io_context]() { io_context.run(); });
 
         ioThread.join();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         std::cout << "Client stopped" << std::endl;
         clientStopped = true;
     } catch (const std::exception& e) {
