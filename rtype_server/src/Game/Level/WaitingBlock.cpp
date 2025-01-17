@@ -15,6 +15,8 @@ static void waitingBlockCollisionHandler(RealEngine::CollisionType collisionType
     switch (collisionType) {
         case RealEngine::CollisionType::PLAYER:
             std::cout << "WaitingBlock collision with player" << std::endl;
+            // player is a controllable so we can add some logic here to know what to do
+            // who collided probably.. etc..
             break;
     }
 }
