@@ -34,7 +34,7 @@ Launcher::Launcher()
 void Launcher::run() {
     while (window.isOpen()) {
         sf::Event event;
-        while (window.getRenderTexture().pollEvent(event)) {
+        while (window.getRenderWindow().pollEvent(event)) {
             if (!clientStopped) {
                 button.handleEvent(event, [this]() { onConnectClick(); });
                 ipBox.handleEvent(event);
