@@ -84,40 +84,20 @@ bool Launcher::isValidPort(const std::string& port) {
 void Launcher::launchGame() {
     std::cout << "Launching game" << std::endl;
 
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        std::cerr << "Failure in fork: " << strerror(errno) << std::endl;
+    if (chdir("rtype_game") == -1) {
+        std::cerr << "Échec de chdir: " << strerror(errno) << std::endl;
         exit(1);
-    } else if (pid == 0) {
-        if (chdir("rtype_game") == -1) {
-            std::cerr << "Failure in chdir: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-
-        if (chmod("./r_type", S_IRWXU) == -1) {
-            std::cerr << "Failure in chmod: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-
-        const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(),
-                              portBoxClient.getText().c_str(), nullptr};
-        execvp("./r_type", const_cast<char* const*>(args));
-        std::cerr << "Failure in execvp: " << strerror(errno) << std::endl;
-        exit(1);
-    } else {
-        window.close();
-        int status;
-        wait(&status);
-        if (WIFEXITED(status)) {
-            int exit_status = WEXITSTATUS(status);
-            std::cout << "The game exited with return code: " << exit_status << std::endl;
-            exit(exit_status);
-        } else {
-            std::cerr << "The child process did not terminate normally" << std::endl;
-            exit(1);
-        }
     }
+
+    if (chmod("./r_type", S_IRWXU) == -1) {
+        std::cerr << "Échec de chmod: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(), portBoxClient.getText().c_str(), nullptr};
+    execvp("./r_type", const_cast<char* const*>(args));
+    std::cerr << "Échec de execvp: " << strerror(errno) << std::endl;
+    exit(1);
 }
 
 void Launcher::onConnectClick() {
