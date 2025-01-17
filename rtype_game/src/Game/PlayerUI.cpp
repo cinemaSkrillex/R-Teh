@@ -12,9 +12,12 @@ PlayerUI::PlayerUI(RealEngine::Registry& registry, sf::RenderTexture& window)
     : _registry(registry),
       _window(window),
       _score(0),
-      _scoreText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf" : "../../assets/fonts/Early_GameBoy.ttf"),
-      _healthText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf" : "../../assets/fonts/Early_GameBoy.ttf"),
-      _beamText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf" : "../../assets/fonts/Early_GameBoy.ttf"),
+      _scoreText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf"
+                                   : "../../assets/fonts/Early_GameBoy.ttf"),
+      _healthText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf"
+                                    : "../../assets/fonts/Early_GameBoy.ttf"),
+      _beamText("", assetLauncher ? "assets/fonts/Early_GameBoy.ttf"
+                                  : "../../assets/fonts/Early_GameBoy.ttf"),
       _playerEntity(nullptr) {
     float horizontal_panel_center = VIEW_WIDTH / 2;
     float vertical_panel_center   = VIEW_HEIGHT + 50;

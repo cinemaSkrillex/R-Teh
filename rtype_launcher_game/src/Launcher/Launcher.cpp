@@ -94,7 +94,8 @@ void Launcher::launchGame() {
         exit(1);
     }
 
-    const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(), portBoxClient.getText().c_str(), nullptr};
+    const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(),
+                          portBoxClient.getText().c_str(), nullptr};
     execvp("./r_type", const_cast<char* const*>(args));
     std::cerr << "Échec de execvp: " << strerror(errno) << std::endl;
     exit(1);
