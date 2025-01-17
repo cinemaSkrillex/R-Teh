@@ -14,7 +14,6 @@ Window::Window(const std::string title, const sf::Vector2u size)
         throw std::runtime_error("Impossible de créer la RenderTexture");
     }
     _renderTexture.setSmooth(false);
-    loadShader();
 }
 
 Window::Window(const std::string title, const sf::Vector2u size, View view)
@@ -26,7 +25,18 @@ Window::Window(const std::string title, const sf::Vector2u size, View view)
         throw std::runtime_error("Impossible de créer la RenderTexture");
     }
     _renderTexture.setSmooth(false);
-    loadShader();
+}
+
+Window::Window(const std::string title, const sf::Vector2u size, View view, const std::string shaderPath)
+    : _title(title), _size(size), _style(sf::Style::Default), _view(view) {
+    _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
+    _window.setFramerateLimit(60);
+    _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
+    if (!_renderTexture.create(_size.x, _size.y)) {
+        throw std::runtime_error("Impossible de créer la RenderTexture");
+    }
+    _renderTexture.setSmooth(false);
+    loadShader(shaderPath);
 }
 
 Window::~Window() { _window.close(); }
@@ -163,8 +173,8 @@ void Window::setGamma(float gamma) { _gamma = std::max(0.1f, std::min(5.0f, gamm
 
 void Window::setVueSmooth(bool smooth) { _renderTexture.setSmooth(smooth); }
 
-void Window::loadShader() {
-    if (!_shader.loadFromFile("../../assets/shaders/display_options.frag", sf::Shader::Fragment)) {
+void Window::loadShader(const std::string path) {
+    if (!_shader.loadFromFile(path, sf::Shader::Fragment)) {
         throw std::runtime_error("Impossible de charger le shader");
     }
 }
