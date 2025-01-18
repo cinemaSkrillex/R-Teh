@@ -26,7 +26,7 @@ EyeLaser::EyeLaser(RealEngine::Registry& registry, sf::Vector2f position, float 
                                                  "enemy_bullet",
                                                  false,
                                                  RealEngine::CollisionType::ENEMY_BULLET,
-                                                 destroyOnWallsAndPlayer});
+                                                 noCollisionBehavior});
     registry.add_component(_entity, RealEngine::AI{noBehavior, goStraightAngle, true});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{1, 1});

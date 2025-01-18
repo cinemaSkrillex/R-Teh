@@ -66,8 +66,9 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
         _entity, RealEngine::NetvarContainer{{
                      {"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
                      {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}},
+                     {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
                      {"new_entity", {"bool", "new_entity", true, nullptr}},
-                     {"powerup_drop", {"float", "powerup_drop", 70.f, nullptr}},
+                     {"powerup_drop", {"float", "powerup_drop", 20.f, nullptr}},
                  }});
     registry.add_component(_entity, RealEngine::Score{50});
 }

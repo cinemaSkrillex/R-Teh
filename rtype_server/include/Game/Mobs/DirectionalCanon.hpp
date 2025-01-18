@@ -8,6 +8,8 @@
 #pragma once
 
 #include "Game/Mobs/Behaviors.hpp"
+#include "Game/Mobs/Projectiles/Fireball.hpp"
+#include "Game/Mobs/Projectiles/SmallLaser.hpp"
 
 namespace rtype {
 class DirectionalCanon {

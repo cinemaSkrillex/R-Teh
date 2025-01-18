@@ -136,6 +136,9 @@ void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, 
         if (distance > 10.0f) {
             float accelerationX = dx / distance * 6.0f;
             float accelerationY = dy / distance * 6.0f;
+            std::cout << "angleRad: " << rotation->angle << std::endl;
+            std::cout << "accelerationX: " << accelerationX << " accelerationY: " << accelerationY
+                      << std::endl;
 
             velocity->vx += (accelerationX * deltaTime) * 100.0f;
             velocity->vy += (accelerationY * deltaTime) * 100.0f;
