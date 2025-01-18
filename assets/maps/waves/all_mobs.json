@@ -43,13 +43,6 @@
             ]
         },
         {
-            "mobName": "mortar",
-            "position": [
-                400.5,
-                400.0
-            ]
-        },
-        {
             "mobName": "robot_boss_minion",
             "position": [
                 300.5,
@@ -76,14 +69,6 @@
                 500.5,
                 220.0
             ]
-        },
-        {
-            "mobName": "wall_turret",
-            "position": [
-                700.5,
-                400.0
-            ]
         }
-
     ]
 }
