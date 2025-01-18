@@ -37,8 +37,6 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
     if (mobName.rfind("boss_", 0) == 0) {
         mobName     = mobName.substr(5);
         invoke_boss = true;
-        std::cout << "mobName: " << mobName << std::endl;
-        std::cout << "invoke_boss: " << position.x << " " << position.y << std::endl;
     }
     if (mobName == "directional_canon") {
         rtype::DirectionalCanon directionalCanon(_registry, position, level_speed);
@@ -83,7 +81,6 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
     }
     if (mobEntity) {
         if (invoke_boss) {
-            std::cout << "Setting boss entity nb: " << *mobEntity << std::endl;
             _game_map->setBossEntity(mobEntity);
         }
         addAndGetEntity(mobEntity);

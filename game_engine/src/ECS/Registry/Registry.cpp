@@ -16,6 +16,7 @@ void Registry::remove_entity(Entity const& entity) {
     for (auto& erase_function : _erase_functions) {
         erase_function(*this, entity);
     }
+    _entity_manager.kill_entity(entity);
 }
 
 std::shared_ptr<Entity> Registry::spawn_entity() { return _entity_manager.spawn_entity(); }

@@ -52,8 +52,7 @@ void ServerMap::updateLevel(float deltaTime) {
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
         stopLevel();
-    } else if (bossAtEnd() && _boss.triggered && _boss.bossEntity == nullptr) {
-        std::cout << "Boss entity is null" << std::endl;
+    } else if (bossAtEnd() && _boss.triggered && !_registry.is_valid(*(_boss.bossEntity))) {
         stopLevel();
     }
     removeDeadBlocks();
@@ -73,7 +72,6 @@ std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
         }
     }
     if (bossAtEnd() && x_level_position >= _endPosition.x && !_boss.triggered) {
-        std::cout << "Boss triggered at " << x_level_position << std::endl;
         enemiesToSpawn.push_back(Map::WaveMob{("boss_" + _boss.bossType), _boss.position});
         _boss.triggered = true;
     }

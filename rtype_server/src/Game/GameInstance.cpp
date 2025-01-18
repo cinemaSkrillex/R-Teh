@@ -18,7 +18,6 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
         spawnMob(enemy.name, enemy.position, enemy.angle);
     }
     for (auto& entity : destroyedEntities) {
-        std::cout << "Entity destroyed" << std::endl;
         auto* netvarContainer = _registry.get_component<RealEngine::NetvarContainer>(entity);
         auto* position        = _registry.get_component<RealEngine::Position>(entity);
         if (netvarContainer) {

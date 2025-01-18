@@ -70,7 +70,6 @@ bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
 
     if (registry.is_valid(entity)) {
         killEntity(registry, entity);
-        std::cout << "Entity destroyed" << entity << std::endl;
     }
 
     std::shared_ptr<Entity> playerBullet = registry.entity_from_index(health->lastDamager);
@@ -101,7 +100,7 @@ void DestroySystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<>();
 
     for (auto& entity : _deadEntities) {
-        registry.remove_entity(entity);
+        registry.kill_entity(entity);
     }
     _deadEntities.clear();
     if (entities.empty()) {
