@@ -48,7 +48,7 @@ static void updateDirectionCooldown(RealEngine::Registry& registry, RealEngine::
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
-        cooldown = 2.0f;
+        cooldown = 1.5f;
     }
     cooldown -= deltaTime;
     currentNetvar.value = cooldown;
@@ -92,7 +92,6 @@ SpaceSphere::SpaceSphere(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{30, 30});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
-    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{{

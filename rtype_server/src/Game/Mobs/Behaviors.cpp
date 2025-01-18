@@ -196,8 +196,23 @@ void destroyOutOfScreen(RealEngine::CollisionType collisionType, RealEngine::Reg
                         RealEngine::Entity entity) {
     auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
 
-    if (!autoDestructible || collisionType != RealEngine::CollisionType::SCREEN) return;
-    autoDestructible->kill = false;
+    if (collisionType != RealEngine::CollisionType::SCREEN) return;
+    if (!autoDestructible) {
+        auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+        if (container) {
+            try {
+                if (std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
+                    false) {
+                    registry.add_component(entity,
+                                           RealEngine::AutoDestructible{-1.0f, true, false});
+                }
+            } catch (const std::bad_any_cast& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
+            }
+        }
+    } else {
+        autoDestructible->kill = false;
+    }
 }
 
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
