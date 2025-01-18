@@ -17,13 +17,10 @@ static void collisionHandler(RealEngine::CollisionType collisionType,
     if (collisionType != RealEngine::CollisionType::SCREEN) return;
     if (!autoDestructible) {
         auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-        std::cout << "destroy_out_of_screen" << std::endl;
         if (container) {
-            std::cout << "check in container" << std::endl;
             try {
                 if (std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
                     false) {
-                    std::cout << "add_component" << std::endl;
                     registry.add_component(entity,
                                            RealEngine::AutoDestructible{-1.0f, true, false});
                 }
