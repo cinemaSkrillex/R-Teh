@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <memory>
 
 #include "../include/Core/Graphics/UI/Text.hpp"
 
@@ -16,7 +17,7 @@ namespace RealEngine {
 class TemporaryText {
    public:
     TemporaryText(std::string text, sf ::Vector2f position, float duration, float disappearTime,
-                  sf::Font font);
+                  std::shared_ptr<sf::Font> font);
     ~TemporaryText();
 
     Text& getText() { return _text; }

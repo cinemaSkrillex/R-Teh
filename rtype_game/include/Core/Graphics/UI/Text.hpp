@@ -17,6 +17,7 @@ class Text : public IRender {
     void        setRotation(float angle) override;
     void        rotate(float angle);
     void        center();
+    void        setFont(sf::Font font);
     void        setOpacity(int opacity);
     void        setColor(float r, float g, float b, float a);
     void        setBorderColor(float r, float g, float b, float a);
