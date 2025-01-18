@@ -39,9 +39,9 @@ class MapInitializer {
 
     void processMessage(const std::array<char, 800>&   message,
                         const asio::ip::udp::endpoint& sender) {
-        for (const auto& client : _UdpServer->getClients()) {
-            _UdpServer->send_reliable_packet(message, client);
-        }
+        // for (const auto& client : _UdpServer->getClients()) {
+        //     _UdpServer->send_reliable_packet(message, client);
+        // }
     }
 
     void                      processBlock(const std::shared_ptr<rtype::BaseBlock>& block,

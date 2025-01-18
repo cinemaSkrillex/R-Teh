@@ -38,6 +38,10 @@ class Game {
 
     std::shared_ptr<UDPClient> _clientUDP;
 
+    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> getEntitiesGame() {
+        return _entities;
+    }
+
    private:
     // initialization functions (src/Game/GameInit.cpp)
     void init_all_game();
@@ -70,6 +74,7 @@ class Game {
     void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                          std::shared_ptr<RealEngine::Entity> newEntity);
     void handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket);
+    void handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket);
 
     float              _deltaTime = 0.f;
     RealEngine::View   _view;
@@ -98,7 +103,7 @@ class Game {
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
-    GameMap                                                           _game_map;
+    std::shared_ptr<GameMap>                                          _game_map;
     std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;

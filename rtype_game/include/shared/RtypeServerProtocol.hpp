@@ -30,6 +30,7 @@ enum MessageType : int {
     // PLAYER_UPDATE_SCORE  = 0x0D,
     // PLAYER_UPDATE_HEALTH = 0x0E,
     PLAYER_UPDATE_DATA = 0x0D,
+    CHANGING_SCENE     = 0x0E,
 };
 
 enum ComponentList : int {
@@ -45,12 +46,9 @@ enum ComponentList : int {
     INTERPOLATION     = 0x0A,
 };
 
-enum EntityType : int {
-    PLAYER       = 0x01,
-    BLOCK        = 0x02,
-    OTHER_ENTITY = 0x03,
-    BACKGROUND   = 0x04,
-};
+enum class SceneType { WAITING, MENU, GAME };
+
+enum class EntityType { PLAYER, ENEMY, BULLET, BLOCK };
 
 struct BackgroundData {
     int   background_id;
@@ -88,7 +86,8 @@ struct SynchronizeMessage : BaseMessage {
 // Event message structure
 struct NewEntityMessage : BaseMessage {
     std::vector<std::pair<ComponentList, std::vector<char>>>
-        components;  // Component ID and serialized data
+               components;  // Component ID and serialized data
+    EntityType entity_type;
 };
 
 struct DestroyEntityMessage : BaseMessage {
@@ -125,6 +124,10 @@ struct OneIntMessage : BaseMessage {
 struct PlayerUpdateDataMessage : BaseMessage {
     int score;
     int health;
+};
+
+struct ChangingSceneMessage : BaseMessage {
+    SceneType scene_id;
 };
 
 template <std::size_t BUFFER_SIZE>
@@ -164,6 +167,9 @@ std::array<char, BUFFER_SIZE> serialize(const OneIntMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const PlayerUpdateDataMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const ChangingSceneMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -195,6 +201,9 @@ OneIntMessage deserializeOneIntMessage(const std::array<char, BUFFER_SIZE>& buff
 template <std::size_t BUFFER_SIZE>
 PlayerUpdateDataMessage deserializePlayerUpdateDataMessage(
     const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+ChangingSceneMessage deserializeChangingSceneMessage(const std::array<char, BUFFER_SIZE>& buffer);
 
 }  // namespace RTypeProtocol
 

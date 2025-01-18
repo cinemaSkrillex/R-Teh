@@ -39,7 +39,8 @@
 class GameScene : public Scene {
    public:
     GameScene(std::shared_ptr<GameInstance> gameInstance, RtypeServer* server,
-              ServerConfig& serverConfig, std::shared_ptr<UDPServer> udpServer)
+              ServerConfig& serverConfig, std::shared_ptr<UDPServer> udpServer,
+              RealEngine::SceneManager& scene_manager)
         : _gameInstance(gameInstance),
           _server(server),
           _serverConfig(serverConfig),
@@ -50,6 +51,19 @@ class GameScene : public Scene {
     void initialize(RealEngine::Registry& registry) override {
         // Initialization logic for MENU scene
         std::cout << "Initializing GAME scene" << std::endl;
+        std::cout << "Initializing GAME scene" << std::endl;
+        auto        gameMap = _gameInstance->getMap();
+        std::string path    = "../../assets/maps/";
+        // gameMap->loadFromJSON(path + "level_1.json");
+        // auto mapInitializer =
+        //     std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
+        // auto mobInitializer = std::make_shared<MobInitializer>(_gameInstance, _UdpServer);
+
+        // _server->startAndBroadcastLevel();
+        // for (auto& client : _UdpServer->getClients()) {
+        //     mapInitializer->initializeMap(client);
+        //     mobInitializer->initializeMobs(client);
+        // }
     }
 
     void update(float deltaTime) override {

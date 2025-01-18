@@ -122,6 +122,7 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
 
 Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool otherPlayer)
     : _entity(registry.spawn_entity()) {
+    std::cout << "Player created" << "*entity: " << *_entity << std::endl;
     if (!otherPlayer) {
         registry.add_component(_entity, RealEngine::Position{200.f, 200.f});
         registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});

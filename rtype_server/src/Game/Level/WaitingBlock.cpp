@@ -52,7 +52,8 @@ void WaitingBlock::initialize(RealEngine::Registry& registry, sf::Vector2f posit
             {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
              {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
              {"new_entity", {"bool", "new_entity", true, nullptr}},
-             {"change_scene_timer", {"float", "goToLevel", float(0.f), nullptr}}}});
+             {"change_scene_timer", {"float", "goToLevel", float(0.f), nullptr}},
+             {"entity_type", {"int", "entity_type", 3, nullptr}}}});
 }
 
 WaitingBlock::WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position,

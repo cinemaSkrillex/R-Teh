@@ -90,20 +90,20 @@ class ServerMap {
     bool  getIsLevelRunning() const { return _isLevelRunning; }
 
    private:
-    RealEngine::Registry&                      _registry;
-    std::string                                _map_name;
-    std::string                                _music_name;
-    float                                      _scrollingSpeed  = 0.0f;
-    float                                      x_level_position = 0.0f;
-    std::vector<Map::Tile>                     _tiles;
-    std::vector<Map::Wave>                     _waves;
-    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
-    std::vector<std::pair<std::string, float>> _backgrounds;
-    bool                                       _endBoss;
-    Map::Boss                                  _boss;
-    sf::Vector2f                               _endPosition = {-1, -1};
-    bool                                       _isLoaded    = false;
-    bool                                       _isLevelRunning;
+    RealEngine::Registry&                          _registry;
+    std::string                                    _map_name;
+    std::string                                    _music_name;
+    float                                          _scrollingSpeed  = 0.0f;
+    float                                          x_level_position = 0.0f;
+    std::vector<Map::Tile>                         _tiles;
+    std::vector<Map::Wave>                         _waves;
+    std::vector<std::shared_ptr<rtype::BaseBlock>> _blockEntities;
+    std::vector<std::pair<std::string, float>>     _backgrounds;
+    bool                                           _endBoss;
+    Map::Boss                                      _boss;
+    sf::Vector2f                                   _endPosition = {-1, -1};
+    bool                                           _isLoaded    = false;
+    bool                                           _isLevelRunning;
 };
 
 #endif /* !ServerMap_HPP_ */

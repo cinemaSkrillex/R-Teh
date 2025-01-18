@@ -147,6 +147,7 @@ static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::
 
 PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
+    std::cout << "SERVER Player created" << "*entity: " << *_entity << std::endl;
     _playerSpriteSheet.emplace(
         "idle", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
     _playerSpriteSheet.emplace(

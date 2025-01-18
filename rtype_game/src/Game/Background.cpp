@@ -10,6 +10,7 @@
 namespace rtype {
 Background::Background(RealEngine::Registry& registry, float speed, std::string sprite_str)
     : _entity(registry.spawn_entity()) {
+    std::cout << "Background created" << "*entity: " << *_entity << std::endl;
     registry.add_component(_entity, RealEngine::Position{0.f, 0.f});
     registry.add_component(
         _entity, RealEngine::SpriteComponent{

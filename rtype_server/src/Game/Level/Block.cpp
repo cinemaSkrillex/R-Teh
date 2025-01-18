@@ -61,7 +61,8 @@ void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
         RealEngine::NetvarContainer{
             {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
              {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
-             {"new_entity", {"bool", "new_entity", true, nullptr}}}});
+             {"new_entity", {"bool", "new_entity", true, nullptr}},
+             {"entity_type", {"int", "entity_type", 3, nullptr}}}});
 }
 
 Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,

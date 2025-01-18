@@ -184,6 +184,9 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const NewEntityMessage& m
     // Serialize the base message
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
+    // serialize the entity_type
+    writeToBuffer(it, msg.entity_type);
+
     // Serialize the components
     for (const auto& component : msg.components) {
         // Store the component type as an integer
@@ -315,6 +318,9 @@ RTypeProtocol::NewEntityMessage RTypeProtocol::deserializeNewEntityMessage(
 
     // Deserialize the base message
     readFromBuffer(it, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the entity type
+    readFromBuffer(it, msg.entity_type);
 
     // Deserialize each component by reading [componentType, dataLength, rawData]
     while (it + sizeof(int) + sizeof(int) <= buffer.data() + BUFFER_SIZE) {
@@ -483,6 +489,39 @@ RTypeProtocol::PlayerUpdateDataMessage RTypeProtocol::deserializePlayerUpdateDat
     // Deserialize the integer values
     readFromBuffer(it, msg.score);
     readFromBuffer(it, msg.health);
+
+    return msg;
+}
+
+// changing scene
+
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const ChangingSceneMessage& msg) {
+    std::array<char, BUFFER_SIZE> buffer;
+    char*                         dest = buffer.data();
+
+    // Serialize the base message
+    writeToBuffer(dest, static_cast<const BaseMessage&>(msg));
+
+    // Serialize the scene_id
+    writeToBuffer(dest, static_cast<int>(msg.scene_id));
+
+    return buffer;
+}
+
+template <std::size_t BUFFER_SIZE>
+RTypeProtocol::ChangingSceneMessage RTypeProtocol::deserializeChangingSceneMessage(
+    const std::array<char, BUFFER_SIZE>& buffer) {
+    ChangingSceneMessage msg;
+    const char*          src = buffer.data();
+
+    // Deserialize the base message
+    readFromBuffer(src, static_cast<BaseMessage&>(msg));
+
+    // Deserialize the scene_id
+    int scene_id;
+    readFromBuffer(src, scene_id);
+    msg.scene_id = static_cast<SceneType>(scene_id);
 
     return msg;
 }

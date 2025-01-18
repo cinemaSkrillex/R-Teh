@@ -35,7 +35,8 @@ void RtypeServer::initScenes() {
         });
     _scene_manager.registerScene(
         RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
-            return std::make_shared<GameScene>(_game_instance, this, _server_config, _server);
+            return std::make_shared<GameScene>(_game_instance, this, _server_config, _server,
+                                               _scene_manager);
         });
 }
 

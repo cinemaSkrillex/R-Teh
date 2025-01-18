@@ -127,6 +127,9 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();
             _backgrounds.push_back({background_str, speed});
+            auto backgroundEntity = _registry.spawn_entity();
+            std::cout << "Background: entity [" << *backgroundEntity << "] speed [" << speed
+                      << "] sprite [" << background_str << "]" << std::endl;
         }
 
         // Load tiles

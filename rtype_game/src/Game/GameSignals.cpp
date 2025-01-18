@@ -61,9 +61,9 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             RTypeProtocol::LevelSignalMessage levelSignalMessage =
                 RTypeProtocol::deserializeLevelSignal(signal);
             if (levelSignalMessage.startLevel) {
-                _game_map.startLevel();
+                _game_map->startLevel();
             } else {
-                _game_map.stopLevel();
+                _game_map->stopLevel();
             }
             break;
         }
@@ -77,6 +77,12 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage =
                 RTypeProtocol::deserializePlayerUpdateDataMessage(signal);
             handlePlayerValues(playerUpdateDataMessage);
+            break;
+        }
+        case RTypeProtocol::CHANGING_SCENE: {
+            RTypeProtocol::ChangingSceneMessage changingSceneMessage =
+                RTypeProtocol::deserializeChangingSceneMessage(signal);
+            handleChangingScene(changingSceneMessage);
             break;
         }
         default:
@@ -196,18 +202,21 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
 }
 
 void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) {
-    if (_entities.find(parsedPacket.uuid) != _entities.end()) {
-        std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
-                  << std::endl;
-        return;
-    }
+    // if (_entities.find(parsedPacket.uuid) != _entities.end()) {
+    //     std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
+    //               << std::endl;
+    //     return;
+    // }
     auto newEntity = _registry.spawn_entity();
+    std::cout << "New entity with UUID " << *newEntity << " created." << std::endl;
+    std::cout << "Parsing entity with UUID " << parsedPacket.uuid << std::endl;
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
             case RTypeProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
-                // std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+                std::cout << "Position: (" << position.x << ", " << position.y << "*newEntity"
+                          << *newEntity << ")\n";
                 _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
@@ -227,21 +236,13 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             }
             case RTypeProtocol::ComponentList::SPRITE: {
                 std::string sprite_str(component.second.begin(), component.second.end());
-                // std::cout << "Sprite: " << sprite_str << "\n";
+                std::cout << "Sprite: " << sprite_str << "*newEntity" << *newEntity << std::endl;
 
                 auto spriteSheet =
                     RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
                 if (spriteSheet) {
                     _registry.add_component(*newEntity, RealEngine::SpriteSheet{*spriteSheet});
                 } else {
-                    // if (sprite) {
-                    //     _registry.add_component(
-                    //         *newEntity,
-                    //         RealEngine::SpriteComponent{
-                    //             *sprite,
-                    //             parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK ? 1
-                    //                                                                          :
-                    //                                                                          0});
                     auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                     if (sprite) {
                         _registry.add_component(*newEntity,
@@ -270,7 +271,8 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             case RTypeProtocol::ComponentList::AUTO_DESTRUCTIBLE: {
                 float autoDestructible;
                 std::memcpy(&autoDestructible, component.second.data(), sizeof(autoDestructible));
-                // std::cout << "AutoDestructible: " << autoDestructible << "\n";
+                std::cout << "AutoDestructible: " << autoDestructible << "*newEntity" << *newEntity
+                          << std::endl;
                 _registry.add_component<RealEngine::AutoDestructible>(
                     *newEntity, RealEngine::AutoDestructible{autoDestructible});
                 break;
@@ -287,7 +289,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 break;
             }
             default:
-                std::cout << "Unknown component type: " << component.first << "\n";
+                std::cout << "Unknown component type: " << component.first << std::endl;
                 break;
         }
     }
@@ -325,14 +327,14 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
 }
 
 void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
-    _game_map.setScrollingSpeed(parsedPacket.scrollingSpeed);
-    _game_map.setXLevelPosition(parsedPacket.x_level_position);
-    _game_map.setIsMapLoaded(parsedPacket.isLoaded);
+    _game_map->setScrollingSpeed(parsedPacket.scrollingSpeed);
+    _game_map->setXLevelPosition(parsedPacket.x_level_position);
+    _game_map->setIsMapLoaded(parsedPacket.isLoaded);
     _serverTick = parsedPacket.server_tick;
-    std::cout << "Received map info: ScrollingSpeed: " << _game_map.getScrollingSpeed()
-              << ", XLevelPosition: " << _game_map.getXLevelPosition()
-              << ", isLoaded: " << _game_map.isMapLoaded() << " levelRunning"
-              << _game_map.levelRunning() << ", ServerTick: " << _serverTick << std::endl;
+    std::cout << "Received map info: ScrollingSpeed: " << _game_map->getScrollingSpeed()
+              << ", XLevelPosition: " << _game_map->getXLevelPosition()
+              << ", isLoaded: " << _game_map->isMapLoaded() << " levelRunning"
+              << _game_map->levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 
     if (parsedPacket.id_level_music != -1) {
         std::string level_music_str;
@@ -353,7 +355,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 level_music_str = "level_1";
                 break;
         }
-        _game_map.setMusicName(level_music_str);
+        _game_map->setMusicName(level_music_str);
     }
 
     for (const auto& bg : parsedPacket.backgrounds) {
@@ -379,19 +381,28 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 break;
         }
         Background background(_registry, bg.speed, backgroundStr);
-        _game_map.addBackground(background.getEntity(), _parallaxSystem);
+        _game_map->addBackground(background.getEntity(), _parallaxSystem);
     }
 
-    if (_game_map.levelRunning() == false && parsedPacket.isLevelRunning == true) {
-        _game_map.startLevel();
-        _game_map.synchroniseLevelBlockEntities();
-    } else if (_game_map.levelRunning() == true && parsedPacket.isLevelRunning == false) {
-        _game_map.stopLevel();
-        _game_map.synchroniseLevelBlockEntities();
+    if (_game_map->levelRunning() == false && parsedPacket.isLevelRunning == true) {
+        _game_map->startLevel();
+        _game_map->synchroniseLevelBlockEntities();
+    } else if (_game_map->levelRunning() == true && parsedPacket.isLevelRunning == false) {
+        _game_map->stopLevel();
+        _game_map->synchroniseLevelBlockEntities();
     }
 }
 
 void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                                   std::shared_ptr<RealEngine::Entity> newEntity) {
-    _entities.emplace(parsedPacket.uuid, newEntity);
+    if (parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK) {
+        _game_map->addBlock(newEntity, parsedPacket.uuid);
+    } else {
+        _entities.emplace(parsedPacket.uuid, newEntity);
+    }
+}
+
+void rtype::Game::handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket) {
+    std::cout << "Changing scene to: " << static_cast<int>(parsedPacket.scene_id) << std::endl;
+    _game_map->unloadLevel();
 }

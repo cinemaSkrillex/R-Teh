@@ -94,13 +94,22 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
 
     auto newEntity = netvarContainer->netvars.find("new_entity");
     if (newEntity == netvarContainer->netvars.end()) return;
+    auto entityType = netvarContainer->netvars.find("entity_type");
+    if (entityType == netvarContainer->netvars.end()) return;
 
     auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
     if (!newEntityValue || !*newEntityValue) return;
+    auto entity_type_int = std::any_cast<int>(entityType->second.value);
+    if (entity_type_int == -1) return;
+
+    RTypeProtocol::EntityType casted_entity_type =
+        static_cast<RTypeProtocol::EntityType>(entity_type_int);
 
     RTypeProtocol::NewEntityMessage newEntityMessage;
     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newEntityMessage.uuid         = entity;
+    newEntityMessage.entity_type  = casted_entity_type;
+    std::cout << "New entity type: " << static_cast<int>(entity_type_int) << std::endl;
 
     // Serialize position component
     auto* position = registry->get_component<RealEngine::Position>(entity);

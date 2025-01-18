@@ -19,9 +19,10 @@
 #include "Engine.hpp"
 
 namespace rtype {
+class Game;
 class GameMap {
    public:
-    GameMap(RealEngine::Registry& registry);
+    GameMap(RealEngine::Registry& registry, Game* game);
     ~GameMap();
     void updateLevel(float deltaTime);
     void startLevel();
@@ -29,6 +30,8 @@ class GameMap {
     void unloadLevel();
 
     void addBlock(std::shared_ptr<RealEngine::Entity> block, long int blockId) {
+        std::cout << "Adding block to game map" << "uuid: " << blockId << std::endl;
+        std::cout << "Block ID entity: " << *block << std::endl;
         _blockEntities.emplace_back(std::make_pair(blockId, block));
     }
     void addBackground(std::shared_ptr<RealEngine::Entity> background,
@@ -53,6 +56,7 @@ class GameMap {
 
    private:
     RealEngine::Registry&                                                 _registry;
+    Game*                                                                 _game;
     std::string                                                           _map_name;
     std::string                                                           _music_name      = "";
     float                                                                 _scrollingSpeed  = 0.0f;

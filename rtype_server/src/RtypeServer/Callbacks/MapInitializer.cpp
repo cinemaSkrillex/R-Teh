@@ -41,6 +41,7 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block
     RTypeProtocol::NewEntityMessage newTileMessage;
     newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newTileMessage.uuid         = *blockEntity;
+    newTileMessage.entity_type  = RTypeProtocol::EntityType::BLOCK;
     std::cout << "Block entity: " << *blockEntity << std::endl;
 
     auto& registry      = _gameInstance->getRegistryRef();
