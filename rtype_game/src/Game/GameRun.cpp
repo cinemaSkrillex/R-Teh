@@ -25,7 +25,6 @@ void rtype::Game::run() {
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _registry.run_systems(_deltaTime);
         _game_map.updateLevel(_deltaTime);
-        // const sf::IntRect direction = getPlayerNormalizedDirection();
         _playerUI.update();
 
         _temporaryTexts.erase(

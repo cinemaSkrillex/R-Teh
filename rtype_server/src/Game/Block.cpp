@@ -12,21 +12,28 @@ namespace rtype {
 static void collisionHandler(RealEngine::CollisionType collisionType,
                              RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
-    return;
     auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
 
     if (collisionType != RealEngine::CollisionType::SCREEN) return;
     if (!autoDestructible) {
         auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+        std::cout << "destroy_out_of_screen" << std::endl;
         if (container) {
-            bool destroy_out_of_screen =
-                std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value);
-            if (!destroy_out_of_screen) {
-                registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
+            std::cout << "check in container" << std::endl;
+            try {
+                if (std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
+                    false) {
+                    std::cout << "add_component" << std::endl;
+                    registry.add_component(entity,
+                                           RealEngine::AutoDestructible{-1.0f, true, false});
+                }
+            } catch (const std::bad_any_cast& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
             }
         }
+    } else {
+        autoDestructible->kill = false;
     }
-    autoDestructible->kill = false;
 }
 
 Block::Block(RealEngine::Registry& registry, sf::Vector2f position, const std::string& spriteName,
