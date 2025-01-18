@@ -44,30 +44,33 @@ class GameScene : public Scene {
         : _gameInstance(gameInstance),
           _server(server),
           _serverConfig(serverConfig),
-          _UdpServer(udpServer) {
-        initialize(_gameInstance->getRegistryRef());
-    }
+          _UdpServer(udpServer),
+          _isInitialized(false) {}
 
     void initialize(RealEngine::Registry& registry) override {
         // Initialization logic for MENU scene
         std::cout << "Initializing GAME scene" << std::endl;
-        std::cout << "Initializing GAME scene" << std::endl;
         auto        gameMap = _gameInstance->getMap();
         std::string path    = "../../assets/maps/";
-        // gameMap->loadFromJSON(path + "level_1.json");
-        // auto mapInitializer =
-        //     std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
-        // auto mobInitializer = std::make_shared<MobInitializer>(_gameInstance, _UdpServer);
+        gameMap->loadFromJSON(path + "level_short.json");
+        auto mapInitializer =
+            std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
 
-        // _server->startAndBroadcastLevel();
-        // for (auto& client : _UdpServer->getClients()) {
-        //     mapInitializer->initializeMap(client);
-        //     mobInitializer->initializeMobs(client);
-        // }
+        _gameInstance->start_level();
+        _server->BroadcastStartLevel();
+
+        for (auto& client : _UdpServer->getClients()) {
+            std::cout << "GAME yes i know New client connected: " << client << std::endl;
+            mapInitializer->initializeMap(client);
+        }
     }
 
     void update(float deltaTime) override {
-        // Update logic for MENU scene
+        if (!_isInitialized && _server->allClientsUnloadedMap()) {
+            std::cout << "All clients unloaded map" << std::endl;
+            initialize(_gameInstance->getRegistryRef());
+            _isInitialized = true;
+        }
     }
 
     void render() override {
@@ -79,6 +82,7 @@ class GameScene : public Scene {
     RtypeServer*                  _server;
     ServerConfig                  _serverConfig;
     std::shared_ptr<UDPServer>    _UdpServer;
+    bool                          _isInitialized;
 };
 
 #endif /* !GAMESCENE_HPP_ */

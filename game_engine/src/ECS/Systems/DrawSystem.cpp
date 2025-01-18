@@ -72,6 +72,9 @@ std::vector<std::pair<RealEngine::Sprite, int>> DrawSystem::updateWithoutDisplay
 
         if (sprite) {
             sprite->sprite.setPosition(position->x, position->y);
+            // std::cout << "Drawing sprite at position: [" << sprite->sprite.getPosition().x << ","
+            //           << sprite->sprite.getPosition().y << "]" << "entity id [" << entity << "]"
+            //           << std::endl;
             spritesWithZIndex.emplace_back(sprite->sprite, sprite->zIndex);
         } else if (spritesheet) {
             auto& sprite = spritesheet->sprites.at(spritesheet->spriteIndex);

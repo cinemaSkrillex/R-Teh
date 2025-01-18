@@ -7,6 +7,7 @@
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
 #include "../../include/shared/RtypeServerProtocol.hpp"
+#include "GameScene.hpp"
 #include "WaitingRoomScene.hpp"
 
 void RtypeServer::run() {
@@ -25,6 +26,12 @@ void RtypeServer::run() {
                 if (waitingRoomScene) {
                     waitingRoomScene->update(_deltaTime);
                 }
+            } else if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::GAME) {
+                auto gameScene =
+                    std::dynamic_pointer_cast<GameScene>(_scene_manager.getCurrentScene());
+                if (gameScene) {
+                    gameScene->update(_deltaTime);
+                }
             }
 
             handleClientMessages();
@@ -37,13 +44,31 @@ void RtypeServer::run() {
     }
 }
 
+void RtypeServer::handleMapUnloadedMessage(const asio::ip::udp::endpoint& client) {
+    _clientsUnloadedMap.insert(client);
+}
+
+bool RtypeServer::allClientsUnloadedMap() const {
+    std::cout << "Clients unloaded map size: " << _clientsUnloadedMap.size() << std::endl;
+    std::cout << "Server clients size: " << _server->getClients().size() << std::endl;
+    return _clientsUnloadedMap.size() == _server->getClients().size();
+}
+
 void RtypeServer::handleClientMessages() {
     for (const auto& client : _server->getClients()) {
         auto& player = _players.at(client);
         if (!player.getEntity()) {
             continue;
         }
-        const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
+        const auto& messages         = _server->get_unreliable_messages_from_endpoint(client);
+        const auto& reliableMessages = _server->get_reliable_messages_from_endpoint(client);
+
+        for (const auto& message : reliableMessages) {
+            auto baseMessage = RTypeProtocol::deserialize<800>(message);
+            if (baseMessage.message_type == RTypeProtocol::MAP_UNLOADED) {
+                handleMapUnloadedMessage(client);
+            }
+        }
 
         for (const auto& message : messages) {
             auto baseMessage = RTypeProtocol::deserialize<800>(message);
@@ -109,7 +134,6 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newEntityMessage.uuid         = entity;
     newEntityMessage.entity_type  = casted_entity_type;
-    std::cout << "New entity type: " << static_cast<int>(entity_type_int) << std::endl;
 
     // Serialize position component
     auto* position = registry->get_component<RealEngine::Position>(entity);

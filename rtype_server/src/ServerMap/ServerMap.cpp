@@ -48,6 +48,7 @@ void ServerMap::updateLevel(float deltaTime) {
         auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
+            std::cout << "Block position: " << position->x << std::endl;
         }
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
@@ -93,9 +94,15 @@ void ServerMap::unloadLevel() {
     _isLoaded        = false;
 }
 
-void ServerMap::startLevel() { _isLevelRunning = true; }
+void ServerMap::startLevel() {
+    std::cout << "START LEVEL servermap " << _isLevelRunning << std::endl;
+    _isLevelRunning = true;
+}
 
-void ServerMap::stopLevel() { _isLevelRunning = false; }
+void ServerMap::stopLevel() {
+    std::cout << "STOP LEVEL servermap " << _isLevelRunning << std::endl;
+    _isLevelRunning = false;
+}
 
 void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& json) {
     std::ofstream file(filepath, std::ofstream::binary);
@@ -116,13 +123,14 @@ void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& js
 void ServerMap::loadFromJSON(const std::string& filepath) {
     Json::Value root = readJSONFile(filepath);
     try {
-        _map_name = root["map_name"].asString();
-        _scrollingSpeed =
-            root["scrollingSpeed"]
-                .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
+        _map_name       = root["map_name"].asString();
+        _scrollingSpeed = root["scrollingSpeed"].asFloat();  // if scrollingSpeed is not present, it
+                                                             // will be 1.0f (thanks clamping)
         _scrollingSpeed = std::clamp(_scrollingSpeed, 0.0f, 1000.0f);
-        _music_name     = root["music"].asString();
-        // for all backgrounds, parse     std::vector<std::pair<std::string, float>> _backgrounds;
+        std::cout << "Scrolling speed: " << _scrollingSpeed << std::endl;
+        _music_name = root["music"].asString();
+        // for all backgrounds, parse     std::vector<std::pair<std::string, float>>
+        // _backgrounds;
         for (const auto& background : root["backgrounds"]) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();

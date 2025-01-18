@@ -81,7 +81,9 @@ void RtypeServer::broadcastStartLevel() {
     RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
     levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
     levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
-
+    std::cout << "getMap()->getIsLevelRunning() = " << _game_instance->getMap()->getIsLevelRunning()
+              << std::endl;
+    std::cout << "levelSignalMessage.startLevel = " << levelSignalMessage.startLevel << std::endl;
     // Serialize the LevelSignalMessage
     std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
 
@@ -89,15 +91,41 @@ void RtypeServer::broadcastStartLevel() {
     broadcastAllReliable(serializedMessage);
 }
 
-void RtypeServer::startAndBroadcastLevel() {
-    _game_instance->getMap()->startLevel();
+void RtypeServer::BroadcastStartLevel() {
     broadcastStartLevel();
+    std::cout << "broadcasting start level" << std::endl;
 }
 
-void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) {
+void RtypeServer::BroadcastStopLevel() {
+    broadcastStartLevel();
+    std::cout << "broadcasting stop level" << std::endl;
+    // we get the variables from getIsLevelRunning() and we broadcast it to all clients
+}
+
+void RtypeServer::startLevel() {
+    _game_instance->getMap()->startLevel();
+    std::cout << "Level started" << std::endl;
+}
+
+void RtypeServer::stopLevel() {
+    _game_instance->getMap()->stopLevel();
+    std::cout << "Level stopped" << std::endl;
+}
+
+void RtypeServer::broadcastEntityState(const RealEngine::Entity entity,
+                                       RealEngine::Registry*    registry) const {
     // broadcast position, angle
     auto* position = registry->get_component<RealEngine::Position>(entity);
     auto* rotation = registry->get_component<RealEngine::Rotation>(entity);
+
+    // auto*      netvarContainer = registry->get_component<RealEngine::NetvarContainer>(entity);
+    // const auto entity_type     = netvarContainer->getNetvar("entity_type");
+    // if (!entity_type) {
+    //     return;
+    // }
+    // if (std::any_cast<int>(entity_type->value) == 3) {
+    //     return;
+    // }
 
     if (!position) {
         return;
@@ -105,7 +133,7 @@ void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Re
 
     RTypeProtocol::EntityUpdateMessage entityStateMessage = {};
     entityStateMessage.message_type                       = RTypeProtocol::ENTITY_UPDATE;
-    entityStateMessage.uuid                               = entity;
+    entityStateMessage.uuid                               = static_cast<long>(entity);
     entityStateMessage.x                                  = position->x;
     entityStateMessage.y                                  = position->y;
     if (rotation) {
@@ -117,19 +145,20 @@ void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Re
     entityStateMessage.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
 
     // Serialize the EntityUpdateMessage
-    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(entityStateMessage);
+    const std::array<char, 800> serializedMessage =
+        RTypeProtocol::serialize<800>(entityStateMessage);
 
     // Broadcast the serialized message to all clients
     broadcastAllUnreliable(serializedMessage);
 }
 
-void RtypeServer::broadcastAllReliable(const std::array<char, 800>& message) {
+void RtypeServer::broadcastAllReliable(const std::array<char, 800>& message) const {
     for (const auto& client : _server->getClients()) {
         _server->send_reliable_packet(message, client);
     }
 }
 
-void RtypeServer::broadcastAllUnreliable(const std::array<char, 800>& message) {
+void RtypeServer::broadcastAllUnreliable(const std::array<char, 800>& message) const {
     for (const auto& client : _server->getClients()) {
         _server->send_unreliable_packet(message, client);
     }

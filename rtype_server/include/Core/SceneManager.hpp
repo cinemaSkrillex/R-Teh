@@ -2,6 +2,7 @@
 #define SCENEMANAGER_HPP_
 
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <unordered_map>
 
@@ -21,7 +22,9 @@ class SceneManager {
     void changeScene(SceneType type, RealEngine::Registry& registry) {
         auto it = _sceneFactories.find(type);
         if (it != _sceneFactories.end()) {
-            _currentScene = it->second(registry);
+            _currentScene     = it->second(registry);
+            _currentSceneType = type;
+            std::cout << "Changing scene to " << static_cast<int>(type) << std::endl;
         }
     }
 

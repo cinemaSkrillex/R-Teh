@@ -85,7 +85,10 @@ class ServerMap {
     std::string                                     getMusicName() const { return _music_name; }
     std::vector<std::pair<std::string, float>>      getBackgrounds() const { return _backgrounds; }
 
-    float getScrollingSpeed() const { return _scrollingSpeed; }
+    float getScrollingSpeed() const {
+        std::cout << "GETTER Scrolling speed: " << _scrollingSpeed << std::endl;
+        return _scrollingSpeed;
+    }
     float getXLevelPosition() const { return x_level_position; }
     bool  getIsLevelRunning() const { return _isLevelRunning; }
 

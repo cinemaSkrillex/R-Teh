@@ -19,14 +19,13 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     }
 
     // Send blocks
-    sendEntities(GameMap->getBlockEntities(), "block", sender);
+    // sendEntities(GameMap->getBlockEntities(), "block", sender);
     // sendEntities(GameMap->getWaves(), "wave", sender);
-
-    // Serialize and send map info
     RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
     std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
 
     _UdpServer->send_reliable_packet(serializedMapMessage, sender);
+    // Serialize and send map info
 }
 
 void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
@@ -84,8 +83,12 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     mapMessage.x_level_position = GameMap->getXLevelPosition();
     mapMessage.isLoaded         = GameMap->isLoaded();
     mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
-    mapMessage.server_tick      = _serverConfig.getConfigItem<int>("SERVER_TICK");
-    std::string musicName       = GameMap->getMusicName();
+    std::cout << "map scrolling speed: " << mapMessage.scrollingSpeed << std::endl;
+    std::cout << "map x level position: " << mapMessage.x_level_position << std::endl;
+    std::cout << "Map is loaded: " << mapMessage.isLoaded << std::endl;
+    std::cout << "Map is running: " << mapMessage.isLevelRunning << std::endl;
+    mapMessage.server_tick = _serverConfig.getConfigItem<int>("SERVER_TICK");
+    std::string musicName  = GameMap->getMusicName();
     if (musicName.empty()) {
         std::cerr << "Error: Music name is empty" << std::endl;
         return mapMessage;

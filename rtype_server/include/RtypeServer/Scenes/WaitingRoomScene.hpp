@@ -47,7 +47,8 @@ class WaitingRoomScene : public Scene {
         gameMap->loadFromJSON("../../assets/maps/level_waiting.json");
         auto mapInitializer =
             std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
-        _server->startAndBroadcastLevel();
+        _gameInstance->start_level();
+        _server->BroadcastStartLevel();
 
         for (auto& client : _UdpServer->getClients()) {
             std::cout << "Yes i know New client connected: " << client << std::endl;
@@ -110,22 +111,9 @@ class WaitingRoomScene : public Scene {
                             _UdpServer->send_reliable_packet(changeSceneMessage, client);
                         }
                         _gameInstance->getMap()->unloadLevel();
-                    }
-                    if (!container->getNetvar("change_scene_timer")) {
-                        std::cout << "Error: WaitingBlock entity does not have a change_scene_timer"
-                                     " netvar"
-                                  << std::endl;
-                        return;
+                        _server->BroadcastStartLevel();
                     }
                     netvar->value = timer;
-                    // std::cout << "IN PLAYER BOXTimer: " << timer << std::endl;
-                    // std::cout <<
-                    // "std::any_cast<float>(container->getNetvar(\"change_scene_timer\")"
-                    //              "->value): "
-                    //           << std::any_cast<float>(
-                    //                  container->getNetvar("change_scene_timer")->value)
-                    //           << std::endl;
-
                 } else if (playerInBox < static_cast<int>(_UdpServer->getClients().size())) {
                     container->getNetvar("change_scene_timer")->value = 1.0f;
                 }

@@ -1,642 +1,627 @@
 {
-    "map_name": "Level 1",
-    "scrollingSpeed": 50.0,
-    "backgrounds": [
-        {
-        "sprite": "big_stars_background",
-        "speed": -200.0
-        },
-        {
-        "sprite": "medium_stars_background",
-        "speed": -100.0
-        },
-        {
-        "sprite": "small_stars_background",
-        "speed": -50.0
-        }
-    ],
-    "music": "level_1",
-    "mapData": {
-        "tiles": [
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_1",
-                "position": [
-                    250.0,
-                    580.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_1",
-                "position": [
-                    250.0,
-                    0.0
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_1",
-                "position": [
-                    320.0,
-                    570.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_1",
-                "position": [
-                    320.0,
-                    20.0
-                ],
-                "rotation": 180.0
-            },
-
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_big_arm",
-                "position": [
-                    500.0,
-                    75.0
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_big_arm",
-                "position": [
-                    500.0,
-                    525.0
-                ],
-                "rotation": 0.0
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1000.0,
-                    250.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1000.0,
-                    282.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1180.0,
-                    370.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1180.0,
-                    402.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1260.0,
-                    90.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1260.0,
-                    122.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1360.0,
-                    490.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1360.0,
-                    522.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1490.0,
-                    150.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1490.0,
-                    182.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1610.0,
-                    250.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_rounded_obstacle",
-                "position": [
-                    1610.0,
-                    282.5
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_2",
-                "position": [
-                    1790.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_garbage_trail",
-                "position": [
-                    1950.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_garbage_trail",
-                "position": [
-                    2100.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_garbage_trail",
-                "position": [
-                    2250.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_garbage_trail",
-                "position": [
-                    2400.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_2",
-                "position": [
-                    2550.0,
-                    560.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_c",
-                "position": [
-                    1890.0,
-                    10.0
-                ],
-                "rotation": 180.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1902.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1915.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1927.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1940.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1952.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1965.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1977.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    1990.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_a",
-                "position": [
-                    2002.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_c",
-                "position": [
-                    2015.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2027.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2040.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2052.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2065.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2077.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2090.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_b",
-                "position": [
-                    2102.5,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_grid_block_a",
-                "position": [
-                    2115.0,
-                    10.0
-                ],
-                "rotation": 180.0              
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_5",
-                "position": [
-                    3115.0,
-                    40.0
-                ],
-                "rotation": 0.0
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_5",
-                "position": [
-                    3445.0,
-                    40.0
-                ],
-                "rotation": 0.0
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_5",
-                "position": [
-                    3615.0,
-                    40.0
-                ],
-                "rotation": 0.0
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_5",
-                "position": [
-                    3725.0,
-                    40.0
-                ],
-                "rotation": 0.0
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_6",
-                "position": [
-                    3325.0,
-                    500.0
-                ],
-                "rotation": 0.0
-            },
-
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_c",
-                "position": [
-                    4280.0,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_c",
-                "position": [
-                    4280.0,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4327.5,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4327.5,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4375.0,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4375.0,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4422.5,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4422.5,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4470.0,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4470.0,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4517.5,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4517.5,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4565.0,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_b",
-                "position": [
-                    4565.0,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_a",
-                "position": [
-                    4612.5,
-                    40.0
-                ],
-                "rotation": 180.0      
-            },
-            {
-                "type": "BLOCK",
-                "element": "lvl1_block_3_a",
-                "position": [
-                    4612.5,
-                    90.0
-                ],
-                "rotation": 180.0      
-            },
-        ],
-        "waves": [
-            {
-                "waveType": "3_planes_up",
-                "startPosition": [
-                    100.5,
-                    20.0
-                ]
-            },
-            {
-                "waveType": "3_planes_down",
-                "startPosition": [
-                    200.5,
-                    20.0
-                ]
-            },
-            {
-                "waveType": "mob_spawner_center",
-                "startPosition": [
-                    300.5,
-                    20.0
-                ]   
-            }
-        ],
-        "endCondition": {
-            "type": "BOSS",
-            "triggerPosition": [
-                100.5,
-                0.0
-            ],
-            "spawnPosition": [
-                500.5,
-                200.0
-            ],
-            "Entity": "eye_minion"
-        }
+  "map_name": "Level 1",
+  "scrollingSpeed": 100.0,
+  "backgrounds": [
+    {
+      "sprite": "big_stars_background",
+      "speed": -200.0
+    },
+    {
+      "sprite": "medium_stars_background",
+      "speed": -100.0
+    },
+    {
+      "sprite": "small_stars_background",
+      "speed": -50.0
     }
+  ],
+  "music": "level_1",
+  "mapData": {
+    "tiles": [
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_1",
+        "position": [
+          250.0,
+          580.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_1",
+        "position": [
+          250.0,
+          0.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_1",
+        "position": [
+          320.0,
+          570.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_1",
+        "position": [
+          320.0,
+          20.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_big_arm",
+        "position": [
+          500.0,
+          75.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_big_arm",
+        "position": [
+          500.0,
+          525.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1000.0,
+          250.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1000.0,
+          282.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1180.0,
+          370.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1180.0,
+          402.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1260.0,
+          90.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1260.0,
+          122.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1360.0,
+          490.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1360.0,
+          522.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1490.0,
+          150.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1490.0,
+          182.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1610.0,
+          250.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_rounded_obstacle",
+        "position": [
+          1610.0,
+          282.5
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_2",
+        "position": [
+          1790.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_garbage_trail",
+        "position": [
+          1950.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_garbage_trail",
+        "position": [
+          2100.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_garbage_trail",
+        "position": [
+          2250.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_garbage_trail",
+        "position": [
+          2400.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_2",
+        "position": [
+          2550.0,
+          560.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_c",
+        "position": [
+          1890.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1902.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1915.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1927.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1940.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1952.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1965.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1977.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          1990.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_a",
+        "position": [
+          2002.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_c",
+        "position": [
+          2015.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2027.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2040.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2052.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2065.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2077.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2090.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_b",
+        "position": [
+          2102.5,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_grid_block_a",
+        "position": [
+          2115.0,
+          10.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_5",
+        "position": [
+          3115.0,
+          40.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_5",
+        "position": [
+          3445.0,
+          40.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_5",
+        "position": [
+          3615.0,
+          40.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_5",
+        "position": [
+          3725.0,
+          40.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_6",
+        "position": [
+          3325.0,
+          500.0
+        ],
+        "rotation": 0.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_c",
+        "position": [
+          4280.0,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_c",
+        "position": [
+          4280.0,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4327.5,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4327.5,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4375.0,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4375.0,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4422.5,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4422.5,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4470.0,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4470.0,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4517.5,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4517.5,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4565.0,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_b",
+        "position": [
+          4565.0,
+          90.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_a",
+        "position": [
+          4612.5,
+          40.0
+        ],
+        "rotation": 180.0
+      },
+      {
+        "type": "BLOCK",
+        "element": "lvl1_block_3_a",
+        "position": [
+          4612.5,
+          90.0
+        ],
+        "rotation": 180.0
+      }
+    ],
+    "waves": [
+      {
+        "waveType": "3_eyes_minions",
+        "startPosition": [
+          100.5,
+          20.0
+        ]
+      },
+      {
+        "waveType": "3_planes_down",
+        "startPosition": [
+          200.5,
+          20.0
+        ]
+      }
+    ],
+    "endCondition": {
+      "type": "BOSS",
+      "triggerPosition": [
+        100.5,
+        0.0
+      ],
+      "spawnPosition": [
+        500.5,
+        200.0
+      ],
+      "Entity": "eye_minion"
+    }
+  }
 }

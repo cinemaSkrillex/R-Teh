@@ -31,6 +31,7 @@ enum MessageType : int {
     // PLAYER_UPDATE_HEALTH = 0x0E,
     PLAYER_UPDATE_DATA = 0x0D,
     CHANGING_SCENE     = 0x0E,
+    MAP_UNLOADED       = 0x0F,
 };
 
 enum ComponentList : int {

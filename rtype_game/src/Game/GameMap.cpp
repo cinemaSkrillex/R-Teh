@@ -16,19 +16,21 @@ GameMap::GameMap(RealEngine::Registry& registry, Game* game)
 
 GameMap::~GameMap() { std::cout << "GameMap destroyed" << std::endl; }
 
-void GameMap::updateLevel(float deltaTime) {
+void GameMap::updateLevel(const float deltaTime) {
     if (!_levelRunning) {
+        std::cout << "update level Level not running" << std::endl;
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
-    for (auto& block : _blockEntities) {
+    auto snapshot = _blockEntities;  // Copy for safe iteration
+    for (const auto& block : snapshot) {
         if (!block.second) {
             std::cout << "Block is null" << std::endl;
             continue;
         }
-        auto* position = _registry.get_component<RealEngine::Position>(block.second);
-        if (position) {
-            position->x -= _scrollingSpeed * deltaTime;
+        if (auto* position = _registry.get_component<RealEngine::Position>(*block.second)) {
+            float positionDelta = _scrollingSpeed * deltaTime;
+            position->x -= positionDelta;
         }
     }
     removeDeadBlocks();
@@ -90,12 +92,13 @@ void GameMap::unloadLevel() {
 }
 
 void GameMap::removeDeadBlocks() {
-    _blockEntities.erase(
-        std::remove_if(_blockEntities.begin(), _blockEntities.end(),
-                       [](const std::pair<long int, std::shared_ptr<RealEngine::Entity>>& block) {
-                           return block.second == nullptr;
-                       }),
-        _blockEntities.end());
+    for (auto it = _blockEntities.begin(); it != _blockEntities.end();) {
+        if (it->second == nullptr) {
+            it = _blockEntities.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
 void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,

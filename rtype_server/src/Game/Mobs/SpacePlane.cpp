@@ -44,7 +44,8 @@ SpacePlane::SpacePlane(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(
         _entity,
         RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("space_plane"), nullptr}}}});
+            {{"sprite_name", {"string", "sprite_name", std::string("space_plane"), nullptr}},
+             {"entity_type", {"int", "entity_type", 2, nullptr}}}});
 }
 
 SpacePlane::~SpacePlane() {}

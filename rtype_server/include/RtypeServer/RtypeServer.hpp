@@ -48,31 +48,33 @@ const float SNAP_TRESHOLD = 3.5f;
 
 class RtypeServer {
    private:
-    std::shared_ptr<UDPServer>                                _server;
-    std::shared_ptr<GameInstance>                             _game_instance;
-    ServerConfig                                              _server_config;
-    RealEngine::SceneManager                                  _scene_manager;
-    std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> _players;
-    float                                                     _deltaTime;
-    float                                                     _deltaTimeBroadcast;
-    sf::Clock                                                 _clock;
-    sf::Clock                                                 _broadcastClock;
-    std::chrono::steady_clock::time_point                     _startTime;
-    std::unordered_map<int, std::unique_ptr<IEvent>>          eventHandlers;
+    std::shared_ptr<UDPServer>                                               _server;
+    std::shared_ptr<GameInstance>                                            _game_instance;
+    ServerConfig                                                             _server_config;
+    RealEngine::SceneManager                                                 _scene_manager;
+    std::unordered_map<asio::ip::udp::endpoint, ServerPlayer>                _players;
+    float                                                                    _deltaTime;
+    float                                                                    _deltaTimeBroadcast;
+    sf::Clock                                                                _clock;
+    sf::Clock                                                                _broadcastClock;
+    std::chrono::steady_clock::time_point                                    _startTime;
+    std::unordered_map<int, std::unique_ptr<IEvent>>                         eventHandlers;
+    std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _clientsUnloadedMap;
 
     void initCallbacks();
     void initEventHandlers();
     void initScenes();
 
-    void        broadcastPlayerState(const ServerPlayer& player);
-    void        broadcastStartLevel();
-    void        broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
-    void        broadcastAllReliable(const std::array<char, 800>& message);
-    void        broadcastAllUnreliable(const std::array<char, 800>& message);
-    void        notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender);
+    void broadcastPlayerState(const ServerPlayer& player);
+    void broadcastStartLevel();
+    void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) const;
+    void broadcastAllReliable(const std::array<char, 800>& message) const;
+    void broadcastAllUnreliable(const std::array<char, 800>& message) const;
+    void notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender);
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
     void handleClientMessages();
+    void handleMapUnloadedMessage(const asio::ip::udp::endpoint& client);
     void runGameInstance(float deltaTime);
     void broadcastStates();
 
@@ -89,7 +91,11 @@ class RtypeServer {
                   ServerPlayer& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        ServerPlayer& player);
-    void startAndBroadcastLevel();
+    void BroadcastStartLevel();
+    void BroadcastStopLevel();
+    void startLevel();
+    void stopLevel();
+    bool allClientsUnloadedMap() const;
     ServerConfig getServerConfig() { return _server_config; }
     std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> getPlayers() { return _players; }
     ServerPlayer getPlayer(const asio::ip::udp::endpoint& endpoint) { return _players[endpoint]; }

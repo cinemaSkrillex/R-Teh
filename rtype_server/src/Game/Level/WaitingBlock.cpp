@@ -32,6 +32,9 @@ void WaitingBlock::initialize(RealEngine::Registry& registry, sf::Vector2f posit
     registry.add_component(
         _waitingEntity, RealEngine::Interpolation{
                             {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    // std::cout << "scrolling speed of block: " << scrollingSpeed << std::endl;
+    registry.add_component(_waitingEntity,
+                           RealEngine::Velocity{scrollingSpeed, 0.0f, {100.0f, 100.0f}, 0.0f});
     registry.add_component(_waitingEntity, RealEngine::SpriteComponent{_waitingBlockSprite});
     registry.add_component(_waitingEntity, RealEngine::Rotation{rotation});
     registry.add_component(_waitingEntity, RealEngine::Drawable{});
