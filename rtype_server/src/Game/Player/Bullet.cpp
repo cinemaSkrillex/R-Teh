@@ -18,7 +18,7 @@ static void addScoreToPlayer(RealEngine::Registry& registry, RealEngine::Entity 
     auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
     auto player   = registry.entity_from_index(playerID);
     if (!player) return;
-    auto playerScore = registry.get_component<RealEngine::Score>(*player);
+    auto playerScore           = registry.get_component<RealEngine::Score>(*player);
     auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
     if (playerScore && playerNetvarContainer) {
         // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;

@@ -7,8 +7,14 @@
 
 #pragma once
 
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <SFML/Graphics.hpp>
 #include <asio.hpp>
+#include <cstring>
+#include <iostream>
 #include <regex>
 #include <string>
 #include <thread>
@@ -19,6 +25,7 @@
 #include "../Core/Graphics/UI/Text.hpp"
 #include "../Core/Window.hpp"
 
+#define LauncherFont false
 class Launcher {
    public:
     Launcher();
@@ -34,7 +41,11 @@ class Launcher {
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
+    RealEngine::InputBox portBoxClient;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
-    bool                 clientStopped = false;
+    RealEngine::Text     LauncherText;
+    RealEngine::Text     GameLauncherText;
+    bool                 clientStopped          = false;
+    bool                 connectedButtonClicked = false;
 };
