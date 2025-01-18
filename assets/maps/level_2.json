@@ -202,7 +202,6 @@
                     20.0
                 ]
             },
-
         ],
         "endCondition": {
             "type": "BOSS",
@@ -211,7 +210,7 @@
                 20.0
             ],
             "spawnPosition": [
-                1000.5,
+                2200.5,
                 20.0
             ],
             "Entity": "eye_minion"

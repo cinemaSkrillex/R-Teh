@@ -23,6 +23,7 @@ GameInstance::GameInstance(bool serverVision)
       _healthSystem(),
       _netvarSystem(),
       _game_map(std::make_shared<ServerMap>(getRegistryRef())) {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     init_components();
     init_systems();
     init_textures();

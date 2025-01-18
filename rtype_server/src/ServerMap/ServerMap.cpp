@@ -50,10 +50,15 @@ void ServerMap::updateLevel(float deltaTime) {
             position->x -= _scrollingSpeed * deltaTime;
         }
     }
+    if (!bossAtEnd() && x_level_position >= _endPosition.x) {
+        stopLevel();
+    } else if (bossAtEnd() && _boss.triggered && !_registry.is_valid(*(_boss.bossEntity))) {
+        stopLevel();
+    }
     removeDeadBlocks();
 }
 
-std::vector<Map::WaveMob> ServerMap::invokeWaves() {
+std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
     // if (!_isLevelRunning) {
     //     return {};
     // }
@@ -65,6 +70,10 @@ std::vector<Map::WaveMob> ServerMap::invokeWaves() {
             enemiesToSpawn.insert(enemiesToSpawn.end(), wave.mobs.begin(), wave.mobs.end());
             _waves.erase(_waves.begin());
         }
+    }
+    if (bossAtEnd() && x_level_position >= _endPosition.x && !_boss.triggered) {
+        enemiesToSpawn.push_back(Map::WaveMob{("boss_" + _boss.bossType), _boss.position});
+        _boss.triggered = true;
     }
     return enemiesToSpawn;
 }
@@ -78,6 +87,7 @@ void ServerMap::unloadLevel() {
     if (_boss.bossEntity) {
         _registry.add_component(_boss.bossEntity, RealEngine::AutoDestructible{0.0f});
     }
+    _boss.bossEntity = nullptr;
     _scrollingSpeed  = 0.0f;
     x_level_position = 0.0f;
     _isLoaded        = false;
@@ -176,7 +186,25 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
     } catch (const std::exception& e) {
         std::cerr << "Error loading waves: " << e.what() << std::endl;
     }
-    _isLoaded = true;
+
+    // Load end level;
+
+    try {
+        const auto& end_level = root["mapData"]["endCondition"];
+        const auto& end_type  = end_level["type"].asString();
+        if (end_type == "BOSS") {
+            _endPosition    = {end_level["triggerPosition"][0].asFloat(),
+                               end_level["triggerPosition"][1].asFloat()};
+            _boss.position  = {end_level["spawnPosition"][0].asFloat(),
+                               end_level["spawnPosition"][1].asFloat()};
+            _boss.bossType  = end_level["Entity"].asString();
+            _boss.triggered = false;
+        } else if (end_type == "POSITION") {
+            _endPosition = {end_level["position"][0].asFloat(), end_level["position"][1].asFloat()};
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading end level: " << e.what() << std::endl;
+    }
 }
 
 void ServerMap::saveToJSON(const std::string& filepath) {

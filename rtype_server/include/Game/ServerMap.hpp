@@ -43,10 +43,10 @@ struct Wave {
 };
 
 struct Boss {
-    std::string                         bossType;  // e.g., "boss1" (filename of the boss JSON)
-    sf::Vector2f                        position;  // Starting position for the boss
-    std::shared_ptr<RealEngine::Entity> bossEntity;
-    bool                                triggered = false;
+    std::string                         bossType   = "";  // e.g., "eye_boss" make the entity spawn
+    sf::Vector2f                        position   = {-1, -1};  // Starting position for the boss
+    std::shared_ptr<RealEngine::Entity> bossEntity = nullptr;
+    bool                                triggered  = false;
 };
 
 }  // namespace Map
@@ -60,9 +60,13 @@ class ServerMap {
     ServerMap(RealEngine::Registry& registry);
     ~ServerMap();
     void                      updateLevel(float deltaTime);
-    std::vector<Map::WaveMob> invokeWaves();
-    void                      startLevel();
-    void                      stopLevel();
+    std::vector<Map::WaveMob> invokeLevelMobs();
+    bool bossAtEnd() const { return _boss.position.x != -1 && _boss.position.y != -1; }
+    void setBossEntity(std::shared_ptr<RealEngine::Entity> bossEntity) {
+        _boss.bossEntity = bossEntity;
+    }
+    void startLevel();
+    void stopLevel();
 
     void loadFromJSON(const std::string& filepath);
     void saveToJSON(const std::string& filepath);
@@ -86,20 +90,20 @@ class ServerMap {
     bool  getIsLevelRunning() const { return _isLevelRunning; }
 
    private:
-    RealEngine::Registry&                          _registry;
-    std::string                                    _map_name;
-    std::string                                    _music_name;
-    float                                          _scrollingSpeed  = 0.0f;
-    float                                          x_level_position = 0.0f;
-    std::vector<Map::Tile>                         _tiles;
-    std::vector<Map::Wave>                         _waves;
-    std::vector<std::shared_ptr<rtype::BaseBlock>> _blockEntities;
-    std::vector<std::pair<std::string, float>>     _backgrounds;
-    bool                                           _endBoss;
-    Map::Boss                                      _boss;
-    sf::Vector2f                                   _endPosition;
-    bool                                           _isLoaded = false;
-    bool                                           _isLevelRunning;
+    RealEngine::Registry&                      _registry;
+    std::string                                _map_name;
+    std::string                                _music_name;
+    float                                      _scrollingSpeed  = 0.0f;
+    float                                      x_level_position = 0.0f;
+    std::vector<Map::Tile>                     _tiles;
+    std::vector<Map::Wave>                     _waves;
+    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
+    std::vector<std::pair<std::string, float>> _backgrounds;
+    bool                                       _endBoss;
+    Map::Boss                                  _boss;
+    sf::Vector2f                               _endPosition = {-1, -1};
+    bool                                       _isLoaded    = false;
+    bool                                       _isLevelRunning;
 };
 
 #endif /* !ServerMap_HPP_ */

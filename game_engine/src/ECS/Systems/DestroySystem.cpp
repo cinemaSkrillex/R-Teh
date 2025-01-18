@@ -100,7 +100,7 @@ void DestroySystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<>();
 
     for (auto& entity : _deadEntities) {
-        registry.remove_entity(entity);
+        registry.kill_entity(entity);
     }
     _deadEntities.clear();
     if (entities.empty()) {

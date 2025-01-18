@@ -7,6 +7,7 @@ Window::Window(const std::string title, const sf::Vector2u size)
       _size(size),
       _style(sf::Style::Default),
       _view({VIEW_WIDTH / 2, VIEW_HEIGHT / 2}, {VIEW_WIDTH, VIEW_HEIGHT}) {
+    _blackScreen.setFillColor(sf::Color::Black);
     _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
     _window.setFramerateLimit(60);
     _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
@@ -14,6 +15,8 @@ Window::Window(const std::string title, const sf::Vector2u size)
         throw std::runtime_error("Impossible de créer la RenderTexture");
     }
     _renderTexture.setSmooth(false);
+    _blackScreen.setSize(sf::Vector2f(_window.getSize().x, _window.getSize().y));
+    _blackScreen.setFillColor(sf::Color::Black);
 }
 
 Window::Window(const std::string title, const sf::Vector2u size, View view)
@@ -25,11 +28,14 @@ Window::Window(const std::string title, const sf::Vector2u size, View view)
         throw std::runtime_error("Impossible de créer la RenderTexture");
     }
     _renderTexture.setSmooth(false);
+    _blackScreen.setSize(sf::Vector2f(_window.getSize().x, _window.getSize().y));
+    _blackScreen.setFillColor(sf::Color::Black);
 }
 
 Window::Window(const std::string title, const sf::Vector2u size, View view,
                const std::string shaderPath)
     : _title(title), _size(size), _style(sf::Style::Default), _view(view) {
+    _blackScreen.setFillColor(sf::Color::Black);
     _window.create(sf::VideoMode(_size.x, _size.y), _title, sf::Style::Default);
     _window.setFramerateLimit(60);
     _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
@@ -38,6 +44,8 @@ Window::Window(const std::string title, const sf::Vector2u size, View view,
     }
     _renderTexture.setSmooth(false);
     loadShader(shaderPath);
+    _blackScreen.setSize(sf::Vector2f(_window.getSize().x, _window.getSize().y));
+    _blackScreen.setFillColor(sf::Color::Black);
 }
 
 Window::~Window() { _window.close(); }
@@ -45,6 +53,7 @@ Window::~Window() { _window.close(); }
 void Window::clear() { _renderTexture.clear(); }
 
 void Window::display() {
+    _renderTexture.draw(_blackScreen);
     _renderTexture.display();
 
     sf::Sprite renderedScene(_renderTexture.getTexture());
@@ -58,7 +67,18 @@ void Window::display() {
     _window.display();
 }
 
-void Window::update() {
+void Window::update(float deltaTime) {
+    if (_isScreenBlack && _blackScreen.getFillColor().a < 255) {
+        _blackTransitionTime -= deltaTime;
+        float alpha =
+            std::clamp(255 * (1 - _blackTransitionTime / _blackTransitionTimeValue), 0.0f, 255.0f);
+        _blackScreen.setFillColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(alpha)));
+    } else if (!_isScreenBlack && _blackScreen.getFillColor().a > 0) {
+        _blackTransitionTime -= deltaTime;
+        float alpha =
+            std::clamp(255 * (_blackTransitionTime / _blackTransitionTimeValue), 0.0f, 255.0f);
+        _blackScreen.setFillColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(alpha)));
+    }
     _window.setView(_view.getView());
     while (_window.pollEvent(_event)) {
         if (_event.type == sf::Event::Closed) {
@@ -139,6 +159,7 @@ void Window::update() {
     }
     if (_event.type == sf::Event::Resized) {
         _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
+        _blackScreen.setSize(sf::Vector2f(_window.getSize().x, _window.getSize().y));
     }
 }
 
@@ -158,6 +179,12 @@ void Window::setStyle(sf::Uint32 style) {
     if (_style == style) return;
     _window.create(sf::VideoMode(_size.x, _size.y), _title, style);
     _style = style;
+}
+
+void Window::setBlackTransition(bool on, float time) {
+    _isScreenBlack            = on;
+    _blackTransitionTime      = std::clamp(time, 0.0f, 100.0f);
+    _blackTransitionTimeValue = std::clamp(time, 0.0f, 100.0f);
 }
 
 void Window::setView(sf::View& view) { _window.setView(view); }
