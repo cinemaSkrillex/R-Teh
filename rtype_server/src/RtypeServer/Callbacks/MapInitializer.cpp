@@ -19,7 +19,7 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     }
 
     // Send blocks
-    // sendEntities(GameMap->getBlockEntities(), "block", sender);
+    sendEntities(GameMap->getBlockEntities(), "block", sender);
     // sendEntities(GameMap->getWaves(), "wave", sender);
     RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
     std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
@@ -58,8 +58,8 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-    addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::INTERPOLATION,
-                          *Interpolation);
+    // addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::INTERPOLATION,
+    //                       *Interpolation);
 
     sf::FloatRect bounds = {0, 0, 16, 8};
     addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,

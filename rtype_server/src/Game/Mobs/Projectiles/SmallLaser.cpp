@@ -13,6 +13,7 @@ SmallLaser::SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, fl
     : _entity(registry.spawn_entity()),
       _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("small_laser"))) {
     _projSpriteSheet.emplace("normal", _projSprite);
+    std::cout << "SmallLaser created" << "entity: " << *_entity << std::endl;
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});

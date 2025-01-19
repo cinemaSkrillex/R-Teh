@@ -44,11 +44,12 @@ void ServerMap::updateLevel(float deltaTime) {
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
-    for (auto& block : _blockEntities) {
-        auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());
+    for (auto& [id, block] : _blockEntities) {
+        auto* position = _registry.get_component<RealEngine::Position>(*block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
-            std::cout << "Block position: " << position->x << std::endl;
+            std::cout << "Block position: " << position->x << "block: " << *block->getEntity()
+                      << std::endl;
         }
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
@@ -81,8 +82,11 @@ std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
 
 void ServerMap::unloadLevel() {
     _isLevelRunning = false;
-    for (auto& block : _blockEntities) {
-        if (block) _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+    for (auto& [id, block] : _blockEntities) {  // Structured binding for unordered_map
+        if (block) {
+            std::cout << "removing block " << id << std::endl;
+            _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+        }
     }
     _blockEntities.clear();
     if (_boss.bossEntity) {
@@ -153,13 +157,15 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
                 auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
                                                             tile.rotation, _scrollingSpeed,
                                                             RealEngine::CollisionType::SOLID);
-                _blockEntities.push_back(block);
+                // _blockEntities.push_back(block);
+                _blockEntities[*block->getEntity()] = block;
             }
             if (tile.type == "WAITING_BLOCK") {
                 auto waitingBlock = std::make_shared<rtype::WaitingBlock>(
                     _registry, tile.position, tile.element, tile.rotation,
                     RealEngine::CollisionType::OTHER);
-                _blockEntities.push_back(waitingBlock);
+                // _blockEntities.push_back(waitingBlock);
+                _blockEntities[*waitingBlock->getEntity()] = waitingBlock;
             }
         }
     } catch (const std::exception& e) {
@@ -261,9 +267,13 @@ void ServerMap::saveToJSON(const std::string& filepath) {
 }
 
 void ServerMap::removeDeadBlocks() {
-    _blockEntities.erase(std::remove_if(_blockEntities.begin(), _blockEntities.end(),
-                                        [](const std::shared_ptr<rtype::BaseBlock>& block) {
-                                            return block == nullptr;
-                                        }),
-                         _blockEntities.end());
+    for (auto it = _blockEntities.begin(); it != _blockEntities.end();) {
+        auto* position = _registry.get_component<RealEngine::Position>(it->second->getEntity());
+        if (!it->second || (position && position->x < -250)) {
+            _registry.remove_entity(*(it->second->getEntity()));
+            it = _blockEntities.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }

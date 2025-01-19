@@ -73,7 +73,7 @@ class WaitingRoomScene : public Scene {
         auto map    = _gameInstance->getMap();
         auto blocks = map->getBlockEntities();
         // find all the WaitingBlock entities and send them to the new client
-        for (const auto& block : blocks) {
+        for (const auto& [key, block] : blocks) {
             auto waitingBlock = std::dynamic_pointer_cast<rtype::WaitingBlock>(block);
             if (waitingBlock) {
                 auto waitingBlockEntity = *waitingBlock->getEntity();

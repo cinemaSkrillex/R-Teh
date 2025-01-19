@@ -22,7 +22,7 @@ void GameMap::updateLevel(const float deltaTime) {
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
-    auto snapshot = _blockEntities;  // Copy for safe iteration
+    auto snapshot = _blockEntities;
     for (const auto& block : snapshot) {
         if (!block.second) {
             std::cout << "Block is null" << std::endl;
@@ -31,6 +31,7 @@ void GameMap::updateLevel(const float deltaTime) {
         if (auto* position = _registry.get_component<RealEngine::Position>(*block.second)) {
             float positionDelta = _scrollingSpeed * deltaTime;
             position->x -= positionDelta;
+            std::cout << "Block position: " << position->x << ", " << position->y << std::endl;
         }
     }
     removeDeadBlocks();
@@ -93,7 +94,9 @@ void GameMap::unloadLevel() {
 
 void GameMap::removeDeadBlocks() {
     for (auto it = _blockEntities.begin(); it != _blockEntities.end();) {
-        if (it->second == nullptr) {
+        auto* position = _registry.get_component<RealEngine::Position>(it->second);
+        if (!it->second || (position && position->x < -300)) {
+            _registry.remove_entity(*it->second);
             it = _blockEntities.erase(it);
         } else {
             ++it;

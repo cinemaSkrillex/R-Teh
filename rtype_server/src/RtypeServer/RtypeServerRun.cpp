@@ -127,6 +127,11 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     auto entity_type_int = std::any_cast<int>(entityType->second.value);
     if (entity_type_int == -1) return;
 
+    if (entity_type_int == 3) {
+        std::cout << "found blocks; returning" << std::endl;
+        return;
+    }
+
     RTypeProtocol::EntityType casted_entity_type =
         static_cast<RTypeProtocol::EntityType>(entity_type_int);
 

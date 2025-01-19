@@ -42,15 +42,15 @@ void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
     }
 
     registry.add_component(_blockEntity, RealEngine::Position{position.x, position.y});
-    registry.add_component(
-        _blockEntity, RealEngine::Interpolation{
-                          {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    // registry.add_component(
+    //     _blockEntity, RealEngine::Interpolation{
+    //                       {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_blockEntity, RealEngine::SpriteComponent{_blockSprite});
     registry.add_component(_blockEntity, RealEngine::Rotation{rotation});
     registry.add_component(_blockEntity, RealEngine::Drawable{});
     std::cout << "scrolling speed of block BLOCK: " << scrollingSpeed << std::endl;
-    registry.add_component(_blockEntity,
-                           RealEngine::Velocity{scrollingSpeed, 0.0f, {1000.0f, 100.0f}, 0.0f});
+    // registry.add_component(_blockEntity,
+    //                        RealEngine::Velocity{scrollingSpeed, 0.0f, {1000.0f, 100.0f}, 0.0f});
     registry.add_component(_blockEntity,
                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                  spriteName,
@@ -62,7 +62,6 @@ void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
         RealEngine::NetvarContainer{
             {{"sprite_name", {"string", "sprite_name", std::string(spriteName), nullptr}},
              {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
-             {"new_entity", {"bool", "new_entity", true, nullptr}},
              {"entity_type", {"int", "entity_type", 3, nullptr}}}});
 }
 

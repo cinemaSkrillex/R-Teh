@@ -209,36 +209,45 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
     auto it = _entities.find(parsedPacket.uuid);
     if (it == _entities.end()) {
         // If not found in `_entities`, check in `_blockEntities`
-        auto _blockEntitiesIt = _game_map->getBlockEntities();
-        auto blockIt          = _blockEntitiesIt.find(parsedPacket.uuid);
-        if (blockIt == _blockEntitiesIt.end()) {
-            // If not found in `_blockEntities` either, exit the function
-            std::cout << "Entity with UUID " << parsedPacket.uuid
-                      << " not found in _entities or _blockEntities." << std::endl;
-            return;
-        }
-
-        // Handle the entity found in _blockEntities
-        std::shared_ptr<RealEngine::Entity> blockEntity = blockIt->second;
-        auto* blockPositionComponent = _registry.get_component<RealEngine::Position>(blockEntity);
-        auto* blockVelocityComponent = _registry.get_component<RealEngine::Velocity>(blockEntity);
-        if (!blockPositionComponent) {
-            std::cout << "Block entity with UUID " << parsedPacket.uuid
-                      << " has no Position component. Skipping update." << std::endl;
-            return;
-        }
-        if (blockVelocityComponent) {
-            blockVelocityComponent->vx = parsedPacket.x;
-            blockVelocityComponent->vy = parsedPacket.y;
-        }
-
-        blockPositionComponent->x = parsedPacket.x;
-        blockPositionComponent->y = parsedPacket.y;
-
-        std::cout << "Block entity " << parsedPacket.uuid << " position updated to ("
-                  << blockPositionComponent->x << ", " << blockPositionComponent->y << ")."
-                  << std::endl;
-
+        // auto _blockEntitiesIt = _game_map->getBlockEntities();
+        // auto blockIt          = _blockEntitiesIt.find(parsedPacket.uuid);
+        // if (blockIt == _blockEntitiesIt.end()) {
+        //     // If not found in `_blockEntities` either, exit the function
+        //     std::cout << "Entity with UUID " << parsedPacket.uuid
+        //               << " not found in _entities or _blockEntities." << std::endl;
+        //     return;
+        // }
+        //
+        // // Handle the entity found in _blockEntities
+        // std::shared_ptr<RealEngine::Entity> blockEntity = blockIt->second;
+        // auto* positionComponent = _registry.get_component<RealEngine::Position>(blockEntity);
+        // auto* rotationComponent = _registry.get_component<RealEngine::Rotation>(blockEntity);
+        // auto* interpolationComponent =
+        //     _registry.get_component<RealEngine::Interpolation>(blockEntity);
+        //
+        // if (rotationComponent && parsedPacket.angle != -1) {
+        //     rotationComponent->angle = parsedPacket.angle;
+        // }
+        //
+        // if (interpolationComponent) {
+        //     positionComponent->x                 = interpolationComponent->end.x;
+        //     positionComponent->y                 = interpolationComponent->end.y;
+        //     interpolationComponent->start        = {positionComponent->x, positionComponent->y};
+        //     interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
+        //     interpolationComponent->step         = 1.f / parsedPacket.step;
+        //     interpolationComponent->current_step = 0.f;
+        //     interpolationComponent->reset        = true;
+        //
+        //     std::cout << "Block " << parsedPacket.uuid << " updated to (" << parsedPacket.x <<
+        //     ","
+        //               << parsedPacket.y << ")." << std::endl;
+        // } else {
+        //     if (!positionComponent) return;
+        //
+        //     positionComponent->x = parsedPacket.x;
+        //     positionComponent->y = parsedPacket.y;
+        // }
+        // return;
         return;
     }
 
@@ -247,6 +256,7 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
     if (playerIt != _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> entity = it->second;
+
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
     auto* rotationComponent      = _registry.get_component<RealEngine::Rotation>(entity);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);

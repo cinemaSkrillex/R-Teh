@@ -26,9 +26,9 @@ class MapInitializer {
     ServerConfig                  _serverConfig;
 
     template <typename T>
-    void sendEntities(const std::vector<T>& entities, const std::string& type,
-                      const asio::ip::udp::endpoint& sender) {
-        for (const auto& entity : entities) {
+    void sendEntities(const std::unordered_map<std::size_t, std::shared_ptr<T>>& entities,
+                      const std::string& type, const asio::ip::udp::endpoint& sender) {
+        for (const auto& [key, entity] : entities) {
             if (type == "block") {
                 std::array<char, 800> message;
                 processBlock(entity, message);
@@ -39,9 +39,9 @@ class MapInitializer {
 
     void processMessage(const std::array<char, 800>&   message,
                         const asio::ip::udp::endpoint& sender) {
-        // for (const auto& client : _UdpServer->getClients()) {
-        //     _UdpServer->send_reliable_packet(message, client);
-        // }
+        for (const auto& client : _UdpServer->getClients()) {
+            _UdpServer->send_reliable_packet(message, client);
+        }
     }
 
     void                      processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
