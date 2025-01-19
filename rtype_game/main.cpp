@@ -4,16 +4,30 @@
 #include "Game/Game.hpp"
 
 int main(int argc, char* argv[]) {
-    // Check and parse command-line arguments
-    if (argc != 4) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
-                  << std::endl;
-        return 1;
-    }
 
-    std::string    server_ip   = argv[1];
-    unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-    unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    std::string server_ip;
+    unsigned short server_port;
+    unsigned short client_port;
+
+    if (LaunchGameWithoutArgs == true) {
+        rtype::LaunchGame launcher;
+        launcher.run();
+        
+        server_ip = launcher.getServerIp();
+        server_port = launcher.getServerPort();
+        client_port = launcher.getClientPort();
+        
+    } else {
+        if (argc != 4) {
+            std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
+                    << std::endl;
+            exit(1);
+        }
+
+        server_ip   = argv[1];
+        server_port = static_cast<unsigned short>(std::stoi(argv[2]));
+        client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    }
 
     try {
         // Initialize ASIO and the UDP client
