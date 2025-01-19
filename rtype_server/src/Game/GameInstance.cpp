@@ -60,7 +60,13 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     // _registry.update(deltaTime);
-    // Then update remaining mobs
+    for (auto& mob : _enemies) {
+        _movementSystem.update(_registry, mob, deltaTime);
+    }
+
+    for (auto& bullet : _bullets) {
+        _movementSystem.update(_registry, bullet, deltaTime);
+    }
     if (_serverVision) {
         _window->clear();
         _window->update(deltaTime);
@@ -72,7 +78,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
-    // _radiusSystem.update(_registry, deltaTime);
+    _radiusSystem.update(_registry);
     _targetRadiusSystem.update(_registry);
     _particleSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
@@ -85,14 +91,6 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     auto enemies_to_spawn = _game_map->invokeLevelMobs();
 
     manageInGameEntities(enemies_to_spawn, destroyedEntities);
-
-    for (auto& mob : _enemies) {
-        _movementSystem.update(_registry, mob, deltaTime);
-    }
-
-    for (auto& bullet : _bullets) {
-        _movementSystem.update(_registry, bullet, deltaTime);
-    }
 
     return destroyedEntities;
 };

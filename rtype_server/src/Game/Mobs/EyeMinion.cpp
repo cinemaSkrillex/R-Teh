@@ -56,15 +56,16 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
                                                  false,
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
-
-    registry.add_component(_entity, RealEngine::Health{15, 50});
-    registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
+    registry.add_component(_entity, RealEngine::Health{15, 15});
+    registry.add_component(_entity,
+                           RealEngine::AI{rushAndAimTowardsTarget, goStraightConstant, true});
     registry.add_component(_entity, RealEngine::TargetRadius{200.0f});
     registry.add_component(_entity, RealEngine::Damage{5});
     registry.add_component(
         _entity, RealEngine::NetvarContainer{{
                      {"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
                      {"new_entity", {"bool", "new_entity", true, nullptr}},
+                     {"entity_type", {"int", "entity_type", 2, nullptr}},
                      {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
                      {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}},
                      {"powerup_drop", {"float", "powerup_drop", 20.f, nullptr}},

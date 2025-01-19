@@ -30,7 +30,7 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     std::string path = "../../assets/maps/";
-    _game_map->loadFromJSON(path + "level_1.json");
+    _game_map->loadFromJSON(path + "free_level.json");
 }
 
 void GameInstance::init_components() {
@@ -161,6 +161,8 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("fireball", path + "enemies/fireball.png");
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("eye_laser",
+                                                   path + "enemies/the_eye/eye_laser.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
                                                    {0, 0, 16 * 4, 16},

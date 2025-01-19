@@ -8,12 +8,13 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 
 class SimpleShoot {
    public:
-    SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle, float speed);
+    SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, float angle);
     ~SimpleShoot();
 
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }

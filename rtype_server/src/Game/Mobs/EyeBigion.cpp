@@ -9,9 +9,19 @@
 
 namespace rtype {
 
-static void agressiveBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                              float deltaTime) {
-    rushTowardsTarget(registry, entity, deltaTime);
+static void makeEyeSpawn(RealEngine::Registry& registry, RealEngine::Entity entity,
+                         RealEngine::Netvar& currentNetvar, float deltaTime) {
+    float cooldown = std::any_cast<float>(currentNetvar.value);
+    auto* position = registry.get_component<RealEngine::Position>(entity);
+
+    if (cooldown <= 0 && position) {
+        if (rand() % 2 == 0) {
+            EyeBomber eyeBomber(registry, {position->x, position->y});
+        }
+        cooldown = 5.0f;
+    }
+    cooldown -= deltaTime;
+    currentNetvar.value = cooldown;
 }
 
 EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position)
@@ -22,15 +32,14 @@ EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position)
                          *(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_angry")));
 
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_components(
-        _entity,
-        RealEngine::SpriteSheet{
-            _spriteSheet, "normal", 0, {23, 16}, false, true, 120, {17, 8}, sf::Clock()},
-        RealEngine::Drawable{});
-    // 23, 16 size and 17, 8 center for normal form
-    // 21, 16 size and 16, 8 center for angry form
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
-    registry.add_component(_entity, RealEngine::Acceleration{60.0f, 5.0f, 0.5f});
+        _entity, RealEngine::SpriteSheet{
+                     _spriteSheet, "normal", 0, {23, 16}, false, true, 120, {17, 8}, sf::Clock()});
+    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {100.0f, 100.0f}, 0.8f});
+    registry.add_component(_entity, RealEngine::Acceleration{40.0f, 40.0f, 0.5f});
     registry.add_component(_entity, RealEngine::Rotation{0.0f});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
@@ -38,15 +47,22 @@ EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position)
                                                  false,
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
-    registry.add_component(_entity, RealEngine::Health{100, 100});
-    registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, noBehavior, true});
-    registry.add_component(_entity, RealEngine::Damage{40});
+    registry.add_component(_entity, RealEngine::Health{80, 80});
+    registry.add_component(_entity,
+                           RealEngine::AI{rushAndAimTowardsTarget, goStraightConstant, true});
+    registry.add_component(_entity, RealEngine::Damage{20});
+    registry.add_component(_entity, RealEngine::TargetRadius{300.0f});
     registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
-    registry.add_component(_entity, RealEngine::Score{50});
     registry.add_component(
-        _entity,
-        RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("eye_bigion"), nullptr}}}});
+        _entity, RealEngine::NetvarContainer{{
+                     {"sprite_name", {"string", "sprite_name", std::string("eye_bigion"), nullptr}},
+                     {"new_entity", {"bool", "new_entity", true, nullptr}},
+                     {"entity_type", {"int", "entity_type", 2, nullptr}},
+                     {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
+                     {"eye_spawn_cooldown", {"float", "eye_spawn_cooldown", 10.0f, makeEyeSpawn}},
+                     {"powerup_drop", {"float", "powerup_drop", 30.f, nullptr}},
+                 }});
+    registry.add_component(_entity, RealEngine::Score{120});
 }
 
 EyeBigion::~EyeBigion() {}

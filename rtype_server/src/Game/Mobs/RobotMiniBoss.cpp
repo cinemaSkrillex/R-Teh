@@ -155,6 +155,7 @@ RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f positi
         RealEngine::NetvarContainer{{
             {"sprite_name", {"string", "sprite_name", std::string("robot_mini_boss"), nullptr}},
             {"new_entity", {"bool", "new_entity", true, nullptr}},
+            {"entity_type", {"int", "entity_type", 2, nullptr}},
             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
             {"shootCooldown", {"float", "shootCooldown", 2.5f, updateShootCooldown}},
             {"vortexCooldown", {"float", "vortexCooldown", 5.0f, updateVortexCooldown}},
