@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Game/Mobs/Behaviors.hpp"
+#include "Game/Mobs/Projectiles/SpaceMissile.hpp"
 
 namespace rtype {
 class RobotBossMinion {

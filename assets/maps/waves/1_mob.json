@@ -1,10 +1,10 @@
 {
     "wave": [
         {
-            "mobName": "eye_bigion",
+            "mobName": "robot_mini_boss",
             "position": [
                 500.5,
-                500.0
+                200.0
             ]
         }
     ]

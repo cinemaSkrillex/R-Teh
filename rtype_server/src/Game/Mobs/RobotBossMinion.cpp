@@ -14,20 +14,9 @@ static void goForward(RealEngine::Registry& registry, RealEngine::Entity entity,
     auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
     auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
 
-    if (position && acceleration) {
-        position->x += acceleration->ax * deltaTime;
-        position->y += acceleration->ay * deltaTime;
-    }
-}
-
-static void goInVerticalDirection(RealEngine::Registry& registry, RealEngine::Entity entity,
-                                  float deltaTime) {
-    auto* position     = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
-
-    if (position && acceleration) {
-        position->y += acceleration->ay * deltaTime;
+    if (position && velocity && acceleration) {
+        velocity->vx += acceleration->ax;
+        velocity->vy = acceleration->ay;
     }
 }
 
@@ -52,14 +41,33 @@ static void alignOnTargetOnY(RealEngine::Registry& registry, RealEngine::Entity 
     }
 }
 
+static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
+                                RealEngine::Netvar& currentNetvar, float deltaTime) {
+    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.get_component<RealEngine::Position>(entity);
+    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    float cooldown  = std::any_cast<float>(currentNetvar.value);
+
+    if (cooldown <= 0) {
+        if (rand() % 4 <= 2) {
+            SpaceMissile shoot(registry, {position->x, position->y}, 180.f);
+            cooldown = 5.f;
+        } else {
+            cooldown = 5.f;
+        }
+    }
+    cooldown -= deltaTime;
+    currentNetvar.value = cooldown;
+}
+
 RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()),
       _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
     _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{0, 0, {130.f, 300.f}, 0.5f});
-    registry.add_component(_entity, RealEngine::Acceleration{10.0f, 100.0f, 0.5f});
-
+    registry.add_component(_entity, RealEngine::Velocity{0, 0, {130.f, 200.f}, 0.5f});
+    registry.add_component(_entity, RealEngine::Acceleration{
+                                        -10.0f, position.y > VIEW_HEIGHT / 2 ? -50.f : 50.f, 0.5f});
     registry.add_component(
         _entity,
         RealEngine::SpriteSheet{
@@ -84,6 +92,7 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
             {"sprite_name", {"string", "sprite_name", std::string("robot_boss_minion"), nullptr}},
             {"new_entity", {"bool", "new_entity", true, nullptr}},
             {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
+            {"shoot_cooldown", {"float", "shoot_cooldown", 5.0f, updateShootCooldown}},
             {"powerup_drop", {"float", "powerup_drop", 50.f, nullptr}},
         }});
 }

@@ -113,7 +113,8 @@ static void updateMinionsCooldown(RealEngine::Registry& registry, RealEngine::En
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
-        RobotBossMinion minion(registry, {position->x, position->y});
+        RobotBossMinion minion(registry, {800.f, 600.f});
+        RobotBossMinion minion2(registry, {800.f, 0.f});
         cooldown = 15.0f;
         std::cout << "Minion spawned" << std::endl;
     }
@@ -146,7 +147,7 @@ RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f positi
                                                  takesDamage});
     registry.add_component(_entity, RealEngine::AI{alignOnTargetOnY, noBehavior, true});
     registry.add_component(_entity, RealEngine::Damage{50});
-    registry.add_component(_entity, RealEngine::Health{450, 450});
+    registry.add_component(_entity, RealEngine::Health{850, 850});
     registry.add_component(_entity, RealEngine::Rotation{0.f});
     registry.add_component(_entity, RealEngine::Damage{25});
     registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});

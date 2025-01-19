@@ -9,46 +9,41 @@
 
 namespace rtype {
 
-static void straight_line_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
-                                   float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
-}
-
 static void agressive_behavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                                float deltaTime) {
-    // no agressive behavior
+    auto* target         = registry.get_component<RealEngine::Target>(entity);
+    auto* targetPosition = registry.get_component<RealEngine::Position>(target->target);
+
+    registry.add_component(entity, RealEngine::Acceleration{30.0f, 30.0f, 0.5f});
+    aimAtTarget(entity, targetPosition, registry, 0.08f, deltaTime);
+    goStraightAngle(registry, entity, deltaTime);
 }
 
-SpaceMissile::SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position, float angle,
-                           float speed)
+SpaceMissile::SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position, float angle)
     : _entity(registry.spawn_entity()),
       _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_missile"))) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {850.f, 850.f}, 0.5f});
+    registry.add_component(_entity, RealEngine::Velocity{0, 0, {90.f, 90.f}, 0.5f});
+    registry.add_component(_entity, RealEngine::Acceleration{-40.f, 0.f, 0.5f});
     registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});
-    registry.add_component(_entity, RealEngine::Drawable{});
-    // registry.add_component(
-    //     _entity, RealEngine::Collision{
-    //                  {0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-    //                  "mob",
-    //                  false,
-    //                  RealEngine::CollisionType::ENEMY,
-    //                  [this](RealEngine::CollisionType collisionType, RealEngine::Registry&
-    //                  registry,
-    //                         RealEngine::Entity collider, RealEngine::Entity entity) {
-    //                      mob_collision_handler(collisionType, registry, collider, entity);
-    //                  }});
     registry.add_component(_entity,
-                           RealEngine::AI{agressive_behavior, straight_line_behavior, true});
-    registry.add_component(_entity, RealEngine::Damage{50});
-    registry.add_component(_entity, RealEngine::Health{40, 40});
+                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                                                 "mob",
+                                                 false,
+                                                 RealEngine::CollisionType::ENEMY_BULLET,
+                                                 takesDamage});
+    registry.add_component(_entity, RealEngine::AI{agressive_behavior, goStraightConstant, true});
+    registry.add_component(_entity, RealEngine::TargetRadius{200.0f});
+    registry.add_component(_entity, RealEngine::Damage{20});
+    registry.add_component(_entity, RealEngine::Health{10, 10});
     registry.add_component(_entity, RealEngine::Rotation{angle});
     registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
         _entity,
-        RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("space_missile"), nullptr}}}});
+        RealEngine::NetvarContainer{{
+            {"sprite_name", {"string", "sprite_name", std::string("space_missile"), nullptr}},
+            {"new_entity", {"bool", "new_entity", true, nullptr}},
+        }});
 }
 
 SpaceMissile::~SpaceMissile() {}
