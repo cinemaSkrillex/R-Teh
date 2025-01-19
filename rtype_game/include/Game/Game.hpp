@@ -27,7 +27,7 @@
 
 namespace rtype {
 
-#define LaunchGameWithoutArgs true
+#define LaunchGameWithoutArgs false
 class Game {
    public:
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
