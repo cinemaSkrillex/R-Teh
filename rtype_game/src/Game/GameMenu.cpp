@@ -42,8 +42,10 @@ void GameMenu::init_sprites() {
     _PlayButton = RealEngine::Sprite(*(AssetManagerInstance.getSprite("play_button")));
     _PlayButton.setPosition(VIEW_WIDTH / 2, 400);
     _PlayButton.setSmooth(true);
+    _PlayButtonUI = RealEngine::Button(_PlayButton);
+    _PlayButtonUI.setHoverColor(sf::Color::Green);
     _ExitButton = RealEngine::Sprite(*(AssetManagerInstance.getSprite("exit_button")));
-    _ExitButton.setPosition(600, 620);
+    _ExitButton.setPosition(600, 640);
     _ExitButton.setSmooth(true);
     _GammaPlusButton = RealEngine::Sprite(*(AssetManagerInstance.getSprite("plus_button")));
     _GammaPlusButton.setPosition(600, 500);
@@ -60,10 +62,14 @@ void GameMenu::init_text() {
     if (assetLauncher == true) {
         path = "assets/fonts/";
     }
-    // _GammaText      = RealEngine::Text("Gamma", path + "arial.ttf");
-    // _SaturationText = RealEngine::Text("Saturation", path + "arial.ttf");
-    // _GammaText.setPosition(200, 400);
-    // _SaturationText.setPosition(200, 450);
+    _GammaText      = RealEngine::Text("Gamma", path + "arial.ttf");
+    _SaturationText = RealEngine::Text("Saturation", path + "arial.ttf");
+    _GammaText.setPosition(500, 500);
+    _GammaText.setCharacterSize(30);
+    _GammaText.setColor(255, 255, 255, 255);
+    _SaturationText.setPosition(500, 575);
+    _SaturationText.setCharacterSize(30);
+    _SaturationText.setColor(255, 255, 255, 255);
     // _InputBoxIP =
     //     RealEngine::InputBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1",
     //                          path + "arial.ttf", RealEngine::InputBox::ContentType::IpAddress);
@@ -73,8 +79,6 @@ void GameMenu::init_text() {
     // _InputBoxClientPort =
     //     RealEngine::InputBox(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "8081",
     //                          path + "arial.ttf", RealEngine::InputBox::ContentType::Numeric);
-    _GammaText.setPosition(200, 400);
-    _SaturationText.setPosition(200, 450);
 }
 
 void GameMenu::go_to_online_game() {
@@ -88,8 +92,11 @@ bool GameMenu::run(float deltaTime) {
     if (_startGame && _window.getTransitionTimer() <= 0.f) {
         return false;
     }
+    while (_window.getRenderWindow().pollEvent(_window.getEvent())) {
+        _PlayButtonUI.handleEvent(_window.getEvent(), [this]() { go_to_online_game(); });
+    }
     _GameLogo.draw(_window.getRenderTexture());
-    _PlayButton.draw(_window.getRenderTexture());
+    _PlayButtonUI.draw(_window.getRenderTexture());
     _ExitButton.draw(_window.getRenderTexture());
     _GammaPlusButton.draw(_window.getRenderTexture());
     _GammaMinusButton.draw(_window.getRenderTexture());

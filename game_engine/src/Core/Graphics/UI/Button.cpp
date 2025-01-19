@@ -11,40 +11,86 @@ namespace RealEngine {
 
 Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& labelText,
                const std::string& fontPath)
-    : label(labelText, fontPath) {
+    : label(labelText, fontPath),
+      _useSprite(false),
+      _visible(true),
+      _originalColor(sf::Color::White),
+      _hoverColor(sf::Color::White) {
     box.setSize(size);
     box.setPosition(position);
     box.setFillColor(sf::Color::White);
     centerText();
 }
 
-void Button::draw(sf::RenderTexture& window) {
-    if (!_visible) {
-        window.draw(box);
-        label.draw(window);
-    }
+Button::Button(Sprite spriteButton)
+    : _visible(true),
+      _useSprite(true),
+      _originalColor(sf::Color::White),
+      _hoverColor(sf::Color::White) {
+    sprite = spriteButton;
+    box.setSize({sprite.getBounds().width, sprite.getBounds().height});
+    box.setPosition(sprite.getPosition());
 }
 
-void Button::handleEvent(const sf::Event& event, std::function<void()> onClick) {
-    if (event.type == sf::Event::MouseButtonPressed) {
-        if (box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y) &&
-            event.mouseButton.button == sf::Mouse::Left) {
-            onClick();
+Button::~Button() {}
+
+void Button::draw(sf::RenderTexture& window) {
+    if (_visible) {
+        if (_useSprite) {
+            std::cout << "draw sprite" << std::endl;
+
+            sprite.draw(window);
+        } else {
+            window.draw(box);
+            label.draw(window);
         }
     }
 }
 
+void Button::handleEvent(const sf::Event& event, std::function<void()> onClick) {
+    if (box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+        if (_useSprite) {
+            sprite.setColor(_hoverColor);
+        } else {
+            box.setFillColor(_hoverColor);
+        }
+    } else {
+        if (_useSprite) {
+            sprite.setColor(_originalColor);
+        } else {
+            box.setFillColor(_originalColor);
+        }
+    }
+    if (event.type == sf::Event::MouseButtonPressed &&
+        event.mouseButton.button == sf::Mouse::Left) {
+        onClick();
+    }
+}
+
 void Button::setPosition(const sf::Vector2f& position) {
-    box.setPosition(position);
+    if (_useSprite) {
+        sprite.setPosition(position.x, position.y);
+        box.setPosition(sprite.getPosition());
+    } else {
+        box.setPosition(position);
+    }
     centerText();
 }
 
 void Button::setSize(const sf::Vector2f& size) {
-    box.setSize(size);
+    if (_useSprite) {
+        sprite.setScale(size.x, size.y);
+        box.setSize({sprite.getBounds().width, sprite.getBounds().height});
+    } else {
+        box.setSize(size);
+    }
     centerText();
 }
 
-void Button::setFillColor(const sf::Color& color) { box.setFillColor(color); }
+void Button::setFillColor(const sf::Color& color) {
+    _originalColor = color;
+    box.setFillColor(color);
+}
 
 void Button::setTextColor(const sf::Color& color) {
     label.setColor(color.r, color.g, color.b, color.a);

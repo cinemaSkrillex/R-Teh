@@ -32,6 +32,7 @@ class Sprite : public IRender {
     sf::Sprite                   getSprite() const { return _sprite; }
     sf::Image                    getImage() const { return _image; }
     std::shared_ptr<sf::Texture> getTexture() const { return _texture; }
+    sf::Vector2f                 getPosition() const { return _sprite.getPosition(); }
     void                         scaleFromSize(const float width, const float height);
     bool                         isTextureOfBounds();
     sf::FloatRect                getBounds() { return _sprite.getGlobalBounds(); }

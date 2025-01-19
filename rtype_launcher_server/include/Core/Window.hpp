@@ -30,6 +30,7 @@ class Window {
     void               setVueSmooth(bool smooth);
     void               setBlackTransition(bool on, float time);
     float              getTransitionTimer() { return _blackTransitionTime; }
+    sf::Event&         getEvent() { return _event; }
     sf::RenderWindow&  getRenderWindow() { return _window; }
     sf::RenderTexture& getRenderTexture() { return _renderTexture; }
     View&              getView() { return _view; }

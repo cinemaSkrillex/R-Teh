@@ -27,6 +27,7 @@ class GameMenu {
     std::shared_ptr<UDPClient> _clientUDP;
     RealEngine::Sprite         _GameLogo;
     RealEngine::Sprite         _PlayButton;
+    RealEngine::Button         _PlayButtonUI;
     RealEngine::Sprite         _ExitButton;
     RealEngine::Sprite         _GammaPlusButton;
     RealEngine::Sprite         _GammaMinusButton;
