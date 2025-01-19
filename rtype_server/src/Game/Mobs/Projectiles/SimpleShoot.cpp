@@ -23,7 +23,7 @@ SimpleShoot::SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, 
                                                  false,
                                                  RealEngine::CollisionType::ENEMY_BULLET,
                                                  takesDamage});
-    registry.add_component(_entity, RealEngine::AI{noBehavior, goStraightAngle, true});
+    registry.add_component(_entity, RealEngine::AI{noBehavior, goStraightConstantAngle, true});
     registry.add_component(_entity, RealEngine::Damage{10});
     registry.add_component(_entity, RealEngine::Health{5, 5});
     registry.add_component(_entity, RealEngine::Rotation{angle});

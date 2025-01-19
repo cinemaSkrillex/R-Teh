@@ -163,6 +163,8 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("eye_laser",
                                                    path + "enemies/the_eye/eye_laser.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("simple_shoot",
+                                                   path + "enemies/simple_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
                                                    {0, 0, 16 * 4, 16},

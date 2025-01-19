@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Game/Mobs/Behaviors.hpp"
-
+#include "Game/Mobs/Projectiles/SimpleShoot.hpp"
 // this enemy has basic movements with different patterns and shoots straight bullets
 
 namespace rtype {
