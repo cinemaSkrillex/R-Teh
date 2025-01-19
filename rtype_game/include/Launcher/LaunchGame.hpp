@@ -51,6 +51,9 @@ class LaunchGame {
     RealEngine::InputBox portBox;
     RealEngine::InputBox portBoxClient;
     RealEngine::Button   launchButton;
+    RealEngine::Text     labelIp;
+    RealEngine::Text     labelServerPort;
+    RealEngine::Text     labelClientPort;
 
     std::string    serverIp;
     unsigned short serverPort;

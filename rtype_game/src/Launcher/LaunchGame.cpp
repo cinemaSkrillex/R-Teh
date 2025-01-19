@@ -21,7 +21,10 @@ LaunchGame::LaunchGame()
                     assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
                     RealEngine::InputBox::ContentType::Numeric),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
-                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
+                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"), 
+        labelIp("Server IP", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+        labelServerPort("Server Port", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+        labelClientPort("Client Port", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
     initUIComponents();
     initBackground();
 }
@@ -29,11 +32,15 @@ LaunchGame::LaunchGame()
 LaunchGame::~LaunchGame() { delete launcherBackground; }
 
 void LaunchGame::initUIComponents() {
-    ipBox.setFillColor(sf::Color::Green);
-    portBox.setFillColor(sf::Color::Green);
-    portBoxClient.setFillColor(sf::Color::Green);
 
-    launchButton.setFillColor(sf::Color::Green);
+    labelIp.setPosition(200, 125);
+    labelServerPort.setPosition(200, 225);
+    labelClientPort.setPosition(200, 325);
+    ipBox.setFillColor(sf::Color(0, 255, 0, 26));
+    portBox.setFillColor(sf::Color(0, 255, 0, 26));
+    portBoxClient.setFillColor(sf::Color(0, 255, 0, 26));
+
+    launchButton.setFillColor(sf::Color(0, 255, 0, 128));
     launchButton.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
@@ -66,6 +73,13 @@ void LaunchGame::run() {
             ipBox.handleEvent(event);
             portBox.handleEvent(event);
             portBoxClient.handleEvent(event);
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                ipBox.setFocus(ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+                portBox.setFocus(portBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+                portBoxClient.setFocus(
+                    portBoxClient.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+            }
         }
 
         float deltaTime = clock.restart().asSeconds();
