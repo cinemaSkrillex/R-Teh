@@ -19,8 +19,8 @@
 #include <string>
 #include <thread>
 
-#include "LauncherBackground.hpp"
 #include "Engine.hpp"
+#include "LauncherBackground.hpp"
 
 namespace rtype {
 class LaunchGame {
@@ -44,10 +44,8 @@ class LaunchGame {
 
     RealEngine::Window   window;
     RealEngine::Registry registry;
-    LauncherBackground* launcherBackground;
+    LauncherBackground*  launcherBackground;
     sf::Clock            clock;
-
-
 
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;

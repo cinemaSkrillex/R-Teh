@@ -27,7 +27,7 @@ void LauncherBackground::update(float deltaTime) {
     _offset += _speed * deltaTime;
 
     // Assurer que les sprites se déplacent en boucle
-    if (_offset >= 800) { // 800 est la largeur de la fenêtre
+    if (_offset >= 800) {  // 800 est la largeur de la fenêtre
         _offset = 0;
     }
 
@@ -40,4 +40,4 @@ void LauncherBackground::draw(sf::RenderTarget& target) {
     target.draw(_sprite1);
     target.draw(_sprite2);
 }
-}
+}  // namespace rtype

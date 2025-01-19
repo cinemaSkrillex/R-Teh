@@ -26,9 +26,7 @@ LaunchGame::LaunchGame()
     initBackground();
 }
 
-LaunchGame::~LaunchGame() {
-    delete launcherBackground;
-}
+LaunchGame::~LaunchGame() { delete launcherBackground; }
 
 void LaunchGame::initUIComponents() {
     ipBox.setFillColor(sf::Color::Green);
@@ -42,12 +40,11 @@ void LaunchGame::initUIComponents() {
     portBoxClient.centerText();
 }
 
-
 void LaunchGame::initBackground() {
-    launcherBackground = new LauncherBackground(
-        assetLauncher ? "assets/sprites/r_type/backgrounds/stars.png"
-                      : "../../assets/sprites/r_type/backgrounds/stars.png",
-        50.f);
+    launcherBackground =
+        new LauncherBackground(assetLauncher ? "assets/sprites/r_type/backgrounds/stars.png"
+                                             : "../../assets/sprites/r_type/backgrounds/stars.png",
+                               50.f);
 }
 
 void LaunchGame::run() {
@@ -78,7 +75,6 @@ void LaunchGame::run() {
         window.display();
     }
 }
-
 
 void LaunchGame::draw() {
     window.update(0);
