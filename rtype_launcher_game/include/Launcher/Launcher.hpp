@@ -41,7 +41,6 @@ class Launcher {
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
-    RealEngine::InputBox portBoxClient;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
     RealEngine::Text     LauncherText;
