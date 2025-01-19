@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "Game/Mobs/Behaviors.hpp"
 
 namespace rtype {
 

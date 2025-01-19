@@ -3,7 +3,7 @@
     "scrollingSpeed": 40.0,
     "backgrounds": [
         {
-            "sprite": "spac",
+            "sprite": "space",
             "speed": -10.0
         }
     ],
@@ -31,9 +31,9 @@
         ],
         "waves": [
             {
-                "waveType": "wave1",
+                "waveType": "1_mob",
                 "startPosition": [
-                    100.5,
+                    10.5,
                     20.0
                 ]
             }

@@ -181,6 +181,14 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("fireball", path + "enemies/fireball.png");
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("eye_laser",
+                                                   path + "enemies/the_eye/eye_laser.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("space_missile",
+                                                   path + "enemies/space_missile.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("simple_shoot",
+                                                   path + "enemies/simple_shoot.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("mini_boss_shoot",
+                                                   path + "enemies/mini_boss_shoot.png");
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
                                                    {0, 0, 16 * 4, 16},
                                                    {GAME_SCALE - 1, GAME_SCALE - 1});

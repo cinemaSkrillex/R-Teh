@@ -136,6 +136,9 @@ void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, 
         if (distance > 10.0f) {
             float accelerationX = dx / distance * 6.0f;
             float accelerationY = dy / distance * 6.0f;
+            std::cout << "angleRad: " << rotation->angle << std::endl;
+            std::cout << "accelerationX: " << accelerationX << " accelerationY: " << accelerationY
+                      << std::endl;
 
             velocity->vx += (accelerationX * deltaTime) * 100.0f;
             velocity->vy += (accelerationY * deltaTime) * 100.0f;
@@ -193,8 +196,19 @@ void destroyOutOfScreen(RealEngine::CollisionType collisionType, RealEngine::Reg
                         RealEngine::Entity entity) {
     auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
 
-    if (!autoDestructible || collisionType != RealEngine::CollisionType::SCREEN) return;
-    autoDestructible->kill = false;
+    if (collisionType != RealEngine::CollisionType::SCREEN) return;
+    if (!autoDestructible) {
+        auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+        if (container) {
+            if (container->getNetvar("destroy_out_of_screen") &&
+                std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
+                    false) {
+                registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
+            }
+        }
+    } else {
+        autoDestructible->kill = false;
+    }
 }
 
 void noCollisionBehavior(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,

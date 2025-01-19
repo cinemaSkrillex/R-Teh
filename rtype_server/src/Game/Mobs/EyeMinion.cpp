@@ -11,9 +11,14 @@ namespace rtype {
 
 static void simpleBehavior(RealEngine::Registry& registry, RealEngine::Entity entity,
                            float deltaTime) {
-    auto* eyeRotation     = registry.get_component<RealEngine::Rotation>(entity);
-    auto* eyeVelocity     = registry.get_component<RealEngine::Velocity>(entity);
-    auto* eyeAcceleration = registry.get_component<RealEngine::Acceleration>(entity);
+    registry.add_component(entity, RealEngine::Acceleration{-60.0f, 0.0f, 0.5f});
+    goStraightConstant(registry, entity, deltaTime);
+}
+
+static void adjustSpeedAndRush(RealEngine::Registry& registry, RealEngine::Entity entity,
+                               float deltaTime) {
+    registry.add_component(entity, RealEngine::Acceleration{60.0f, 30.0f, 0.5f});
+    rushAndAimTowardsTarget(registry, entity, deltaTime);
 }
 
 static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -49,27 +54,26 @@ EyeMinion::EyeMinion(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});
     registry.add_component(_entity, RealEngine::Acceleration{60.0f, 30.0f, 0.5f});
-    registry.add_component(_entity, RealEngine::Rotation{0.0f});
+    registry.add_component(_entity, RealEngine::Rotation{180.0f});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                  "mob",
                                                  false,
                                                  RealEngine::CollisionType::ENEMY,
                                                  takesDamage});
-
-    registry.add_component(_entity, RealEngine::Health{15, 50});
-    registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, simpleBehavior, true});
+    registry.add_component(_entity, RealEngine::Health{15, 15});
+    registry.add_component(_entity, RealEngine::AI{adjustSpeedAndRush, simpleBehavior, true});
     registry.add_component(_entity, RealEngine::TargetRadius{200.0f});
     registry.add_component(_entity, RealEngine::Damage{5});
-    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
     registry.add_component(
-        _entity,
-        RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
-             {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}},
-             {"new_entity", {"bool", "new_entity", true, nullptr}},
-             {"powerup_drop", {"float", "powerup_drop", 70.f, nullptr}},
-             {"entity_type", {"int", "entity_type", 2, nullptr}}}});
+        _entity, RealEngine::NetvarContainer{{
+                     {"sprite_name", {"string", "sprite_name", std::string("eye_minion"), nullptr}},
+                     {"new_entity", {"bool", "new_entity", true, nullptr}},
+                     {"entity_type", {"int", "entity_type", 2, nullptr}},
+                     {"destroy_out_of_screen", {"bool", "destroy_out_of_screen", false, nullptr}},
+                     {"shootCooldown", {"float", "shootCooldown", 3.5f, updateShootCooldown}},
+                     {"powerup_drop", {"float", "powerup_drop", 20.f, nullptr}},
+                 }});
     registry.add_component(_entity, RealEngine::Score{50});
 }
 
