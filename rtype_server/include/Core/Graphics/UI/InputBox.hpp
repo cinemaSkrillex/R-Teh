@@ -33,6 +33,7 @@ class InputBox {
     void          centerText();
     void          drawDebug(sf::RenderTexture& window);
     void          setFocus(bool focus);
+    void updateCursorPosition();
     sf::FloatRect getGlobalBounds() const;
 
    private:
@@ -42,6 +43,9 @@ class InputBox {
     size_t             characterLimit;
     bool               isActive;
     std::string        currentText;
+    sf::RectangleShape cursor;
+    sf::Clock          cursorClock;
+    bool              cursorVisible;
 
     bool isValidCharacter(uint32_t unicode) const;
 };
