@@ -11,15 +11,33 @@ namespace rtype {
 
 static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
+
+    if (!registry.is_valid(entity)) {
+        std::cerr << "Entity is no longer valid: " << entity << std::endl;
+        return;
+    }
     auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
     auto* position  = registry.get_component<RealEngine::Position>(entity);
     auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    if (!currentNetvar.value.has_value()) {
+        std::cerr << "Netvar value is empty for entity: " << entity << std::endl;
+        return;
+    }
     float cooldown  = std::any_cast<float>(currentNetvar.value);
+
+    if (!container) {
+        std::cerr << "Invalid container component for entity: " << entity << std::endl;
+        return;
+    }
+    if (!position || !rotation) {
+        std::cerr << "Invalid position or rotation component for entity: " << entity << std::endl;
+        return;
+    }
 
     if (cooldown <= 0) {
         if (rand() % 3 <= 1) {
             SimpleShoot shoot(registry, {position->x, position->y}, 90);
-            SimpleShoot shoot2(registry, {position->x, position->y}, 270);
+            // SimpleShoot shoot2(registry, {position->x, position->y}, 270);
             cooldown = 2.5f;
         } else {
             cooldown = 1.5f;
