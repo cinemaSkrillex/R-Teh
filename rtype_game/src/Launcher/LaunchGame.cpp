@@ -33,9 +33,9 @@ LaunchGame::~LaunchGame() { delete launcherBackground; }
 
 void LaunchGame::initUIComponents() {
 
-    labelIp.setPosition(200, 125);
-    labelServerPort.setPosition(200, 225);
-    labelClientPort.setPosition(200, 325);
+    labelIp.setPosition(400, 125);
+    labelServerPort.setPosition(400, 225);
+    labelClientPort.setPosition(400, 325);
     ipBox.setFillColor(sf::Color(0, 255, 0, 26));
     portBox.setFillColor(sf::Color(0, 255, 0, 26));
     portBoxClient.setFillColor(sf::Color(0, 255, 0, 26));
@@ -94,8 +94,11 @@ void LaunchGame::draw() {
     window.update(0);
     launcherBackground->draw(window.getRenderTexture());
     launchButton.draw(window.getRenderTexture());
+    labelIp.draw(window.getRenderTexture());
     ipBox.draw(window.getRenderTexture());
+    labelServerPort.draw(window.getRenderTexture());
     portBox.draw(window.getRenderTexture());
+    labelClientPort.draw(window.getRenderTexture());
     portBoxClient.draw(window.getRenderTexture());
 }
 
