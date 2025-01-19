@@ -23,29 +23,28 @@
 
 namespace rtype {
 class LaunchGame {
-    public:
-        LaunchGame();
-        void run();
-        bool isValidIp(const std::string& ip);
-        bool isValidPort(const std::string& port);
-        std::string getServerIp() const;
-        unsigned short getServerPort() const;
-        unsigned short getClientPort() const;
+   public:
+    LaunchGame();
+    void           run();
+    bool           isValidIp(const std::string& ip);
+    bool           isValidPort(const std::string& port);
+    std::string    getServerIp() const;
+    unsigned short getServerPort() const;
+    unsigned short getClientPort() const;
 
-        bool infoProvided = false;
-    
-    private:
-        void startGame();
-    
-        RealEngine::Window   window;
-        RealEngine::InputBox ipBox;
-        RealEngine::InputBox portBox;
-        RealEngine::InputBox portBoxClient;
-        RealEngine::Button   launchButton;
+    bool infoProvided = false;
 
-        std::string serverIp;
-        unsigned short serverPort;
-        unsigned short clientPort;
+   private:
+    void startGame();
+
+    RealEngine::Window   window;
+    RealEngine::InputBox ipBox;
+    RealEngine::InputBox portBox;
+    RealEngine::InputBox portBoxClient;
+    RealEngine::Button   launchButton;
+
+    std::string    serverIp;
+    unsigned short serverPort;
+    unsigned short clientPort;
 };
-} // namespace rtype
-
+}  // namespace rtype

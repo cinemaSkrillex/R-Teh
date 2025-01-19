@@ -9,14 +9,19 @@
 
 namespace rtype {
 
-LaunchGame::LaunchGame() : window("Game Launcher", sf::Vector2u(800, 600)),
-      ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
-           RealEngine::InputBox::ContentType::IpAddress),
-      portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+LaunchGame::LaunchGame()
+    : window("Game Launcher", sf::Vector2u(800, 600)),
+      ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1",
+            assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+            RealEngine::InputBox::ContentType::IpAddress),
+      portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
+              assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
-      portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+      portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
+                    assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
                     RealEngine::InputBox::ContentType::Numeric),
-      launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
+      launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
+                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
     ipBox.setFillColor(sf::Color::Green);
     portBox.setFillColor(sf::Color::Green);
     portBoxClient.setFillColor(sf::Color::Green);
@@ -34,7 +39,8 @@ void LaunchGame::run() {
         while (window.getRenderWindow().pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 if (!infoProvided) {
-                    std::cout << "You need to provide server IP and ports to start the game." << std::endl;
+                    std::cout << "You need to provide server IP and ports to start the game."
+                              << std::endl;
                     exit(1);
                 }
                 window.close();
@@ -58,25 +64,20 @@ void LaunchGame::run() {
     }
 }
 
-std::string LaunchGame::getServerIp() const {
-    return serverIp;
-}
+std::string LaunchGame::getServerIp() const { return serverIp; }
 
-unsigned short LaunchGame::getServerPort() const {
-    return serverPort;
-}
+unsigned short LaunchGame::getServerPort() const { return serverPort; }
 
-unsigned short LaunchGame::getClientPort() const {
-    return clientPort;
-}
+unsigned short LaunchGame::getClientPort() const { return clientPort; }
 
 void rtype::LaunchGame::startGame() {
-    if (!isValidIp(ipBox.getText()) || !isValidPort(portBox.getText()) || !isValidPort(portBoxClient.getText())) {
+    if (!isValidIp(ipBox.getText()) || !isValidPort(portBox.getText()) ||
+        !isValidPort(portBoxClient.getText())) {
         std::cerr << "Invalid IP or port." << std::endl;
         return;
     }
 
-    serverIp = ipBox.getText();
+    serverIp   = ipBox.getText();
     serverPort = static_cast<unsigned short>(std::stoi(portBox.getText()));
     clientPort = static_cast<unsigned short>(std::stoi(portBoxClient.getText()));
     window.close();
@@ -92,4 +93,4 @@ bool LaunchGame::isValidPort(const std::string& port) {
     const std::regex port_pattern(R"(^\d{4}$)");
     return std::regex_match(port, port_pattern);
 }
-} // namespace rtype
+}  // namespace rtype
