@@ -25,18 +25,14 @@ static void makeEntitySpawn(RealEngine::Registry& registry, RealEngine::Entity e
 }
 
 MobSpawnerShip::MobSpawnerShip(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()),
-      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("mob_spawner_ship"))) {
-    _mobSpriteSheet.emplace("normal", _mobSprite);
+    : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {850.f, 850.f}, 0.5f});
-    registry.add_component(
-        _entity,
-        RealEngine::SpriteSheet{
-            _mobSpriteSheet, "normal", 0, {63, 50}, false, true, 135, {32, 25}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("mob_spawner_ship");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
                                                  "mob",

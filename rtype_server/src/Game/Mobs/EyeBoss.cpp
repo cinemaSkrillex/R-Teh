@@ -7,8 +7,6 @@
 
 #include "Game/Mobs/EyeBoss.hpp"
 
-// this mob is a WIP commented lines needs old class variables that will be replaced with netvars
-
 namespace rtype {
 
 static void circularAttack(RealEngine::Registry& registry, RealEngine::Entity entity,
@@ -203,27 +201,15 @@ static void doNothing(RealEngine::Registry& registry, RealEngine::Entity entity)
 }
 
 EyeBoss::EyeBoss(RealEngine::Registry& registry, sf::Vector2f position)
-    : _state(EyeBossState::SHORT_RANGE),
-      _entity(registry.spawn_entity()),
-      _shootCooldown(0.0f),
-      _shootPhaseTimer(0.0f),
-      _isInShootPhase(false) {
-    _bossSheet.emplace(
-        "short", *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_short_range")));
-    _bossSheet.emplace("mid",
-                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_mid_range")));
-    _bossSheet.emplace("long",
-                       *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_long_range")));
-
+    : _entity(registry.spawn_entity()) {
     registry.add_components(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 1.8f});
     registry.add_component(_entity, RealEngine::Acceleration{2.0f, 2.0f, 2.0f});
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(
-        _entity, RealEngine::SpriteSheet{
-                     _bossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("eye_boss");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity, RealEngine::Rotation{180.0f});
     registry.add_component(_entity,
