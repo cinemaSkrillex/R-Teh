@@ -53,6 +53,9 @@ DirectionalCanon::DirectionalCanon(RealEngine::Registry& registry, sf::Vector2f 
       _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("directional_canon"))) {
     _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Acceleration{level_speed, 0, 0});
     registry.add_component(
         _entity,

@@ -23,6 +23,9 @@ SpaceMissile::SpaceMissile(RealEngine::Registry& registry, sf::Vector2f position
     : _entity(registry.spawn_entity()),
       _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_missile"))) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {90.f, 90.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{-40.f, 0.f, 0.5f});
     registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});

@@ -133,6 +133,9 @@ RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f positi
     _mobSpriteSheet.emplace("fordward", _fordwardMobSprite);
     _mobSpriteSheet.emplace("backwards", _backwardMobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {50.f, 200.f}, 0.5f});
     registry.add_component(
         _entity,

@@ -94,6 +94,9 @@ SpaceDrill::SpaceDrill(RealEngine::Registry& registry, sf::Vector2f position)
       _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_drill"))) {
     _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {550.f, 550.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{-1600.0f, 70.0f, 0.5f});
     registry.add_component(

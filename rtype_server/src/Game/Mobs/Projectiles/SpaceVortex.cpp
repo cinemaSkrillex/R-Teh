@@ -23,6 +23,9 @@ SpaceVortex::SpaceVortex(RealEngine::Registry& registry, sf::Vector2f position)
       _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("space_vortex"))) {
     _projSpriteSheet.emplace("normal", _projSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{100.0f, 0, {850.f, 850.f}, 0.5f});
     registry.add_component(
         _entity,

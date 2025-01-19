@@ -16,6 +16,9 @@ SimpleShoot::SimpleShoot(RealEngine::Registry& registry, sf::Vector2f position, 
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {210.f, 210.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{210.f, 210.f, 105.f});
     registry.add_component(_entity, RealEngine::SpriteComponent{_projSprite});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},

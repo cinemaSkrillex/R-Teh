@@ -24,7 +24,9 @@ static void adjustSpeedAndRush(RealEngine::Registry& registry, RealEngine::Entit
 EyeBomber::EyeBomber(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Drawable{});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("eye_bomber");
     registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {135.0f, 135.0f}, 0.8f});

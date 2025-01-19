@@ -65,6 +65,9 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
       _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
     _mobSpriteSheet.emplace("normal", _mobSprite);
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {130.f, 200.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{
                                         -10.0f, position.y > VIEW_HEIGHT / 2 ? -50.f : 50.f, 0.5f});
