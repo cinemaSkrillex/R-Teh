@@ -5,6 +5,7 @@
 namespace RealEngine {
 class Text : public IRender {
    public:
+    Text() = default;
     Text(const std::string text, const std::string fontPath);
     Text(const std::string text, sf::Font font);
     ~Text();

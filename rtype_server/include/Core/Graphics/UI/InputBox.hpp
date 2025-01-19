@@ -16,9 +16,11 @@ class InputBox {
    public:
     enum class ContentType { Text, Numeric, Alphanumeric, IpAddress };
 
+    InputBox() = default;
     InputBox(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& defaultText,
              const std::string& fontPath, ContentType contentType = ContentType::Text,
              size_t characterLimit = 256);
+    ~InputBox();
 
     void          draw(sf::RenderTexture& window);
     void          handleEvent(const sf::Event& event);

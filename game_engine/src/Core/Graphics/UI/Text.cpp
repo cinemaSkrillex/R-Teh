@@ -7,7 +7,6 @@
 
 #include "../include/Core/Graphics/UI/Text.hpp"
 
-#include <iostream>
 namespace RealEngine {
 
 Text::Text(const std::string text, const std::string fontPath) {

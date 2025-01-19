@@ -17,6 +17,7 @@
 #include "Engine.hpp"
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
+#include "Game/GameMenu.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
@@ -30,6 +31,7 @@ class Game {
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
     ~Game();
     void                                run();
+    void                                runMenu();
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
@@ -78,6 +80,7 @@ class Game {
     sf::Clock          _broadcastClock;
     int                _serverTick;
     PlayerUI           _playerUI;
+    GameMenu           _gameMenu;
 
     RealEngine::Registry              _registry;
     RealEngine::LagCompensationSystem _lagCompensationSystem;

@@ -25,6 +25,8 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
     text.setPosition(position.x + 10000, position.y + (size.y / 2));
 }
 
+InputBox::~InputBox() {}
+
 void InputBox::draw(sf::RenderTexture& window) {
     window.draw(box);
     text.draw(window);

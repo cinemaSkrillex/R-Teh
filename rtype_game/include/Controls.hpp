@@ -13,6 +13,7 @@ class Controls {
     Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> client);
     ~Controls();
 
+    // in game controls
     void moveUp(float deltaTime, RealEngine::Entity entity);
     void moveDown(float deltaTime, RealEngine::Entity entity);
     void moveLeft(float deltaTime, RealEngine::Entity entity);
@@ -20,6 +21,12 @@ class Controls {
     void shoot(float deltaTime, RealEngine::Entity entity);
     void holdShoot(float deltaTime, RealEngine::Entity entity);
     void releaseShoot(float deltaTime, RealEngine::Entity entity);
+
+    // in menu controls
+    void menuUp(float deltaTime, RealEngine::Entity entity);
+    void menuDown(float deltaTime, RealEngine::Entity entity);
+    void menuLeft(float deltaTime, RealEngine::Entity entity);
+    void menuRight(float deltaTime, RealEngine::Entity entity);
 
    private:
     RealEngine::Registry&      _registry;

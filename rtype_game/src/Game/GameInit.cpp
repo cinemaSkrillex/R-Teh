@@ -20,6 +20,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                             : "../../assets/shaders/display_options.frag"),
       _clock(),
       _playerUI(_registry, _window.getRenderTexture()),
+      _gameMenu(clientUDP, _window),
       _controls(_registry, clientUDP),
       _lagCompensationSystem(),
       _movementSystem(),
@@ -545,6 +546,7 @@ void Game::init_fonts() {
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadFont("pixel", path + "Early_GameBoy.ttf");
+    AssetManagerInstance.loadFont("arial", path + "arial.ttf");
 }
 
 }  // namespace rtype

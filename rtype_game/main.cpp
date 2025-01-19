@@ -2,9 +2,9 @@
 #include <thread>
 
 #include "Game/Game.hpp"
+#include "Game/GameMenu.hpp"
 
 int main(int argc, char* argv[]) {
-    // Check and parse command-line arguments
     if (argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
                   << std::endl;
@@ -16,27 +16,16 @@ int main(int argc, char* argv[]) {
     unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
-        // Initialize ASIO and the UDP client
         asio::io_context io_context;
         auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
-
         std::atomic<bool> running(true);
-
-        // Launch the game on the main thread
-        // added the port, temporarily for testing.
-        rtype::Game game(client, client_port);
-
-        client->send_new_client();
-
-        // Game loop
-
+        rtype::Game       game(client, client_port);
+        // client->send_new_client();
         game.run();
-
         running.store(false);
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
         return 1;
     }
-
     return 0;
 }
