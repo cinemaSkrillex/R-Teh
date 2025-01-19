@@ -24,6 +24,8 @@
 #include "Core/Graphics/Rendering/Background.hpp"
 #include "Core/Graphics/Rendering/Sprite.hpp"
 #include "Core/Graphics/UI/Text.hpp"
+#include "Core/Graphics/UI/Button.hpp"
+#include "Core/Graphics/UI/InputBox.hpp"
 #include "Core/View.hpp"
 #include "Core/Window.hpp"
 
