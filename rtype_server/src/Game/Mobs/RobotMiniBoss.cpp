@@ -123,24 +123,14 @@ static void updateMinionsCooldown(RealEngine::Registry& registry, RealEngine::En
 }
 
 RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()),
-      _shootMobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_shoot"))),
-      _fordwardMobSprite(
-          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_fordward"))),
-      _backwardMobSprite(
-          *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_backward"))) {
-    _mobSpriteSheet.emplace("shoot", _shootMobSprite);
-    _mobSpriteSheet.emplace("fordward", _fordwardMobSprite);
-    _mobSpriteSheet.emplace("backwards", _backwardMobSprite);
+    : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {50.f, 200.f}, 0.5f});
-    registry.add_component(
-        _entity,
-        RealEngine::SpriteSheet{
-            _mobSpriteSheet, "shoot", 0, {47, 43}, false, false, 0, {-1, -1}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("robot_mini_boss");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},

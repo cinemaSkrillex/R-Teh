@@ -61,9 +61,7 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 }
 
 RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()),
-      _mobSprite(*(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion"))) {
-    _mobSpriteSheet.emplace("normal", _mobSprite);
+    : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity, RealEngine::Interpolation{
@@ -71,11 +69,8 @@ RobotBossMinion::RobotBossMinion(RealEngine::Registry& registry, sf::Vector2f po
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {130.f, 200.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{
                                         -10.0f, position.y > VIEW_HEIGHT / 2 ? -50.f : 50.f, 0.5f});
-    registry.add_component(
-        _entity,
-        RealEngine::SpriteSheet{
-            _mobSpriteSheet, "normal", 0, {32, 31}, false, true, 230, {-1, -1}, sf::Clock()});
-    registry.add_component(_entity, RealEngine::Drawable{});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("robot_boss_minion");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
                                                  "mob",

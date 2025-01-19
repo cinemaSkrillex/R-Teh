@@ -10,19 +10,15 @@
 namespace rtype {
 
 Fireball::Fireball(RealEngine::Registry& registry, sf::Vector2f position, float angle)
-    : _entity(registry.spawn_entity()),
-      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("fireball"))) {
-    _projSpriteSheet.emplace("normal", _projSprite);
+    : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {250.f, 250.f}, 0.5f});
     registry.add_component(_entity, RealEngine::Acceleration{100.f, 100.f, 20.f});
-    registry.add_component(
-        _entity,
-        RealEngine::SpriteSheet{
-            _projSpriteSheet, "normal", 0, {12, 12}, false, true, 100, {6, 6}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("fireball");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Drawable{});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},

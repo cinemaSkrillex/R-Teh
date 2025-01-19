@@ -23,8 +23,6 @@ class EyeBigion {
     void setTarget(std::shared_ptr<RealEngine::Entity> target, RealEngine::Registry& registry);
 
    private:
-    std::shared_ptr<RealEngine::Entity>                 _entity;
-    RealEngine::Sprite                                  _sprite;
-    std::unordered_map<std::string, RealEngine::Sprite> _spriteSheet;
+    std::shared_ptr<RealEngine::Entity> _entity;
 };
 }  // namespace rtype

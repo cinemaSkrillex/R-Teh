@@ -38,18 +38,12 @@ static void adjustSpeedAndRush(RealEngine::Registry& registry, RealEngine::Entit
 
 EyeBigion::EyeBigion(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
-    _spriteSheet.emplace("normal",
-                         *(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_normal")));
-    _spriteSheet.emplace("angry",
-                         *(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_angry")));
-
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_components(
-        _entity, RealEngine::SpriteSheet{
-                     _spriteSheet, "normal", 0, {23, 16}, false, true, 120, {17, 8}, sf::Clock()});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("eye_bigion");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {100.0f, 100.0f}, 0.8f});
     registry.add_component(_entity, RealEngine::Acceleration{40.0f, 40.0f, 0.5f});
     registry.add_component(_entity, RealEngine::Rotation{180.0f});

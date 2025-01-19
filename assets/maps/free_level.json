@@ -31,7 +31,7 @@
         ],
         "waves": [
             {
-                "waveType": "1_mob",
+                "waveType": "all_mobs",
                 "startPosition": [
                     10.5,
                     20.0

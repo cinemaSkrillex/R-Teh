@@ -10,9 +10,7 @@
 namespace rtype {
 
 EyeLaser::EyeLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle)
-    : _entity(registry.spawn_entity()),
-      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_laser"))) {
-    _projSpriteSheet.emplace("normal", _projSprite);
+    : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {150.f, 150.f}, 0.f});
     registry.add_component(_entity, RealEngine::Acceleration{200.f, 200.f, 200.f});

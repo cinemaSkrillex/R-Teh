@@ -21,6 +21,5 @@ class SimpleShoot {
 
    private:
     std::shared_ptr<RealEngine::Entity> _entity;
-    RealEngine::Sprite                  _projSprite;
 };
 }  // namespace rtype
