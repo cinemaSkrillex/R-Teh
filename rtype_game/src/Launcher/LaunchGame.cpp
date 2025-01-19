@@ -21,10 +21,13 @@ LaunchGame::LaunchGame()
                     assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
                     RealEngine::InputBox::ContentType::Numeric),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
-                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"), 
-        labelIp("Server IP", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
-        labelServerPort("Server Port", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
-        labelClientPort("Client Port", assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
+                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+      labelIp("Server IP",
+              assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+      labelServerPort("Server Port",
+                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+      labelClientPort("Client Port",
+                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
     initUIComponents();
     initBackground();
 }
@@ -32,7 +35,6 @@ LaunchGame::LaunchGame()
 LaunchGame::~LaunchGame() { delete launcherBackground; }
 
 void LaunchGame::initUIComponents() {
-
     labelIp.setPosition(400, 125);
     labelServerPort.setPosition(400, 225);
     labelClientPort.setPosition(400, 325);
@@ -75,10 +77,12 @@ void LaunchGame::run() {
             portBoxClient.handleEvent(event);
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                ipBox.setFocus(ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
-                portBox.setFocus(portBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
-                portBoxClient.setFocus(
-                    portBoxClient.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+                ipBox.setFocus(
+                    ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+                portBox.setFocus(
+                    portBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
+                portBoxClient.setFocus(portBoxClient.getGlobalBounds().contains(
+                    event.mouseButton.x, event.mouseButton.y));
             }
         }
 

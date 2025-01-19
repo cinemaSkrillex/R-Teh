@@ -40,7 +40,7 @@ void InputBox::draw(sf::RenderTexture& window) {
 
 void InputBox::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed) {
-        isActive = box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y);
+        isActive      = box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y);
         cursorVisible = isActive;
         if (isActive) {
             cursorClock.restart();
@@ -89,7 +89,10 @@ void InputBox::setPosition(const sf::Vector2f& position) {
     updateCursorPosition();
 }
 
-void InputBox::setSize(const sf::Vector2f& size) { box.setSize(size); updateCursorPosition(); }
+void InputBox::setSize(const sf::Vector2f& size) {
+    box.setSize(size);
+    updateCursorPosition();
+}
 
 void InputBox::setFillColor(const sf::Color& color) { box.setFillColor(color); }
 
@@ -117,7 +120,7 @@ void InputBox::centerText() {
 }
 
 void InputBox::setFocus(bool focus) {
-    isActive = focus;
+    isActive      = focus;
     cursorVisible = focus;
 
     if (focus) {
