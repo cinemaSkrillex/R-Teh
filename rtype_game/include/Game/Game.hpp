@@ -17,7 +17,7 @@
 #include "Engine.hpp"
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
-#include "Game/LaunchGame.hpp"
+#include "Launcher/LaunchGame.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
@@ -27,7 +27,7 @@
 
 namespace rtype {
 
-#define LaunchGameWithoutArgs false
+#define LaunchGameWithoutArgs true
 class Game {
    public:
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
