@@ -20,11 +20,14 @@
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
+#include "Game/LaunchGame.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"
 
 namespace rtype {
+
+#define LaunchGameWithoutArgs false
 class Game {
    public:
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
