@@ -21,10 +21,11 @@ Launcher::Launcher()
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       launchButton(sf::Vector2f(300, 50), sf::Vector2f(275, 350), "R-Type",
                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-        launchButtonPong(sf::Vector2f(300, 50), sf::Vector2f(275, 450), "Pong",
-                   LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
+      launchButtonPong(sf::Vector2f(300, 50), sf::Vector2f(275, 450), "Pong",
+                       LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-      GameLauncherText("Choose Your Game", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
+      GameLauncherText("Choose Your Game",
+                       LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
