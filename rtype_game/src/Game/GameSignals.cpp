@@ -18,6 +18,12 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
     // Print the deserialized BaseMessage
     // Check the message type to handle accordingly
     switch (baseMessage.message_type) {
+        case RTypeProtocol::PING: {
+            // Handle PING message
+            std::cout << "Received PING message" << std::endl;
+            _window.setBlackTransition(false, 1.0f);
+            break;
+        }
         case RTypeProtocol::NEW_CLIENT: {
             // Deserialize the PlayerMoveMessage (which is used for new client)
             RTypeProtocol::PlayerMoveMessage newClientMessage =

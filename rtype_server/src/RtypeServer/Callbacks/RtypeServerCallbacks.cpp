@@ -22,5 +22,11 @@ void RtypeServer::initCallbacks() {
         mobInitializer->initializeMobs(sender);
 
         _players[sender] = player;
+
+        // send a ping to the new client
+        RTypeProtocol::BaseMessage pingMessage = {};
+        pingMessage.message_type               = RTypeProtocol::PING;
+        pingMessage.uuid                       = 0;
+        _server->send_reliable_packet(RTypeProtocol::serialize<800>(pingMessage), sender);
     });
 }
