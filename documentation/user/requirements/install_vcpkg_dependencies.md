@@ -12,6 +12,8 @@ nav_order: 2
 # LINUX vcpkg:
 # in the root of the repository
 git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
 ```
 
 WINDOWS vcpkg :
