@@ -139,8 +139,7 @@ class AssetManager {
     }
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::IntRect&  rect,
-                                   const sf::Vector2f& scale) {
+                                   const sf::IntRect& rect, const sf::Vector2f& scale) {
         try {
             loadTexture(id, filepath, rect);
             loadSprite(id, id);
