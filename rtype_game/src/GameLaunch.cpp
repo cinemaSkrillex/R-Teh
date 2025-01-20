@@ -45,10 +45,13 @@ void LaunchGame::run() {
                 }
                 window.close();
             }
-            launchButton.handleEvent(event, [this]() {
-                infoProvided = true;
-                startGame();
-            });
+            launchButton.handleEvent(
+                event,
+                [this]() {
+                    infoProvided = true;
+                    startGame();
+                },
+                window.getRenderWindow());
             ipBox.handleEvent(event);
             portBox.handleEvent(event);
             portBoxClient.handleEvent(event);
