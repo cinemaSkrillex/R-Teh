@@ -22,6 +22,7 @@
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
+#include "Launcher/LaunchGame.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"

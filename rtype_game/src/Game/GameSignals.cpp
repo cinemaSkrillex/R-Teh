@@ -448,10 +448,10 @@ void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPack
 void rtype::Game::handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket) {
     std::cout << "Changing scene to: " << static_cast<int>(parsedPacket.scene_id) << std::endl;
     // relocateAllBlocks();
+    unloadLevel(10000.0f, 10000.0f);
     RTypeProtocol::BaseMessage baseMessage;
     baseMessage.message_type                    = RTypeProtocol::MessageType::MAP_UNLOADED;
     baseMessage.uuid                            = 0;
     std::array<char, 800> serializedBaseMessage = RTypeProtocol::serialize<800>(baseMessage);
     _clientUDP->send_reliable_packet(serializedBaseMessage);
-    // unloadLevel(10000.0f, 10000.0f);
 }

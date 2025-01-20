@@ -184,7 +184,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const NewEntityMessage& m
     // Serialize the base message
     writeToBuffer(it, static_cast<const BaseMessage&>(msg));
 
-    //write the entity type
+    // write the entity type
     writeToBuffer(it, msg.entity_type);
 
     // Serialize the components

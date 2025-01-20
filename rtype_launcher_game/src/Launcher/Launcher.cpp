@@ -17,12 +17,15 @@ Launcher::Launcher()
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
               LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
-      button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
+      button(sf::Vector2f(300, 50), sf::Vector2f(275, 350), "Connect to Server",
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-      launchButton(sf::Vector2f(400, 50), sf::Vector2f(275, 450), "Launch Game",
+      launchButton(sf::Vector2f(300, 50), sf::Vector2f(275, 350), "R-Type",
                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
+      launchButtonPong(sf::Vector2f(300, 50), sf::Vector2f(275, 450), "Pong",
+                       LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-      GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
+      GameLauncherText("Choose Your Game",
+                       LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
     button.setFillColor(sf::Color::Green);
     button.setTextColor(sf::Color::White);
 
@@ -31,6 +34,8 @@ Launcher::Launcher()
 
     launchButton.setFillColor(sf::Color::Green);
     launchButton.setTextColor(sf::Color::White);
+    launchButtonPong.setFillColor(sf::Color::Green);
+    launchButtonPong.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
 
@@ -70,6 +75,7 @@ void Launcher::run() {
             LauncherText.draw(window.getRenderTexture());
         } else {
             launchButton.draw(window.getRenderTexture());
+            // launchButtonPong.draw(window.getRenderTexture());
             GameLauncherText.draw(window.getRenderTexture());
         }
         window.display();
@@ -85,6 +91,25 @@ bool Launcher::isValidIp(const std::string& ip) {
 bool Launcher::isValidPort(const std::string& port) {
     const std::regex port_pattern(R"(^\d{4}$)");
     return std::regex_match(port, port_pattern);
+}
+
+void Launcher::launchGame_Pong() {
+    std::cout << "Launching Pong" << std::endl;
+
+    if (chdir("pong_game") == -1) {
+        std::cerr << "Échec de chdir: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    if (chmod("./pong", S_IRWXU) == -1) {
+        std::cerr << "Échec de chmod: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    const char* args[] = {"./pong", nullptr};
+    execvp("./pong", const_cast<char* const*>(args));
+    std::cerr << "Échec de execvp: " << strerror(errno) << std::endl;
+    exit(1);
 }
 
 void Launcher::launchGame() {
