@@ -43,7 +43,7 @@ ControlSystem::ControlSystem(Window& window) : _window(window) {
 void ControlSystem::update(Registry& registry, float deltaTime) {
     if (!_window.isFocused()) return;
 
-    auto entities = registry.view<Velocity, Acceleration, Position, Controllable>();
+    auto entities = registry.view<Velocity, Acceleration, Position, Controllable>(); //WARNING Controllable is sufficient
     if (entities.empty()) return;
 
     for (auto entity : entities) {

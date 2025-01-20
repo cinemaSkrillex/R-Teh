@@ -29,3 +29,4 @@ assets/maps/map_big.json
 /.idea/*
 /cmake-build-debug/CMakeFiles/3.30.5/CMakeSystem.cmake
 /.clang-tidy
+ignore/
