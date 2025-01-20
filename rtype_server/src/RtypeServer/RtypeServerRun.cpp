@@ -49,7 +49,7 @@ void RtypeServer::handleClientMessages() {
         if (!player.getEntity()) {
             continue;
         }
-        const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
+        const auto& messages         = _server->get_unreliable_messages_from_endpoint(client);
         const auto& reliableMessages = _server->get_reliable_messages_from_endpoint(client);
 
         for (const auto& message : reliableMessages) {
@@ -122,9 +122,10 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     if (!newEntityValue || !*newEntityValue) return;
 
     RTypeProtocol::EntityType entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
-    auto* collisionType = registry->get_component<RealEngine::Collision>(entity);
+    auto* collisionType                  = registry->get_component<RealEngine::Collision>(entity);
     if (collisionType) {
-        if (collisionType->type == RealEngine::CollisionType::SOLID || collisionType->type == RealEngine::CollisionType::INACTIVE) {
+        if (collisionType->type == RealEngine::CollisionType::SOLID ||
+            collisionType->type == RealEngine::CollisionType::INACTIVE) {
             entityType = RTypeProtocol::EntityType::BLOCK;
             std::cout << "Block" << std::endl;
         } else {

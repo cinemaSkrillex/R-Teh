@@ -16,7 +16,7 @@ void WaitingBlock::waitingBlockCollisionHandler(RealEngine::CollisionType collis
     switch (collisionType) {
         case RealEngine::CollisionType::PLAYER:
             _playersInBox++;
-        std::cout << "Players in box: " << _playersInBox << std::endl;
+            std::cout << "Players in box: " << _playersInBox << std::endl;
             break;
     }
 }
@@ -66,8 +66,7 @@ WaitingBlock::WaitingBlock(RealEngine::Registry& registry, sf::Vector2f position
       _waitingBlockSprite(*(RealEngine::AssetManager::getInstance().getSprite(spriteName))),
       _element(spriteName),
       _playersInBox(0),
-    _registry(registry)
-{
+      _registry(registry) {
     WaitingBlock::initialize(registry, position, spriteName, rotation, 0, collisionType);
 }
 

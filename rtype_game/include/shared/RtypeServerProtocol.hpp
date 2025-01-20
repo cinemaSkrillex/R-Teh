@@ -33,7 +33,7 @@ enum MessageType : int {
     MAP_UNLOADED       = 0x0E,
     CHANGING_SCENE     = 0x0F,
     PING               = 0x10,
-    PONG              = 0x11,
+    PONG               = 0x11,
 };
 
 enum ComponentList : int {
@@ -94,7 +94,7 @@ struct SynchronizeMessage : BaseMessage {
 // Event message structure
 struct NewEntityMessage : BaseMessage {
     std::vector<std::pair<ComponentList, std::vector<char>>>
-        components;  // Component ID and serialized data
+               components;  // Component ID and serialized data
     EntityType entity_type;
 };
 
@@ -137,7 +137,6 @@ struct PlayerUpdateDataMessage : BaseMessage {
 struct ChangingSceneMessage : BaseMessage {
     SceneType scene_id;
 };
-
 
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
@@ -213,7 +212,6 @@ PlayerUpdateDataMessage deserializePlayerUpdateDataMessage(
 
 template <std::size_t BUFFER_SIZE>
 ChangingSceneMessage deserializeChangingSceneMessage(const std::array<char, BUFFER_SIZE>& buffer);
-
 
 }  // namespace RTypeProtocol
 

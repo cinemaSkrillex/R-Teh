@@ -8,8 +8,8 @@
 #include "GameScene.hpp"
 #include "MenuScene.hpp"
 #include "RtypeServer.hpp"
-#include "WaitingRoomScene.hpp"
 #include "SceneManager.hpp"
+#include "WaitingRoomScene.hpp"
 
 void RtypeServer::notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender) const {
     if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::WAITING) {

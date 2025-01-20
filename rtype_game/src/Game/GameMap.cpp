@@ -13,10 +13,11 @@ namespace rtype {
 
 // GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelRunning(false) {}
 
-GameMap::GameMap(RealEngine::Registry& registry, Game* game) : _registry(registry), _game(game), _levelRunning(false) {
+GameMap::GameMap(RealEngine::Registry& registry, Game* game)
+    : _registry(registry), _game(game), _levelRunning(false) {
     std::cout << "GameMap created at: " << this << std::endl;
 }
-GameMap::~GameMap() {     std::cout << "GameMap destroyed at: " << this << std::endl; }
+GameMap::~GameMap() { std::cout << "GameMap destroyed at: " << this << std::endl; }
 
 void GameMap::updateLevel(float deltaTime) {
     if (!_levelRunning) {
@@ -42,7 +43,7 @@ void GameMap::stopLevel() {
 
 void GameMap::removeDeadBlocks() {
     auto entities = _game->getEntities();
-    for (auto it = entities.begin(); it != entities.end(); ) {
+    for (auto it = entities.begin(); it != entities.end();) {
         auto* position = _registry.get_component<RealEngine::Position>(it->second.entity);
         if (it->second.type == RTypeProtocol::EntityType::BLOCK && position && position->x < -250) {
             if (_registry.is_valid(*it->second.entity)) {

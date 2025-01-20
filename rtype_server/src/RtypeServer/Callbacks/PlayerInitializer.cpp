@@ -73,8 +73,8 @@ std::array<char, BUFFER_SIZE> createSynchronizeMessage(
 void PlayerInitializer::sendNewClientMessages(const asio::ip::udp::endpoint& sender,
                                               long playerEntity, sf::Vector2f player_start_pos,
                                               long timestamp) {
-    auto                  UdpServer     = _server->getServer();
-    const auto&           serverPlayers = _server->getPlayers();
+    auto        UdpServer     = _server->getServer();
+    const auto& serverPlayers = _server->getPlayers();
     if (serverPlayers.empty()) {
         std::cerr << "Error: No players in the server" << std::endl;
         return;
@@ -100,12 +100,12 @@ void PlayerInitializer::sendSynchronizeMessage(const asio::ip::udp::endpoint& se
                                                long                           playerEntity,
                                                const sf::Vector2f&            player_start_position,
                                                long                           timestamp) {
-    const auto&                                serverPlayers = _server->getPlayers();
+    const auto& serverPlayers = _server->getPlayers();
     if (serverPlayers.empty()) {
         std::cerr << "Error: No players in the server" << std::endl;
         return;
     }
-    auto                                       UdpServer     = _server->getServer();
+    auto UdpServer = _server->getServer();
     if (!UdpServer) {
         std::cerr << "Error: UDP server is null" << std::endl;
         return;

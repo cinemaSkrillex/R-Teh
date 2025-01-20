@@ -52,12 +52,11 @@ class GameMap {
     std::vector<std::shared_ptr<RealEngine::Entity>> getBackgroundEntities() {
         return _backgroundEntities;
     }
-    float getScrollingSpeed() const { return _scrollingSpeed; }
-    float getXLevelPosition() const { return x_level_position; }
-    bool  isMapLoaded() const { return _isMapLoaded; }
-    bool  levelRunning() const { return _levelRunning; }
+    float       getScrollingSpeed() const { return _scrollingSpeed; }
+    float       getXLevelPosition() const { return x_level_position; }
+    bool        isMapLoaded() const { return _isMapLoaded; }
+    bool        levelRunning() const { return _levelRunning; }
     std::string getMusicName() const { return _music_name; }
-
 
    private:
     RealEngine::Registry&                                                 _registry;

@@ -35,7 +35,7 @@ class WaitingBlock : public BaseBlock {
     RealEngine::Sprite                  _waitingBlockSprite;
     std::string                         _element;
     int                                 _playersInBox;
-  RealEngine::Registry& _registry;
+    RealEngine::Registry&               _registry;
 };
 
 }  // namespace rtype

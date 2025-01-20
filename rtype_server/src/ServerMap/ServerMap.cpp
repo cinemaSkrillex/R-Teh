@@ -131,7 +131,7 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
         for (const auto& background : root["backgrounds"]) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();
-            //if sprite already exists, don't load it again
+            // if sprite already exists, don't load it again
             if (std::find_if(_backgrounds.begin(), _backgrounds.end(),
                              [&background_str](const std::pair<std::string, float>& bg) {
                                  return bg.first == background_str;
@@ -156,7 +156,6 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
                                                             RealEngine::CollisionType::SOLID);
                 // _blockEntities.push_back(block);
                 _blockEntities[*block->getEntity()] = block;
-
             }
             if (tile.type == "WAITING_BLOCK") {
                 auto waitingBlock = std::make_shared<rtype::WaitingBlock>(
@@ -164,7 +163,6 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
                     RealEngine::CollisionType::SOLID);
                 // _blockEntities.push_back(waitingBlock);
                 _blockEntities[*waitingBlock->getEntity()] = waitingBlock;
-
             }
         }
     } catch (const std::exception& e) {

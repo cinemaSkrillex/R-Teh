@@ -35,7 +35,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
-_game_map(new GameMap(_registry, this)),
+      _game_map(new GameMap(_registry, this)),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -44,9 +44,7 @@ _game_map(new GameMap(_registry, this)),
                            30);
 }
 
-Game::~Game() {
-    std::cout << "Destroying game..." << std::endl;
-}
+Game::~Game() { std::cout << "Destroying game..." << std::endl; }
 
 void Game::init_all_game() {
     init_registry();

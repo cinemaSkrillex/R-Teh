@@ -1,9 +1,9 @@
-    /*
-** EPITECH PROJECT, 2025
-** R-Teh
-** File description:
-** launch
-*/
+/*
+ ** EPITECH PROJECT, 2025
+ ** R-Teh
+ ** File description:
+ ** launch
+ */
 
 #include "Game/Game.hpp"
 

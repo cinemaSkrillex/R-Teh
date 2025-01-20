@@ -308,7 +308,7 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
         if (it != _entities.end()) {
             if (_registry.is_valid(*it->second.entity)) {
                 _registry.remove_entity(*it->second.entity);
-            _entities.erase(it);
+                _entities.erase(it);
             } else {
                 _entities.erase(it);
             }
@@ -337,16 +337,15 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
                 Explosion(_registry, {position->x, position->y});
                 RealEngine::AssetManager::getInstance().getSound("explosion")->play();
             }
-            if (_player_entity == nullptr)
-                return;
-            auto* health   = _registry.get_component<RealEngine::Health>(*_player_entity);
+            if (_player_entity == nullptr) return;
+            auto* health = _registry.get_component<RealEngine::Health>(*_player_entity);
             if (health) {
                 health->amount = 0;
             }
-                if (_registry.is_valid(*_player_entity)) {
-                    _registry.remove_entity(*_player_entity);
-                    _player_entity.reset();
-                }
+            if (_registry.is_valid(*_player_entity)) {
+                _registry.remove_entity(*_player_entity);
+                _player_entity.reset();
+            }
         }
     }
 }
@@ -377,8 +376,8 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 level_music_str = "level_3";
                 break;
             case 4:
-                level_music_str  = "waiting_room";
-            break;
+                level_music_str = "waiting_room";
+                break;
             default:
                 level_music_str = "level_1";
                 break;
@@ -403,7 +402,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 break;
             case 5:
                 backgroundStr = "front_line_base";
-            break;
+                break;
             default:
                 backgroundStr = "big_stars_background";
                 break;

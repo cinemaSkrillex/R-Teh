@@ -35,11 +35,13 @@ void Game::unloadLevel(float x, float y) {
     //         ++it;
     //     }
     // }
-    for (auto it = _entities.begin(); it != _entities.end(); ) {
+    for (auto it = _entities.begin(); it != _entities.end();) {
         if (it->second.type == RTypeProtocol::EntityType::BLOCK) {
-            auto* positionComponent = _registry.get_component<RealEngine::Position>(it->second.entity);
+            auto* positionComponent =
+                _registry.get_component<RealEngine::Position>(it->second.entity);
             if (positionComponent && positionComponent->x == x && positionComponent->y == y) {
-                std::cout << "Removing block [" << *it->second.entity << "] at position (" << x << ", " << y << ")" << std::endl;
+                std::cout << "Removing block [" << *it->second.entity << "] at position (" << x
+                          << ", " << y << ")" << std::endl;
                 if (_registry.is_valid(*it->second.entity)) {
                     _registry.remove_entity(*it->second.entity);
                     it = _entities.erase(it);
@@ -70,16 +72,16 @@ void Game::relocateAllBlocks() {
     for (auto& [id, entityData] : _entities) {
         if (entityData.type == RTypeProtocol::EntityType::BLOCK) {
             std::cout << "Relocating block [" << *entityData.entity << "]" << std::endl;
-            auto* positionComponent = _registry.get_component<RealEngine::Position>(entityData.entity);
+            auto* positionComponent =
+                _registry.get_component<RealEngine::Position>(entityData.entity);
             if (positionComponent) {
                 positionComponent->x = 10000.0f;
                 positionComponent->y = 10000.0f;
-                std::cout << "Block [" << *entityData.entity << "] moved to (10000, 10000)" << std::endl;
+                std::cout << "Block [" << *entityData.entity << "] moved to (10000, 10000)"
+                          << std::endl;
             }
         }
     }
 }
-
-
 
 }  // namespace rtype

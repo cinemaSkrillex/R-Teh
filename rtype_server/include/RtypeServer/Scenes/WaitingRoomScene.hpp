@@ -51,11 +51,9 @@ class WaitingRoomScene : public Scene {
         _gameInstance->start_level();
         _server->BroadcastStartLevel();
 
-
-
-        //for (auto& client : _UdpServer->getClients()) {
-            // std::cout << "Yes i know New client connected: " << client << std::endl;
-            // mapInitializer->initializeMap(client);
+        // for (auto& client : _UdpServer->getClients()) {
+        //  std::cout << "Yes i know New client connected: " << client << std::endl;
+        //  mapInitializer->initializeMap(client);
         //}
         for (const auto& client : sentClients) {
             std::cout << "Yes i know New client connected: " << client << std::endl;
@@ -73,9 +71,7 @@ class WaitingRoomScene : public Scene {
         return RTypeProtocol::serialize<800>(changeSceneMessage);
     }
 
-    void clearSentClients() {
-        sentClients.clear();
-    }
+    void clearSentClients() { sentClients.clear(); }
 
     void update(float deltaTime) override {
         if (_isChangingScene) {
@@ -140,12 +136,12 @@ class WaitingRoomScene : public Scene {
     }
 
    private:
-    std::shared_ptr<GameInstance> _gameInstance;
-    RtypeServer*                  _server;
-    ServerConfig                  _serverConfig;
-    std::shared_ptr<UDPServer>    _UdpServer;
-    RealEngine::SceneManager&     _scene_manager;
-    bool                          _isChangingScene;
+    std::shared_ptr<GameInstance>     _gameInstance;
+    RtypeServer*                      _server;
+    ServerConfig                      _serverConfig;
+    std::shared_ptr<UDPServer>        _UdpServer;
+    RealEngine::SceneManager&         _scene_manager;
+    bool                              _isChangingScene;
     std::set<asio::ip::udp::endpoint> sentClients;
 };
 
