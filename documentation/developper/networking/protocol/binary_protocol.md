@@ -1,11 +1,11 @@
----
+    ---
 title: Binary protocol
 parent: Rtype Server Protocol
 grand_parent: Networking
 nav_order: 1
 ---
 
-# Binary protocol
+# Binary protocol of R-Type
 
 ## Our R-Type binary protocol
 
