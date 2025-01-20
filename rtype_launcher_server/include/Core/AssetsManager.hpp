@@ -18,7 +18,6 @@
 #include "Core/Audio/Sound.hpp"
 #include "Core/Graphics/Rendering/Sprite.hpp"
 #include "ECS/Components/SpriteSheet.hpp"
-#include "Engine.hpp"
 
 namespace RealEngine {
 
@@ -127,7 +126,7 @@ class AssetManager {
     }
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
-                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
+                                   const sf::Vector2f& scale) {
         try {
             loadTexture(id, filepath);
             loadSprite(id, id);
@@ -141,7 +140,7 @@ class AssetManager {
 
     void loadSpriteTextureAndScale(const std::string& id, const std::string& filepath,
                                    const sf::IntRect&  rect,
-                                   const sf::Vector2f& scale = {GAME_SCALE, GAME_SCALE}) {
+                                   const sf::Vector2f& scale) {
         try {
             loadTexture(id, filepath, rect);
             loadSprite(id, id);

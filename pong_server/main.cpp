@@ -5,7 +5,9 @@
 ** main
 */
 
-#include "RtypeServer/RtypeServer.hpp"
+#include <iostream>
+
+#include "PongServer/PongServer.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc < 2 || argc > 3) {
@@ -19,14 +21,14 @@ int main(int argc, char* argv[]) {
     if (argc == 3 && std::string(argv[2]) == "-window") {
         server_vision = true;
     }
-    try {
-        asio::io_context             io_context;
-        auto                         server = std::make_shared<UDPServer>(io_context, port);
-        std::shared_ptr<RtypeServer> rtype_server =
-            std::make_shared<RtypeServer>(server, server_vision);
-        std::chrono::steady_clock::time_point start_time = rtype_server->getStartTime();
 
-        rtype_server->run();
+    try {
+        asio::io_context            io_context;
+        auto                        server = std::make_shared<UDPServer>(io_context, port);
+        std::shared_ptr<PongServer> pong_server =
+            std::make_shared<PongServer>(server, server_vision);
+
+        pong_server->run();
 
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;

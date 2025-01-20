@@ -1,7 +1,14 @@
+/*
+** EPITECH PROJECT, 2024
+** R-Teh
+** File description:
+** main.cpp
+*/
+
 #include <atomic>
 #include <thread>
 
-#include "Game/Game.hpp"
+#include "include/Game/PongGame.hpp"
 
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments
@@ -24,7 +31,7 @@ int main(int argc, char* argv[]) {
 
         // Launch the game on the main thread
         // added the port, temporarily for testing.
-        rtype::Game game(client, client_port);
+        pong::Game game(client, client_port);
 
         client->send_new_client();
 

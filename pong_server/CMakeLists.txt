@@ -18,49 +18,50 @@ target_link_libraries(pong_server_exe
 
 target_include_directories(pong_server_exe PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Callbacks
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Events
-        ${CMAKE_CURRENT_SOURCE_DIR}/Config
-        ${CMAKE_BINARY_DIR}/pong_server/Config
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer/Callbacks
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer/Events
+        # ${CMAKE_CURRENT_SOURCE_DIR}/Config
+        # ${CMAKE_BINARY_DIR}/pong_server/Config
 )
 
 # Link lib to binary (pong_server_exe is linked to pong_server)
 # name: pong_server_exe (binary) -> pong_server (lib)
-target_link_libraries(pong_server_exe pong_server)
+# target_link_libraries(pong_server_exe pong_server)
+target_link_libraries(pong_server_exe rtype_server)
 
 # Copy the include headers from game_engine to rtype_game
-add_custom_target(copy_headers_engine_for_server ALL
+add_custom_target(copy_headers_engine_for_server_pong ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/game_engine/include
         ${CMAKE_SOURCE_DIR}/pong_server/include
 )
 
-add_custom_target(copy_headers_server_lagcompensation ALL
+add_custom_target(copy_headers_server_lagcompensation_pong ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
         ${CMAKE_SOURCE_DIR}/pong_server/include
 )
 
-add_custom_target(copy_config ALL
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/pong_server/Config
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/pong_server/Config/server.config
-        ${CMAKE_BINARY_DIR}/pong_server/Config/server.config
-)
+# add_custom_target(copy_config_pong ALL
+#         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/pong_server/Config
+#         COMMAND ${CMAKE_COMMAND} -E copy
+#         ${CMAKE_SOURCE_DIR}/pong_server/Config/server.config
+#         ${CMAKE_BINARY_DIR}/pong_server/Config/server.config
+# )
 
 # add_compile_definitions(CONFIG_FILE_PATH=\"$<TARGET_FILE_DIR:pong_server_exe>/Config/server.config\")
-set(CONFIG_FILE_PATH "${CMAKE_BINARY_DIR}/pong_server/Config/server.config")
+# set(CONFIG_FILE_PATH "${CMAKE_BINARY_DIR}/pong_server/Config/server.config")
 
-configure_file(${CMAKE_SOURCE_DIR}/pong_server/Config/configpath.h.in ${CMAKE_BINARY_DIR}/pong_server/Config/configpath.h)
+# configure_file(${CMAKE_SOURCE_DIR}/pong_server/Config/configpath.h.in ${CMAKE_BINARY_DIR}/pong_server/Config/configpath.h)
 
 
 # Ensure the headers are copied before building rtype_game
-add_dependencies(pong copy_headers_engine_for_server)
-add_dependencies(pong copy_headers_server_lagcompensation)
-add_dependencies(pong copy_config)
+add_dependencies(pong copy_headers_engine_for_server_pong)
+add_dependencies(pong copy_headers_server_lagcompensation_pong)
+# add_dependencies(pong copy_config_pong)
 # add_dependencies(r_type copy_assets_server)
 
 
@@ -81,11 +82,11 @@ endif ()
 #     COMMAND ${CMAKE_COMMAND} -E copy_directory
 #     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
 
-add_custom_target(copy_headers_protocol ALL
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
-        ${CMAKE_SOURCE_DIR}/pong_game/include/shared/RtypeServerProtocol.hpp
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
-        ${CMAKE_SOURCE_DIR}/pong_game/include/shared/RtypeServerProtocol.tpp
-)
+# add_custom_target(copy_headers_protocol ALL
+#         COMMAND ${CMAKE_COMMAND} -E copy
+#         ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
+#         ${CMAKE_SOURCE_DIR}/pong_game/include/shared/RtypeServerProtocol.hpp
+#         COMMAND ${CMAKE_COMMAND} -E copy
+#         ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
+#         ${CMAKE_SOURCE_DIR}/pong_game/include/shared/RtypeServerProtocol.tpp
+# )

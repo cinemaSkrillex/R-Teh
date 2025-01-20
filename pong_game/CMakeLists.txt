@@ -31,21 +31,21 @@ target_include_directories(pong PUBLIC
 )
 
 # Copy the include headers from game_engine to pong_game
-add_custom_target(copy_headers_engine_for_game ALL
+add_custom_target(copy_headers_engine_for_game_pong ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/game_engine/include
         ${CMAKE_SOURCE_DIR}/pong_game/include
 )
 
-add_custom_target(copy_headers_lagcompensation ALL
+add_custom_target(copy_headers_lagcompensation_pong ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/lib_utils/LagCompensation/include
         ${CMAKE_SOURCE_DIR}/pong_game/include
 )
 
 # Ensure the headers are copied before building pong_game
-add_dependencies(pong copy_headers_engine_for_game)
-add_dependencies(pong copy_headers_lagcompensation)
+add_dependencies(pong copy_headers_engine_for_game_pong)
+add_dependencies(pong copy_headers_lagcompensation_pong)
 
 if (WIN32)
     # Copy all DLLs from the bin directory to the output directory
