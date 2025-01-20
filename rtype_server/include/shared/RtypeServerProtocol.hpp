@@ -93,9 +93,9 @@ struct SynchronizeMessage : BaseMessage {
 
 // Event message structure
 struct NewEntityMessage : BaseMessage {
+    EntityType entity_type;
     std::vector<std::pair<ComponentList, std::vector<char>>>
                components;  // Component ID and serialized data
-    EntityType entity_type;
 };
 
 struct DestroyEntityMessage : BaseMessage {
