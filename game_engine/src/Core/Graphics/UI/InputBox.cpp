@@ -18,7 +18,8 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
       contentType(contentType),
       characterLimit(characterLimit),
       isActive(false),
-      cursorVisible(false), currentText(defaultText) {
+      cursorVisible(false),
+      currentText(defaultText) {
     box.setSize(size);
     box.setPosition(position);
     box.setFillColor(sf::Color::White);
