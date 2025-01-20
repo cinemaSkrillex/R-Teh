@@ -37,12 +37,14 @@ class Launcher {
     void onConnectClick();
     void connectToServer();
     void launchGame();
+    void launchGame_Pong();
 
     RealEngine::Window   window;
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
     RealEngine::Button   button;
     RealEngine::Button   launchButton;
+    RealEngine::Button   launchButtonPong;
     RealEngine::Text     LauncherText;
     RealEngine::Text     GameLauncherText;
     bool                 clientStopped          = false;
