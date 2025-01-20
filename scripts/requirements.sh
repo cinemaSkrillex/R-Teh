@@ -28,6 +28,7 @@ fi
 # Clone the vcpkg repository
 if [ ! -d "vcpkg" ]; then
     git clone https://github.com/microsoft/vcpkg.git
+    ./vcpkg/bootstrap-vcpkg.sh
 else
     echo "vcpkg repository already exists"
 fi
