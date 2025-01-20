@@ -35,7 +35,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
-      _game_map(_registry),
+      _game_map(std::make_shared<GameMap>(_registry)),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -225,7 +225,7 @@ void Game::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        if (_game_map.levelRunning()) _parallaxSystem.update(registry, deltaTime);
+        if (_game_map->levelRunning()) _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {

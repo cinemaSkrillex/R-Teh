@@ -20,11 +20,13 @@
 #include <thread>
 
 #include "Engine.hpp"
+#include "LauncherBackground.hpp"
 
 namespace rtype {
 class LaunchGame {
    public:
     LaunchGame();
+    ~LaunchGame();
     void           run();
     bool           isValidIp(const std::string& ip);
     bool           isValidPort(const std::string& port);
@@ -36,12 +38,22 @@ class LaunchGame {
 
    private:
     void startGame();
+    void initUIComponents();
+    void initBackground();
+    void draw();
 
     RealEngine::Window   window;
+    RealEngine::Registry registry;
+    LauncherBackground*  launcherBackground;
+    sf::Clock            clock;
+
     RealEngine::InputBox ipBox;
     RealEngine::InputBox portBox;
     RealEngine::InputBox portBoxClient;
     RealEngine::Button   launchButton;
+    RealEngine::Text     labelIp;
+    RealEngine::Text     labelServerPort;
+    RealEngine::Text     labelClientPort;
 
     std::string    serverIp;
     unsigned short serverPort;

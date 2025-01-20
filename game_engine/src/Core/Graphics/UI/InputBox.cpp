@@ -18,21 +18,33 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
       contentType(contentType),
       characterLimit(characterLimit),
       isActive(false),
-      currentText(defaultText) {
+      cursorVisible(false) {
     box.setSize(size);
     box.setPosition(position);
     box.setFillColor(sf::Color::White);
-    text.setPosition(position.x + 10000, position.y + (size.y / 2));
+
+    text.setPosition(position.x + 5, position.y + (size.y - text.getHeight()) / 2);
+
+    cursor.setSize(sf::Vector2f(2, text.getHeight()));
+    cursor.setFillColor(sf::Color::White);
+    updateCursorPosition();
 }
 
 void InputBox::draw(sf::RenderTexture& window) {
     window.draw(box);
     text.draw(window);
+    if (isActive && cursorVisible) {
+        window.draw(cursor);
+    }
 }
 
 void InputBox::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed) {
-        isActive = box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y);
+        isActive      = box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y);
+        cursorVisible = isActive;
+        if (isActive) {
+            cursorClock.restart();
+        }
     }
 
     if (isActive && event.type == sf::Event::TextEntered) {
@@ -43,8 +55,13 @@ void InputBox::handleEvent(const sf::Event& event) {
                 currentText += static_cast<char>(event.text.unicode);
             }
             text.setString(currentText);
+            updateCursorPosition();
         }
     }
+}
+
+void InputBox::updateCursorPosition() {
+    cursor.setPosition(text.getPosition().x + text.getWidth(), text.getPosition().y);
 }
 
 bool InputBox::isValidCharacter(uint32_t unicode) const {
@@ -69,9 +86,13 @@ bool InputBox::isValidCharacter(uint32_t unicode) const {
 void InputBox::setPosition(const sf::Vector2f& position) {
     box.setPosition(position);
     text.setPosition(position.x + 5, position.y + 5);
+    updateCursorPosition();
 }
 
-void InputBox::setSize(const sf::Vector2f& size) { box.setSize(size); }
+void InputBox::setSize(const sf::Vector2f& size) {
+    box.setSize(size);
+    updateCursorPosition();
+}
 
 void InputBox::setFillColor(const sf::Color& color) { box.setFillColor(color); }
 
@@ -87,23 +108,25 @@ void InputBox::setText(const std::string& text) {
     currentText = text;
     this->text.setString(text);
     centerText();
+    updateCursorPosition();
 }
 
 void InputBox::centerText() {
-    sf::FloatRect textBounds = text.getLocalBounds();
-    float         textPositionX =
-        box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
-    float textPositionY =
-        box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    text.setPosition((textPositionX + 50), (textPositionY + 10));
+    // No center No on the left i want on the right
+    text.setPosition(box.getPosition().x + box.getSize().x - text.getWidth() - 5,
+                     box.getPosition().y + (box.getSize().y - text.getHeight()) / 2);
+
+    updateCursorPosition();
 }
 
 void InputBox::setFocus(bool focus) {
-    isActive = focus;
+    isActive      = focus;
+    cursorVisible = focus;
 
     if (focus) {
         box.setOutlineThickness(2);
         box.setOutlineColor(sf::Color::Blue);
+        cursorClock.restart();
     } else {
         box.setOutlineThickness(0);
     }

@@ -17,10 +17,10 @@
 #include "Engine.hpp"
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
-#include "Game/LaunchGame.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
+#include "Launcher/LaunchGame.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"
@@ -101,7 +101,7 @@ class Game {
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
-    std::shared_ptr<GameMap>                                                           _game_map;
+    std::shared_ptr<GameMap>                                          _game_map;
     std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;
