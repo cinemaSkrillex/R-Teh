@@ -44,12 +44,29 @@ void ServerMap::updateLevel(float deltaTime) {
         return;
     }
     x_level_position += _scrollingSpeed * deltaTime;
-    for (auto& [id, block] : _blockEntities) {
+    if (_blockEntities.empty()) {
+        return;
+    }
+
+    for (auto it = _blockEntities.begin(); it != _blockEntities.end();) {
+        auto& [id, block] = *it;
+        if (!_registry.is_valid(*block->getEntity())) {
+            it = _blockEntities.erase(it);
+            continue;
+        }
         auto* position = _registry.get_component<RealEngine::Position>(*block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
-            std::cout << "Block position: " << position->x << "block: " << *block->getEntity()
+            std::cout << "Block position: " << position->x << " block: " << *block->getEntity()
                       << std::endl;
+            if (position->x < -100) {
+                _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+                it = _blockEntities.erase(it);
+            } else {
+                ++it;
+            }
+        } else {
+            ++it;
         }
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
