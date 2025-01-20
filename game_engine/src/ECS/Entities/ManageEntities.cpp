@@ -25,9 +25,18 @@ std::shared_ptr<Entity> ManageEntities::spawn_entity() {
 
 Entity ManageEntities::entity_from_index(std::size_t idx) { return Entity{idx}; }
 
-void ManageEntities::kill_entity(Entity const& e) { _dead_entities.push_back(e); }
+void ManageEntities::kill_entity(Entity const& e) {
+    if (e >= _next_entity) {
+        throw std::invalid_argument("manageEntities: kill_entity: Invalid entity");
+    }
+    _dead_entities.push_back(e);
+}
 
 bool ManageEntities::is_valid(Entity const& e) const {
+    if (&e == nullptr) {
+        // Handle the case where the entity is invalid.
+        return false;
+    }
     return e < _next_entity &&
            std::find(_dead_entities.begin(), _dead_entities.end(), e) == _dead_entities.end();
 }

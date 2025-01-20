@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "Events/IEvent.hpp"
-#include "Game/Block.hpp"
 #include "Game/GameInstance.hpp"
+#include "Game/Level/Block.hpp"
 #include "GenerateUuid.hpp"
 #include "HoldShootEvent.hpp"
 #include "Log.hpp"
@@ -31,6 +31,7 @@
 #include "RtypeServer/RtypeServerUtils.hpp"
 #include "RtypeServerProtocol.hpp"
 #include "SceneManager.hpp"
+
 #include "Server/UDPServer.hpp"
 #include "ServerConfig.hpp"
 #include "ServerPlayer.hpp"
@@ -59,6 +60,7 @@ class RtypeServer {
     sf::Clock                                                 _broadcastClock;
     std::chrono::steady_clock::time_point                     _startTime;
     std::unordered_map<int, std::unique_ptr<IEvent>>          eventHandlers;
+  std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _clientsUnloadedMap;
 
     void initCallbacks();
     void initEventHandlers();
@@ -70,10 +72,13 @@ class RtypeServer {
     void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
+  void notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender) const;
 
     std::string formatTimestamp(const std::chrono::steady_clock::time_point& timestamp);
 
     void handleClientMessages();
+  void handleMapUnloadedMessage(const asio::ip::udp::endpoint& client);
+
     void runGameInstance(float deltaTime);
     void broadcastStates();
 
@@ -92,8 +97,15 @@ class RtypeServer {
                   ServerPlayer& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        ServerPlayer& player);
+  void BroadcastStartLevel();
+  void BroadcastStopLevel();
+  void startLevel();
+  void stopLevel();
+  bool allClientsUnloadedMap() const;
+
     ServerConfig getServerConfig() { return _server_config; }
     std::unordered_map<asio::ip::udp::endpoint, ServerPlayer> getPlayers() { return _players; }
+        ServerPlayer& getPlayer(const asio::ip::udp::endpoint& client) { return _players[client]; }
     std::shared_ptr<GameInstance>         getGameInstance() { return _game_instance; }
     std::shared_ptr<UDPServer>            getServer() { return _server; }
     std::chrono::steady_clock::time_point getStartTime() { return _startTime; }

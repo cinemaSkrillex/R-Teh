@@ -17,15 +17,21 @@
 #include "Engine.hpp"
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
+#include "Game/LaunchGame.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
-#include "Launcher/LaunchGame.hpp"
 #include "Log.hpp"
 #include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"
 
 namespace rtype {
+
+// Create a structure to hold the entity and its type
+struct EntityInfo {
+  std::shared_ptr<RealEngine::Entity> entity;
+  RTypeProtocol::EntityType type;
+};
 
 #define LaunchGameWithoutArgs false
 class Game {
@@ -38,6 +44,8 @@ class Game {
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::IntRect                         getPlayerNormalizedDirection();
+  std::unordered_map<long int, EntityInfo>& getEntities() { return _entities; }
+  bool _isInit = false;
 
     std::shared_ptr<UDPClient> _clientUDP;
 
@@ -61,7 +69,7 @@ class Game {
     void set_action_handlers();
     void set_sprite_opacity();
     void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color, int size);
-
+    void handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket);
     // GameSignals
     void handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
     void handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPacket);
@@ -73,7 +81,8 @@ class Game {
     void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                          std::shared_ptr<RealEngine::Entity> newEntity);
     void handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket);
-
+  void unloadLevel(float x, float y);
+  void relocateAllBlocks();
     float              _deltaTime = 0.f;
     RealEngine::View   _view;
     RealEngine::Window _window;
@@ -100,8 +109,8 @@ class Game {
 
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
-    std::shared_ptr<GameMap>                                          _game_map;
+    std::unordered_map<long int, EntityInfo> _entities;
+    GameMap*                                                           _game_map;
     std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;

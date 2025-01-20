@@ -36,8 +36,8 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 
     if (cooldown <= 0) {
         if (rand() % 3 <= 1) {
-            SimpleShoot shoot(registry, {position->x, position->y}, 90);
-            // SimpleShoot shoot2(registry, {position->x, position->y}, 270);
+            SimpleShoot shoot(registry, {position->x, position->y}, 90.f);
+            // SimpleShoot shoot2(registry, {position->x, position->y}, 180.f);
             cooldown = 2.5f;
         } else {
             cooldown = 1.5f;

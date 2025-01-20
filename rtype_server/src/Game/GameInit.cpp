@@ -30,7 +30,9 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     std::string path = "../../assets/maps/";
-    _game_map->loadFromJSON(path + "level_1.json");
+    if (!_game_map) {
+        return;
+    }
 }
 
 void GameInstance::init_components() {
@@ -175,6 +177,10 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
                                                    {0, 32, 16 * 5, 16},
                                                    {GAME_SCALE - 1, GAME_SCALE - 1});
+    // waiting room zone
+    AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
+                                                   {0.5, 0.5});
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
 }
 
 void GameInstance::init_sprite_sheets() {

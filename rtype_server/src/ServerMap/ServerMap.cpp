@@ -40,14 +40,16 @@ Json::Value ServerMap::readJSONFile(const std::string& filepath) {
 }
 
 void ServerMap::updateLevel(float deltaTime) {
-    // if (!_isLevelRunning) {
-    //     return;
-    // }
+    if (!_isLevelRunning) {
+        return;
+    }
     x_level_position += _scrollingSpeed * deltaTime;
-    for (auto& block : _blockEntities) {
-        auto* position = _registry.get_component<RealEngine::Position>(block->getEntity());
+    for (auto& [id, block] : _blockEntities) {
+        auto* position = _registry.get_component<RealEngine::Position>(*block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
+            std::cout << "Block position: " << position->x << "block: " << *block->getEntity()
+                      << std::endl;
         }
     }
     if (!bossAtEnd() && x_level_position >= _endPosition.x) {
@@ -55,7 +57,7 @@ void ServerMap::updateLevel(float deltaTime) {
     } else if (bossAtEnd() && _boss.triggered && !_registry.is_valid(*(_boss.bossEntity))) {
         stopLevel();
     }
-    removeDeadBlocks();
+    // removeDeadBlocks();
 }
 
 std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
@@ -80,8 +82,11 @@ std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
 
 void ServerMap::unloadLevel() {
     _isLevelRunning = false;
-    for (auto& block : _blockEntities) {
-        if (block) _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+    for (auto& [id, block] : _blockEntities) {  // Structured binding for unordered_map
+        if (block) {
+            std::cout << "removing block " << id << std::endl;
+            _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+        }
     }
     _blockEntities.clear();
     if (_boss.bossEntity) {
@@ -126,6 +131,13 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
         for (const auto& background : root["backgrounds"]) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();
+            //if sprite already exists, don't load it again
+            if (std::find_if(_backgrounds.begin(), _backgrounds.end(),
+                             [&background_str](const std::pair<std::string, float>& bg) {
+                                 return bg.first == background_str;
+                             }) != _backgrounds.end()) {
+                continue;
+            }
             _backgrounds.push_back({background_str, speed});
         }
 
@@ -140,8 +152,19 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
             _tiles.push_back(tile);
             if (tile.type == "BLOCK") {
                 auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
-                                                            tile.rotation, _scrollingSpeed);
-                _blockEntities.push_back(block);
+                                                            tile.rotation, _scrollingSpeed,
+                                                            RealEngine::CollisionType::SOLID);
+                // _blockEntities.push_back(block);
+                _blockEntities[*block->getEntity()] = block;
+
+            }
+            if (tile.type == "WAITING_BLOCK") {
+                auto waitingBlock = std::make_shared<rtype::WaitingBlock>(
+                    _registry, tile.position, tile.element, tile.rotation,
+                    RealEngine::CollisionType::SOLID);
+                // _blockEntities.push_back(waitingBlock);
+                _blockEntities[*waitingBlock->getEntity()] = waitingBlock;
+
             }
         }
     } catch (const std::exception& e) {
@@ -240,11 +263,4 @@ void ServerMap::saveToJSON(const std::string& filepath) {
     }
 
     writeJSONFile(filepath, root);
-}
-
-void ServerMap::removeDeadBlocks() {
-    _blockEntities.erase(
-        std::remove_if(_blockEntities.begin(), _blockEntities.end(),
-                       [](const std::shared_ptr<rtype::Block>& block) { return block == nullptr; }),
-        _blockEntities.end());
 }

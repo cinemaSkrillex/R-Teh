@@ -8,7 +8,7 @@
 #ifndef MAPINITIALIZER_HPP_
 #define MAPINITIALIZER_HPP_
 
-#include "RtypeServer.hpp"
+#include "../RtypeServer.hpp"
 #include "ServerConfig.hpp"
 #include "UDPServer.hpp"
 
@@ -26,9 +26,9 @@ class MapInitializer {
     ServerConfig                  _serverConfig;
 
     template <typename T>
-    void sendEntities(const std::vector<T>& entities, const std::string& type,
-                      const asio::ip::udp::endpoint& sender) {
-        for (const auto& entity : entities) {
+    void sendEntities(const std::unordered_map<std::size_t, std::shared_ptr<T>>& entities,
+                      const std::string& type, const asio::ip::udp::endpoint& sender) {
+        for (const auto& [key, entity] : entities) {
             if (type == "block") {
                 std::array<char, 800> message;
                 processBlock(entity, message);
@@ -44,7 +44,8 @@ class MapInitializer {
         }
     }
 
-    void processBlock(const std::shared_ptr<rtype::Block>& block, std::array<char, 800>& message);
+    void                      processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
+                                           std::array<char, 800>&                   message);
     RTypeProtocol::MapMessage createMapMessage(const std::shared_ptr<ServerMap>& GameMap);
 };
 

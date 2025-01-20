@@ -5,6 +5,8 @@
 ** GameUtils
 */
 
+#include <utility>
+
 #include "Game/Game.hpp"
 
 void rtype::Game::handleSignal(std::array<char, 800> signal) {
@@ -60,7 +62,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
         case RTypeProtocol::LEVEL_SIGNAL: {
             RTypeProtocol::LevelSignalMessage levelSignalMessage =
                 RTypeProtocol::deserializeLevelSignal(signal);
-            if (levelSignalMessage.startLevel) {
+            if (levelSignalMessage.startLevel && _game_map) {
                 _game_map->startLevel();
             } else {
                 _game_map->stopLevel();
@@ -77,6 +79,12 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
             RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage =
                 RTypeProtocol::deserializePlayerUpdateDataMessage(signal);
             handlePlayerValues(playerUpdateDataMessage);
+            break;
+        }
+        case RTypeProtocol::CHANGING_SCENE: {
+            RTypeProtocol::ChangingSceneMessage changingSceneMessage =
+                RTypeProtocol::deserializeChangingSceneMessage(signal);
+            handleChangingScene(changingSceneMessage);
             break;
         }
         default:
@@ -173,7 +181,7 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
     auto playerIt = _players.find(parsedPacket.uuid);
     if (playerIt != _players.end()) return;
     if (it == _entities.end()) return;
-    std::shared_ptr<RealEngine::Entity> entity = it->second;
+    std::shared_ptr<RealEngine::Entity> entity = it->second.entity;
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
     auto* rotationComponent      = _registry.get_component<RealEngine::Rotation>(entity);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
@@ -196,11 +204,11 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
 }
 
 void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) {
-    if (_entities.find(parsedPacket.uuid) != _entities.end()) {
-        std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
-                  << std::endl;
-        return;
-    }
+    // if (_entities.find(parsedPacket.uuid) != _entities.end()) {
+    //     std::cout << "Entity with UUID " << parsedPacket.uuid << " already exists, skipping."
+    //               << std::endl;
+    //     return;
+    // }
     auto newEntity = _registry.spawn_entity();
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
@@ -227,7 +235,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
             }
             case RTypeProtocol::ComponentList::SPRITE: {
                 std::string sprite_str(component.second.begin(), component.second.end());
-                // std::cout << "Sprite: " << sprite_str << "\n";
+                std::cout << "Sprite: " << sprite_str << "entity " << *newEntity << std::endl;
 
                 auto spriteSheet =
                     RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
@@ -298,8 +306,12 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
     for (const auto& entity_id : parsedPacket.entity_ids) {
         auto it = _entities.find(entity_id);
         if (it != _entities.end()) {
-            _registry.remove_entity(*it->second);
+            if (_registry.is_valid(*it->second.entity)) {
+                _registry.remove_entity(*it->second.entity);
             _entities.erase(it);
+            } else {
+                _entities.erase(it);
+            }
             continue;
         }
         auto playerIt = _players.find(entity_id);
@@ -307,24 +319,42 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
             auto* position = _registry.get_component<RealEngine::Position>(*playerIt->second);
             Explosion(_registry, {position->x, position->y});
             RealEngine::AssetManager::getInstance().getSound("explosion")->play();
-            _registry.remove_entity(*playerIt->second);
-            _players.erase(playerIt);
+            if (_registry.is_valid(*playerIt->second)) {
+                _registry.remove_entity(*playerIt->second);
+                _players.erase(playerIt);
+            } else {
+                _players.erase(playerIt);
+            }
         }
         if (_localPlayerUUID == entity_id) {
+            if (_registry.is_valid(*_player_entity)) {
+                _registry.remove_entity(*_player_entity);
+                _player_entity.reset();
+                return;
+            }
             auto* position = _registry.get_component<RealEngine::Position>(*_player_entity);
+            if (position) {
+                Explosion(_registry, {position->x, position->y});
+                RealEngine::AssetManager::getInstance().getSound("explosion")->play();
+            }
+            if (_player_entity == nullptr)
+                return;
             auto* health   = _registry.get_component<RealEngine::Health>(*_player_entity);
-            Explosion(_registry, {position->x, position->y});
-            RealEngine::AssetManager::getInstance().getSound("explosion")->play();
             if (health) {
                 health->amount = 0;
             }
-            _registry.remove_entity(*_player_entity);
-            _player_entity.reset();
+                if (_registry.is_valid(*_player_entity)) {
+                    _registry.remove_entity(*_player_entity);
+                    _player_entity.reset();
+                }
         }
     }
 }
 
 void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
+    if (!_game_map) {
+        return;
+    }
     _game_map->setScrollingSpeed(parsedPacket.scrollingSpeed);
     _game_map->setXLevelPosition(parsedPacket.x_level_position);
     _game_map->setIsMapLoaded(parsedPacket.isLoaded);
@@ -346,6 +376,9 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
             case 3:
                 level_music_str = "level_3";
                 break;
+            case 4:
+                level_music_str  = "waiting_room";
+            break;
             default:
                 level_music_str = "level_1";
                 break;
@@ -368,11 +401,15 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
             case 4:
                 backgroundStr = "space_base_background";
                 break;
+            case 5:
+                backgroundStr = "front_line_base";
+            break;
             default:
                 backgroundStr = "big_stars_background";
                 break;
         }
         Background background(_registry, bg.speed, backgroundStr);
+        std::cout << "Adding background: " << backgroundStr << std::endl;
         _game_map->addBackground(background.getEntity(), _parallaxSystem);
     }
 
@@ -385,35 +422,31 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
     }
 }
 
-// void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
-//                                   std::shared_ptr<RealEngine::Entity> newEntity) {
-//     switch (parsedPacket.entity_type) {
-//         case RTypeProtocol::EntityType::BLOCK:
-//             if (std::find_if(
-//                     _game_map->getBlockEntities().begin(), _game_map->getBlockEntities().end(),
-//                     [&parsedPacket](
-//                         const std::pair<long int, std::shared_ptr<RealEngine::Entity>>& block) {
-//                         return block.first == parsedPacket.uuid;
-//                     }) != _game_map->getBlockEntities().end()) {
-//                 std::cerr << "Block entity with UUID " << parsedPacket.uuid
-//                           << " already exists in the game map, skipping." << std::endl;
-//                 _registry.remove_entity(*newEntity);
-//                 return;
-//             }
-//             std::cout << "Adding block with UUID: " << parsedPacket.uuid << "Entity: " <<
-//             *newEntity
-//                       << std::endl;
-//             _game_map->addBlock(newEntity, parsedPacket.uuid);
-//             break;
-//         case RTypeProtocol::EntityType::OTHER_ENTITY:
-//             std::cout << "Adding entity with UUID: " << parsedPacket.uuid << std::endl;
-//             _entities.emplace(parsedPacket.uuid, newEntity);
-//             break;
-//         default:
-//             break;
-//     }
-// }
 void rtype::Game::addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
                                   std::shared_ptr<RealEngine::Entity> newEntity) {
-    _entities.emplace(parsedPacket.uuid, newEntity);
+    // _entities.emplace(parsedPacket.uuid, newEntity);
+    RTypeProtocol::EntityType entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
+    std::cout << "BEFORE Entity type: " << static_cast<int>(entityType) << std::endl;
+    if (parsedPacket.entity_type < 0 || parsedPacket.entity_type > 3) {
+        std::cerr << "Invalid entity type: " << parsedPacket.entity_type << std::endl;
+        entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
+    } else if (parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK) {
+        entityType = RTypeProtocol::EntityType::BLOCK;
+    }
+
+    std::cout << "AFTER Entity type: " << static_cast<int>(entityType) << std::endl;
+
+    // Store the entity and its type in the _entities map
+    _entities.emplace(parsedPacket.uuid, EntityInfo{std::move(newEntity), entityType});
+}
+
+void rtype::Game::handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket) {
+    std::cout << "Changing scene to: " << static_cast<int>(parsedPacket.scene_id) << std::endl;
+    // relocateAllBlocks();
+    RTypeProtocol::BaseMessage baseMessage;
+    baseMessage.message_type                    = RTypeProtocol::MessageType::MAP_UNLOADED;
+    baseMessage.uuid                            = 0;
+    std::array<char, 800> serializedBaseMessage = RTypeProtocol::serialize<800>(baseMessage);
+    _clientUDP->send_reliable_packet(serializedBaseMessage);
+    // unloadLevel(10000.0f, 10000.0f);
 }

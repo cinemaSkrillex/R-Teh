@@ -3,6 +3,12 @@
 
 #include "Game/Game.hpp"
 
+
+// void create_game() {
+//     rtype::Game game(client, client_port);  // Local object
+//     game.run();  // If the object is destroyed here, this will cause undefined behavior.
+// }  // game is destroyed here.
+
 int main(int argc, char* argv[]) {
 
     std::string server_ip;
@@ -38,13 +44,16 @@ int main(int argc, char* argv[]) {
 
         // Launch the game on the main thread
         // added the port, temporarily for testing.
-        rtype::Game game(client, client_port);
-
+        // rtype::Game game(client, client_port);
+        rtype::Game* game = new rtype::Game(client, client_port);  // Dynamically allocated
         client->send_new_client();
+        game->run();
+        // delete game;  // Proper cleanup after the game loop
+
 
         // Game loop
 
-        game.run();
+        // game.run();
 
         running.store(false);
     } catch (const std::exception& e) {

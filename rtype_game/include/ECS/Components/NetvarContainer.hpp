@@ -21,9 +21,14 @@ struct NetvarContainer {
     void addNetvar(const std::string& name, const Netvar& netvar) { netvars[name] = netvar; }
 
     Netvar* getNetvar(const std::string& name) {
-        auto it = netvars.find(name);
-        if (it != netvars.end()) return &it->second;
-        return nullptr;
+        try {
+            auto it = netvars.find(name);
+            if (it != netvars.end()) return &it->second;
+            return nullptr;
+        } catch (const std::exception& e) {
+            std::cerr << "Error getting netvar: " << e.what() << std::endl;
+            return nullptr;
+        }
     }
 
     void removeNetvar(const std::string& name) { netvars.erase(name); }

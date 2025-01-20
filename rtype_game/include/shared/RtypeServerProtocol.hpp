@@ -30,6 +30,10 @@ enum MessageType : int {
     // PLAYER_UPDATE_SCORE  = 0x0D,
     // PLAYER_UPDATE_HEALTH = 0x0E,
     PLAYER_UPDATE_DATA = 0x0D,
+    MAP_UNLOADED       = 0x0E,
+    CHANGING_SCENE     = 0x0F,
+    PING               = 0x10,
+    PONG              = 0x11,
 };
 
 enum ComponentList : int {
@@ -51,6 +55,8 @@ enum EntityType : int {
     OTHER_ENTITY = 0x03,
     BACKGROUND   = 0x04,
 };
+
+enum class SceneType { WAITING, MENU, GAME };
 
 struct BackgroundData {
     int   background_id;
@@ -89,6 +95,7 @@ struct SynchronizeMessage : BaseMessage {
 struct NewEntityMessage : BaseMessage {
     std::vector<std::pair<ComponentList, std::vector<char>>>
         components;  // Component ID and serialized data
+    EntityType entity_type;
 };
 
 struct DestroyEntityMessage : BaseMessage {
@@ -127,6 +134,11 @@ struct PlayerUpdateDataMessage : BaseMessage {
     int health;
 };
 
+struct ChangingSceneMessage : BaseMessage {
+    SceneType scene_id;
+};
+
+
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const BaseMessage& msg);
 
@@ -164,6 +176,9 @@ std::array<char, BUFFER_SIZE> serialize(const OneIntMessage& msg);
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const PlayerUpdateDataMessage& msg);
 
+template <std::size_t BUFFER_SIZE>
+std::array<char, BUFFER_SIZE> serialize(const ChangingSceneMessage& msg);
+
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>
 PlayerMoveMessage deserializePlayerMove(const std::array<char, BUFFER_SIZE>& buffer);
@@ -195,6 +210,10 @@ OneIntMessage deserializeOneIntMessage(const std::array<char, BUFFER_SIZE>& buff
 template <std::size_t BUFFER_SIZE>
 PlayerUpdateDataMessage deserializePlayerUpdateDataMessage(
     const std::array<char, BUFFER_SIZE>& buffer);
+
+template <std::size_t BUFFER_SIZE>
+ChangingSceneMessage deserializeChangingSceneMessage(const std::array<char, BUFFER_SIZE>& buffer);
+
 
 }  // namespace RTypeProtocol
 

@@ -39,8 +39,7 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         auto* sprite      = registry.get_component<SpriteComponent>(entity);
         auto* spritesheet = registry.get_component<SpriteSheet>(entity);
 
-        if (collision->type == CollisionType::SCREEN ||
-            collision->type == CollisionType::INACTIVE) {
+        if (collision->type == CollisionType::SCREEN) {
             continue;
         }
         if (sprite) {

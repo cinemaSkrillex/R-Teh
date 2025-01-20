@@ -7,6 +7,8 @@
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
 #include "../../include/shared/RtypeServerProtocol.hpp"
+#include "GameScene.hpp"
+#include "WaitingRoomScene.hpp"
 
 void RtypeServer::run() {
     auto log                   = std::make_shared<Log>("RtypeServer.log");
@@ -17,6 +19,19 @@ void RtypeServer::run() {
         if (_clock.getElapsedTime().asMilliseconds() > 1000 / server_tick) {
             // Reset the clock for the next tick
             _deltaTime = _clock.restart().asSeconds();
+            if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::WAITING) {
+                auto waitingRoomScene =
+                    std::dynamic_pointer_cast<WaitingRoomScene>(_scene_manager.getCurrentScene());
+                if (waitingRoomScene) {
+                    waitingRoomScene->update(_deltaTime);
+                }
+            } else if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::GAME) {
+                auto gameScene =
+                    std::dynamic_pointer_cast<GameScene>(_scene_manager.getCurrentScene());
+                if (gameScene) {
+                    gameScene->update(_deltaTime);
+                }
+            }
 
             handleClientMessages();
             runGameInstance(_deltaTime);
@@ -35,7 +50,14 @@ void RtypeServer::handleClientMessages() {
             continue;
         }
         const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
+        const auto& reliableMessages = _server->get_reliable_messages_from_endpoint(client);
 
+        for (const auto& message : reliableMessages) {
+            auto baseMessage = RTypeProtocol::deserialize<800>(message);
+            if (baseMessage.message_type == RTypeProtocol::MAP_UNLOADED) {
+                handleMapUnloadedMessage(client);
+            }
+        }
         for (const auto& message : messages) {
             auto baseMessage = RTypeProtocol::deserialize<800>(message);
 
@@ -46,6 +68,16 @@ void RtypeServer::handleClientMessages() {
             }
         }
     }
+}
+
+void RtypeServer::handleMapUnloadedMessage(const asio::ip::udp::endpoint& client) {
+    _clientsUnloadedMap.insert(client);
+}
+
+bool RtypeServer::allClientsUnloadedMap() const {
+    std::cout << "Clients unloaded map size: " << _clientsUnloadedMap.size() << std::endl;
+    std::cout << "Server clients size: " << _server->getClients().size() << std::endl;
+    return _clientsUnloadedMap.size() == _server->getClients().size();
 }
 
 void RtypeServer::initEventHandlers() {
@@ -89,9 +121,22 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     auto* newEntityValue = std::any_cast<bool>(&newEntity->second.value);
     if (!newEntityValue || !*newEntityValue) return;
 
+    RTypeProtocol::EntityType entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
+    auto* collisionType = registry->get_component<RealEngine::Collision>(entity);
+    if (collisionType) {
+        if (collisionType->type == RealEngine::CollisionType::SOLID || collisionType->type == RealEngine::CollisionType::INACTIVE) {
+            entityType = RTypeProtocol::EntityType::BLOCK;
+            std::cout << "Block" << std::endl;
+        } else {
+            entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
+        }
+    }
+
     RTypeProtocol::NewEntityMessage newEntityMessage;
     newEntityMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
     newEntityMessage.uuid         = entity;
+    newEntityMessage.entity_type  = entityType;
+    std::cout << "Entity type: " << static_cast<int>(entityType) << std::endl;
 
     // Serialize position component
     auto* position = registry->get_component<RealEngine::Position>(entity);

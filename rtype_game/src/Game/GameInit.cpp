@@ -35,7 +35,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
-      _game_map(std::make_shared<GameMap>(_registry)),
+_game_map(new GameMap(_registry, this)),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -44,7 +44,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                            30);
 }
 
-Game::~Game() {}
+Game::~Game() {
+    std::cout << "Destroying game..." << std::endl;
+}
 
 void Game::init_all_game() {
     init_registry();
@@ -156,7 +158,6 @@ void Game::init_textures() {
         "eye_boss_mid_range", path + "enemies/the_eye/boss.png", {0, 55, 91 * 3, 55});
     AssetManagerInstance.loadSpriteTextureAndScale(
         "eye_boss_long_range", path + "enemies/the_eye/boss.png", {0, 55 * 2, 81 * 3, 55});
-
     // enemies projectiles
     AssetManagerInstance.loadSpriteTextureAndScale("eye_laser",
                                                    path + "enemies/the_eye/laser_shoot.png");
@@ -184,6 +185,16 @@ void Game::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
                                                    {0, 32, 16 * 5, 16},
                                                    {GAME_SCALE - 1, GAME_SCALE - 1});
+
+    // waiting room background
+    AssetManagerInstance.loadSpriteTextureAndScale(
+        "front_line_base", path + "backgrounds/front_line_base.png", {2, 2});
+    AssetManagerInstance.getTexture("front_line_base")->setRepeated(true);
+    AssetManagerInstance.getSprite("front_line_base")->setOpacity(100);
+    // waiting room zone
+    AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
+                                                   {0.5, 0.5});
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
 }
 
 void Game::init_level(std::string filepath, std::string foldername) {
@@ -225,7 +236,7 @@ void Game::init_systems() {
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        if (_game_map->levelRunning()) _parallaxSystem.update(registry, deltaTime);
+        if (_game_map && _game_map->levelRunning()) _parallaxSystem.update(registry, deltaTime);
     });
 
     _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
@@ -514,11 +525,15 @@ void Game::init_musics() {
     AssetManagerInstance.loadMusic("level_1",
                                    path + "8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
-    AssetManagerInstance.getMusic("level_1")->setVolume(50);
+    AssetManagerInstance.getMusic("level_1")->setVolume(0);
     AssetManagerInstance.loadMusic("level_2",
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
     AssetManagerInstance.getMusic("level_2")->setLoop(true);
     AssetManagerInstance.getMusic("level_2")->setVolume(55);
+
+    AssetManagerInstance.loadMusic("waiting_room", path + "waiting_room.ogg");
+    AssetManagerInstance.getMusic("waiting_room")->setLoop(true);
+    AssetManagerInstance.getMusic("waiting_room")->setVolume(0);
 }
 
 void Game::init_sounds() {

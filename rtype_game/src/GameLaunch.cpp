@@ -1,4 +1,4 @@
-/*
+    /*
 ** EPITECH PROJECT, 2025
 ** R-Teh
 ** File description:
@@ -21,39 +21,16 @@ LaunchGame::LaunchGame()
                     assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
                     RealEngine::InputBox::ContentType::Numeric),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
-                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
-      labelIp("Server IP",
-              assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
-      labelServerPort("Server Port",
-                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
-      labelClientPort("Client Port",
-                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
-    initUIComponents();
-    initBackground();
-}
+                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
+    ipBox.setFillColor(sf::Color::Green);
+    portBox.setFillColor(sf::Color::Green);
+    portBoxClient.setFillColor(sf::Color::Green);
 
-LaunchGame::~LaunchGame() { delete launcherBackground; }
-
-void LaunchGame::initUIComponents() {
-    labelIp.setPosition(400, 125);
-    labelServerPort.setPosition(400, 225);
-    labelClientPort.setPosition(400, 325);
-    ipBox.setFillColor(sf::Color(0, 255, 0, 26));
-    portBox.setFillColor(sf::Color(0, 255, 0, 26));
-    portBoxClient.setFillColor(sf::Color(0, 255, 0, 26));
-
-    launchButton.setFillColor(sf::Color(0, 255, 0, 128));
+    launchButton.setFillColor(sf::Color::Green);
     launchButton.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
     portBoxClient.centerText();
-}
-
-void LaunchGame::initBackground() {
-    launcherBackground =
-        new LauncherBackground(assetLauncher ? "assets/sprites/r_type/backgrounds/stars.png"
-                                             : "../../assets/sprites/r_type/backgrounds/stars.png",
-                               50.f);
 }
 
 void LaunchGame::run() {
@@ -75,35 +52,16 @@ void LaunchGame::run() {
             ipBox.handleEvent(event);
             portBox.handleEvent(event);
             portBoxClient.handleEvent(event);
-
-            if (event.type == sf::Event::MouseButtonPressed) {
-                ipBox.setFocus(
-                    ipBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
-                portBox.setFocus(
-                    portBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y));
-                portBoxClient.setFocus(portBoxClient.getGlobalBounds().contains(
-                    event.mouseButton.x, event.mouseButton.y));
-            }
         }
 
-        float deltaTime = clock.restart().asSeconds();
-        launcherBackground->update(deltaTime);
         window.clear();
-        draw();
+        window.update(0);
+        launchButton.draw(window.getRenderTexture());
+        ipBox.draw(window.getRenderTexture());
+        portBox.draw(window.getRenderTexture());
+        portBoxClient.draw(window.getRenderTexture());
         window.display();
     }
-}
-
-void LaunchGame::draw() {
-    window.update(0);
-    launcherBackground->draw(window.getRenderTexture());
-    launchButton.draw(window.getRenderTexture());
-    labelIp.draw(window.getRenderTexture());
-    ipBox.draw(window.getRenderTexture());
-    labelServerPort.draw(window.getRenderTexture());
-    portBox.draw(window.getRenderTexture());
-    labelClientPort.draw(window.getRenderTexture());
-    portBoxClient.draw(window.getRenderTexture());
 }
 
 std::string LaunchGame::getServerIp() const { return serverIp; }
