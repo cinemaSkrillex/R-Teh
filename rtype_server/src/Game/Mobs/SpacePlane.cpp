@@ -11,7 +11,6 @@ namespace rtype {
 
 static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
-
     if (!registry.is_valid(entity)) {
         std::cerr << "Entity is no longer valid: " << entity << std::endl;
         return;
@@ -23,7 +22,7 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
         std::cerr << "Netvar value is empty for entity: " << entity << std::endl;
         return;
     }
-    float cooldown  = std::any_cast<float>(currentNetvar.value);
+    float cooldown = std::any_cast<float>(currentNetvar.value);
 
     if (!container) {
         std::cerr << "Invalid container component for entity: " << entity << std::endl;
