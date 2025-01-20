@@ -10,18 +10,12 @@
 namespace rtype {
 
 GameMenu::GameMenu(std::shared_ptr<UDPClient> clientUDP, RealEngine::Window& window)
-    : _window(window),
-      _event(),
-      _clientUDP(clientUDP),
-      _IP("127.0.0.1"),
-      _server_port(static_cast<unsigned short>(8080)),
-      _client_port(static_cast<unsigned short>(8081)) {
+    : _window(window), _event(), _clientUDP(clientUDP) {
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
         path = "assets/sprites/r_type/";
     }
     init_buttons();
-    init_text();
 }
 
 GameMenu::~GameMenu() {}
@@ -33,16 +27,18 @@ void GameMenu::init_buttons() {
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadSpriteTextureAndScale("logo", path + "logo.png", {0.85, 0.85});
-    AssetManagerInstance.loadSpriteTextureAndScale("play_button", path + "play.png", {0.6, 0.6});
+    AssetManagerInstance.loadSpriteTextureAndScale("play_button", path + "play.png", {0.85, 0.85});
     AssetManagerInstance.loadSpriteTextureAndScale("exit_button", path + "exit.png", {0.6, 0.6});
     AssetManagerInstance.loadSpriteTextureAndScale("plus_button", path + "plus.png");
     AssetManagerInstance.loadSpriteTextureAndScale("minus_button", path + "minus.png");
+    AssetManagerInstance.loadSpriteTextureAndScale("gamma", path + "gamma.jpg");
+    AssetManagerInstance.loadSpriteTextureAndScale("saturation", path + "saturation.jpg");
     _GameLogo = RealEngine::Sprite(*(AssetManagerInstance.getSprite("logo")));
     _GameLogo.setPosition(VIEW_WIDTH / 2, 50);
     _GameLogo.setSmooth(true);
 
     auto PlaySprite = *(AssetManagerInstance.getSprite("play_button"));
-    PlaySprite.setPosition(400, 400);
+    PlaySprite.setPosition(400, 250);
     PlaySprite.setSmooth(true);
     _PlayButton = RealEngine::Button(PlaySprite);
     _PlayButton.setHoverColor(sf::Color::Cyan);
@@ -54,52 +50,30 @@ void GameMenu::init_buttons() {
     _ExitButton.setHoverColor(sf::Color::Yellow);
 
     auto plusSprite = *(AssetManagerInstance.getSprite("plus_button"));
-    plusSprite.setPosition(600, 500);
+    plusSprite.setPosition(620, 500);
     _GammaPlusButton = RealEngine::Button(plusSprite);
     _GammaPlusButton.setHoverColor(sf::Color::Green);
 
     auto minusSprite = *(AssetManagerInstance.getSprite("minus_button"));
-    minusSprite.setPosition(400, 500);
+    minusSprite.setPosition(380, 500);
     _GammaMinusButton = RealEngine::Button(minusSprite);
     _GammaMinusButton.setHoverColor(sf::Color::Red);
 
-    plusSprite.setPosition(600, 575);
+    plusSprite.setPosition(620, 575);
     _SaturationPlusButton = RealEngine::Button(plusSprite);
     _SaturationPlusButton.setHoverColor(sf::Color::Green);
 
-    minusSprite.setPosition(400, 575);
+    minusSprite.setPosition(380, 575);
     _SaturationMinusButton = RealEngine::Button(minusSprite);
     _SaturationMinusButton.setHoverColor(sf::Color::Red);
-}
 
-void GameMenu::init_text() {
-    std::string path = "../../assets/fonts/";
-    if (assetLauncher == true) {
-        path = "assets/fonts/";
-    }
-    auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
-    AssetManagerInstance.loadFont("arial", path + "arial.ttf");
-    auto font = AssetManagerInstance.getFont("arial");
-    if (font) {
-        _GammaText      = RealEngine::Text("Gamma", *font);
-        _SaturationText = RealEngine::Text("Saturation", *font);
-        _GammaText.setPosition(500, 500);
-        _GammaText.setCharacterSize(30);
-        _GammaText.setColor(255, 255, 255, 255);
-        _SaturationText.setPosition(500, 575);
-        _SaturationText.setCharacterSize(30);
-        _SaturationText.setColor(255, 255, 255, 255);
-        // _InputBoxIP =
-        //     RealEngine::InputBox(sf::Vector2f(500, 150), sf::Vector2f(200, 150), "127.0.0.1",
-        //     font,
-        //                          RealEngine::InputBox::ContentType::IpAddress);
-        // _InputBoxPort = RealEngine::InputBox(sf::Vector2f(100, 150), sf::Vector2f(200, 250),
-        // "8080",
-        //                                      font, RealEngine::InputBox::ContentType::Numeric);
-        // _InputBoxClientPort =
-        //     RealEngine::InputBox(sf::Vector2f(200, 250), sf::Vector2f(200, 350), "8081", font,
-        //                          RealEngine::InputBox::ContentType::Numeric);
-    }
+    _GammaText = RealEngine::Sprite(*(AssetManagerInstance.getSprite("gamma")));
+    _GammaText.setPosition(500, 500);
+    _GammaText.setScale(0.5, 0.5);
+    _GammaText.setSmooth(true);
+    _SaturationText = RealEngine::Sprite(*(AssetManagerInstance.getSprite("saturation")));
+    _SaturationText.setPosition(500, 575);
+    _SaturationText.setScale(0.5, 0.5);
 }
 
 void GameMenu::go_to_online_game() {
@@ -115,6 +89,9 @@ bool GameMenu::run(float deltaTime) {
         return false;
     }
     while (_window.getRenderWindow().pollEvent(_event)) {
+        if (_event.type == sf::Event::Closed) {
+            _window.close();
+        }
         _PlayButton.handleEvent(
             _event, [this]() { go_to_online_game(); }, _window.getRenderWindow());
         _ExitButton.handleEvent(_event, [this]() { _window.close(); }, _window.getRenderWindow());
@@ -138,11 +115,8 @@ bool GameMenu::run(float deltaTime) {
     _GammaMinusButton.draw(_window.getRenderTexture());
     _SaturationPlusButton.draw(_window.getRenderTexture());
     _SaturationMinusButton.draw(_window.getRenderTexture());
-    // _GammaText.draw(_window.getRenderTexture());
-    // _SaturationText.draw(_window.getRenderTexture());
-    // _InputBoxIP.draw(_window.getRenderTexture());
-    // _InputBoxPort.draw(_window.getRenderTexture());
-    // _InputBoxClientPort.draw(_window.getRenderTexture());
+    _GammaText.draw(_window.getRenderTexture());
+    _SaturationText.draw(_window.getRenderTexture());
     _window.update(deltaTime);
     _window.display();
     return true;

@@ -29,7 +29,8 @@ Button::Button(Sprite spriteButton)
       _hoverColor(sf::Color::White) {
     sprite = spriteButton;
     box.setSize({sprite.getBounds().width, sprite.getBounds().height});
-    box.setPosition(sprite.getPosition());
+    box.setPosition(sprite.getPosition().x - sprite.getBounds().width / 2,
+                    sprite.getPosition().y - sprite.getBounds().height / 2);
 }
 
 Button::~Button() {}
@@ -72,7 +73,8 @@ void Button::handleEvent(const sf::Event& event, std::function<void()> onClick,
 void Button::setPosition(const sf::Vector2f& position) {
     if (_useSprite) {
         sprite.setPosition(position.x, position.y);
-        box.setPosition(sprite.getPosition());
+        box.setPosition(sprite.getPosition().x - sprite.getBounds().width / 2,
+                        sprite.getPosition().y - sprite.getBounds().height / 2);
     } else {
         box.setPosition(position);
     }

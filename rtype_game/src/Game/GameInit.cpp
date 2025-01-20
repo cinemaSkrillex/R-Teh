@@ -41,8 +41,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _startTime(std::chrono::steady_clock::now()) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
     init_all_game();
-    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2}, sf::Color::Yellow,
-                           30);
+    display_temporary_text("Welcome to R-Type", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2},
+                           sf::Color::Yellow, 30);
 }
 
 Game::~Game() {
