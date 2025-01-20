@@ -17,9 +17,9 @@ Launcher::Launcher()
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
               LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
-      button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
+      button(sf::Vector2f(300, 50), sf::Vector2f(275, 350), "Connect to Server",
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-      launchButton(sf::Vector2f(400, 50), sf::Vector2f(275, 450), "Launch Game",
+      launchButton(sf::Vector2f(300, 50), sf::Vector2f(275, 350), "Launch Game",
                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
