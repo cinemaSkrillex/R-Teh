@@ -93,14 +93,16 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         std::cerr << "Error: Music name is empty" << std::endl;
         return mapMessage;
     }
-    if (musicName == "level1") {
+    if (musicName == "level_1") {
         mapMessage.id_level_music = 1;
-    } else if (musicName == "level2") {
+    } else if (musicName == "level_2") {
         mapMessage.id_level_music = 2;
-    } else if (musicName == "level3") {
+    } else if (musicName == "level_3") {
         mapMessage.id_level_music = 3;
-    } else {
+    } else if (musicName == "waiting_room") {
         mapMessage.id_level_music = 4;
+    } else {
+        mapMessage.id_level_music = 1;
     }
 
     const auto& backgrounds = GameMap->getBackgrounds();

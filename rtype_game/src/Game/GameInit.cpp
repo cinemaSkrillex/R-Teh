@@ -523,7 +523,7 @@ void Game::init_musics() {
     AssetManagerInstance.loadMusic("level_1",
                                    path + "8-Bit_-Skrillex-Bangarang-cover-by-FrankJavCee.ogg");
     AssetManagerInstance.getMusic("level_1")->setLoop(true);
-    AssetManagerInstance.getMusic("level_1")->setVolume(0);
+    AssetManagerInstance.getMusic("level_1")->setVolume(30);
     AssetManagerInstance.loadMusic("level_2",
                                    path + "Battle-Against-a-Rising-Star-MOTHER-Encore-OST.ogg");
     AssetManagerInstance.getMusic("level_2")->setLoop(true);
@@ -531,7 +531,7 @@ void Game::init_musics() {
 
     AssetManagerInstance.loadMusic("waiting_room", path + "waiting_room.ogg");
     AssetManagerInstance.getMusic("waiting_room")->setLoop(true);
-    AssetManagerInstance.getMusic("waiting_room")->setVolume(0);
+    AssetManagerInstance.getMusic("waiting_room")->setVolume(30);
 }
 
 void Game::init_sounds() {
