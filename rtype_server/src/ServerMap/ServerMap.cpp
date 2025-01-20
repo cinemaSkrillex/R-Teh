@@ -99,7 +99,7 @@ std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
 
 void ServerMap::unloadLevel() {
     _isLevelRunning = false;
-    for (auto& [id, block] : _blockEntities) {  // Structured binding for unordered_map
+    for (auto& [id, block] : _blockEntities) {
         if (block) {
             std::cout << "removing block " << id << std::endl;
             _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
@@ -144,11 +144,9 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
         _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
         _music_name     = root["music"].asString();
-        // for all backgrounds, parse     std::vector<std::pair<std::string, float>> _backgrounds;
         for (const auto& background : root["backgrounds"]) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();
-            // if sprite already exists, don't load it again
             if (std::find_if(_backgrounds.begin(), _backgrounds.end(),
                              [&background_str](const std::pair<std::string, float>& bg) {
                                  return bg.first == background_str;
@@ -171,14 +169,12 @@ void ServerMap::loadFromJSON(const std::string& filepath) {
                 auto block = std::make_shared<rtype::Block>(_registry, tile.position, tile.element,
                                                             tile.rotation, _scrollingSpeed,
                                                             RealEngine::CollisionType::SOLID);
-                // _blockEntities.push_back(block);
                 _blockEntities[*block->getEntity()] = block;
             }
             if (tile.type == "WAITING_BLOCK") {
                 auto waitingBlock = std::make_shared<rtype::WaitingBlock>(
                     _registry, tile.position, tile.element, tile.rotation,
                     RealEngine::CollisionType::SOLID);
-                // _blockEntities.push_back(waitingBlock);
                 _blockEntities[*waitingBlock->getEntity()] = waitingBlock;
             }
         }
