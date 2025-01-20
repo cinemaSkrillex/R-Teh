@@ -29,10 +29,10 @@ void GameMenu::init_buttons() {
     AssetManagerInstance.loadSpriteTextureAndScale("logo", path + "logo.png", {0.85, 0.85});
     AssetManagerInstance.loadSpriteTextureAndScale("play_button", path + "play.png", {0.85, 0.85});
     AssetManagerInstance.loadSpriteTextureAndScale("exit_button", path + "exit.png", {0.6, 0.6});
-    AssetManagerInstance.loadSpriteTextureAndScale("plus_button", path + "plus.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("minus_button", path + "minus.png");
-    AssetManagerInstance.loadSpriteTextureAndScale("gamma", path + "gamma.jpg");
-    AssetManagerInstance.loadSpriteTextureAndScale("saturation", path + "saturation.jpg");
+    AssetManagerInstance.loadSpriteTextureAndScale("plus_button", path + "plus.png", {1, 1});
+    AssetManagerInstance.loadSpriteTextureAndScale("minus_button", path + "minus.png", {1, 1});
+    AssetManagerInstance.loadSpriteTextureAndScale("gamma", path + "gamma.jpg", {1, 1});
+    AssetManagerInstance.loadSpriteTextureAndScale("saturation", path + "saturation.jpg", {1, 1});
     _GameLogo = RealEngine::Sprite(*(AssetManagerInstance.getSprite("logo")));
     _GameLogo.setPosition(VIEW_WIDTH / 2, 50);
     _GameLogo.setSmooth(true);

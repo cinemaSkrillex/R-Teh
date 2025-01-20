@@ -29,6 +29,10 @@ class Window {
     void               loadShader(const std::string shaderPath);
     void               setVueSmooth(bool smooth);
     void               setBlackTransition(bool on, float time);
+    float              getTransitionTimer() { return _blackTransitionTime; }
+    float              getSaturation() { return _saturation; }
+    float              getGamma() { return _gamma; }
+    sf::Event&         getEvent() { return _event; }
     sf::RenderWindow&  getRenderWindow() { return _window; }
     sf::RenderTexture& getRenderTexture() { return _renderTexture; }
     View&              getView() { return _view; }

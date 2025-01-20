@@ -18,7 +18,6 @@
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
 #include "Game/GameMenu.hpp"
-#include "Game/LaunchGame.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
