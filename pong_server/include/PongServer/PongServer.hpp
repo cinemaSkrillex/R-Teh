@@ -46,14 +46,16 @@ class PongServer {
     void broadcastStates();
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
-    void handlePlayerDirection(const std::array<char, 800>& message,
-                               const asio::ip::udp::endpoint& client,
+    void handlePlayerDirection(const std::array<char, 800>&        message,
+                               const asio::ip::udp::endpoint&      client,
                                std::shared_ptr<RealEngine::Entity> player);
 
    private:
     std::shared_ptr<UDPServer>            _server;
     float                                 _deltaTime;
     float                                 _deltaTimeBroadcast;
+    int                                   _playerReadyCount;
+    std::vector<long int>                 _readyPlayers;
     sf::Clock                             _clock;
     sf::Clock                             _broadcastClock;
     std::chrono::steady_clock::time_point _startTime;
@@ -62,6 +64,6 @@ class PongServer {
     std::shared_ptr<RealEngine::Entity>   _background;
     std::unordered_map<asio::ip::udp::endpoint, std::shared_ptr<RealEngine::Entity>> _players;
     // player timestamp
-    std::unordered_map<asio::ip::udp::endpoint, long>                                _playerTimestamps;
-    std::vector<asio::ip::udp::endpoint>                                             _spectators;
+    std::unordered_map<asio::ip::udp::endpoint, long> _playerTimestamps;
+    std::vector<asio::ip::udp::endpoint>              _spectators;
 };

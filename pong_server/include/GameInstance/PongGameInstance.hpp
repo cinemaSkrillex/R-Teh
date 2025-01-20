@@ -95,6 +95,7 @@ class PongGameInstance {
     std::shared_ptr<RealEngine::Entity> addAndGetBackground();
 
     void movePlayer(sf::IntRect direction, float deltaTime, size_t player);
+    void runPlayerSimulation(std::shared_ptr<RealEngine::Entity> player, float deltaTime);
     std::vector<RealEngine::Entity> run(float deltaTime);
 
     RealEngine::Registry* getRegistry() { return &_registry; }

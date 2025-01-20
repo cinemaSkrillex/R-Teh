@@ -52,10 +52,6 @@ std::shared_ptr<RealEngine::Entity> PongGameInstance::addAndGetBackground() {
     auto sprite = RealEngine::AssetManager::getInstance().getSprite("background");
     _registry.add_component(background, RealEngine::SpriteComponent{*sprite});
     _registry.add_component(background, RealEngine::Drawable{});
-    _registry.add_component(
-        background,
-        RealEngine::NetvarContainer{
-            {{"sprite_name", {"string", "sprite_name", std::string("background"), nullptr}}}});
     _entities.push_back(background);
     return _entities.back();
 }
@@ -77,8 +73,8 @@ void PongGameInstance::movePlayer(sf::IntRect direction, float deltaTime, size_t
 
     // if (direction.left > 0 && velocity->vx > 50) velocity->vx = 50;
     // if (direction.top > 0 && velocity->vx < -50) velocity->vx = -50;
-    // if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
-    // if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
+    if (direction.width > 0 && velocity->vy > 50) velocity->vy = 50;
+    if (direction.height > 0 && velocity->vy < -50) velocity->vy = -50;
     // if (direction.top > 0) velocity->vx += (acceleration->ax * 3 * deltaTime);
     // if (direction.left > 0) velocity->vx -= (acceleration->ax * 3 * deltaTime);
     // if (direction.width > 0) velocity->vy -= (acceleration->ay * 3 * deltaTime);
@@ -88,6 +84,11 @@ void PongGameInstance::movePlayer(sf::IntRect direction, float deltaTime, size_t
     if (direction.width == direction.height) {
         velocity->vy = 0;
     }
+}
+
+void PongGameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> player,
+                                           float                               deltaTime) {
+    _movementSystem.update(_registry, player, deltaTime);
 }
 
 std::vector<RealEngine::Entity> PongGameInstance::run(float deltaTime) {

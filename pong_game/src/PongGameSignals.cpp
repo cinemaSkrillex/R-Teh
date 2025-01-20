@@ -37,6 +37,12 @@ void pong::Game::handleSignal(std::array<char, 800> signal) {
             handlePlayerValues(playerUpdateDataMessage);
             break;
         }
+        case PongProtocol::PLAYER_CONTROL: {
+            _player_entity = _entities[baseMessage.uuid];
+            _registry.add_component<RealEngine::Controllable>(_player_entity,
+                                                              RealEngine::Controllable{});
+            break;
+        }
         default:
             std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
             break;
@@ -54,7 +60,7 @@ void pong::Game::handlePlayerMove(PongProtocol::PlayerMoveMessage parsedPacket) 
         return;
     }
     std::shared_ptr<RealEngine::Entity> entity = it->second;
-    auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(entity);
+    // auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(entity);
     auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
     auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
     if (!positionComponent && !interpolationComponent) return;
@@ -108,13 +114,14 @@ void pong::Game::handleNewEntity(PongProtocol::NewEntityMessage parsedPacket) {
                   << std::endl;
         return;
     }
+    std::cout << "New entity with UUID " << parsedPacket.uuid << std::endl;
     auto newEntity = _registry.spawn_entity();
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
             case PongProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
-                // std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
+                std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
                 _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
@@ -127,17 +134,28 @@ void pong::Game::handleNewEntity(PongProtocol::NewEntityMessage parsedPacket) {
             case PongProtocol::ComponentList::VELOCITY: {
                 RealEngine::Velocity velocity;
                 std::memcpy(&velocity, component.second.data(), sizeof(velocity));
+                std::cout << "Velocity: (" << velocity.vx << ", " << velocity.vy << ")\n";
                 _registry.add_component(
                     newEntity, RealEngine::Velocity{velocity.vx, velocity.vy, velocity.maxSpeed,
                                                     velocity.airFrictionForce});
                 break;
             }
             case PongProtocol::ComponentList::SPRITE: {
-                std::string sprite_str(component.second.begin(), component.second.end());
+                int sprite_id;
+                std::memcpy(&sprite_id, component.second.data(), sizeof(sprite_id));
+                std::string sprite_str = "";
+                if (sprite_id == 1) {
+                    sprite_str = "background";
+                } else if (sprite_id == 2) {
+                    sprite_str = "ball";
+                } else if (sprite_id == 3) {
+                    sprite_str = "player_bar";
+                }
                 std::cout << "Sprite: " << sprite_str << "\n";
                 auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                 if (sprite) {
-                    _registry.add_component(*newEntity, RealEngine::SpriteComponent{*sprite, 0});
+                    _registry.add_component(*newEntity,
+                                            RealEngine::SpriteComponent{*sprite, sprite_id});
                 } else {
                     std::cerr << "Failed to load Sprite ID: " << sprite_str << std::endl;
                 }
@@ -158,15 +176,12 @@ void pong::Game::handleNewEntity(PongProtocol::NewEntityMessage parsedPacket) {
                 _registry.add_component(newEntity, RealEngine::Acceleration{acceleration});
                 break;
             }
-            case PongProtocol::ComponentList::CONTROLABLE: {
-                _registry.add_component<RealEngine::Controllable>(*newEntity,
-                                                                  RealEngine::Controllable{});
-                break;
-            }
             default:
                 std::cout << "Unknown component type: " << component.first << "\n";
                 break;
         }
     }
+    // std::cout << "New entity with UUID " << parsedPacket.uuid << " created." << std::endl;
+    _registry.add_component(newEntity, RealEngine::Netvar{"int", "uuid", parsedPacket.uuid});
     _entities.emplace(parsedPacket.uuid, newEntity);
 }

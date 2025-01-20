@@ -80,7 +80,6 @@ PongPlayer::PongPlayer(RealEngine::Registry& registry, sf::Vector2f position, si
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(
         _entity, RealEngine::NetvarContainer{{
-                     {"sprite_name", {"string", "sprite_name", std::string("player_bar"), nullptr}},
                      {"player_index", {"int", "player_index", static_cast<int>(id), nullptr}},
                      {"new_entity", {"bool", "new_entity", true, nullptr}},
                  }});

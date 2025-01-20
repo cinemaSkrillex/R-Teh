@@ -31,6 +31,12 @@ void Controls::moveDown(float deltaTime, RealEngine::Entity entity) {
 void Controls::sendReady(float deltaTime, RealEngine::Entity entity) {
     PongProtocol::BaseMessage eventMessage;
     eventMessage.message_type = PongProtocol::MessageType::PLAYER_READY;
+    auto* playerNetvar = _registry.get_component<RealEngine::Netvar>(entity);
+    if (!playerNetvar) {
+        std::cout << "Player does not have netvar component" << std::endl;
+    } else {
+        eventMessage.uuid = std::any_cast<long int>(playerNetvar->value);
+    }
 
     std::array<char, 800> serializedEventMessage = PongProtocol::serialize<800>(eventMessage);
     _client->send_unreliable_packet(serializedEventMessage);

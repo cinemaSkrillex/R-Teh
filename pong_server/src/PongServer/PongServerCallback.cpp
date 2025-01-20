@@ -25,18 +25,11 @@ void PongServer::initCallbacks() {
         backgroundMessage.uuid         = *_background;
         auto* backgroundPosition       = registry->get_component<RealEngine::Position>(_background);
         auto* drawable                 = registry->get_component<RealEngine::Drawable>(_background);
-        auto* bgNetvarContainer = registry->get_component<RealEngine::NetvarContainer>(_background);
-        auto  bgNetvar          = bgNetvarContainer->getNetvar("sprite_name");
         if (backgroundPosition) {
             addComponentToMessage(backgroundMessage, PongProtocol::ComponentList::POSITION,
                                   *backgroundPosition);
         }
-        if (bgNetvar && bgNetvar->value.type() == typeid(std::string)) {
-            std::string       sprite_str = std::any_cast<std::string>(bgNetvar->value);
-            std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
-            addComponentToMessage(backgroundMessage, PongProtocol::ComponentList::SPRITE,
-                                  spriteData);
-        }
+        addComponentToMessage(backgroundMessage, PongProtocol::ComponentList::SPRITE, 1);
         if (drawable) {
             addComponentToMessage(backgroundMessage, PongProtocol::ComponentList::DRAWABLE,
                                   *drawable);
@@ -53,8 +46,6 @@ void PongServer::initCallbacks() {
         auto* ballPosition       = registry->get_component<RealEngine::Position>(_ball);
         auto* ballVelocity       = registry->get_component<RealEngine::Velocity>(_ball);
         auto* ballInterpolation  = registry->get_component<RealEngine::Interpolation>(_ball);
-        auto* ballNetvarContainer    = registry->get_component<RealEngine::NetvarContainer>(_ball);
-        auto  ballNetvar             = ballNetvarContainer->getNetvar("sprite_name");
         // auto* ballAcceleration   = registry->get_component<RealEngine::Acceleration>(_ball);
         auto* ballDrawable = registry->get_component<RealEngine::Drawable>(_ball);
         if (ballPosition) {
@@ -73,11 +64,7 @@ void PongServer::initCallbacks() {
         //     addComponentToMessage(ballMessage, PongProtocol::ComponentList::ACCELERATION,
         //                           *ballAcceleration);
         // }
-        if (ballNetvar && ballNetvar->value.type() == typeid(std::string)) {
-            std::string       sprite_str = std::any_cast<std::string>(ballNetvar->value);
-            std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
-            addComponentToMessage(ballMessage, PongProtocol::ComponentList::SPRITE, spriteData);
-        }
+        addComponentToMessage(ballMessage, PongProtocol::ComponentList::SPRITE, 2);
         // std::string       ballSprite_str = "ball";
         // std::vector<char> ballSpriteData(ballSprite_str.begin(), ballSprite_str.end());
         // addComponentToMessage(ballMessage, PongProtocol::ComponentList::SPRITE, ballSpriteData);
@@ -91,12 +78,12 @@ void PongServer::initCallbacks() {
 
         if (is_a_player) {
             if (_players.size() == 1) {
-                _players[sender] = _game_instance->addAndGetPlayer({400, 550}, 2);
+                _players[sender] = _game_instance->addAndGetPlayer({20, 500}, 2);
                 _playerTimestamps[sender] =
                     std::chrono::system_clock::now().time_since_epoch().count();
             }
             if (_players.size() == 0) {
-                _players[sender] = _game_instance->addAndGetPlayer({400, 50}, 1);
+                _players[sender] = _game_instance->addAndGetPlayer({780, 500}, 1);
                 _playerTimestamps[sender] =
                     std::chrono::system_clock::now().time_since_epoch().count();
             }
@@ -110,13 +97,10 @@ void PongServer::initCallbacks() {
             playerMessage.uuid         = *player.second;
             auto* playerPosition = registry->get_component<RealEngine::Position>(player.second);
             auto* playerVelocity = registry->get_component<RealEngine::Velocity>(player.second);
-            auto* playerNetvarContainer =
-                registry->get_component<RealEngine::NetvarContainer>(player.second);
-            auto  playerNetvar = playerNetvarContainer->getNetvar("sprite_name");
             auto* playerInterpolation =
                 registry->get_component<RealEngine::Interpolation>(player.second);
-            // auto* playerAcceleration   =
-            // registry->get_component<RealEngine::Acceleration>(player.second);
+            auto* playerAcceleration =
+                registry->get_component<RealEngine::Acceleration>(player.second);
             auto* playerDrawable = registry->get_component<RealEngine::Drawable>(player.second);
             if (playerPosition) {
                 addComponentToMessage(playerMessage, PongProtocol::ComponentList::POSITION,
@@ -130,17 +114,11 @@ void PongServer::initCallbacks() {
                 addComponentToMessage(playerMessage, PongProtocol::ComponentList::INTERPOLATION,
                                       *playerInterpolation);
             }
-            // if (playerAcceleration) {
-            //     addComponentToMessage(playerMessage, PongProtocol::ComponentList::ACCELERATION,
-            //                           *playerAcceleration);
-            // }
-            if (playerNetvar && playerNetvar->value.type() == typeid(std::string)) {
-                std::string       sprite_str = std::any_cast<std::string>(playerNetvar->value);
-                std::cout << "sprite_str: " << sprite_str << std::endl;
-                std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
-                addComponentToMessage(playerMessage, PongProtocol::ComponentList::SPRITE,
-                                      spriteData);
+            if (playerAcceleration) {
+                addComponentToMessage(playerMessage, PongProtocol::ComponentList::ACCELERATION,
+                                      *playerAcceleration);
             }
+            addComponentToMessage(playerMessage, PongProtocol::ComponentList::SPRITE, 3);
             // std::string       playerSprite_str = "player_bar";
             // std::vector<char> playerSpriteData(playerSprite_str.begin(), playerSprite_str.end());
             // addComponentToMessage(playerMessage, PongProtocol::ComponentList::SPRITE,
@@ -149,8 +127,6 @@ void PongServer::initCallbacks() {
                 addComponentToMessage(playerMessage, PongProtocol::ComponentList::DRAWABLE,
                                       *playerDrawable);
             }
-            addComponentToMessage(playerMessage, PongProtocol::ComponentList::CONTROLABLE,
-                                  RealEngine::Controllable{});
             // serialize and send player message
             std::array<char, 800> serializedPlayerMessage =
                 PongProtocol::serialize<800>(playerMessage);

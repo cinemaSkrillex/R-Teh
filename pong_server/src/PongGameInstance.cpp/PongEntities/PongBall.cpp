@@ -70,7 +70,7 @@ static void BallCollisionHandler(RealEngine::CollisionType collisionType,
 PongBall::PongBall(RealEngine::Registry& registry, sf::Vector2f position)
     : _entity(registry.spawn_entity()) {
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 0.0f});
     registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
     registry.add_component(_entity, RealEngine::Collision{{-1, -1, -1, -1},
                                                           "ball",
@@ -84,11 +84,9 @@ PongBall::PongBall(RealEngine::Registry& registry, sf::Vector2f position)
     registry.add_component(
         _entity, RealEngine::Interpolation{
                      {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(
-        _entity, RealEngine::NetvarContainer{{
-                     {"sprite_name", {"string", "sprite_name", std::string("ball"), nullptr}},
-                     {"score_to_update", {"int", "score", 0, nullptr}},
-                 }});
+    registry.add_component(_entity, RealEngine::NetvarContainer{{
+                                        {"score_to_update", {"int", "score", 0, nullptr}},
+                                    }});
 }
 
 PongBall::~PongBall() {}

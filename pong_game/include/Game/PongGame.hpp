@@ -81,7 +81,7 @@ class Game {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
 
     std::chrono::steady_clock::time_point _startTime;
-    long                                  _serverTime;
+    std::chrono::steady_clock::time_point _lastTimestamp;
 };
 }  // namespace pong
 

@@ -13,6 +13,7 @@
 #include "ECS/Registry/Registry.hpp"
 #include "ECS/Components/Velocity.hpp"
 #include "ECS/Components/Acceleration.hpp"
+#include "ECS/Components/Netvar.hpp"
 #include "shared/PongServerProtocol.hpp"
 
 namespace pong {

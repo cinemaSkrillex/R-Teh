@@ -11,10 +11,9 @@ namespace pong {
 Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
     : _clientUDP(clientUDP),
       _deltaTime(0.f),
-      _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2),
-            sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
+      _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2), sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT)),
       _window("SKRILLEX client_port: " + std::to_string(client_port),
-              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view),
+              sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT), _view),
       _clock(),
       _controls(_registry, clientUDP),
       _lagCompensationSystem(),
@@ -24,7 +23,8 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _player_entity(nullptr),
       _particleSystem(),
       _netvarSystem(),
-      _startTime(std::chrono::steady_clock::now()) {
+      _startTime(std::chrono::steady_clock::now()),
+      _lastTimestamp(std::chrono::steady_clock::now()) {
     register_components();
     bind_keys();
     set_action_handlers();
@@ -43,6 +43,7 @@ void Game::register_components() {
     _registry.register_component<RealEngine::Interpolation>();
     _registry.register_component<RealEngine::Velocity>();
     _registry.register_component<RealEngine::SpriteComponent>();
+    _registry.register_component<RealEngine::SpriteSheet>();
     _registry.register_component<RealEngine::Drawable>();
     _registry.register_component<RealEngine::Collision>();
     _registry.register_component<RealEngine::Controllable>();
@@ -145,6 +146,25 @@ void Game::init_screen_limits() {
                        {800, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
 }
 
+sf::IntRect Game::getPlayerNormalizedDirection() {
+    sf::IntRect direction(0, 0, 0, 0);
+    auto*       velocity = _registry.get_component<RealEngine::Velocity>(_player_entity);
+
+    if (_window.isFocused() && velocity) {
+        if (_controlSystem.isActionPressed(RealEngine::Action::Up)) {
+            direction.width = 1;
+        }
+        if (_controlSystem.isActionPressed(RealEngine::Action::Down)) {
+            direction.height = 1;
+        }
+
+        if (direction.width == 1 && direction.height == 1) {
+            velocity->vy = 0;
+        }
+    }
+    return direction;
+}
+
 void Game::run() {
     while (_window.isOpen()) {
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / 10) {
@@ -160,24 +180,32 @@ void Game::run() {
         _deltaTime = _clock.restart().asSeconds();
         _window.update(_deltaTime);
         _window.clear();
-        // const sf::IntRect direction = getPlayerNormalizedDirection();
+        const sf::IntRect direction = getPlayerNormalizedDirection();
         _registry.run_systems(_deltaTime);
         _window.display();
-        // auto client_now = std::chrono::steady_clock::now();
-        // long client_elapsed_time =
-        //     std::chrono::duration_cast<std::chrono::milliseconds>(client_now - _startTime).count();
-        // long                                  delta_time = client_elapsed_time - _serverTime;
-        // PongProtocol::PlayerDirectionMessage playerDirectionMessage;
-        // playerDirectionMessage.message_type = PongProtocol::PLAYER_DIRECTION;
-        // playerDirectionMessage.uuid         = _localPlayerUUID;
-        // playerDirectionMessage.direction    = direction;
-        // playerDirectionMessage.timestamp    = delta_time;
 
-        // // Serialize the PlayerDirectionMessage
-        // std::array<char, 800> serializedPlayerDirectionMessage =
-        //     PongProtocol::serialize<800>(playerDirectionMessage);
+        if (_player_entity == nullptr) continue;
 
-        // _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
+        long int uuidSearch = 0;
+        for (const auto& entity : _entities) {
+            if (*entity.second == *_player_entity) {
+                uuidSearch = entity.first;
+                break;
+            }
+        }
+        if (uuidSearch == 0) continue;
+
+        PongProtocol::PlayerDirectionMessage playerDirectionMessage;
+        playerDirectionMessage.message_type = PongProtocol::PLAYER_DIRECTION;
+        playerDirectionMessage.uuid         = uuidSearch;
+        playerDirectionMessage.direction    = direction;
+        playerDirectionMessage.timestamp    = std::chrono::system_clock::now().time_since_epoch().count();
+
+        // Serialize the PlayerDirectionMessage
+        std::array<char, 800> serializedPlayerDirectionMessage =
+            PongProtocol::serialize<800>(playerDirectionMessage);
+
+        _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
     }
     exit(0);
 }

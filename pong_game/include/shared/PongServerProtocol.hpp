@@ -44,7 +44,6 @@ enum ComponentList : int {
     ANGLE             = 0x08,
     ACCELERATION      = 0x09,
     INTERPOLATION     = 0x0A,
-    CONTROLABLE       = 0x0B,
 };
 
 // Base message structure (common across all message types)
