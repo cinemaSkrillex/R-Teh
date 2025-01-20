@@ -138,8 +138,8 @@ bool GameMenu::run(float deltaTime) {
     _GammaMinusButton.draw(_window.getRenderTexture());
     _SaturationPlusButton.draw(_window.getRenderTexture());
     _SaturationMinusButton.draw(_window.getRenderTexture());
-    _GammaText.draw(_window.getRenderTexture());
-    _SaturationText.draw(_window.getRenderTexture());
+    // _GammaText.draw(_window.getRenderTexture());
+    // _SaturationText.draw(_window.getRenderTexture());
     // _InputBoxIP.draw(_window.getRenderTexture());
     // _InputBoxPort.draw(_window.getRenderTexture());
     // _InputBoxClientPort.draw(_window.getRenderTexture());
