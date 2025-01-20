@@ -21,8 +21,6 @@ class SpaceDrill {
     std::shared_ptr<RealEngine::Entity> getEntity() { return _entity; }
 
    private:
-    std::shared_ptr<RealEngine::Entity>                 _entity;
-    RealEngine::Sprite&                                 _mobSprite;
-    std::unordered_map<std::string, RealEngine::Sprite> _mobSpriteSheet;
+    std::shared_ptr<RealEngine::Entity> _entity;
 };
 }  // namespace rtype

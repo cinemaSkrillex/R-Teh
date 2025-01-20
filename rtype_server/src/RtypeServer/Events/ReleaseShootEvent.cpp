@@ -19,11 +19,15 @@ void ReleaseShootEvent::shootMiddleBullet(const std::array<char, 800>&   buffer,
         bulletDamage = std::any_cast<float>(player.getNetvar("shootDamage")->value);
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
+        return;
     }
-    float bulletSpeed = 600.f;
+    float bulletSpeed = 300.f;
     auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "mid_bullet",
                                                       bulletDamage * 1.5f, int(bulletDamage) * 2,
                                                       *(player.getEntity()));
+    if (!bullet) {
+        return;
+    }
 
     std::array<char, 800> serializedEventMessage = createBulletMessage(
         *bullet, bullet_position, "mid_bullet", {bulletSpeed, 0, {bulletSpeed, bulletSpeed}, 0.f});
@@ -41,7 +45,7 @@ void ReleaseShootEvent::shootBigBullet(const std::array<char, 800>&   buffer,
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-    float bulletSpeed = 700.f;
+    float bulletSpeed = 400.f;
     auto  bullet      = gameInstance->addAndGetBullet(bullet_position, bulletSpeed, "big_bullet",
                                                       bulletDamage * 2.5f, int(bulletDamage) * 5,
                                                       *(player.getEntity()));

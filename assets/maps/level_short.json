@@ -1,0 +1,67 @@
+{
+    "map_name": "Level 1",
+    "scrollingSpeed": 50.0,
+    "backgrounds": [
+        {
+        "sprite": "big_stars_background",
+        "speed": -200.0
+        },
+        {
+        "sprite": "medium_stars_background",
+        "speed": -100.0
+        },
+        {
+        "sprite": "small_stars_background",
+        "speed": -50.0
+        }
+    ],
+    "music": "level_1",
+    "mapData": {
+        "tiles": [
+            {
+                "type": "BLOCK",
+                "element": "lvl1_block_1",
+                "position": [
+                    250.0,
+                    580.0
+                ],
+                "rotation": 0.0
+            }
+        ],
+        "waves": [
+            {
+                "waveType": "3_planes_up",
+                "startPosition": [
+                    100.5,
+                    20.0
+                ]
+            },
+            {
+                "waveType": "3_planes_down",
+                "startPosition": [
+                    200.5,
+                    20.0
+                ]
+            },
+            {
+                "waveType": "mob_spawner_center",
+                "startPosition": [
+                    300.5,
+                    20.0
+                ]   
+            }
+        ],
+        "endCondition": {
+            "type": "BOSS",
+            "triggerPosition": [
+                100.5,
+                0.0
+            ],
+            "spawnPosition": [
+                500.5,
+                200.0
+            ],
+            "Entity": "eye_minion"
+        }
+    }
+}

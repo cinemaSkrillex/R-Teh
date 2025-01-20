@@ -9,6 +9,7 @@
 
 void rtype::Game::run() {
     while (_window.isOpen()) {
+        _game_map->updateLevel(_deltaTime);
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / 10) {
             _broadcastClock.restart();
             for (int i = 0; i < 100; i++) {
@@ -24,7 +25,6 @@ void rtype::Game::run() {
         _window.clear();
         const sf::IntRect direction = getPlayerNormalizedDirection();
         _registry.run_systems(_deltaTime);
-        _game_map.updateLevel(_deltaTime);
         _playerUI.update();
 
         _temporaryTexts.erase(

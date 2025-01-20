@@ -11,7 +11,7 @@
 namespace RealEngine {
 
 Text::Text(const std::string text, const std::string fontPath) {
-    loadFont(fontPath);
+    if (!fontPath.empty()) loadFont(fontPath);
     setString(text);
     center();
 }
@@ -48,6 +48,12 @@ void Text::rotate(float angle) { _text.rotate(angle); }
 
 void Text::center() {
     _text.setOrigin(_text.getGlobalBounds().width / 2, _text.getGlobalBounds().height / 2);
+}
+
+void Text::setFont(sf::Font font) {
+    _font = font;
+    _text.setFont(_font);
+    center();
 }
 
 void Text::setOpacity(int opacity) {

@@ -56,9 +56,6 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
     } else if (mobName == "mob_spawner_ship") {
         rtype::MobSpawnerShip mobSpawnerShip(_registry, position);
         mobEntity = mobSpawnerShip.getEntity();
-    } else if (mobName == "mortar") {
-        rtype::Mortar mortar(_registry, position);
-        mobEntity = mortar.getEntity();
     } else if (mobName == "robot_boss_minion") {
         rtype::RobotBossMinion robotBossMinion(_registry, position);
         mobEntity = robotBossMinion.getEntity();
@@ -74,15 +71,13 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
     } else if (mobName == "space_sphere") {
         rtype::SpaceSphere spaceSphere(_registry, position);
         mobEntity = spaceSphere.getEntity();
-    } else if (mobName == "wall_turret") {
-        rtype::WallTurret turretCanon(_registry, position, 0, level_speed);
-        mobEntity = turretCanon.getCannonEntity();
-        addAndGetEntity(turretCanon.getPedestalEntity());
     }
     if (mobEntity) {
-        if (invoke_boss) {
-            _game_map->setBossEntity(mobEntity);
+        if (_registry.is_valid(*mobEntity)) {
+            if (invoke_boss) {
+                _game_map->setBossEntity(mobEntity);
+            }
+            addAndGetEntity(mobEntity);
         }
-        addAndGetEntity(mobEntity);
     }
 }

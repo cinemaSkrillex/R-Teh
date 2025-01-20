@@ -14,9 +14,11 @@ void GameInstance::runPlayerSimulation(std::shared_ptr<RealEngine::Entity> entit
 
 void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_to_spawn,
                                         std::vector<RealEngine::Entity> destroyedEntities) {
+    if (enemies_to_spawn.empty()) return;
     for (auto& enemy : enemies_to_spawn) {
         spawnMob(enemy.name, enemy.position, enemy.angle);
     }
+    if (destroyedEntities.empty()) return;
     for (auto& entity : destroyedEntities) {
         auto* netvarContainer = _registry.get_component<RealEngine::NetvarContainer>(entity);
         auto* position        = _registry.get_component<RealEngine::Position>(entity);
@@ -59,8 +61,13 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
 }
 
 std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
-    // _registry.update(deltaTime);
-    // Then update remaining mobs
+    for (auto& mob : _enemies) {
+        _movementSystem.update(_registry, mob, deltaTime);
+    }
+
+    for (auto& bullet : _bullets) {
+        _movementSystem.update(_registry, bullet, deltaTime);
+    }
     if (_serverVision) {
         _window->clear();
         _window->update(deltaTime);
@@ -72,7 +79,7 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _drawSystem.updateWithoutDisplay(_registry, deltaTime);
     _aiSystem.update(_registry, deltaTime);
     _rotationSystem.update(_registry, deltaTime);
-    // _radiusSystem.update(_registry, deltaTime);
+    _radiusSystem.update(_registry);
     _targetRadiusSystem.update(_registry);
     _particleSystem.update(_registry, deltaTime);
     _collisionSystem.update(_registry, deltaTime);
@@ -81,18 +88,12 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _destroySystem.update(_registry, deltaTime);
     auto destroyedEntities = _destroySystem.getDeadEntities();
     _netvarSystem.update(_registry, deltaTime);
-    _game_map->updateLevel(deltaTime);
+    if (_game_map) {
+        _game_map->updateLevel(deltaTime);
+    }
     auto enemies_to_spawn = _game_map->invokeLevelMobs();
 
     manageInGameEntities(enemies_to_spawn, destroyedEntities);
-
-    for (auto& mob : _enemies) {
-        _movementSystem.update(_registry, mob, deltaTime);
-    }
-
-    for (auto& bullet : _bullets) {
-        _movementSystem.update(_registry, bullet, deltaTime);
-    }
 
     return destroyedEntities;
 };

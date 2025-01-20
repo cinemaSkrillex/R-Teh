@@ -10,8 +10,11 @@
 namespace RealEngine {
 
 TemporaryText::TemporaryText(std::string text, sf::Vector2f position, float duration,
-                             float disappearTime, sf::Font font)
-    : _elapsedTime(0), _text(text, "../../assets/fonts/Early_GameBoy.ttf") {
+                             float disappearTime, std::shared_ptr<sf::Font> font)
+    : _elapsedTime(0), _text(text, "") {
+    if (font) {
+        _text.setFont(*font);
+    }
     _duration      = duration;
     _disappearTime = std::clamp(disappearTime, 0.0f, duration);
     _text.setPosition(position.x, position.y);

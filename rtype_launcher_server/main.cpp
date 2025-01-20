@@ -29,6 +29,8 @@ int main(int argc, char* argv[]) {
                 tcp_server->send_message("UWU1", client_endpoint);
                 tcp_server->send_directory("../rtype_game", client_endpoint);
                 tcp_server->send_directory_to_directory("../../../assets", client_endpoint, "rtype_game");
+                // tcp_server->send_directory("../pong_game", client_endpoint);
+                // tcp_server->send_directory_to_directory("../../../assets", client_endpoint, "pong_game");
                 tcp_server->send_message("T'as tout les fichiers", client_endpoint);
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 tcp_server->send_fin(client_endpoint);

@@ -10,13 +10,16 @@
 
 #include <json/json.h>
 
+#include <BaseBlock.hpp>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
-#include "../Game/Block.hpp"
+#include "../Game/Level/BaseBlock.hpp"
+#include "../Game/Level/Block.hpp"
+#include "../Game/Level/WaitingBlock.hpp"
 #include "Engine.hpp"
 #include "RtypeServerProtocol.hpp"
 
@@ -57,7 +60,8 @@ class ServerMap {
    public:
     ServerMap(RealEngine::Registry& registry);
     ~ServerMap();
-    void                      updateLevel(float deltaTime);
+    void removeDeadBlocks(const std::shared_ptr<rtype::BaseBlock>::element_type& block);
+    void updateLevel(float deltaTime);
     std::vector<Map::WaveMob> invokeLevelMobs();
     bool bossAtEnd() const { return _boss.position.x != -1 && _boss.position.y != -1; }
     void setBossEntity(std::shared_ptr<RealEngine::Entity> bossEntity) {
@@ -71,37 +75,39 @@ class ServerMap {
 
     bool isLoaded() const { return _isLoaded; }
     void addTile(const Map::Tile& tile) { _tiles.push_back(tile); }
-    void removeDeadBlocks();
+    void removeDeadBlocks(const std::shared_ptr<rtype::BaseBlock>& block);
 
     void unloadLevel();
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
 
-    std::vector<std::shared_ptr<rtype::Block>>& getBlockEntities() { return _blockEntities; }
-    const std::vector<Map::Tile>&               getTiles() const { return _tiles; }
-    const std::vector<Map::Wave>&               getWaves() const { return _waves; }
-    std::string                                 getMapName() const { return _map_name; }
-    std::string                                 getMusicName() const { return _music_name; }
-    std::vector<std::pair<std::string, float>>  getBackgrounds() const { return _backgrounds; }
+    std::unordered_map<std::size_t, std::shared_ptr<rtype::BaseBlock>>& getBlockEntities() {
+        return _blockEntities;
+    }
+    const std::vector<Map::Tile>&              getTiles() const { return _tiles; }
+    const std::vector<Map::Wave>&              getWaves() const { return _waves; }
+    std::string                                getMapName() const { return _map_name; }
+    std::string                                getMusicName() const { return _music_name; }
+    std::vector<std::pair<std::string, float>> getBackgrounds() const { return _backgrounds; }
 
     float getScrollingSpeed() const { return _scrollingSpeed; }
     float getXLevelPosition() const { return x_level_position; }
     bool  getIsLevelRunning() const { return _isLevelRunning; }
 
    private:
-    RealEngine::Registry&                      _registry;
-    std::string                                _map_name;
-    std::string                                _music_name;
-    float                                      _scrollingSpeed  = 0.0f;
-    float                                      x_level_position = 0.0f;
-    std::vector<Map::Tile>                     _tiles;
-    std::vector<Map::Wave>                     _waves;
-    std::vector<std::shared_ptr<rtype::Block>> _blockEntities;
-    std::vector<std::pair<std::string, float>> _backgrounds;
-    bool                                       _endBoss;
-    Map::Boss                                  _boss;
-    sf::Vector2f                               _endPosition = {-1, -1};
-    bool                                       _isLoaded    = false;
-    bool                                       _isLevelRunning;
+    RealEngine::Registry&                                              _registry;
+    std::string                                                        _map_name;
+    std::string                                                        _music_name;
+    float                                                              _scrollingSpeed  = 0.0f;
+    float                                                              x_level_position = 0.0f;
+    std::vector<Map::Tile>                                             _tiles;
+    std::vector<Map::Wave>                                             _waves;
+    std::unordered_map<std::size_t, std::shared_ptr<rtype::BaseBlock>> _blockEntities;
+    std::vector<std::pair<std::string, float>>                         _backgrounds;
+    bool                                                               _endBoss;
+    Map::Boss                                                          _boss;
+    sf::Vector2f                                                       _endPosition = {-1, -1};
+    bool                                                               _isLoaded    = false;
+    bool                                                               _isLevelRunning;
 };
 
 #endif /* !ServerMap_HPP_ */

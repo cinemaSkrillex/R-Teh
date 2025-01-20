@@ -5,7 +5,7 @@ grand_parent: Networking
 nav_order: 1
 ---
 
-# Binary protocol
+# Binary protocol for R-Type
 
 ## Our R-Type binary protocol
 

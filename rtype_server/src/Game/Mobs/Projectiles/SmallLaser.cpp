@@ -10,17 +10,15 @@
 namespace rtype {
 
 SmallLaser::SmallLaser(RealEngine::Registry& registry, sf::Vector2f position, float angle)
-    : _entity(registry.spawn_entity()),
-      _projSprite(*(RealEngine::AssetManager::getInstance().getSprite("small_laser"))) {
-    _projSpriteSheet.emplace("normal", _projSprite);
+    : _entity(registry.spawn_entity()) {
+    registry.add_component(
+        _entity, RealEngine::Interpolation{
+                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
     registry.add_component(_entity, RealEngine::Position{position.x, position.y});
     registry.add_component(_entity, RealEngine::Velocity{0, 0, {500.f, 500.f}, 0.f});
     registry.add_component(_entity, RealEngine::Acceleration{500.f, 500.f, 105.f});
-    registry.add_component(
-        _entity,
-        RealEngine::SpriteSheet{
-            _projSpriteSheet, "normal", 0, {48, 4}, false, true, 55, {-1, -1}, sf::Clock()});
-    registry.add_component(_entity, RealEngine::Drawable{});
+    auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("small_laser");
+    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
     registry.add_component(_entity,
                            RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
                                                  "mob",

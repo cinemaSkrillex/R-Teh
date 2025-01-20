@@ -30,7 +30,9 @@ GameInstance::GameInstance(bool serverVision)
     init_sprite_sheets();
     init_screen_limits();
     std::string path = "../../assets/maps/";
-    _game_map->loadFromJSON(path + "level_1.json");
+    if (!_game_map) {
+        return;
+    }
 }
 
 void GameInstance::init_components() {
@@ -107,12 +109,14 @@ void GameInstance::init_textures() {
     init_level(path + "tiles/lv1", "lvl1");
     init_level(path + "tiles/lv2", "lvl2");
 
+    // player
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_up", path + "spaceship.png",
                                                    {0, 0, 32 * 2, 15}, {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_idle", path + "spaceship.png",
                                                    {0, 15, 32, 15}, {GAME_SCALE - 1, GAME_SCALE - 1});
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_down", path + "spaceship.png",
                                                    {0, 15 * 2, 33 * 2, 15}, {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png", {GAME_SCALE, GAME_SCALE});
 
     AssetManagerInstance.loadSpriteTextureAndScale("bullet", path + "spaceship_bullet.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("space_plane", path + "enemies/space_plane.png", {GAME_SCALE, GAME_SCALE});
@@ -139,6 +143,8 @@ void GameInstance::init_textures() {
                                                    path + "enemies/mortar_enemy.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("directional_canon",
                                                    path + "enemies/directional_canon.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("mob_spawner_ship",
+                                                   path + "enemies/mob_spawner.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("eye_bomber", path + "enemies/eye_bomber.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("eye_minion", path + "enemies/eye_minion.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale(
@@ -162,6 +168,12 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("big_bullet", path + "big_shoot.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("mid_bullet", path + "medium_shoot.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("spaceship_other", path + "spaceship.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("space_missile",
+                                                   path + "enemies/space_missile.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("simple_shoot",
+                                                   path + "enemies/simple_shoot.png", {GAME_SCALE, GAME_SCALE});
+    AssetManagerInstance.loadSpriteTextureAndScale("mini_boss_projectile",
+                                                   path + "enemies/mini_boss_shoot.png", {GAME_SCALE, GAME_SCALE});
     AssetManagerInstance.loadSpriteTextureAndScale("shoot_powerup", path + "power_up.png",
                                                    {0, 0, 16 * 4, 16},
                                                    {GAME_SCALE - 1, GAME_SCALE - 1});
@@ -171,10 +183,29 @@ void GameInstance::init_textures() {
     AssetManagerInstance.loadSpriteTextureAndScale("heal_powerup", path + "power_up.png",
                                                    {0, 32, 16 * 5, 16},
                                                    {GAME_SCALE - 1, GAME_SCALE - 1});
+    // waiting room zone
+    AssetManagerInstance.loadSpriteTextureAndScale("ready_zone", path + "ready_zone.png",
+                                                   {0.5, 0.5});
+    AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
 }
 
 void GameInstance::init_sprite_sheets() {
-    // load eye minion sprite sheet
+    std::unordered_map<std::string, RealEngine::Sprite> midBulletSheet;
+    RealEngine::Sprite                                  midBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("mid_bullet")));
+    midBulletSheet.emplace("normal", midBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "mid_bullet", midBulletSheet, "normal", 0, {16, 12}, false, true, 55, {8, 6}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> bigBulletSheet;
+    RealEngine::Sprite                                  bigBulletSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("big_bullet")));
+    bigBulletSheet.emplace("normal", bigBulletSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
+
+    // enemies
+
     std::unordered_map<std::string, RealEngine::Sprite> eyeSheet;
     RealEngine::Sprite _sprite(*(RealEngine::AssetManager::getInstance().getSprite("eye_minion")));
     eyeSheet.emplace("normal", _sprite);
@@ -188,7 +219,58 @@ void GameInstance::init_sprite_sheets() {
     RealEngine::AssetManager::getInstance().loadSpriteSheet("eye_bomber", eyeBomberSheet, "normal",
                                                             0, {15, 10}, false, true, 120, {11, 5},
                                                             sf::Clock());
-    // //load space sphere sprite sheet
+
+    std::unordered_map<std::string, RealEngine::Sprite> eyeBigionSheet;
+    RealEngine::Sprite                                  _eyeBigionSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_bigion_normal")));
+    eyeBigionSheet.emplace("normal", _eyeBigionSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("eye_bigion", eyeBigionSheet, "normal",
+                                                            0, {23, 16}, false, true, 120, {17, 8},
+                                                            sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> eyeBossSheet;
+    RealEngine::Sprite                                  _eyeBossShortSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_short_range")));
+    RealEngine::Sprite _eyeBossMidSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_mid_range")));
+    RealEngine::Sprite _eyeBossLongSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("eye_boss_long_range")));
+    eyeBossSheet.emplace("short", _eyeBossShortSprite);
+    eyeBossSheet.emplace("mid", _eyeBossMidSprite);
+    eyeBossSheet.emplace("long", _eyeBossLongSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "eye_boss", eyeBossSheet, "short", 0, {73, 55}, false, true, 120, {48, 26}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> mobSpawnerSheet;
+    RealEngine::Sprite                                  _mobSpawnerSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("mob_spawner_ship")));
+    mobSpawnerSheet.emplace("normal", _mobSpawnerSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("mob_spawner_ship", mobSpawnerSheet,
+                                                            "normal", 0, {63, 50}, false, true, 135,
+                                                            {32, 25}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> robotBossMinionSheet;
+    RealEngine::Sprite                                  _robotBossMinionSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_minion")));
+    robotBossMinionSheet.emplace("normal", _robotBossMinionSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "robot_boss_minion", robotBossMinionSheet, "normal", 0, {32, 31}, false, true, 230,
+        {-1, -1}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> robotMiniBossSheet;
+    RealEngine::Sprite                                  _robotMiniBossShoot(
+        *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_shoot")));
+    RealEngine::Sprite _robotMiniBossFordward(
+        *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_fordward")));
+    RealEngine::Sprite _robotMiniBossBackward(
+        *(RealEngine::AssetManager::getInstance().getSprite("robot_boss_backward")));
+    robotMiniBossSheet.emplace("shoot", _robotMiniBossShoot);
+    robotMiniBossSheet.emplace("fordward", _robotMiniBossFordward);
+    robotMiniBossSheet.emplace("backwards", _robotMiniBossBackward);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("robot_mini_boss", robotMiniBossSheet,
+                                                            "shoot", 0, {47, 43}, false, false, 0,
+                                                            {-1, -1}, sf::Clock());
+
     std::unordered_map<std::string, RealEngine::Sprite> spaceSphereSheet;
     RealEngine::Sprite                                  _spaceSphereSprite(
         *(RealEngine::AssetManager::getInstance().getSprite("space_sphere")));
@@ -197,22 +279,63 @@ void GameInstance::init_sprite_sheets() {
                                                             "normal", 0, {16, 14}, false, true, 55,
                                                             {8, 8}, sf::Clock());
 
-    // load mid bullet sprite sheet
-    std::unordered_map<std::string, RealEngine::Sprite> midBulletSheet;
-    RealEngine::Sprite                                  midBulletSprite(
-        *(RealEngine::AssetManager::getInstance().getSprite("mid_bullet")));
-    midBulletSheet.emplace("normal", midBulletSprite);
-    RealEngine::AssetManager::getInstance().loadSpriteSheet(
-        "mid_bullet", midBulletSheet, "normal", 0, {16, 12}, false, true, 55, {8, 6}, sf::Clock());
+    std::unordered_map<std::string, RealEngine::Sprite> spaceDrillSheet;
+    RealEngine::Sprite                                  _spaceDrillSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("space_drill")));
+    spaceDrillSheet.emplace("normal", _spaceDrillSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("space_drill", spaceDrillSheet,
+                                                            "normal", 0, {32, 22}, true, true, 40,
+                                                            {16, 11}, sf::Clock());
 
-    // load big bullet sprite sheet
-    std::unordered_map<std::string, RealEngine::Sprite> bigBulletSheet;
-    RealEngine::Sprite                                  bigBulletSprite(
-        *(RealEngine::AssetManager::getInstance().getSprite("big_bullet")));
-    bigBulletSheet.emplace("normal", bigBulletSprite);
-    RealEngine::AssetManager::getInstance().loadSpriteSheet(
-        "big_bullet", bigBulletSheet, "normal", 0, {32, 12}, false, true, 55, {16, 6}, sf::Clock());
+    std::unordered_map<std::string, RealEngine::Sprite> spacePlaneSheet;
+    RealEngine::Sprite                                  _spacePlaneSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("space_plane")));
+    spacePlaneSheet.emplace("normal", _spacePlaneSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("space_plane", spacePlaneSheet,
+                                                            "normal", 0, {21, 23}, false, true, 75,
+                                                            {10, 12}, sf::Clock());
 
+    std::unordered_map<std::string, RealEngine::Sprite> directionalCanonSheet;
+    RealEngine::Sprite                                  _directionalCanonSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("directional_canon")));
+    directionalCanonSheet.emplace("normal", _directionalCanonSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "directional_canon", directionalCanonSheet, "normal", 0, {64, 64}, false, true, 80,
+        {32, 32}, sf::Clock());
+
+    // mobs projectiles
+
+    std::unordered_map<std::string, RealEngine::Sprite> fireballSheet;
+    RealEngine::Sprite                                  _fireballSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("fireball")));
+    fireballSheet.emplace("normal", _fireballSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "fireball", fireballSheet, "normal", 0, {12, 12}, false, true, 100, {6, 6}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> miniBossShootSheet;
+    RealEngine::Sprite                                  _miniBossShootSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("mini_boss_projectile")));
+    miniBossShootSheet.emplace("normal", _miniBossShootSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet(
+        "mini_boss_projectile", miniBossShootSheet, "normal", 0, {63, 16}, false, true, 55, {50, 8},
+        sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> smallLaserSheet;
+    RealEngine::Sprite                                  _smallLaserSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("small_laser")));
+    smallLaserSheet.emplace("normal", _smallLaserSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("small_laser", smallLaserSheet,
+                                                            "normal", 0, {48, 4}, false, true, 55,
+                                                            {-1, -1}, sf::Clock());
+
+    std::unordered_map<std::string, RealEngine::Sprite> spaceVortexSheet;
+    RealEngine::Sprite                                  _spaceVortexSprite(
+        *(RealEngine::AssetManager::getInstance().getSprite("space_vortex")));
+    spaceVortexSheet.emplace("normal", _spaceVortexSprite);
+    RealEngine::AssetManager::getInstance().loadSpriteSheet("space_vortex", spaceVortexSheet,
+                                                            "normal", 0, {32, 28}, false, true, 90,
+                                                            {16, 14}, sf::Clock());
+    // powerups
     std::unordered_map<std::string, RealEngine::Sprite> shootPowerUpSheet;
     RealEngine::Sprite                                  shootPowerUpSprite(
         *(RealEngine::AssetManager::getInstance().getSprite("shoot_powerup")));
