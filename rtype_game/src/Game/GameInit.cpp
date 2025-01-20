@@ -45,7 +45,9 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                            30);
 }
 
-Game::~Game() {}
+Game::~Game() {
+    if (_window.isOpen()) _window.close();
+}
 
 void Game::init_all_game() {
     init_registry();

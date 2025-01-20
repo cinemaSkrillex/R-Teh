@@ -8,7 +8,14 @@
 #include "Game/Game.hpp"
 
 void rtype::Game::run() {
-    runMenu();
+    while (_window.isOpen()) {
+        runMenu();
+        runGame();
+    }
+    exit(0);
+}
+
+void rtype::Game::runGame() {
     while (_window.isOpen()) {
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / 10) {
             _broadcastClock.restart();
@@ -56,7 +63,7 @@ void rtype::Game::run() {
 
         _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
     }
-    exit(0);
+    _deltaTime = 0.0f;
 }
 
 void rtype::Game::runMenu() {

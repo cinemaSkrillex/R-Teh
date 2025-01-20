@@ -31,6 +31,7 @@ class Game {
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
     ~Game();
     void                                run();
+    void                                runGame();
     void                                runMenu();
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
     void                                handleSignal(std::array<char, 800> signal);

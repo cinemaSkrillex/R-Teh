@@ -23,7 +23,8 @@ class Button {
     ~Button();
 
     void draw(sf::RenderTexture& window);
-    void handleEvent(const sf::Event& event, std::function<void()> onClick);
+    void handleEvent(const sf::Event& event, std::function<void()> onClick,
+                     const sf::RenderWindow& window);
     void setPosition(const sf::Vector2f& position);
     void setSize(const sf::Vector2f& size);
     void setFillColor(const sf::Color& color);

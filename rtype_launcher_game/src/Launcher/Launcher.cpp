@@ -53,11 +53,12 @@ void Launcher::run() {
         sf::Event event;
         while (window.getRenderWindow().pollEvent(event)) {
             if (!clientStopped) {
-                button.handleEvent(event, [this]() { onConnectClick(); });
+                button.handleEvent(event, [this]() { onConnectClick(); }, window.getRenderWindow());
                 ipBox.handleEvent(event);
                 portBox.handleEvent(event);
             } else {
-                launchButton.handleEvent(event, [this]() { launchGame(); });
+                launchButton.handleEvent(
+                    event, [this]() { launchGame(); }, window.getRenderWindow());
                 ipBox.handleEvent(event);
                 portBox.handleEvent(event);
                 portBoxClient.handleEvent(event);

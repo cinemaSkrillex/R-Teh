@@ -25,6 +25,20 @@ InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
     text.setPosition(position.x + 10000, position.y + (size.y / 2));
 }
 
+InputBox::InputBox(const sf::Vector2f& size, const sf::Vector2f& position,
+                   const std::string& defaultText, std::shared_ptr<sf::Font> font,
+                   ContentType contentType, size_t characterLimit)
+    : text(defaultText, *font),
+      contentType(contentType),
+      characterLimit(characterLimit),
+      isActive(false),
+      currentText(defaultText) {
+    box.setSize(size);
+    box.setPosition(position);
+    box.setFillColor(sf::Color::White);
+    text.setPosition(position.x + 10000, position.y + (size.y / 2));
+}
+
 InputBox::~InputBox() {}
 
 void InputBox::draw(sf::RenderTexture& window) {

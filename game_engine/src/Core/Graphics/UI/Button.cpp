@@ -37,8 +37,6 @@ Button::~Button() {}
 void Button::draw(sf::RenderTexture& window) {
     if (_visible) {
         if (_useSprite) {
-            std::cout << "draw sprite" << std::endl;
-
             sprite.draw(window);
         } else {
             window.draw(box);
@@ -47,23 +45,27 @@ void Button::draw(sf::RenderTexture& window) {
     }
 }
 
-void Button::handleEvent(const sf::Event& event, std::function<void()> onClick) {
-    if (box.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
-        if (_useSprite) {
-            sprite.setColor(_hoverColor);
+void Button::handleEvent(const sf::Event& event, std::function<void()> onClick,
+                         const sf::RenderWindow& window) {
+    if (event.type == sf::Event::MouseMoved || event.type == sf::Event::MouseButtonPressed) {
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        if (box.getGlobalBounds().contains(mousePos)) {
+            if (_useSprite) {
+                sprite.setColor(_hoverColor);
+            } else {
+                box.setFillColor(_hoverColor);
+            }
+            if (event.type == sf::Event::MouseButtonPressed &&
+                event.mouseButton.button == sf::Mouse::Left) {
+                onClick();
+            }
         } else {
-            box.setFillColor(_hoverColor);
+            if (_useSprite) {
+                sprite.setColor(_originalColor);
+            } else {
+                box.setFillColor(_originalColor);
+            }
         }
-    } else {
-        if (_useSprite) {
-            sprite.setColor(_originalColor);
-        } else {
-            box.setFillColor(_originalColor);
-        }
-    }
-    if (event.type == sf::Event::MouseButtonPressed &&
-        event.mouseButton.button == sf::Mouse::Left) {
-        onClick();
     }
 }
 
