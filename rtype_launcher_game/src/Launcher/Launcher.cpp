@@ -17,12 +17,9 @@ Launcher::Launcher()
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
               LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
-      portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
-                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf",
-                    RealEngine::InputBox::ContentType::Numeric),
       button(sf::Vector2f(275, 50), sf::Vector2f(275, 350), "Connect to Server",
              LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
-      launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
+      launchButton(sf::Vector2f(400, 50), sf::Vector2f(275, 450), "Launch Game",
                    LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       LauncherText("Game Launcher", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf"),
       GameLauncherText("R-TAPE", LauncherFont ? "arial.ttf" : "../../../assets/fonts/arial.ttf") {
@@ -31,13 +28,11 @@ Launcher::Launcher()
 
     ipBox.setFillColor(sf::Color::Green);
     portBox.setFillColor(sf::Color::Green);
-    portBoxClient.setFillColor(sf::Color::Green);
 
     launchButton.setFillColor(sf::Color::Green);
     launchButton.setTextColor(sf::Color::White);
     ipBox.centerText();
     portBox.centerText();
-    portBoxClient.centerText();
 
     LauncherText.setCharacterSize(50);
     LauncherText.setPosition(350, 50);
@@ -59,9 +54,6 @@ void Launcher::run() {
             } else {
                 launchButton.handleEvent(
                     event, [this]() { launchGame(); }, window.getRenderWindow());
-                ipBox.handleEvent(event);
-                portBox.handleEvent(event);
-                portBoxClient.handleEvent(event);
             }
 
             if (event.type == sf::Event::Closed) {
@@ -70,6 +62,7 @@ void Launcher::run() {
         }
 
         window.clear();
+        window.update(0);
         if (!clientStopped) {
             ipBox.draw(window.getRenderTexture());
             portBox.draw(window.getRenderTexture());
@@ -77,9 +70,6 @@ void Launcher::run() {
             LauncherText.draw(window.getRenderTexture());
         } else {
             launchButton.draw(window.getRenderTexture());
-            ipBox.draw(window.getRenderTexture());
-            portBox.draw(window.getRenderTexture());
-            portBoxClient.draw(window.getRenderTexture());
             GameLauncherText.draw(window.getRenderTexture());
         }
         window.display();
@@ -110,8 +100,7 @@ void Launcher::launchGame() {
         exit(1);
     }
 
-    const char* args[] = {"./r_type", ipBox.getText().c_str(), portBox.getText().c_str(),
-                          portBoxClient.getText().c_str(), nullptr};
+    const char* args[] = {"./r_type", nullptr};
     execvp("./r_type", const_cast<char* const*>(args));
     std::cerr << "Échec de execvp: " << strerror(errno) << std::endl;
     exit(1);

@@ -19,9 +19,11 @@
 #include "Engine.hpp"
 
 namespace rtype {
+class Game;
+
 class GameMap {
    public:
-    GameMap(RealEngine::Registry& registry);
+    GameMap(RealEngine::Registry& registry, Game* game);
     ~GameMap();
     void updateLevel(float deltaTime);
     void startLevel();
@@ -38,17 +40,23 @@ class GameMap {
     void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }
     void setIsMapLoaded(bool isMapLoaded) { _isMapLoaded = isMapLoaded; }
+    void setLevelRunning(bool levelRunning) { _levelRunning = levelRunning; }
     void setMusicName(const std::string& musicName) { _music_name = musicName; }
     std::vector<std::pair<long int, std::shared_ptr<RealEngine::Entity>>>& getBlockEntities() {
         return _blockEntities;
     }
-    float getScrollingSpeed() const { return _scrollingSpeed; }
-    float getXLevelPosition() const { return x_level_position; }
-    bool  isMapLoaded() const { return _isMapLoaded; }
-    bool  levelRunning() const { return _levelRunning; }
+    std::vector<std::shared_ptr<RealEngine::Entity>> getBackgroundEntities() {
+        return _backgroundEntities;
+    }
+    float       getScrollingSpeed() const { return _scrollingSpeed; }
+    float       getXLevelPosition() const { return x_level_position; }
+    bool        isMapLoaded() const { return _isMapLoaded; }
+    bool        levelRunning() const { return _levelRunning; }
+    std::string getMusicName() const { return _music_name; }
 
    private:
     RealEngine::Registry&                                                 _registry;
+    Game*                                                                 _game;
     std::string                                                           _map_name;
     std::string                                                           _music_name      = "";
     float                                                                 _scrollingSpeed  = 0.0f;

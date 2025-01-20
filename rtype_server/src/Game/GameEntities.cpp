@@ -73,9 +73,11 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
         mobEntity = spaceSphere.getEntity();
     }
     if (mobEntity) {
-        if (invoke_boss) {
-            _game_map->setBossEntity(mobEntity);
+        if (_registry.is_valid(*mobEntity)) {
+            if (invoke_boss) {
+                _game_map->setBossEntity(mobEntity);
+            }
+            addAndGetEntity(mobEntity);
         }
-        addAndGetEntity(mobEntity);
     }
 }

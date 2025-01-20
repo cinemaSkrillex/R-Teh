@@ -28,7 +28,7 @@ void ShootEvent::execute(const std::array<char, 800>& buffer, const asio::ip::ud
     } catch (const std::bad_any_cast& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-    float              bulletSpeed     = 500.f;
+    float              bulletSpeed     = 200.f;
     const sf::Vector2f bullet_position = player.getPosition() + sf::Vector2f(32.5f, 7.5f);
     auto               bullet =
         game_instance->addAndGetBullet(bullet_position, bulletSpeed, "bullet", bulletDamage,

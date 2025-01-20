@@ -77,18 +77,6 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     broadcastAllUnreliable(serializedMessage);
 }
 
-void RtypeServer::broadcastStartLevel() {
-    RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
-    levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
-    levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
-
-    // Serialize the LevelSignalMessage
-    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
-
-    // Broadcast the serialized message to all clients
-    broadcastAllReliable(serializedMessage);
-}
-
 void RtypeServer::startAndBroadcastLevel() {
     _game_instance->getMap()->startLevel();
     broadcastStartLevel();
@@ -180,4 +168,39 @@ void RtypeServer::printServerStartupBanner() {
     std::cout << colorText("[GameMap] IsLoaded: ", BOLD_CYAN)
               << colorText(isLoaded ? "true" : "false", BOLD_WHITE) << std::endl;
     std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
+}
+
+void RtypeServer::broadcastStartLevel() {
+    RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
+    levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
+    levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
+    std::cout << "getMap()->getIsLevelRunning() = " << _game_instance->getMap()->getIsLevelRunning()
+              << std::endl;
+    std::cout << "levelSignalMessage.startLevel = " << levelSignalMessage.startLevel << std::endl;
+    // Serialize the LevelSignalMessage
+    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
+
+    // Broadcast the serialized message to all clients
+    broadcastAllReliable(serializedMessage);
+}
+
+void RtypeServer::BroadcastStartLevel() {
+    broadcastStartLevel();
+    std::cout << "broadcasting start level" << std::endl;
+}
+
+void RtypeServer::BroadcastStopLevel() {
+    broadcastStartLevel();
+    std::cout << "broadcasting stop level" << std::endl;
+    // we get the variables from getIsLevelRunning() and we broadcast it to all clients
+}
+
+void RtypeServer::startLevel() {
+    _game_instance->getMap()->startLevel();
+    std::cout << "Level started" << std::endl;
+}
+
+void RtypeServer::stopLevel() {
+    _game_instance->getMap()->stopLevel();
+    std::cout << "Level stopped" << std::endl;
 }

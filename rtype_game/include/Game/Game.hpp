@@ -18,6 +18,7 @@
 #include "Game/Background.hpp"
 #include "Game/GameMap.hpp"
 #include "Game/GameMenu.hpp"
+#include "Game/LaunchGame.hpp"
 #include "Game/Particles.hpp"
 #include "Game/Player/Player.hpp"
 #include "Game/PlayerUI.hpp"
@@ -26,6 +27,14 @@
 #include "shared/RtypeServerProtocol.hpp"
 
 namespace rtype {
+
+// Create a structure to hold the entity and its type
+struct EntityInfo {
+    std::shared_ptr<RealEngine::Entity> entity;
+    RTypeProtocol::EntityType           type;
+};
+
+#define LaunchGameWithoutArgs false
 class Game {
    public:
     Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
@@ -38,6 +47,8 @@ class Game {
     std::shared_ptr<RealEngine::Entity> add_player(long int player_uuid, sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> add_mob(long int enemy_uuid, sf::Vector2f position);
     sf::IntRect                         getPlayerNormalizedDirection();
+    std::unordered_map<long int, EntityInfo>& getEntities() { return _entities; }
+    bool                                      _isInit = false;
 
     std::shared_ptr<UDPClient> _clientUDP;
 
@@ -61,19 +72,20 @@ class Game {
     void set_action_handlers();
     void set_sprite_opacity();
     void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color, int size);
-
+    void handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket);
     // GameSignals
-    void handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
-    void handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPacket);
-    void handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
-    void handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
-    void handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
-    void handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
-    void handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
-    void addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
-                         std::shared_ptr<RealEngine::Entity> newEntity);
-    void handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket);
-
+    void               handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
+    void               handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPacket);
+    void               handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket);
+    void               handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket);
+    void               handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsedPacket);
+    void               handleMapMessage(RTypeProtocol::MapMessage parsedPacket);
+    void               handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPacket);
+    void               addEntityToGame(RTypeProtocol::NewEntityMessage     parsedPacket,
+                                       std::shared_ptr<RealEngine::Entity> newEntity);
+    void               handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket);
+    void               unloadLevel(float x, float y);
+    void               relocateAllBlocks();
     float              _deltaTime = 0.f;
     RealEngine::View   _view;
     RealEngine::Window _window;
@@ -101,8 +113,8 @@ class Game {
 
     std::shared_ptr<RealEngine::Entity>                               _player_entity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
-    std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
-    GameMap                                                           _game_map;
+    std::unordered_map<long int, EntityInfo>                          _entities;
+    GameMap*                                                          _game_map;
     std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;

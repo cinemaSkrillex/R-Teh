@@ -20,6 +20,9 @@ void HoldShootEvent::execute(const std::array<char, 800>&   buffer,
         return;
     }
     auto* isHolding = container->getNetvar("isHolding");
+    if (!isHolding) {
+        return;
+    }
 
     isHolding->value = true;
 }
