@@ -33,7 +33,7 @@ nav_order: 3
 
 2. **Data-Driven Design**
 
-   - **Example**: Game entities defined in external configuration files or databases. For instance, a `character` might have data such as `health`, `damage`, and `speed`, stored in JSON, and the behavior is driven by external scripts.
+   - **Example**: Game entities defined in external configuration files or databases. For instance, a `character` might have data such as `health`, `damage`, and `speed`, stored in JSON, and the behavior is driven by external Scripts.
    
    - **Why not chosen**: While flexible, it can lead to **separation between data and logic**, making it harder to integrate dynamic game mechanics or behaviors, as the systems need to constantly sync between data and code.
 

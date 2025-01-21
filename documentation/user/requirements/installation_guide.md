@@ -13,7 +13,7 @@ Clone this repository and install the dependencies using the following command:
 
 ```bash
 #On linux
-cd scripts
+cd Scripts
 chmod +x requirements.sh
 ./requirements.sh
 cd ..

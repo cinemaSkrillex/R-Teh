@@ -43,7 +43,7 @@
 │       ├── requirements
 │       ├── setup_windows_vm
 │       └── user.md
-├── game_engine
+├── GameEngine
 │   ├── CMakeFiles
 │   │   ├── copy_headers_lagcompensation_engine.dir
 │   │   └── rtype_engine.dir
@@ -92,7 +92,7 @@
 │       ├── Client
 │       ├── Server
 │       └── shared
-├── lib_utils
+├── LibUtils
 │   ├── CMakeFiles
 │   │   └── utils.dir
 │   ├── CMakeLists.txt
@@ -102,11 +102,11 @@
 │   └── PeterParser
 │       ├── include
 │       └── src
-├── network
+├── Network
 │   ├── CMakeFiles
 │   │   ├── copy_headers.dir
 │   │   ├── rtype_client.dir
-│   │   ├── rtype_server.dir
+│   │   ├── RtypeServer.dir
 │   │   ├── testing_rtype_client.dir
 │   │   └── testing_rtype_server.dir
 │   ├── CMakeLists.txt
@@ -124,7 +124,7 @@
 │   ├── TestingClientMain.cpp
 │   └── TestingServerMain.cpp
 ├── README.md
-├── rtype_game
+├── RtypeGame
 │   ├── CMakeFiles
 │   │   ├── copy_headers_engine_for_game.dir
 │   │   ├── copy_headers_lagcompensation.dir
@@ -148,7 +148,7 @@
 │   └── src
 │       ├── Controls.cpp
 │       └── Game
-├── rtype_server
+├── RtypeServer
 │   ├── CMakeFiles
 │   │   ├── copy_config.dir
 │   │   ├── copy_headers_engine_for_server.dir
@@ -177,7 +177,7 @@
 │       ├── GameMap
 │       ├── Player
 │       └── RtypeServer
-├── scripts
+├── Scripts
 │   ├── check_format.ps1
 │   ├── check_format.sh
 │   ├── format_all.ps1

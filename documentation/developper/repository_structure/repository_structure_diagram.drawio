@@ -112,10 +112,10 @@
         <mxCell id="oF5099-Gfeb-WDHTuqHn-23" value="Shared" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="190" y="190" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="oF5099-Gfeb-WDHTuqHn-25" value="Contains the TCP and UDP client for the network&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;create / send / get last messages&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+        <mxCell id="oF5099-Gfeb-WDHTuqHn-25" value="Contains the TCP and UDP client for the Network&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;create / send / get last messages&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="-285" y="290" width="150" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="oF5099-Gfeb-WDHTuqHn-27" value="Contains the TCP and UDP server for the network&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;create / manage / send messages&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+        <mxCell id="oF5099-Gfeb-WDHTuqHn-27" value="Contains the TCP and UDP server for the Network&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;create / manage / send messages&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="-55" y="300" width="150" height="90" as="geometry" />
         </mxCell>
         <mxCell id="oF5099-Gfeb-WDHTuqHn-29" value="All the ressources shared across different part of the project, like the PacketManager" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
@@ -178,7 +178,7 @@
         <mxCell id="oF5099-Gfeb-WDHTuqHn-56" value="Documentation about the project, can be found online using the link inside index.md (github pages)" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="151.88" y="1600" width="161.25" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="oF5099-Gfeb-WDHTuqHn-58" value="Contains installation scripts for the project" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+        <mxCell id="oF5099-Gfeb-WDHTuqHn-58" value="Contains installation Scripts for the project" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="-227.5" y="1600" width="175" height="70" as="geometry" />
         </mxCell>
       </root>

@@ -64,7 +64,7 @@
         <mxCell id="3d7ZLtksqcKN4c6j7ZEo-28" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" parent="1" source="3d7ZLtksqcKN4c6j7ZEo-25" target="3d7ZLtksqcKN4c6j7ZEo-27" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="3d7ZLtksqcKN4c6j7ZEo-25" value="When trying to send a messags, we fill this structure with the data&amp;nbsp; we need. And serialize + send it via the network." style="whiteSpace=wrap;html=1;rounded=1;arcSize=27;" parent="1" vertex="1">
+        <mxCell id="3d7ZLtksqcKN4c6j7ZEo-25" value="When trying to send a messags, we fill this structure with the data&amp;nbsp; we need. And serialize + send it via the Network." style="whiteSpace=wrap;html=1;rounded=1;arcSize=27;" parent="1" vertex="1">
           <mxGeometry x="410" y="250" width="210" height="100" as="geometry" />
         </mxCell>
         <mxCell id="3d7ZLtksqcKN4c6j7ZEo-27" value="Finally, the client gets the messages, and has to deserialize the message using the appropriate method" style="whiteSpace=wrap;html=1;rounded=1;arcSize=27;" parent="1" vertex="1">
@@ -286,7 +286,7 @@
         <mxCell id="KXVSbe15cia_l5UnQvWz-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.546;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="KXVSbe15cia_l5UnQvWz-41" target="KXVSbe15cia_l5UnQvWz-58">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="KXVSbe15cia_l5UnQvWz-68" value="A new entity is sent when a Mob or a Block spawns for example.&lt;div&gt;It has an entity type to differentiate between blocks and other enemies&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The components vector is used to send components via network like Position, Collision, Sprite etc..&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="KXVSbe15cia_l5UnQvWz-68" value="A new entity is sent when a Mob or a Block spawns for example.&lt;div&gt;It has an entity type to differentiate between blocks and other enemies&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The components vector is used to send components via Network like Position, Collision, Sprite etc..&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="3270" y="-810" width="220" height="120" as="geometry" />
         </mxCell>
         <mxCell id="KXVSbe15cia_l5UnQvWz-70" value="Entity_ids is the vector of entity that will need to be destroyed" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">

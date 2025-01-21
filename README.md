@@ -33,14 +33,14 @@ This project is a multiplayer game engine, running games like R-TYPE.
 On Linux:
 ```bash
 # Run the script to install the dependencies (from root)
-chmod +x ./scripts/requirements.sh
-./scripts/requirements.sh
+chmod +x ./Scripts/requirements.sh
+./Scripts/requirements.sh
 ```
 
 On Windows:
 ```bash
 # Open an administrator PowerShell and run the following command :
-Set-ExecutionPolicy Bypass -Scope Process -Force; .\scripts\requirements.ps1
+Set-ExecutionPolicy Bypass -Scope Process -Force; .\Scripts\requirements.ps1
 ```
 
 ## Install the dependencies
@@ -77,12 +77,12 @@ cmake . && cmake --build . -j 20
 
 Launch the server:
 ```bash
-./build/default/r_type_server/rtype_server [PORT]
+./build/default/r_type_server/RtypeServer [PORT]
 ```
 
 Launch the client:
 ```bash
-./build/default/rtype_game/rtype [serverIp] [SERVER_PORT] [clientPort]
+./build/default/RtypeGame/rtype [serverIp] [SERVER_PORT] [clientPort]
 ```
 
 ## How to run the tests 🧪

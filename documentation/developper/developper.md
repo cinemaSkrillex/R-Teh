@@ -19,7 +19,7 @@ To keep the code clean and readable, we use the clang-format tool. This tool wil
 
 ## Networking 🌐
 
-The project uses the boost library to manage the network. The server and the client communicate with each other using the UDP protocol.
+The project uses the boost library to manage the Network. The server and the client communicate with each other using the UDP protocol.
 
 [Networking](./networking/networking.md)
 

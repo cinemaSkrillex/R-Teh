@@ -9,7 +9,7 @@ nav_order: 5
 When evaluating networking libraries for our project, we considered several options:
 - Boost.Asio
 - Enet
-- OS-specific network API (eg. Unix
+- OS-specific Network API (eg. Unix
 BSD Sockets on Linux for example, or Windows Sockets on Windows).
 
 After careful evaluation, we decided to use Boost.Asio as our networking library for the following reasons:
@@ -75,7 +75,7 @@ After careful evaluation, we decided to use Boost.Asio as our networking library
   - Using a single library for both protocols simplifies development and ensures **consistency** in the networking codebase.  
 
 - **OS-specific Network API**:  
-  - Offers **low-level control and optimization** for network operations.  
+  - Offers **low-level control and optimization** for Network operations.  
   - Can introduce platform dependencies and complexities, impacting **cross-platform compatibility** and **portability**.  
 
   **Why we chose Boost.Asio over OS-specific APIs**:  

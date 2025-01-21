@@ -10,7 +10,7 @@ nav_order: 3
 
 The R-type server uses interpolation and delta times to achieve synchronized movement between the server and clients. 
 
-This ensures smooth and consistent movement across all clients, even in the presence of network latency.
+This ensures smooth and consistent movement across all clients, even in the presence of Network latency.
 
 ### Interpolation
 
@@ -24,7 +24,7 @@ Interpolation works by estimating the position of an entity at a given point in 
 
 This is particularly useful in networked games where there may be delays in receiving position updates from the server. 
 
-By interpolating between known positions, the client can provide smooth and continuous movement, reducing the visual impact of network latency.
+By interpolating between known positions, the client can provide smooth and continuous movement, reducing the visual impact of Network latency.
 
 #### Interpolation Function
 
@@ -70,7 +70,7 @@ Delta time is used to calculate the time elapsed between updates. This ensures t
 
 #### Delta Time Calculation
 
-The server calculates the delta time in the [RtypeServer::run](../../../../rtype_server/src/RtypeServer/RtypeServerRun.cpp) method:
+The server calculates the delta time in the [RtypeServer::run](../../../../RtypeServer/src/RtypeServer/RtypeServerRun.cpp) method:
 
 ```cpp
 void RtypeServer::run() {

@@ -42,13 +42,13 @@ endif ()
 
 
 # Add subdirectories
-add_subdirectory(network)
+add_subdirectory(Network)
 
 # add_subdirectory(client)
-add_subdirectory(game_engine)
-add_subdirectory(rtype_game)
-add_subdirectory(rtype_server)
-add_subdirectory(pong_game)
-add_subdirectory(pong_server)
-add_subdirectory(rtype_launcher_server)
-add_subdirectory(rtype_launcher_game)
+add_subdirectory(GameEngine)
+add_subdirectory(RtypeGame)
+add_subdirectory(RtypeServer)
+add_subdirectory(PongGame)
+add_subdirectory(PongServer)
+add_subdirectory(RtypeLauncherServer)
+add_subdirectory(RtypeLauncherGame)

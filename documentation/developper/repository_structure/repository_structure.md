@@ -27,28 +27,28 @@ You can see a tree representation of the repository structure inside the "reposi
 
 `assets` - Contains the images and other assets used in the game.
 
-`scripts` - Contains the scripts used to automate tasks.
+`Scripts` - Contains the Scripts used to automate tasks.
 
-`rtype_server` - Contains the server-side code.
+`RtypeServer` - Contains the server-side code.
 
-`rtype_game` - Contains the game client-side code.
+`RtypeGame` - Contains the game client-side code.
 
-`network` - Contains the network protocol definition (UDP and TCP server/client).
+`Network` - Contains the Network protocol definition (UDP and TCP server/client).
 
-`game_engine` - Contains the game engine code.
+`GameEngine` - Contains the game engine code.
 
 ## Advanced directories
 
-`game_engine/src/Core` - Contains the core game engine code. (e.g. Clock, View, Window, Images, Sounds, etc.)
+`GameEngine/src/Core` - Contains the core game engine code. (e.g. Clock, View, Window, Images, Sounds, etc.)
 
-`game_engine/src/ECS` - Contains the Entity-Component-System code.
+`GameEngine/src/ECS` - Contains the Entity-Component-System code.
 
-`game_engine/src/ECS/Entities` - Contains the entities code (spawn, kill entities, etc.)
+`GameEngine/src/ECS/Entities` - Contains the entities code (spawn, kill entities, etc.)
 
-`game_engine/src/ECS/Registry` - Contains the registry code (add, remove components, etc.)
+`GameEngine/src/ECS/Registry` - Contains the registry code (add, remove components, etc.)
 
-`game_engine/src/ECS/SparseArray` - Contains the sparse array code for the ECS.
+`GameEngine/src/ECS/SparseArray` - Contains the sparse array code for the ECS.
 
-`game_engine/src/ECS/Systems` - Contains the systems code, for example, the MovementSystem, CollisionSystem, etc.
+`GameEngine/src/ECS/Systems` - Contains the systems code, for example, the MovementSystem, CollisionSystem, etc.
 
-`game_engine/src/Scripting` - Contains the scripting code : Lua via sol2
+`GameEngine/src/Scripting` - Contains the scripting code : Lua via sol2

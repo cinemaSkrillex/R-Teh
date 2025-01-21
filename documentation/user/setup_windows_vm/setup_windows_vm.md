@@ -58,7 +58,7 @@ https://www.microsoft.com/fr-fr/software-download/windows11
 3. (optional) Run the script to install the dependencies
     ```bash
     **Powershell admin**
-    .\scripts\requirements.ps1
+    .\Scripts\requirements.ps1
     ```
 
 4. Install visual studio, and in the visual studio installer, add the c++ dependencies

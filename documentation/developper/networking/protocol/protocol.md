@@ -13,7 +13,7 @@ The Rtype Server Protocol is a protocol used to communicate between the client a
 
 ## Where to find the protocol
 
-The protocol is defined in the `rtype_server/include/shared/RTypeServerProtocol.hpp` file. This file contains the definition of the messages that can be sent between the client and the server.
+The protocol is defined in the `RtypeServer/include/shared/RTypeServerProtocol.hpp` file. This file contains the definition of the messages that can be sent between the client and the server.
 
 ## Message structure
 

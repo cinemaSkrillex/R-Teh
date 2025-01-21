@@ -13,7 +13,7 @@
         <mxCell id="9oIhPels66GtJyM535p5-5" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="9oIhPels66GtJyM535p5-2" target="9oIhPels66GtJyM535p5-4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="9oIhPels66GtJyM535p5-2" value="ECS is inside game_engine and its part of the include directory." style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+        <mxCell id="9oIhPels66GtJyM535p5-2" value="ECS is inside GameEngine and its part of the include directory." style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="240" y="150" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="9oIhPels66GtJyM535p5-7" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="9oIhPels66GtJyM535p5-4" target="9oIhPels66GtJyM535p5-6">
