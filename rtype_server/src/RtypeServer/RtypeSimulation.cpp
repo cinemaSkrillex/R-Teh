@@ -21,8 +21,8 @@ void RtypeServer::runSimulation(const std::array<char, 800>&   buffer,
     _players.at(client).setLastTimestamp(timestamp);
 
     // Use consistent server delta time for simulation
-    _game_instance->movePlayer(player_uuid, playerDirectionMessage.direction,
-                               client_elapsed_time_seconds);
-    _game_instance->runPlayerSimulation(_players.at(client).getEntity(),
-                                        client_elapsed_time_seconds);
+    _gameInstance->movePlayer(player_uuid, playerDirectionMessage.direction,
+                              client_elapsed_time_seconds);
+    _gameInstance->runPlayerSimulation(_players.at(client).getEntity(),
+                                       client_elapsed_time_seconds);
 }

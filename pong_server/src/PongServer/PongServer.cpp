@@ -14,9 +14,9 @@ PongServer::PongServer(std::shared_ptr<UDPServer> server, bool server_vision)
       _deltaTime(0),
       _deltaTimeBroadcast(0),
       _startTime(std::chrono::steady_clock::now()),
-      _game_instance(std::make_shared<PongGameInstance>(server_vision)) {
-    _background = _game_instance->addAndGetBackground();
-    _ball       = _game_instance->addAndGetBall();
+      _gameInstance(std::make_shared<PongGameInstance>(server_vision)) {
+    _background = _gameInstance->addAndGetBackground();
+    _ball       = _gameInstance->addAndGetBall();
     initCallbacks();
     std::cout << "PongServer started" << std::endl;
 }
@@ -25,19 +25,19 @@ PongServer::~PongServer() {}
 
 void PongServer::broadcastAllReliable(const std::array<char, 800>& message) {
     for (auto& player : _players) {
-        _server->send_reliable_packet(message, player.first);
+        _server->sendReliablePacket(message, player.first);
     }
     for (auto& spectator : _spectators) {
-        _server->send_reliable_packet(message, spectator);
+        _server->sendReliablePacket(message, spectator);
     }
 }
 
 void PongServer::broadcastAllUnreliable(const std::array<char, 800>& message) {
     for (auto& player : _players) {
-        _server->send_unreliable_packet(message, player.first);
+        _server->sendUnreliablePacket(message, player.first);
     }
     for (auto& spectator : _spectators) {
-        _server->send_unreliable_packet(message, spectator);
+        _server->sendUnreliablePacket(message, spectator);
     }
 }
 
@@ -50,7 +50,7 @@ void PongServer::run() {
             _deltaTime = _clock.restart().asSeconds();
 
             handleClientMessages();
-            _game_instance->run(_deltaTime);
+            _gameInstance->run(_deltaTime);
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / server_broadcast_tick) {
             _deltaTimeBroadcast = _broadcastClock.restart().asSeconds();
@@ -66,15 +66,15 @@ void PongServer::handleClientMessages() {
         if (!player) {
             continue;
         }
-        const auto& messages = _server->get_unreliable_messages_from_endpoint(client);
+        const auto& messages = _server->getUnreliableMessagesFromEndpoint(client);
 
         for (const auto& message : messages) {
             auto baseMessage = PongProtocol::deserialize<800>(message);
 
-            if (baseMessage.message_type == PongProtocol::PLAYER_DIRECTION) {
+            if (baseMessage.messageType == PongProtocol::PLAYER_DIRECTION) {
                 handlePlayerDirection(message, client, player);
             }
-            if (baseMessage.message_type == PongProtocol::PLAYER_READY) {
+            if (baseMessage.messageType == PongProtocol::PLAYER_READY) {
                 if (std::find(_readyPlayers.begin(), _readyPlayers.end(), baseMessage.uuid) !=
                     _readyPlayers.end()) {
                     continue;
@@ -85,8 +85,8 @@ void PongServer::handleClientMessages() {
                 if (_playerReadyCount == 2) {
                     std::cout << "All players ready, launch ball" << std::endl;
                     // _ball get velocity component and set it to 300, 300
-                    auto& registry = _game_instance->getRegistryRef();
-                    auto* velocity = registry.get_component<RealEngine::Velocity>(*_ball);
+                    auto& registry = _gameInstance->getRegistryRef();
+                    auto* velocity = registry.getComponent<RealEngine::Velocity>(*_ball);
                     if (velocity) {
                         velocity->vx = 300;
                         velocity->vy = 50;
@@ -102,25 +102,25 @@ void PongServer::handlePlayerDirection(const std::array<char, 800>&        messa
                                        std::shared_ptr<RealEngine::Entity> player) {
     PongProtocol::PlayerDirectionMessage playerDirectionMessage =
         PongProtocol::deserializePlayerDirection<800>(message);
-    const auto player_uuid                 = playerDirectionMessage.uuid;
-    const auto timestamp                   = playerDirectionMessage.timestamp;
+    const auto player_uuid = playerDirectionMessage.uuid;
+    const auto timestamp   = playerDirectionMessage.timestamp;
 
     _playerTimestamps[client] = timestamp;
 
     // Use consistent server delta time for simulation
-    _game_instance->movePlayer(playerDirectionMessage.direction, _deltaTime, player_uuid);
-    _game_instance->runPlayerSimulation(_players.at(client), _deltaTime);
+    _gameInstance->movePlayer(playerDirectionMessage.direction, _deltaTime, player_uuid);
+    _gameInstance->runPlayerSimulation(_players.at(client), _deltaTime);
 }
 
 void PongServer::broadcastStates() {
     // Broadcast ball state
-    auto& registry     = _game_instance->getRegistryRef();
-    auto* ballPosition = registry.get_component<RealEngine::Position>(*_ball);
+    auto& registry     = _gameInstance->getRegistryRef();
+    auto* ballPosition = registry.getComponent<RealEngine::Position>(*_ball);
     if (!ballPosition) {
         return;
     }
     PongProtocol::EntityUpdateMessage entityStateMessage = {};
-    entityStateMessage.message_type                      = PongProtocol::ENTITY_UPDATE;
+    entityStateMessage.messageType                       = PongProtocol::ENTITY_UPDATE;
     entityStateMessage.uuid                              = *_ball;
     entityStateMessage.x                                 = ballPosition->x;
     entityStateMessage.y                                 = ballPosition->y;
@@ -131,8 +131,8 @@ void PongServer::broadcastStates() {
     broadcastAllUnreliable(serializedMessage);
 
     // get netvar container of ball
-    auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(*_ball);
-    auto* scoreAmount     = registry.get_component<RealEngine::Score>(*_ball);
+    auto* netvarContainer = registry.getComponent<RealEngine::NetvarContainer>(*_ball);
+    auto* scoreAmount     = registry.getComponent<RealEngine::Score>(*_ball);
     if (!netvarContainer) {
         return;
     }
@@ -143,23 +143,23 @@ void PongServer::broadcastStates() {
         if (!player.second) {
             continue;
         }
-        auto* position    = registry.get_component<RealEngine::Position>(*player.second);
-        auto* playerScore = registry.get_component<RealEngine::Score>(*player.second);
+        auto* position    = registry.getComponent<RealEngine::Position>(*player.second);
+        auto* playerScore = registry.getComponent<RealEngine::Score>(*player.second);
         auto* playerNetvarContainer =
-            registry.get_component<RealEngine::NetvarContainer>(*player.second);
+            registry.getComponent<RealEngine::NetvarContainer>(*player.second);
         if (playerNetvarContainer &&
             std::any_cast<bool>(playerNetvarContainer->netvars["new_entity"].value)) {
             // send or resend to all to be sure everyone has the new player
             PongProtocol::NewEntityMessage playerMessage;
-            playerMessage.message_type = PongProtocol::NEW_ENTITY;
-            playerMessage.uuid         = *player.second;
-            auto* playerPosition = registry.get_component<RealEngine::Position>(player.second);
-            auto* playerVelocity = registry.get_component<RealEngine::Velocity>(player.second);
+            playerMessage.messageType = PongProtocol::NEW_ENTITY;
+            playerMessage.uuid        = *player.second;
+            auto* playerPosition      = registry.getComponent<RealEngine::Position>(player.second);
+            auto* playerVelocity      = registry.getComponent<RealEngine::Velocity>(player.second);
             auto* playerInterpolation =
-                registry.get_component<RealEngine::Interpolation>(player.second);
+                registry.getComponent<RealEngine::Interpolation>(player.second);
             auto* playerAcceleration =
-                registry.get_component<RealEngine::Acceleration>(player.second);
-            auto* playerDrawable = registry.get_component<RealEngine::Drawable>(player.second);
+                registry.getComponent<RealEngine::Acceleration>(player.second);
+            auto* playerDrawable = registry.getComponent<RealEngine::Drawable>(player.second);
             if (playerPosition) {
                 addComponentToMessage(playerMessage, PongProtocol::ComponentList::POSITION,
                                       *playerPosition);
@@ -194,9 +194,9 @@ void PongServer::broadcastStates() {
             netvarContainer->netvars["score_to_update"].value = 0;
             // send score update message
             PongProtocol::PlayerUpdateDataMessage playerScoreMessage = {};
-            playerScoreMessage.message_type = PongProtocol::PLAYER_UPDATE_DATA;
-            playerScoreMessage.uuid         = *player.second;
-            playerScoreMessage.score        = playerScore->amount;
+            playerScoreMessage.messageType = PongProtocol::PLAYER_UPDATE_DATA;
+            playerScoreMessage.uuid        = *player.second;
+            playerScoreMessage.score       = playerScore->amount;
             std::array<char, 800> serializedPlayerScoreMessage =
                 PongProtocol::serialize<800>(playerScoreMessage);
             broadcastAllReliable(serializedPlayerScoreMessage);
@@ -205,7 +205,7 @@ void PongServer::broadcastStates() {
             continue;
         }
         PongProtocol::PlayerMoveMessage playerMoveMessage = {};
-        playerMoveMessage.message_type                    = PongProtocol::PLAYER_MOVE;
+        playerMoveMessage.messageType                     = PongProtocol::PLAYER_MOVE;
         playerMoveMessage.uuid                            = *player.second;
         playerMoveMessage.x                               = position->x;
         playerMoveMessage.y                               = position->y;

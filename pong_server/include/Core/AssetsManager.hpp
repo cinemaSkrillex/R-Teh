@@ -177,16 +177,14 @@ class AssetManager {
             for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
                 if (entry.is_regular_file()) {
                     std::string filePath = entry.path().string();
-                    std::string fileName =
-                        entry.path().stem().string();  // File name without extension
+                    std::string fileName = entry.path().stem().string();
 
                     if (entry.path().extension() == ".png") {
                         std::string textureId;
                         if (folderName.empty()) {
-                            textureId = fileName;  // Use only fileName if folderName is empty
+                            textureId = fileName;
                         } else {
-                            textureId =
-                                folderName + "_" + fileName;  // Create ID with folder prefix
+                            textureId = folderName + "_" + fileName;
                         }
                         loadSpriteTextureAndScale(textureId, filePath, scale);
                         if (DEBUG) {

@@ -3,53 +3,50 @@
 
 #include "Game/Game.hpp"
 
-
 // void create_game() {
-//     rtype::Game game(client, client_port);  // Local object
+//     rtype::Game game(client, clientPort);  // Local object
 //     game.run();  // If the object is destroyed here, this will cause undefined behavior.
 // }  // game is destroyed here.
 
 int main(int argc, char* argv[]) {
-
-    std::string server_ip;
-    unsigned short server_port;
-    unsigned short client_port;
+    std::string    serverIp;
+    unsigned short serverPort;
+    unsigned short clientPort;
 
     if (LaunchGameWithoutArgs == true) {
         rtype::LaunchGame launcher;
         launcher.run();
-        
-        server_ip = launcher.getServerIp();
-        server_port = launcher.getServerPort();
-        client_port = launcher.getClientPort();
-        
+
+        serverIp   = launcher.getServerIp();
+        serverPort = launcher.getServerPort();
+        clientPort = launcher.getClientPort();
+
     } else {
         if (argc != 4) {
-            std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
-                    << std::endl;
+            std::cerr << "Usage: " << argv[0] << " <serverIp> <serverPort> <clientPort>"
+                      << std::endl;
             exit(1);
         }
 
-        server_ip   = argv[1];
-        server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-        client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+        serverIp   = argv[1];
+        serverPort = static_cast<unsigned short>(std::stoi(argv[2]));
+        clientPort = static_cast<unsigned short>(std::stoi(argv[3]));
     }
 
     try {
         // Initialize ASIO and the UDP client
-        asio::io_context io_context;
-        auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
+        asio::io_context ioContext;
+        auto client = std::make_shared<UDPClient>(ioContext, clientPort, serverIp, serverPort);
 
         std::atomic<bool> running(true);
 
         // Launch the game on the main thread
         // added the port, temporarily for testing.
-        // rtype::Game game(client, client_port);
-        rtype::Game* game = new rtype::Game(client, client_port);  // Dynamically allocated
-        client->send_new_client();
+        // rtype::Game game(client, clientPort);
+        rtype::Game* game = new rtype::Game(client, clientPort);  // Dynamically allocated
+        client->sendNewClient();
         game->run();
         // delete game;  // Proper cleanup after the game loop
-
 
         // Game loop
 

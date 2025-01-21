@@ -20,11 +20,11 @@ PongGameInstance::PongGameInstance(bool serverVision)
       _netvarSystem(),
       _particleSystem() {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    init_components();
-    init_systems();
-    init_textures();
-    init_sprite_sheets();
-    init_screen_limits();
+    initComponents();
+    initSystems();
+    initTextures();
+    initSpriteSheets();
+    initScreenLimits();
 }
 
 std::shared_ptr<RealEngine::Entity> PongGameInstance::addAndGetPlayer(sf::Vector2f position,
@@ -47,11 +47,11 @@ std::shared_ptr<RealEngine::Entity> PongGameInstance::addAndGetBall() {
 }
 
 std::shared_ptr<RealEngine::Entity> PongGameInstance::addAndGetBackground() {
-    auto background = _registry.spawn_entity();
-    _registry.add_component(background, RealEngine::Position{400, 300});
+    auto background = _registry.spawnEntity();
+    _registry.addComponent(background, RealEngine::Position{400, 300});
     auto sprite = RealEngine::AssetManager::getInstance().getSprite("background");
-    _registry.add_component(background, RealEngine::SpriteComponent{*sprite});
-    _registry.add_component(background, RealEngine::Drawable{});
+    _registry.addComponent(background, RealEngine::SpriteComponent{*sprite});
+    _registry.addComponent(background, RealEngine::Drawable{});
     _entities.push_back(background);
     return _entities.back();
 }
@@ -66,8 +66,8 @@ void PongGameInstance::movePlayer(sf::IntRect direction, float deltaTime, size_t
     }
 
     auto  entity       = *it;
-    auto* acceleration = _registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity     = _registry.get_component<RealEngine::Velocity>(entity);
+    auto* acceleration = _registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* velocity     = _registry.getComponent<RealEngine::Velocity>(entity);
 
     if (!acceleration || !velocity) return;
 

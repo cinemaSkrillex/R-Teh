@@ -15,7 +15,7 @@ void isCollidingWithOthers(std::optional<Collision> collision, Registry& registr
     auto entities = registry.view<Collision>();
 
     for (auto other : entities) {
-        auto* currentCollision = registry.get_component<Collision>(other);
+        auto* currentCollision = registry.getComponent<Collision>(other);
 
         if ((entity == other) || (currentCollision->id.compare(collision->id) == 0)) {
             continue;
@@ -35,9 +35,9 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         return;
     }
     for (auto entity : entities) {
-        auto* collision   = registry.get_component<Collision>(entity);
-        auto* sprite      = registry.get_component<SpriteComponent>(entity);
-        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
+        auto* collision   = registry.getComponent<Collision>(entity);
+        auto* sprite      = registry.getComponent<SpriteComponent>(entity);
+        auto* spritesheet = registry.getComponent<SpriteSheet>(entity);
 
         if (collision->type == CollisionType::SCREEN) {
             continue;
@@ -50,7 +50,7 @@ void CollisionSystem::update(Registry& registry, float deltaTime) {
         }
     }
     for (auto entity : entities) {
-        auto* collision = registry.get_component<Collision>(entity);
+        auto* collision = registry.getComponent<Collision>(entity);
         isCollidingWithOthers(*collision, registry, entity);
     }
 }

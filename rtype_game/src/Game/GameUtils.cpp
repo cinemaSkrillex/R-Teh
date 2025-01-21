@@ -9,8 +9,8 @@
 
 namespace rtype {
 
-void Game::display_temporary_text(std::string text, sf::Vector2f position, sf::Color color,
-                                  int size) {
+void Game::displayTemporaryText(std::string text, sf::Vector2f position, sf::Color color,
+                                int size) {
     auto tempText = std::make_shared<RealEngine::TemporaryText>(
         text, position, 1.0f, 0.5f, RealEngine::AssetManager::getInstance().getFont("pixel"));
     tempText->getText().setColor(color.r, color.g, color.b, color.a);
@@ -21,21 +21,21 @@ void Game::display_temporary_text(std::string text, sf::Vector2f position, sf::C
 }
 
 void Game::unloadLevel(float x, float y) {
-    if (!_game_map) return;
-    // _game_map->setLevelRunning(false);
-    if (!_game_map->getMusicName().empty()) {
-        RealEngine::AssetManager::getInstance().getMusic(_game_map->getMusicName())->stop();
+    if (!_gameMap) return;
+    // _gameMap->setLevelRunning(false);
+    if (!_gameMap->getMusicName().empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_gameMap->getMusicName())->stop();
     }
 
-    // for (auto& background : _game_map->getBackgroundEntities()) {
+    // for (auto& background : _gameMap->getBackgroundEntities()) {
     //     std::cout << "Removing background [" << *background << "]" << std::endl;
-    //     if (_registry.is_valid(*background)) _registry.remove_entity(*background);
+    //     if (_registry.isValid(*background)) _registry.removeEntity(*background);
     // }
     // // _blockEntities.clear();
     // // _backgroundEntities.clear();
-    // _game_map->setScrollingSpeed(0.0f);
-    // _game_map->setXLevelPosition(0.0f);
-    // _game_map->setIsMapLoaded(false);
+    // _gameMap->setScrollingSpeed(0.0f);
+    // _gameMap->setXLevelPosition(0.0f);
+    // _gameMap->setIsMapLoaded(false);
     std::cout << "Clearing block entities" << std::endl;
 }
 
@@ -44,7 +44,7 @@ void Game::relocateAllBlocks() {
         if (entityData.type == RTypeProtocol::EntityType::BLOCK) {
             std::cout << "Relocating block [" << *entityData.entity << "]" << std::endl;
             auto* positionComponent =
-                _registry.get_component<RealEngine::Position>(entityData.entity);
+                _registry.getComponent<RealEngine::Position>(entityData.entity);
             if (positionComponent) {
                 positionComponent->x = 10000.0f;
                 positionComponent->y = 10000.0f;

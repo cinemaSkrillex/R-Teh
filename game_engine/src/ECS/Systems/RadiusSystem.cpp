@@ -15,14 +15,14 @@ void RadiusSystem::update(Registry& registry) {
         return;
     }
     for (auto entity : radius_entities) {
-        auto* entity_position = registry.get_component<Position>(entity);
-        auto* entity_radius   = registry.get_component<Radius>(entity);
+        auto* entity_position = registry.getComponent<Position>(entity);
+        auto* entity_radius   = registry.getComponent<Radius>(entity);
         in                    = false;
         outer_max             = false;
         outer_min             = false;
 
         for (auto player : player_entities) {
-            auto* player_position = registry.get_component<Position>(player);
+            auto* player_position = registry.getComponent<Position>(player);
             float distance        = sqrt(pow(player_position->x - entity_position->x, 2) +
                                          pow(player_position->y - entity_position->y, 2));
             if (distance < entity_radius->sizeMin) {

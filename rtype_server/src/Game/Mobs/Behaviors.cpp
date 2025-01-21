@@ -17,8 +17,8 @@ void noBehavior(RealEngine::Registry& registry, RealEngine::Entity entity, float
 
 void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPosition,
                  RealEngine::Registry& registry, float rotationSpeed, float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation = registry.get_component<RealEngine::Rotation>(entity);
+    auto* position = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation = registry.getComponent<RealEngine::Rotation>(entity);
 
     if (position && targetPosition) {
         float dx          = targetPosition->x - position->x;
@@ -51,12 +51,12 @@ void aimAtTarget(RealEngine::Entity& entity, RealEngine::Position* targetPositio
 
 void rushAndAimTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity,
                              float deltaTime) {
-    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
-    auto* position       = registry.get_component<RealEngine::Position>(entity);
-    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
-    auto* rotation       = registry.get_component<RealEngine::Rotation>(entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
+    auto  entity_target  = registry.getComponent<RealEngine::Target>(entity);
+    auto* position       = registry.getComponent<RealEngine::Position>(entity);
+    auto* acceleration   = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* velocity       = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* rotation       = registry.getComponent<RealEngine::Rotation>(entity);
+    auto* targetPosition = registry.getComponent<RealEngine::Position>(entity_target->target);
 
     aimAtTarget(entity, targetPosition, registry, 2.5f, deltaTime);
     if (position && targetPosition && acceleration) {
@@ -75,12 +75,12 @@ void rushAndAimTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity 
 
 void rushAndAimTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngine::Entity entity,
                                        float deltaTime) {
-    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
-    auto* position       = registry.get_component<RealEngine::Position>(entity);
-    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
-    auto* rotation       = registry.get_component<RealEngine::Rotation>(entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
+    auto  entity_target  = registry.getComponent<RealEngine::Target>(entity);
+    auto* position       = registry.getComponent<RealEngine::Position>(entity);
+    auto* acceleration   = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* velocity       = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* rotation       = registry.getComponent<RealEngine::Rotation>(entity);
+    auto* targetPosition = registry.getComponent<RealEngine::Position>(entity_target->target);
 
     aimAtTarget(entity, targetPosition, registry, 2.5f, deltaTime);
     if (position && targetPosition && acceleration) {
@@ -96,12 +96,12 @@ void rushAndAimTowardsTargetZigzagging(RealEngine::Registry& registry, RealEngin
 }
 
 void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
-    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
-    auto* position       = registry.get_component<RealEngine::Position>(entity);
-    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
-    auto* rotation       = registry.get_component<RealEngine::Rotation>(entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
+    auto  entity_target  = registry.getComponent<RealEngine::Target>(entity);
+    auto* position       = registry.getComponent<RealEngine::Position>(entity);
+    auto* acceleration   = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* velocity       = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* rotation       = registry.getComponent<RealEngine::Rotation>(entity);
+    auto* targetPosition = registry.getComponent<RealEngine::Position>(entity_target->target);
 
     if (position && targetPosition && acceleration) {
         float dx       = targetPosition->x - position->x;
@@ -118,10 +118,10 @@ void rushTowardsTarget(RealEngine::Registry& registry, RealEngine::Entity entity
 }
 
 void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
-    auto* position     = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
-    auto* rotation     = registry.get_component<RealEngine::Rotation>(entity);
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
+    auto* position     = registry.getComponent<RealEngine::Position>(entity);
+    auto* velocity     = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* rotation     = registry.getComponent<RealEngine::Rotation>(entity);
+    auto* acceleration = registry.getComponent<RealEngine::Acceleration>(entity);
 
     if (position && velocity && rotation && acceleration) {
         float angleRad = rotation->angle * (M_PI / 180.0f);
@@ -147,8 +147,8 @@ void goStraightAngle(RealEngine::Registry& registry, RealEngine::Entity entity, 
 }
 
 void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float deltaTime) {
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
+    auto* acceleration = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* velocity     = registry.getComponent<RealEngine::Velocity>(entity);
 
     if (acceleration && velocity) {
         velocity->vx = (acceleration->ax * deltaTime) * 100.0f;
@@ -158,8 +158,8 @@ void goStraight(RealEngine::Registry& registry, RealEngine::Entity entity, float
 
 void goStraightConstant(RealEngine::Registry& registry, RealEngine::Entity entity,
                         float deltaTime) {
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* position     = registry.get_component<RealEngine::Position>(entity);
+    auto* acceleration = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* position     = registry.getComponent<RealEngine::Position>(entity);
 
     if (position && acceleration) {
         position->x += acceleration->ax * deltaTime;
@@ -169,9 +169,9 @@ void goStraightConstant(RealEngine::Registry& registry, RealEngine::Entity entit
 
 void goStraightConstantAngle(RealEngine::Registry& registry, RealEngine::Entity entity,
                              float deltaTime) {
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
-    auto* position     = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation     = registry.get_component<RealEngine::Rotation>(entity);
+    auto* acceleration = registry.getComponent<RealEngine::Acceleration>(entity);
+    auto* position     = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation     = registry.getComponent<RealEngine::Rotation>(entity);
 
     if (position && acceleration && rotation) {
         float angleRad = rotation->angle * (M_PI / 180.0f);
@@ -183,8 +183,8 @@ void goStraightConstantAngle(RealEngine::Registry& registry, RealEngine::Entity 
 
 void moveWithoutVelocity(RealEngine::Registry& registry, RealEngine::Entity entity,
                          float deltaTime) {
-    auto* position = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+    auto* position = registry.getComponent<RealEngine::Position>(entity);
+    auto* velocity = registry.getComponent<RealEngine::Velocity>(entity);
 
     if (position && velocity) {
         position->x += velocity->vx * deltaTime;
@@ -194,16 +194,16 @@ void moveWithoutVelocity(RealEngine::Registry& registry, RealEngine::Entity enti
 
 void destroyOutOfScreen(RealEngine::CollisionType collisionType, RealEngine::Registry& registry,
                         RealEngine::Entity entity) {
-    auto* autoDestructible = registry.get_component<RealEngine::AutoDestructible>(entity);
+    auto* autoDestructible = registry.getComponent<RealEngine::AutoDestructible>(entity);
 
     if (collisionType != RealEngine::CollisionType::SCREEN) return;
     if (!autoDestructible) {
-        auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+        auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
         if (container) {
             if (container->getNetvar("destroy_out_of_screen") &&
                 std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
                     false) {
-                registry.add_component(entity, RealEngine::AutoDestructible{-1.0f, true, false});
+                registry.addComponent(entity, RealEngine::AutoDestructible{-1.0f, true, false});
             }
         }
     } else {
@@ -347,8 +347,8 @@ void takesDamage(RealEngine::CollisionType collisionType, RealEngine::Registry& 
 
 void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity collider,
                             RealEngine::Entity entity) {
-    auto* health = registry.get_component<RealEngine::Health>(entity);
-    auto* damage = registry.get_component<RealEngine::Damage>(collider);
+    auto* health = registry.getComponent<RealEngine::Health>(entity);
+    auto* damage = registry.getComponent<RealEngine::Damage>(collider);
 
     if (health && damage && health->invincibilityTime <= 0.0f) {
         if (damage->effect) {
@@ -364,20 +364,20 @@ void takeDamageFromCollider(RealEngine::Registry& registry, RealEngine::Entity c
 }
 
 void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
-    auto* health = registry.get_component<RealEngine::Health>(entity);
+    auto* health = registry.getComponent<RealEngine::Health>(entity);
 
     if (health) {
         health->amount -= health->maxHealth;
     } else {
-        registry.add_component(entity, RealEngine::AutoDestructible{0.0f});
+        registry.addComponent(entity, RealEngine::AutoDestructible{0.0f});
     }
 }
 
 void blockEntity(RealEngine::Registry& registry, RealEngine::Entity collider,
                  RealEngine::Entity entity) {
-    auto* playerCollision   = registry.get_component<RealEngine::Collision>(entity);
-    auto* colliderCollision = registry.get_component<RealEngine::Collision>(collider);
-    auto* entityPosition    = registry.get_component<RealEngine::Position>(entity);
+    auto* playerCollision   = registry.getComponent<RealEngine::Collision>(entity);
+    auto* colliderCollision = registry.getComponent<RealEngine::Collision>(collider);
+    auto* entityPosition    = registry.getComponent<RealEngine::Position>(entity);
 
     if (playerCollision && colliderCollision) {
         sf::FloatRect entityBounds   = playerCollision->bounds;

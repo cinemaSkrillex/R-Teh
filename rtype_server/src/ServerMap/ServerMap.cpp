@@ -43,24 +43,24 @@ void ServerMap::updateLevel(float deltaTime) {
     if (!_isLevelRunning) {
         return;
     }
-    x_level_position += _scrollingSpeed * deltaTime;
+    _xLevelPosition += _scrollingSpeed * deltaTime;
     if (_blockEntities.empty()) {
         return;
     }
 
     for (auto it = _blockEntities.begin(); it != _blockEntities.end();) {
         auto& [id, block] = *it;
-        if (!_registry.is_valid(*block->getEntity())) {
+        if (!_registry.isValid(*block->getEntity())) {
             it = _blockEntities.erase(it);
             continue;
         }
-        auto* position = _registry.get_component<RealEngine::Position>(*block->getEntity());
+        auto* position = _registry.getComponent<RealEngine::Position>(*block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
             std::cout << "Block position: " << position->x << " block: " << *block->getEntity()
                       << std::endl;
             if (position->x < -100) {
-                _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+                _registry.addComponent(block->getEntity(), RealEngine::AutoDestructible{0.0f});
                 it = _blockEntities.erase(it);
             } else {
                 ++it;
@@ -69,12 +69,11 @@ void ServerMap::updateLevel(float deltaTime) {
             ++it;
         }
     }
-    if (!bossAtEnd() && x_level_position >= _endPosition.x) {
+    if (!bossAtEnd() && _xLevelPosition >= _endPosition.x) {
         stopLevel();
-    } else if (bossAtEnd() && _boss.triggered && !_registry.is_valid(*(_boss.bossEntity))) {
+    } else if (bossAtEnd() && _boss.triggered && !_registry.isValid(*(_boss.bossEntity))) {
         stopLevel();
     }
-    // removeDeadBlocks();
 }
 
 std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
@@ -83,14 +82,14 @@ std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
     // }
     std::vector<Map::WaveMob> enemiesToSpawn;
     for (auto& wave : _waves) {
-        if (x_level_position < wave.startPosition.x) {
+        if (_xLevelPosition < wave.startPosition.x) {
             break;
         } else {
             enemiesToSpawn.insert(enemiesToSpawn.end(), wave.mobs.begin(), wave.mobs.end());
             _waves.erase(_waves.begin());
         }
     }
-    if (bossAtEnd() && x_level_position >= _endPosition.x && !_boss.triggered) {
+    if (bossAtEnd() && _xLevelPosition >= _endPosition.x && !_boss.triggered) {
         enemiesToSpawn.push_back(Map::WaveMob{("boss_" + _boss.bossType), _boss.position});
         _boss.triggered = true;
     }
@@ -102,16 +101,16 @@ void ServerMap::unloadLevel() {
     for (auto& [id, block] : _blockEntities) {
         if (block) {
             std::cout << "removing block " << id << std::endl;
-            _registry.add_component(block->getEntity(), RealEngine::AutoDestructible{0.0f});
+            _registry.addComponent(block->getEntity(), RealEngine::AutoDestructible{0.0f});
         }
     }
     _blockEntities.clear();
     if (_boss.bossEntity) {
-        _registry.add_component(_boss.bossEntity, RealEngine::AutoDestructible{0.0f});
+        _registry.addComponent(_boss.bossEntity, RealEngine::AutoDestructible{0.0f});
     }
     _boss.bossEntity = nullptr;
     _scrollingSpeed  = 0.0f;
-    x_level_position = 0.0f;
+    _xLevelPosition  = 0.0f;
     _isLoaded        = false;
 }
 
@@ -138,12 +137,12 @@ void ServerMap::writeJSONFile(const std::string& filepath, const Json::Value& js
 void ServerMap::loadFromJSON(const std::string& filepath) {
     Json::Value root = readJSONFile(filepath);
     try {
-        _map_name = root["map_name"].asString();
+        _mapName = root["map_name"].asString();
         _scrollingSpeed =
             root["scrollingSpeed"]
                 .asFloat();  // if scrollingSpeed is not present, it will be 1.0f (thanks clamping)
         _scrollingSpeed = std::clamp(_scrollingSpeed, 10.0f, 1000.0f);
-        _music_name     = root["music"].asString();
+        _musicName      = root["music"].asString();
         for (const auto& background : root["backgrounds"]) {
             std::string background_str = background["sprite"].asString();
             float       speed          = background["speed"].asFloat();
@@ -238,7 +237,7 @@ void ServerMap::saveToJSON(const std::string& filepath) {
     Json::Value root;
 
     // Save map name
-    _map_name = root["map_name"].asString();
+    _mapName = root["map_name"].asString();
     // Save tiles
     for (const auto& tile : _tiles) {
         Json::Value tileJson;

@@ -12,7 +12,7 @@ namespace rtype {
 static void makeEntitySpawn(RealEngine::Registry& registry, RealEngine::Entity entity,
                             RealEngine::Netvar& currentNetvar, float deltaTime) {
     float cooldown = std::any_cast<float>(currentNetvar.value);
-    auto* position = registry.get_component<RealEngine::Position>(entity);
+    auto* position = registry.getComponent<RealEngine::Position>(entity);
 
     if (cooldown <= 0) {
         if (rand() % 2 == 0) {
@@ -25,26 +25,26 @@ static void makeEntitySpawn(RealEngine::Registry& registry, RealEngine::Entity e
 }
 
 MobSpawnerShip::MobSpawnerShip(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(
-        _entity, RealEngine::Interpolation{
-                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(_entity, RealEngine::Velocity{0, 0, {850.f, 850.f}, 0.5f});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity,
+                          RealEngine::Interpolation{
+                              {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    registry.addComponent(_entity, RealEngine::Velocity{0, 0, {850.f, 850.f}, 0.5f});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("mob_spawner_ship");
-    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
-    registry.add_component(_entity,
-                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                                                 "mob",
-                                                 false,
-                                                 RealEngine::CollisionType::ENEMY,
-                                                 takesDamage});
-    registry.add_component(_entity, RealEngine::AI{rushAndAimTowardsTarget, noBehavior, true});
-    registry.add_component(_entity, RealEngine::Damage{10});
-    registry.add_component(_entity, RealEngine::Health{100, 100});
-    registry.add_component(_entity, RealEngine::Rotation{0.f});
-    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::SpriteSheet{spriteSheet});
+    registry.addComponent(_entity,
+                          RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                                                "mob",
+                                                false,
+                                                RealEngine::CollisionType::ENEMY,
+                                                takesDamage});
+    registry.addComponent(_entity, RealEngine::AI{rushAndAimTowardsTarget, noBehavior, true});
+    registry.addComponent(_entity, RealEngine::Damage{10});
+    registry.addComponent(_entity, RealEngine::Health{100, 100});
+    registry.addComponent(_entity, RealEngine::Rotation{0.f});
+    registry.addComponent(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
+    registry.addComponent(
         _entity,
         RealEngine::NetvarContainer{{
             {"sprite_name", {"string", "sprite_name", std::string("mob_spawner_ship"), nullptr}},

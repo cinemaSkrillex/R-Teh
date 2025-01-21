@@ -48,7 +48,7 @@ enum ComponentList : int {
 
 // Base message structure (common across all message types)
 struct BaseMessage {
-    int  message_type;
+    int  messageType;
     long uuid;
 };
 
@@ -113,7 +113,6 @@ std::array<char, BUFFER_SIZE> serialize(const PlayerUpdateDataMessage& msg);
 
 template <std::size_t BUFFER_SIZE>
 std::array<char, BUFFER_SIZE> serialize(const DestroyEntityMessage& msg);
-
 
 // Helper function to deserialize different message types
 template <std::size_t BUFFER_SIZE>

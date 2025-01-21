@@ -19,29 +19,29 @@
 class UDPClient : public ANetwork<800> {
    public:
     // Constructor
-    UDPClient(asio::io_context& io_context, unsigned short port, const std::string& server_ip,
-              unsigned short server_port);
+    UDPClient(asio::io_context& ioContext, unsigned short port, const std::string& serverIp,
+              unsigned short serverPort);
 
     // Callbacks
     void setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint&)>& callback);
 
     // Send methods
-    void send_unreliable_packet(const std::array<char, 800>& message);
-    void send_reliable_packet(const std::array<char, 800>& message);
+    void sendUnreliablePacket(const std::array<char, 800>& message);
+    void sendReliablePacket(const std::array<char, 800>& message);
 
     // Receive methods
-    std::vector<std::array<char, 800>> get_unreliable_messages_from_endpoint(
+    std::vector<std::array<char, 800>> getUnreliableMessagesFromEndpoint(
         const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::array<char, 800>> get_reliable_messages_from_endpoint(
+    std::vector<std::array<char, 800>> getReliableMessagesFromEndpoint(
         const asio::ip::udp::endpoint& endpoint);
-    std::array<char, 800> get_last_unreliable_packet_data();
-    std::array<char, 800> get_last_reliable_packet_data();
+    std::array<char, 800> getLastUnreliablePacketData();
+    std::array<char, 800> getLastReliablePacketData();
 
     // Miscellaneous methods
-    void send_new_client();
+    void sendNewClient();
 
    private:
-    asio::ip::udp::endpoint _server_endpoint;  // The client's endpoint
+    asio::ip::udp::endpoint _serverEndpoint;  // The client's endpoint
 };
 
 #endif  // UDPCLIENT_HPP

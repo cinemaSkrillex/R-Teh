@@ -9,12 +9,12 @@
 
 namespace rtype {
 
-Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
+Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short clientPort)
     : _clientUDP(clientUDP),
       _deltaTime(0.f),
       _view(sf::Vector2f(VIEW_WIDTH / 2, VIEW_HEIGHT / 2),
             sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
-      _window("SKRILLEX client_port: " + std::to_string(client_port),
+      _window("SKRILLEX clientPort: " + std::to_string(clientPort),
               sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view,
               assetLauncher ? "assets/shaders/display_options.frag"
                             : "../../assets/shaders/display_options.frag"),
@@ -27,7 +27,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _controlSystem(_window),
       _collisionSystem(),
       _aiSystem(),
-      _player_entity(nullptr),
+      _playerEntity(nullptr),
       _rotationSystem(),
       _radiusSystem(),
       _healthSystem(),
@@ -35,67 +35,67 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
-      _game_map(new GameMap(_registry, this)),
+      _gameMap(new GameMap(_registry, this)),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    init_all_game();
-    display_temporary_text("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2}, sf::Color::Yellow,
-                           30);
+    initAllGame();
+    displayTemporaryText("Welcome to R-Teh", {VIEW_WIDTH / 2, VIEW_HEIGHT / 2}, sf::Color::Yellow,
+                         30);
 }
 
 Game::~Game() { std::cout << "Destroying game..." << std::endl; }
 
-void Game::init_all_game() {
-    init_registry();
-    init_controls();
-    init_systems();
+void Game::initAllGame() {
+    initRegistry();
+    initControls();
+    initSystems();
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
         path = "assets/sprites/r_type/";
     }
-    init_level(path + "tiles/lv1", "lvl1");
-    init_level(path + "tiles/lv2", "lvl2");
-    init_textures();
-    set_sprite_opacity();
-    init_sprite_sheets();
-    init_musics();
-    init_sounds();
-    init_fonts();
-    init_screen_limits();
+    initLevel(path + "tiles/lv1", "lvl1");
+    initLevel(path + "tiles/lv2", "lvl2");
+    initTextures();
+    setSpriteOpacity();
+    initSpriteSheets();
+    initMusics();
+    initSounds();
+    initFonts();
+    initScreenLimits();
 
     Player player(_registry, {200, 200}, false);
-    _player_entity = player.getEntity();
-    _playerUI.AssignPlayerToUI(_player_entity);
+    _playerEntity = player.getEntity();
+    _playerUI.AssignPlayerToUI(_playerEntity);
 }
 
-void Game::init_registry() { register_components(); }
+void Game::initRegistry() { registerComponents(); }
 
-void Game::init_controls() {
-    bind_keys();
-    set_action_handlers();
+void Game::initControls() {
+    bindKeys();
+    setActionHandlers();
 }
 
-void Game::init_screen_limits() {
-    std::shared_ptr<RealEngine::Entity> topWall = _registry.spawn_entity();
-    _registry.add_component(
+void Game::initScreenLimits() {
+    std::shared_ptr<RealEngine::Entity> topWall = _registry.spawnEntity();
+    _registry.addComponent(
         topWall, RealEngine::Collision{
                      {0, -20, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
-    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawn_entity();
-    _registry.add_component(
+    std::shared_ptr<RealEngine::Entity> bottomWall = _registry.spawnEntity();
+    _registry.addComponent(
         bottomWall, RealEngine::Collision{
                         {0, 600, 800, 20}, "wall", false, RealEngine::CollisionType::BLOCKING});
-    std::shared_ptr<RealEngine::Entity> leftWall = _registry.spawn_entity();
-    _registry.add_component(
+    std::shared_ptr<RealEngine::Entity> leftWall = _registry.spawnEntity();
+    _registry.addComponent(
         leftWall, RealEngine::Collision{
                       {-20, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
-    std::shared_ptr<RealEngine::Entity> rightWall = _registry.spawn_entity();
-    _registry.add_component(
+    std::shared_ptr<RealEngine::Entity> rightWall = _registry.spawnEntity();
+    _registry.addComponent(
         rightWall, RealEngine::Collision{
                        {800, 0, 20, 600}, "wall", false, RealEngine::CollisionType::BLOCKING});
 }
 
-void Game::init_textures() {
+void Game::initTextures() {
     std::string path = "../../assets/sprites/r_type/";
     if (assetLauncher == true) {
         path = "assets/sprites/r_type/";
@@ -219,89 +219,89 @@ void Game::init_textures() {
     AssetManagerInstance.getSprite("ready_zone")->setOpacity(200);
 }
 
-void Game::init_level(std::string filepath, std::string foldername) {
+void Game::initLevel(std::string filepath, std::string foldername) {
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
     AssetManagerInstance.loadTexturesFromFolder(filepath, foldername, {GAME_SCALE, GAME_SCALE});
 }
 
-void Game::init_systems() {
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+void Game::initSystems() {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _lagCompensationSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _controlSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _aiSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _rotationSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _collisionSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _movementSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _radiusSystem.update(registry);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _healthSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
-        if (_game_map && _game_map->levelRunning()) _parallaxSystem.update(registry, deltaTime);
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
+        if (_gameMap && _gameMap->levelRunning()) _parallaxSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _drawSystem.update(registry, deltaTime);
     });
 
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _destroySystem.update(registry, deltaTime);
     });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _particleSystem.update(registry, deltaTime);
     });
-    _registry.add_system<>([this](RealEngine::Registry& registry, float deltaTime) {
+    _registry.addSystem<>([this](RealEngine::Registry& registry, float deltaTime) {
         _netvarSystem.update(registry, deltaTime);
     });
 }
 
-void Game::register_components() {
-    _registry.register_component<RealEngine::Position>();
-    _registry.register_component<RealEngine::Interpolation>();
-    _registry.register_component<RealEngine::Velocity>();
-    _registry.register_component<RealEngine::Health>();
-    _registry.register_component<RealEngine::SpriteComponent>();
-    _registry.register_component<RealEngine::SpriteSheet>();
-    _registry.register_component<RealEngine::Drawable>();
-    _registry.register_component<RealEngine::Collision>();
-    _registry.register_component<RealEngine::Controllable>();
-    _registry.register_component<RealEngine::Acceleration>();
-    _registry.register_component<RealEngine::AI>();
-    _registry.register_component<RealEngine::Rotation>();
-    _registry.register_component<RealEngine::Radius>();
-    _registry.register_component<RealEngine::Target>();
-    _registry.register_component<RealEngine::AutoDestructible>();
-    _registry.register_component<RealEngine::Damage>();
-    _registry.register_component<RealEngine::Parallax>();
-    _registry.register_component<RealEngine::ParticleEmitter>();
-    _registry.register_component<RealEngine::Particle>();
-    _registry.register_component<RealEngine::Netvar>();
-    _registry.register_component<RealEngine::NetvarContainer>();
-    _registry.register_component<RealEngine::Score>();
+void Game::registerComponents() {
+    _registry.registerComponent<RealEngine::Position>();
+    _registry.registerComponent<RealEngine::Interpolation>();
+    _registry.registerComponent<RealEngine::Velocity>();
+    _registry.registerComponent<RealEngine::Health>();
+    _registry.registerComponent<RealEngine::SpriteComponent>();
+    _registry.registerComponent<RealEngine::SpriteSheet>();
+    _registry.registerComponent<RealEngine::Drawable>();
+    _registry.registerComponent<RealEngine::Collision>();
+    _registry.registerComponent<RealEngine::Controllable>();
+    _registry.registerComponent<RealEngine::Acceleration>();
+    _registry.registerComponent<RealEngine::AI>();
+    _registry.registerComponent<RealEngine::Rotation>();
+    _registry.registerComponent<RealEngine::Radius>();
+    _registry.registerComponent<RealEngine::Target>();
+    _registry.registerComponent<RealEngine::AutoDestructible>();
+    _registry.registerComponent<RealEngine::Damage>();
+    _registry.registerComponent<RealEngine::Parallax>();
+    _registry.registerComponent<RealEngine::ParticleEmitter>();
+    _registry.registerComponent<RealEngine::Particle>();
+    _registry.registerComponent<RealEngine::Netvar>();
+    _registry.registerComponent<RealEngine::NetvarContainer>();
+    _registry.registerComponent<RealEngine::Score>();
 }
 
-void Game::bind_keys() {
+void Game::bindKeys() {
     _controlSystem.bindKey(sf::Keyboard::Z, RealEngine::Action::Up);
     _controlSystem.bindKey(sf::Keyboard::S, RealEngine::Action::Down);
     _controlSystem.bindKey(sf::Keyboard::Q, RealEngine::Action::Left);
@@ -313,7 +313,7 @@ void Game::bind_keys() {
     _controlSystem.bindKey(sf::Keyboard::Space, RealEngine::Action::Action1, true);
 }
 
-void Game::set_action_handlers() {
+void Game::setActionHandlers() {
     _controlSystem.setActionHandler(RealEngine::Action::Up,
                                     std::bind(&rtype::Controls::moveUp, &_controls,
                                               std::placeholders::_1, std::placeholders::_2));
@@ -337,13 +337,13 @@ void Game::set_action_handlers() {
                                                      std::placeholders::_1, std::placeholders::_2));
 }
 
-void Game::set_sprite_opacity() {
+void Game::setSpriteOpacity() {
     RealEngine::AssetManager::getInstance().getSprite("spaceship_other_up")->setOpacity(90);
     RealEngine::AssetManager::getInstance().getSprite("spaceship_other_idle")->setOpacity(90);
     RealEngine::AssetManager::getInstance().getSprite("spaceship_other_down")->setOpacity(90);
 }
 
-void Game::init_sprite_sheets() {
+void Game::initSpriteSheets() {
     // load mid bullet sprite sheet
     std::unordered_map<std::string, RealEngine::Sprite> midBulletSheet;
     RealEngine::Sprite                                  midBulletSprite(
@@ -538,7 +538,7 @@ void Game::init_sprite_sheets() {
                                                             {8, 8}, sf::Clock());
 }
 
-void Game::init_musics() {
+void Game::initMusics() {
     std::string path = "../../assets/musics/";
     if (assetLauncher == true) {
         path = "assets/musics/";
@@ -558,7 +558,7 @@ void Game::init_musics() {
     AssetManagerInstance.getMusic("waiting_room")->setVolume(30);
 }
 
-void Game::init_sounds() {
+void Game::initSounds() {
     std::string path = "../../assets/sounds/";
     if (assetLauncher == true) {
         path = "assets/sounds/";
@@ -575,7 +575,7 @@ void Game::init_sounds() {
     return;
 }
 
-void Game::init_fonts() {
+void Game::initFonts() {
     std::string path = "../../assets/fonts/";
     if (assetLauncher == true) {
         path = "assets/fonts/";

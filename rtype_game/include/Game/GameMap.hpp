@@ -37,14 +37,14 @@ class GameMap {
                        RealEngine::ParallaxSystem&         parallaxSystem);
     void synchroniseLevelBlockEntities();
     void removeDeadBlocks();
-    void setXLevelPosition(float xLevelPosition) { x_level_position = xLevelPosition; }
+    void setXLevelPosition(float xLevelPosition) { _xLevelPosition = xLevelPosition; }
     void setScrollingSpeed(float scrollingSpeed) { _scrollingSpeed = scrollingSpeed; }
     void setIsMapLoaded(bool isMapLoaded) { _isMapLoaded = isMapLoaded; }
     void setLevelRunning(bool levelRunning) { _levelRunning = levelRunning; }
     void setMusicName(const std::string& musicName) {
         std::cout << "Setting music name: " << musicName << std::endl;
-        _music_name = musicName;
-        std::cout << "Music name set: " << _music_name << std::endl;
+        _musicName = musicName;
+        std::cout << "Music name set: " << _musicName << std::endl;
     }
     std::vector<std::pair<long int, std::shared_ptr<RealEngine::Entity>>>& getBlockEntities() {
         return _blockEntities;
@@ -53,18 +53,18 @@ class GameMap {
         return _backgroundEntities;
     }
     float       getScrollingSpeed() const { return _scrollingSpeed; }
-    float       getXLevelPosition() const { return x_level_position; }
+    float       getXLevelPosition() const { return _xLevelPosition; }
     bool        isMapLoaded() const { return _isMapLoaded; }
     bool        levelRunning() const { return _levelRunning; }
-    std::string getMusicName() const { return _music_name; }
+    std::string getMusicName() const { return _musicName; }
 
    private:
     RealEngine::Registry&                                                 _registry;
     Game*                                                                 _game;
-    std::string                                                           _map_name;
-    std::string                                                           _music_name      = "";
-    float                                                                 _scrollingSpeed  = 0.0f;
-    float                                                                 x_level_position = 0.0f;
+    std::string                                                           _mapName;
+    std::string                                                           _musicName      = "";
+    float                                                                 _scrollingSpeed = 0.0f;
+    float                                                                 _xLevelPosition = 0.0f;
     std::vector<std::pair<long int, std::shared_ptr<RealEngine::Entity>>> _blockEntities;
     std::vector<std::shared_ptr<RealEngine::Entity>>                      _backgroundEntities;
     bool                                                                  _levelRunning;

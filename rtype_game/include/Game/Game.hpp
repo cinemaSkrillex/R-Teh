@@ -22,7 +22,6 @@
 #include "Game/PlayerUI.hpp"
 #include "Launcher/LaunchGame.hpp"
 #include "Log.hpp"
-#include "PlayerUtils.hpp"
 #include "shared/RtypeServerProtocol.hpp"
 
 namespace rtype {
@@ -36,7 +35,7 @@ struct EntityInfo {
 #define LaunchGameWithoutArgs false
 class Game {
    public:
-    Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
+    Game(std::shared_ptr<UDPClient> clientUDP, unsigned short clientPort);
     ~Game();
     void                                run();
     void                                setDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
@@ -51,24 +50,24 @@ class Game {
 
    private:
     // initialization functions (src/Game/GameInit.cpp)
-    void init_all_game();
-    void init_registry();
-    void init_controls();
-    void init_systems();
-    void init_textures();
-    void init_sprite_sheets();
-    void init_musics();
-    void init_sounds();
-    void init_fonts();
-    void init_screen_limits();
+    void initAllGame();
+    void initRegistry();
+    void initControls();
+    void initSystems();
+    void initTextures();
+    void initSpriteSheets();
+    void initMusics();
+    void initSounds();
+    void initFonts();
+    void initScreenLimits();
 
-    void init_level(std::string filepath, std::string foldername);
+    void initLevel(std::string filepath, std::string foldername);
 
-    void register_components();
-    void bind_keys();
-    void set_action_handlers();
-    void set_sprite_opacity();
-    void display_temporary_text(std::string text, sf::Vector2f position, sf::Color color, int size);
+    void registerComponents();
+    void bindKeys();
+    void setActionHandlers();
+    void setSpriteOpacity();
+    void displayTemporaryText(std::string text, sf::Vector2f position, sf::Color color, int size);
     void handleChangingScene(RTypeProtocol::ChangingSceneMessage parsedPacket);
     // GameSignals
     void               handleNewClient(RTypeProtocol::PlayerMoveMessage parsedPacket);
@@ -107,10 +106,10 @@ class Game {
     RealEngine::NetvarSystem          _netvarSystem;
     rtype::Controls                   _controls;
 
-    std::shared_ptr<RealEngine::Entity>                               _player_entity;
+    std::shared_ptr<RealEngine::Entity>                               _playerEntity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::unordered_map<long int, EntityInfo>                          _entities;
-    GameMap*                                                          _game_map;
+    GameMap*                                                          _gameMap;
     std::vector<std::shared_ptr<RealEngine::TemporaryText>>           _temporaryTexts;
 
     long int                              _localPlayerUUID;

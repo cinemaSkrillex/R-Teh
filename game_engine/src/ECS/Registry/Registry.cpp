@@ -9,37 +9,36 @@
 
 namespace RealEngine {
 
-void Registry::remove_entity(Entity const& entity) {
-    if (!_entity_manager.is_valid(entity)) {
-        throw std::invalid_argument("remove_entity: Invalid entity");
+void Registry::removeEntity(Entity const& entity) {
+    if (!_entityManager.isValid(entity)) {
+        throw std::invalid_argument("removeEntity: Invalid entity");
     }
-    for (auto& erase_function : _erase_functions) {
+    for (auto& erase_function : _eraseFunctions) {
         erase_function(*this, entity);
     }
-    _entity_manager.kill_entity(entity);
+    _entityManager.killEntity(entity);
 }
 
-std::shared_ptr<Entity> Registry::spawn_entity() { return _entity_manager.spawn_entity(); }
+std::shared_ptr<Entity> Registry::spawnEntity() { return _entityManager.spawnEntity(); }
 
-std::shared_ptr<Entity> Registry::entity_from_index(std::size_t idx) {
-    if (idx >= _entity_manager.size()) {
-        throw std::out_of_range("entity_from_index: Entity index out of range");
+std::shared_ptr<Entity> Registry::entityFromIndex(std::size_t idx) {
+    if (idx >= _entityManager.size()) {
+        throw std::out_of_range("entityFromIndex: Entity index out of range");
     }
-    RealEngine::Entity e      = _entity_manager.entity_from_index(idx);
+    RealEngine::Entity e      = _entityManager.entityFromIndex(idx);
     auto               entity = std::make_shared<RealEngine::Entity>(e);
     if (!entity) {
-        throw std::runtime_error("entity_from_index: Invalid entity");
+        throw std::runtime_error("entityFromIndex: Invalid entity");
     }
     return entity;
 }
 
-void Registry::kill_entity(Entity const& e) {
-    if (!_entity_manager.is_valid(e)) {
-        throw std::invalid_argument("kill_entity: Invalid entity");
+void Registry::killEntity(Entity const& e) {
+    if (!_entityManager.isValid(e)) {
+        throw std::invalid_argument("killEntity: Invalid entity");
     }
-    // _entity_manager.kill_entity(e);
 
-    remove_entity(e);
+    removeEntity(e);
 }
 
 void Registry::run_systems(float deltaTime) {
@@ -48,6 +47,6 @@ void Registry::run_systems(float deltaTime) {
     }
 }
 
-bool Registry::is_valid(Entity const& e) const { return _entity_manager.is_valid(e); }
+bool Registry::isValid(Entity const& e) const { return _entityManager.isValid(e); }
 
 }  // namespace RealEngine

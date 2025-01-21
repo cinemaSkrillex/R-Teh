@@ -17,17 +17,17 @@
 #include "Scene.hpp"
 #include "ServerConfig.hpp"
 
-// _scene_manager.registerScene(
+// _sceneManager.registerScene(
 //     RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
 //         // Initialization logic for GAME scene
 //         // works but right now we don't use it
 //         std::cout << "Initializing GAME scene" << std::endl;
-//         auto        gameMap = _game_instance->getMap();
+//         auto        gameMap = _gameInstance->getMap();
 //         std::string path    = "../../assets/maps/";
 //         gameMap->loadFromJSON(path + "level_1.json");
 //         auto mapInitializer =
-//             std::make_shared<MapInitializer>(_game_instance, _server, _server_config);
-//         auto mobInitializer = std::make_shared<MobInitializer>(_game_instance, _server);
+//             std::make_shared<MapInitializer>(_gameInstance, _server, _serverConfig);
+//         auto mobInitializer = std::make_shared<MobInitializer>(_gameInstance, _server);
 
 //         startAndBroadcastLevel();
 //         for (auto& client : _server->getClients()) {
@@ -56,7 +56,7 @@ class GameScene : public Scene {
         auto mapInitializer =
             std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
 
-        _gameInstance->start_level();
+        _gameInstance->startLevel();
         _server->BroadcastStartLevel();
 
         for (auto& client : _UdpServer->getClients()) {

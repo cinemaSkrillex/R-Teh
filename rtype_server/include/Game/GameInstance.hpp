@@ -18,16 +18,14 @@
 class GameInstance {
    public:
     GameInstance(bool serverVision = false);
-    void init_components();
-    void init_systems();
-    void init_textures();
-    void init_sprite_sheets();
-    void init_screen_limits();
-    void start_level();
+    void initComponents();
+    void initSystems();
+    void initTextures();
+    void initSpriteSheets();
+    void initScreenLimits();
+    void startLevel();
 
-    void init_level(std::string filepath, std::string foldername);
-
-    void handleSignal(const std::string& message);
+    void initLevel(std::string filepath, std::string foldername);
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position);
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);
@@ -48,10 +46,10 @@ class GameInstance {
 
     std::vector<std::shared_ptr<RealEngine::Entity>>& getSimpleMobs() { return _enemies; }
     std::shared_ptr<ServerMap>                        getMap() {
-        if (!_game_map) {
-            std::cerr << "Error: _game_map is null" << std::endl;
+        if (!_gameMap) {
+            std::cerr << "getMap error: _gameMap is null" << std::endl;
         }
-        return _game_map;
+        return _gameMap;
     }
 
    private:
@@ -75,5 +73,5 @@ class GameInstance {
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _players;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _enemies;
     std::vector<std::shared_ptr<RealEngine::Entity>>                  _bullets;
-    std::shared_ptr<ServerMap>                                        _game_map;
+    std::shared_ptr<ServerMap>                                        _gameMap;
 };

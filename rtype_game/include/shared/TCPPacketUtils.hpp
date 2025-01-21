@@ -23,17 +23,17 @@ enum class TCPFlags {
 };
 
 struct TCPPacket {
-    int                     sequence_nb;
-    int                     start_sequence_nb;
-    int                     end_sequence_nb;
-    int                     packet_size;
+    int                     sequenceNb;
+    int                     startSequenceNb;
+    int                     endSequenceNb;
+    int                     packetSize;
     TCPFlags                flag;
     asio::ip::tcp::endpoint endpoint;
     std::vector<char>       data;
 
     bool operator==(const TCPPacket& other) const {
-        return sequence_nb == other.sequence_nb && start_sequence_nb == other.start_sequence_nb &&
-               end_sequence_nb == other.end_sequence_nb && packet_size == other.packet_size &&
+        return sequenceNb == other.sequenceNb && startSequenceNb == other.startSequenceNb &&
+               endSequenceNb == other.endSequenceNb && packetSize == other.packetSize &&
                flag == other.flag && data == other.data && endpoint == other.endpoint;
     }
 };
@@ -42,47 +42,45 @@ namespace std {
 template <>
 struct hash<TCPPacket> {
     std::size_t operator()(const TCPPacket& pkt) const {
-        return ((std::hash<int>()(pkt.sequence_nb) ^
-                 (std::hash<int>()(pkt.start_sequence_nb) << 1)) >>
+        return ((std::hash<int>()(pkt.sequenceNb) ^ (std::hash<int>()(pkt.startSequenceNb) << 1)) >>
                 1) ^
-               (std::hash<int>()(pkt.end_sequence_nb) << 1);
+               (std::hash<int>()(pkt.endSequenceNb) << 1);
     }
 };
 }  // namespace std
 
 inline std::vector<char> serialize(const TCPPacket& pkt) {
-    std::string endpoint_address = pkt.endpoint.address().to_string();
-    uint16_t    endpoint_port    = pkt.endpoint.port();
+    std::string endpointAddress = pkt.endpoint.address().to_string();
+    uint16_t    endpointPort    = pkt.endpoint.port();
 
-    std::size_t total_size = sizeof(pkt.sequence_nb) + sizeof(pkt.start_sequence_nb) +
-                             sizeof(pkt.end_sequence_nb) + sizeof(pkt.packet_size) +
-                             sizeof(pkt.flag) + sizeof(uint16_t) + sizeof(std::size_t) +
-                             endpoint_address.size() + pkt.data.size();
+    std::size_t totalSize = sizeof(pkt.sequenceNb) + sizeof(pkt.startSequenceNb) +
+                            sizeof(pkt.endSequenceNb) + sizeof(pkt.packetSize) + sizeof(pkt.flag) +
+                            sizeof(uint16_t) + sizeof(std::size_t) + endpointAddress.size() +
+                            pkt.data.size();
 
-    std::vector<char> buffer(total_size);
+    std::vector<char> buffer(totalSize);
     auto              it = buffer.begin();
 
-    // Copy sequence_nb
-    std::copy(reinterpret_cast<const char*>(&pkt.sequence_nb),
-              reinterpret_cast<const char*>(&pkt.sequence_nb) + sizeof(pkt.sequence_nb), it);
-    it += sizeof(pkt.sequence_nb);
+    // Copy sequenceNb
+    std::copy(reinterpret_cast<const char*>(&pkt.sequenceNb),
+              reinterpret_cast<const char*>(&pkt.sequenceNb) + sizeof(pkt.sequenceNb), it);
+    it += sizeof(pkt.sequenceNb);
 
-    // Copy start_sequence_nb
-    std::copy(reinterpret_cast<const char*>(&pkt.start_sequence_nb),
-              reinterpret_cast<const char*>(&pkt.start_sequence_nb) + sizeof(pkt.start_sequence_nb),
+    // Copy startSequenceNb
+    std::copy(reinterpret_cast<const char*>(&pkt.startSequenceNb),
+              reinterpret_cast<const char*>(&pkt.startSequenceNb) + sizeof(pkt.startSequenceNb),
               it);
-    it += sizeof(pkt.start_sequence_nb);
+    it += sizeof(pkt.startSequenceNb);
 
-    // Copy end_sequence_nb
-    std::copy(reinterpret_cast<const char*>(&pkt.end_sequence_nb),
-              reinterpret_cast<const char*>(&pkt.end_sequence_nb) + sizeof(pkt.end_sequence_nb),
-              it);
-    it += sizeof(pkt.end_sequence_nb);
+    // Copy endSequenceNb
+    std::copy(reinterpret_cast<const char*>(&pkt.endSequenceNb),
+              reinterpret_cast<const char*>(&pkt.endSequenceNb) + sizeof(pkt.endSequenceNb), it);
+    it += sizeof(pkt.endSequenceNb);
 
-    // Copy packet_size
-    std::copy(reinterpret_cast<const char*>(&pkt.packet_size),
-              reinterpret_cast<const char*>(&pkt.packet_size) + sizeof(pkt.packet_size), it);
-    it += sizeof(pkt.packet_size);
+    // Copy packetSize
+    std::copy(reinterpret_cast<const char*>(&pkt.packetSize),
+              reinterpret_cast<const char*>(&pkt.packetSize) + sizeof(pkt.packetSize), it);
+    it += sizeof(pkt.packetSize);
 
     // Copy flag
     int flag = static_cast<int>(pkt.flag);
@@ -91,18 +89,18 @@ inline std::vector<char> serialize(const TCPPacket& pkt) {
     it += sizeof(flag);
 
     // Copy endpoint address length and address
-    std::size_t address_length = endpoint_address.size();
-    std::copy(reinterpret_cast<const char*>(&address_length),
-              reinterpret_cast<const char*>(&address_length) + sizeof(address_length), it);
-    it += sizeof(address_length);
+    std::size_t addressLength = endpointAddress.size();
+    std::copy(reinterpret_cast<const char*>(&addressLength),
+              reinterpret_cast<const char*>(&addressLength) + sizeof(addressLength), it);
+    it += sizeof(addressLength);
 
-    std::copy(endpoint_address.begin(), endpoint_address.end(), it);
-    it += endpoint_address.size();
+    std::copy(endpointAddress.begin(), endpointAddress.end(), it);
+    it += endpointAddress.size();
 
     // Copy endpoint port
-    std::copy(reinterpret_cast<const char*>(&endpoint_port),
-              reinterpret_cast<const char*>(&endpoint_port) + sizeof(endpoint_port), it);
-    it += sizeof(endpoint_port);
+    std::copy(reinterpret_cast<const char*>(&endpointPort),
+              reinterpret_cast<const char*>(&endpointPort) + sizeof(endpointPort), it);
+    it += sizeof(endpointPort);
 
     // Copy data
     std::copy(pkt.data.begin(), pkt.data.end(), it);
@@ -114,22 +112,21 @@ inline TCPPacket deserialize(const std::vector<char>& buffer) {
     TCPPacket pkt;
     auto      it = buffer.begin();
 
-    // Extract sequence_nb
-    std::copy(it, it + sizeof(pkt.sequence_nb), reinterpret_cast<char*>(&pkt.sequence_nb));
-    it += sizeof(pkt.sequence_nb);
+    // Extract sequenceNb
+    std::copy(it, it + sizeof(pkt.sequenceNb), reinterpret_cast<char*>(&pkt.sequenceNb));
+    it += sizeof(pkt.sequenceNb);
 
-    // Extract start_sequence_nb
-    std::copy(it, it + sizeof(pkt.start_sequence_nb),
-              reinterpret_cast<char*>(&pkt.start_sequence_nb));
-    it += sizeof(pkt.start_sequence_nb);
+    // Extract startSequenceNb
+    std::copy(it, it + sizeof(pkt.startSequenceNb), reinterpret_cast<char*>(&pkt.startSequenceNb));
+    it += sizeof(pkt.startSequenceNb);
 
-    // Extract end_sequence_nb
-    std::copy(it, it + sizeof(pkt.end_sequence_nb), reinterpret_cast<char*>(&pkt.end_sequence_nb));
-    it += sizeof(pkt.end_sequence_nb);
+    // Extract endSequenceNb
+    std::copy(it, it + sizeof(pkt.endSequenceNb), reinterpret_cast<char*>(&pkt.endSequenceNb));
+    it += sizeof(pkt.endSequenceNb);
 
-    // Extract packet_size
-    std::copy(it, it + sizeof(pkt.packet_size), reinterpret_cast<char*>(&pkt.packet_size));
-    it += sizeof(pkt.packet_size);
+    // Extract packetSize
+    std::copy(it, it + sizeof(pkt.packetSize), reinterpret_cast<char*>(&pkt.packetSize));
+    it += sizeof(pkt.packetSize);
 
     // Extract flag
     int flag;
@@ -138,20 +135,20 @@ inline TCPPacket deserialize(const std::vector<char>& buffer) {
     it += sizeof(flag);
 
     // Extract endpoint address length and address
-    std::size_t address_length;
-    std::copy(it, it + sizeof(address_length), reinterpret_cast<char*>(&address_length));
-    it += sizeof(address_length);
+    std::size_t addressLength;
+    std::copy(it, it + sizeof(addressLength), reinterpret_cast<char*>(&addressLength));
+    it += sizeof(addressLength);
 
-    std::string endpoint_address(it, it + address_length);
-    it += address_length;
+    std::string endpointAddress(it, it + addressLength);
+    it += addressLength;
 
     // Extract endpoint port
-    uint16_t endpoint_port;
-    std::copy(it, it + sizeof(endpoint_port), reinterpret_cast<char*>(&endpoint_port));
-    it += sizeof(endpoint_port);
+    uint16_t endpointPort;
+    std::copy(it, it + sizeof(endpointPort), reinterpret_cast<char*>(&endpointPort));
+    it += sizeof(endpointPort);
 
     pkt.endpoint =
-        asio::ip::tcp::endpoint(asio::ip::address::from_string(endpoint_address), endpoint_port);
+        asio::ip::tcp::endpoint(asio::ip::address::from_string(endpointAddress), endpointPort);
 
     // Extract data
     pkt.data.assign(it, buffer.end());

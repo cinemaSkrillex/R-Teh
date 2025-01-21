@@ -18,14 +18,14 @@ void TargetRadiusSystem::update(Registry& registry) {
         return;
     }
     for (auto entity : radius_entities) {
-        auto* entity_position = registry.get_component<Position>(entity);
-        auto* entity_radius   = registry.get_component<TargetRadius>(entity);
-        auto* entity_target   = registry.get_component<Target>(entity);
+        auto* entity_position = registry.getComponent<Position>(entity);
+        auto* entity_radius   = registry.getComponent<TargetRadius>(entity);
+        auto* entity_target   = registry.getComponent<Target>(entity);
 
         if (entity_target && (entity_target->target && entity_radius->focusOnTarget)) continue;
         players_targets.clear();
         for (auto player : player_entities) {
-            auto* player_position = registry.get_component<Position>(player);
+            auto* player_position = registry.getComponent<Position>(player);
             float distance        = sqrt(pow(player_position->x - entity_position->x, 2) +
                                          pow(player_position->y - entity_position->y, 2));
             if (distance < entity_radius->size) {
@@ -33,14 +33,14 @@ void TargetRadiusSystem::update(Registry& registry) {
             }
         }
         if (players_targets.size() == 1) {
-            registry.add_component(entity, Target{std::make_shared<Entity>(players_targets[0])});
+            registry.addComponent(entity, Target{std::make_shared<Entity>(players_targets[0])});
         } else if (!players_targets.empty()) {
             std::srand(std::time(nullptr));
             int random_index = std::rand() % players_targets.size();
-            registry.add_component(entity,
-                                   Target{std::make_shared<Entity>(players_targets[random_index])});
+            registry.addComponent(entity,
+                                  Target{std::make_shared<Entity>(players_targets[random_index])});
         } else if (players_targets.empty() && (entity_target && !entity_radius->focusOnTarget)) {
-            registry.remove_component<Target>(entity);
+            registry.removeComponent<Target>(entity);
         }
     }
 }

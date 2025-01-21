@@ -82,7 +82,7 @@ Launch the server:
 
 Launch the client:
 ```bash
-./build/default/rtype_game/rtype [SERVER_IP] [SERVER_PORT] [CLIENT_PORT]
+./build/default/rtype_game/rtype [serverIp] [SERVER_PORT] [clientPort]
 ```
 
 ## How to run the tests 🧪
@@ -108,14 +108,8 @@ Launch the client:
 
 Our documentation is hosted on github.io. You can find it here [website link](https://cinemaskrillex.github.io/R-Teh/).
 
-## Example of the project 📸
+## Images 📸
 
-## TODO : IMAGE
+![Rtype-game](<documentation/images/rtype_readme_images.png>)
 
 ## Have fun! 🎉
-
-
-## TODO : LICENCE
-
-
-## TODO : HOW TO CONTRIBUTE

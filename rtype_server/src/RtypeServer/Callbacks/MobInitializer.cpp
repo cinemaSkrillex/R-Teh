@@ -11,15 +11,15 @@ void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
     for (const auto& mob : _gameInstance->getSimpleMobs()) {
         if (!mob) continue;
         auto  registry     = _gameInstance->getRegistry();
-        auto* position     = registry->get_component<RealEngine::Position>(mob);
-        auto* destructible = registry->get_component<RealEngine::AutoDestructible>(mob);
-        auto* velocity     = registry->get_component<RealEngine::Velocity>(mob);
-        auto* rotation     = registry->get_component<RealEngine::Rotation>(mob);
-        auto* collision    = registry->get_component<RealEngine::Collision>(mob);
-        auto* drawable     = registry->get_component<RealEngine::Drawable>(mob);
-        auto* container    = registry->get_component<RealEngine::NetvarContainer>(mob);
-        auto* sprite       = registry->get_component<RealEngine::SpriteComponent>(mob);
-        auto* spriteSheet  = registry->get_component<RealEngine::SpriteSheet>(mob);
+        auto* position     = registry->getComponent<RealEngine::Position>(mob);
+        auto* destructible = registry->getComponent<RealEngine::AutoDestructible>(mob);
+        auto* velocity     = registry->getComponent<RealEngine::Velocity>(mob);
+        auto* rotation     = registry->getComponent<RealEngine::Rotation>(mob);
+        auto* collision    = registry->getComponent<RealEngine::Collision>(mob);
+        auto* drawable     = registry->getComponent<RealEngine::Drawable>(mob);
+        auto* container    = registry->getComponent<RealEngine::NetvarContainer>(mob);
+        auto* sprite       = registry->getComponent<RealEngine::SpriteComponent>(mob);
+        auto* spriteSheet  = registry->getComponent<RealEngine::SpriteSheet>(mob);
 
         if (!container) {
             std::cerr << "Error: mob does not have a NetvarContainer component" << std::endl;
@@ -31,8 +31,8 @@ void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
         }
 
         RTypeProtocol::NewEntityMessage eventMessage;
-        eventMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-        eventMessage.uuid         = *mob;
+        eventMessage.messageType = RTypeProtocol::MessageType::NEW_ENTITY;
+        eventMessage.uuid        = *mob;
 
         // Serialize position and velocity component
         addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::POSITION, *position);
@@ -78,6 +78,6 @@ void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
         }
 
         std::array<char, 800> serializedEventMessage = RTypeProtocol::serialize<800>(eventMessage);
-        _UdpServer->send_reliable_packet(serializedEventMessage, sender);
+        _UdpServer->sendReliablePacket(serializedEventMessage, sender);
     }
 }

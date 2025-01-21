@@ -19,31 +19,31 @@ class Log {
         std::ofstream create_file(filename, std::ios::out);
         create_file.close();
 
-        log_file.open(filename, std::ios::app);
-        if (!log_file.is_open()) {
+        _log_file.open(filename, std::ios::app);
+        if (!_log_file.is_open()) {
             throw std::runtime_error("Unable to open log file: " + filename);
         }
     }
 
     ~Log() {
-        if (log_file.is_open()) {
-            log_file.close();
+        if (_log_file.is_open()) {
+            _log_file.close();
         }
     }
 
     void log(const std::string& message) {
-        std::lock_guard<std::mutex> lock(log_mutex);
-        log_file << message << std::endl;
+        std::lock_guard<std::mutex> lock(_log_mutex);
+        _log_file << message << std::endl;
     }
 
     void log_with_timestamp(const std::string& message) {
-        std::lock_guard<std::mutex> lock(log_mutex);
-        log_file << "[" << current_time() << "] " << message << std::endl;
+        std::lock_guard<std::mutex> lock(_log_mutex);
+        _log_file << "[" << current_time() << "] " << message << std::endl;
     }
 
    private:
-    std::ofstream log_file;
-    std::mutex    log_mutex;
+    std::ofstream _log_file;
+    std::mutex    _log_mutex;
 
     std::string current_time() {
         std::time_t now = std::time(nullptr);

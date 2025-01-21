@@ -106,7 +106,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const MapMessage& msg) {
 
     // Serialize other fields
     writeToBuffer(offset, msg.scrollingSpeed);
-    writeToBuffer(offset, msg.x_level_position);
+    writeToBuffer(offset, msg._xLevelPosition);
     writeToBuffer(offset, msg.isLoaded);
     writeToBuffer(offset, msg.isLevelRunning);
     writeToBuffer(offset, msg.server_tick);
@@ -138,7 +138,7 @@ RTypeProtocol::MapMessage RTypeProtocol::deserializeMapMessage(
 
     // Deserialize other fields
     readFromBuffer(offset, msg.scrollingSpeed);
-    readFromBuffer(offset, msg.x_level_position);
+    readFromBuffer(offset, msg._xLevelPosition);
     readFromBuffer(offset, msg.isLoaded);
     readFromBuffer(offset, msg.isLevelRunning);
     readFromBuffer(offset, msg.server_tick);
@@ -208,7 +208,7 @@ std::array<char, BUFFER_SIZE> RTypeProtocol::serialize(const SynchronizeMessage&
     char*                         it     = buffer.data();
 
     // Serialize base message fields
-    writeToBuffer(it, msg.message_type);
+    writeToBuffer(it, msg.messageType);
     writeToBuffer(it, msg.uuid);
 
     // Serialize specific fields
@@ -353,7 +353,7 @@ RTypeProtocol::SynchronizeMessage RTypeProtocol::deserializeSynchronize(
     const char*        it  = buffer.data();
 
     // Deserialize base message fields
-    readFromBuffer(it, msg.message_type);
+    readFromBuffer(it, msg.messageType);
     readFromBuffer(it, msg.uuid);
 
     // Deserialize specific fields

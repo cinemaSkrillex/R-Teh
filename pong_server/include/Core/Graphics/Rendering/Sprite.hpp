@@ -23,7 +23,7 @@ class Sprite : public IRender {
     void                         setScale(float x, float y) override;
     void                         setRotation(float angle) override;
     void                         rotate(float angle);
-    void                         setTextureRect(int start_x, int start_y, int width, int height);
+    void                         setTextureRect(int startX, int startY, int width, int height);
     void                         setSmooth(bool smooth);
     void                         setColor(sf::Color color);
     void                         flip(bool invert);

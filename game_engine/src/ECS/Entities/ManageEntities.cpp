@@ -11,35 +11,35 @@
 
 namespace RealEngine {
 
-std::shared_ptr<Entity> ManageEntities::spawn_entity() {
-    if (!_dead_entities.empty()) {
-        Entity entity = _dead_entities.back();
-        _dead_entities.pop_back();
+std::shared_ptr<Entity> ManageEntities::spawnEntity() {
+    if (!_deadEntities.empty()) {
+        Entity entity = _deadEntities.back();
+        _deadEntities.pop_back();
         return std::make_shared<Entity>(entity);
     } else {
-        return std::make_shared<Entity>(Entity{_next_entity++});
+        return std::make_shared<Entity>(Entity{_nextEntity++});
     }
 }
 
 // we don't check for the validity of the index here, because we do it already in the Registry.
 
-Entity ManageEntities::entity_from_index(std::size_t idx) { return Entity{idx}; }
+Entity ManageEntities::entityFromIndex(std::size_t idx) { return Entity{idx}; }
 
-void ManageEntities::kill_entity(Entity const& e) {
-    if (e >= _next_entity) {
-        throw std::invalid_argument("manageEntities: kill_entity: Invalid entity");
+void ManageEntities::killEntity(Entity const& e) {
+    if (e >= _nextEntity) {
+        throw std::invalid_argument("manageEntities: killEntity: Invalid entity");
     }
-    _dead_entities.push_back(e);
+    _deadEntities.push_back(e);
 }
 
-bool ManageEntities::is_valid(Entity const& e) const {
+bool ManageEntities::isValid(Entity const& e) const {
     if (&e == nullptr) {
         // Handle the case where the entity is invalid.
         return false;
     }
-    return e < _next_entity &&
-           std::find(_dead_entities.begin(), _dead_entities.end(), e) == _dead_entities.end();
+    return e < _nextEntity &&
+           std::find(_deadEntities.begin(), _deadEntities.end(), e) == _deadEntities.end();
 }
 
-std::size_t ManageEntities::size() const { return _next_entity; }
+std::size_t ManageEntities::size() const { return _nextEntity; }
 }  // namespace RealEngine

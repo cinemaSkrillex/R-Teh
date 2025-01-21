@@ -47,7 +47,7 @@ void DrawSystem::updateParticles(Registry& registry, float deltaTime) {
     auto particleEmitters = registry.view<ParticleEmitter>();
 
     for (auto entity : particleEmitters) {
-        auto* emitter = registry.get_component<ParticleEmitter>(entity);
+        auto* emitter = registry.getComponent<ParticleEmitter>(entity);
         for (const auto& particle : emitter->particles) {
             sf::CircleShape shape(particle.size);
             shape.setPosition(particle.position);
@@ -66,9 +66,9 @@ std::vector<std::pair<RealEngine::Sprite, int>> DrawSystem::updateWithoutDisplay
         return spritesWithZIndex;
     }
     for (auto entity : entities) {
-        auto* position    = registry.get_component<Position>(entity);
-        auto* sprite      = registry.get_component<SpriteComponent>(entity);
-        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
+        auto* position    = registry.getComponent<Position>(entity);
+        auto* sprite      = registry.getComponent<SpriteComponent>(entity);
+        auto* spritesheet = registry.getComponent<SpriteSheet>(entity);
 
         if (sprite) {
             sprite->sprite.setPosition(position->x, position->y);

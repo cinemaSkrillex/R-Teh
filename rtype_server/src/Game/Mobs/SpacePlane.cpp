@@ -11,13 +11,13 @@ namespace rtype {
 
 static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
-    if (!registry.is_valid(entity)) {
+    if (!registry.isValid(entity)) {
         std::cerr << "Entity is no longer valid: " << entity << std::endl;
         return;
     }
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto* position  = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation  = registry.getComponent<RealEngine::Rotation>(entity);
     if (!currentNetvar.value.has_value()) {
         std::cerr << "Netvar value is empty for entity: " << entity << std::endl;
         return;
@@ -47,28 +47,28 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 }
 
 SpacePlane::SpacePlane(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(
-        _entity, RealEngine::Interpolation{
-                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(_entity, RealEngine::Velocity{0, 0, {140.f, 140.f}, 0.5f});
-    registry.add_component(_entity, RealEngine::Acceleration{-100.f, 0.f, 0.5f});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity,
+                          RealEngine::Interpolation{
+                              {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    registry.addComponent(_entity, RealEngine::Velocity{0, 0, {140.f, 140.f}, 0.5f});
+    registry.addComponent(_entity, RealEngine::Acceleration{-100.f, 0.f, 0.5f});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("space_plane");
-    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
-    registry.add_component(_entity,
-                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                                                 "mob",
-                                                 false,
-                                                 RealEngine::CollisionType::ENEMY,
-                                                 takesDamage});
-    registry.add_component(_entity, RealEngine::AI{noBehavior, goStraightConstant, true});
-    registry.add_component(_entity, RealEngine::Damage{10});
-    registry.add_component(_entity, RealEngine::Health{20, 20});
-    registry.add_component(_entity, RealEngine::Rotation{0.f});
-    registry.add_component(_entity, RealEngine::Score{20});
-    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::SpriteSheet{spriteSheet});
+    registry.addComponent(_entity,
+                          RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                                                "mob",
+                                                false,
+                                                RealEngine::CollisionType::ENEMY,
+                                                takesDamage});
+    registry.addComponent(_entity, RealEngine::AI{noBehavior, goStraightConstant, true});
+    registry.addComponent(_entity, RealEngine::Damage{10});
+    registry.addComponent(_entity, RealEngine::Health{20, 20});
+    registry.addComponent(_entity, RealEngine::Rotation{0.f});
+    registry.addComponent(_entity, RealEngine::Score{20});
+    registry.addComponent(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
+    registry.addComponent(
         _entity,
         RealEngine::NetvarContainer{
             {{"sprite_name", {"string", "sprite_name", std::string("space_plane"), nullptr}},

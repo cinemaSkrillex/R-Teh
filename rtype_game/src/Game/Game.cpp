@@ -17,15 +17,15 @@ std::shared_ptr<RealEngine::Entity> Game::add_player(long int player_uuid, sf::V
 
 std::shared_ptr<RealEngine::Entity> Game::add_mob(long int enemy_uuid, sf::Vector2f position) {
     // // for now it adds a EyeBomber, maybe do a switch case to add different mobs
-    auto entity = _registry.spawn_entity();
+    auto entity = _registry.spawnEntity();
     _entities.emplace(enemy_uuid, EntityInfo{entity, RTypeProtocol::EntityType::OTHER_ENTITY});
     return _entities.at(enemy_uuid).entity;
 }
 
 sf::IntRect Game::getPlayerNormalizedDirection() {
     sf::IntRect direction(0, 0, 0, 0);
-    auto*       player_sprite = _registry.get_component<RealEngine::SpriteSheet>(_player_entity);
-    auto*       velocity      = _registry.get_component<RealEngine::Velocity>(_player_entity);
+    auto*       player_sprite = _registry.getComponent<RealEngine::SpriteSheet>(_playerEntity);
+    auto*       velocity      = _registry.getComponent<RealEngine::Velocity>(_playerEntity);
 
     if (player_sprite && _window.isFocused() && velocity) {
         if (_controlSystem.isActionPressed(RealEngine::Action::Left)) {

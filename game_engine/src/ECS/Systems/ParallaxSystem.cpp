@@ -16,9 +16,9 @@ void ParallaxSystem::update(Registry& registry, float deltaTime) {
     }
 
     for (auto entity : entities) {
-        auto* parallax = registry.get_component<Parallax>(entity);
-        auto* position = registry.get_component<Position>(entity);
-        auto* sprite   = registry.get_component<SpriteComponent>(entity);
+        auto* parallax = registry.getComponent<Parallax>(entity);
+        auto* position = registry.getComponent<Position>(entity);
+        auto* sprite   = registry.getComponent<SpriteComponent>(entity);
 
         const sf::FloatRect bounds = sprite->sprite.getBounds();
 

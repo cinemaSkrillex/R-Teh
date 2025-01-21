@@ -15,23 +15,23 @@ Controls::Controls(RealEngine::Registry& registry, std::shared_ptr<UDPClient> cl
 Controls::~Controls() {}
 
 void Controls::moveUp(float deltaTime, RealEngine::Entity entity) {
-    auto* velocity     = _registry.get_component<RealEngine::Velocity>(entity);
-    auto* acceleration = _registry.get_component<RealEngine::Acceleration>(entity);
+    auto* velocity     = _registry.getComponent<RealEngine::Velocity>(entity);
+    auto* acceleration = _registry.getComponent<RealEngine::Acceleration>(entity);
     if (velocity->vy > 50) velocity->vy = 50;
     velocity->vy -= acceleration->ay * 3 * deltaTime;
 }
 
 void Controls::moveDown(float deltaTime, RealEngine::Entity entity) {
-    auto* velocity     = _registry.get_component<RealEngine::Velocity>(entity);
-    auto* acceleration = _registry.get_component<RealEngine::Acceleration>(entity);
+    auto* velocity     = _registry.getComponent<RealEngine::Velocity>(entity);
+    auto* acceleration = _registry.getComponent<RealEngine::Acceleration>(entity);
     if (velocity->vy < -50) velocity->vy = -50;
     velocity->vy += acceleration->ay * 3 * deltaTime;
 }
 
 void Controls::sendReady(float deltaTime, RealEngine::Entity entity) {
     PongProtocol::BaseMessage eventMessage;
-    eventMessage.message_type = PongProtocol::MessageType::PLAYER_READY;
-    auto* playerNetvar = _registry.get_component<RealEngine::Netvar>(entity);
+    eventMessage.messageType = PongProtocol::MessageType::PLAYER_READY;
+    auto* playerNetvar       = _registry.getComponent<RealEngine::Netvar>(entity);
     if (!playerNetvar) {
         std::cout << "Player does not have netvar component" << std::endl;
     } else {
@@ -39,7 +39,7 @@ void Controls::sendReady(float deltaTime, RealEngine::Entity entity) {
     }
 
     std::array<char, 800> serializedEventMessage = PongProtocol::serialize<800>(eventMessage);
-    _client->send_unreliable_packet(serializedEventMessage);
+    _client->sendUnreliablePacket(serializedEventMessage);
 }
 
 }  // namespace pong

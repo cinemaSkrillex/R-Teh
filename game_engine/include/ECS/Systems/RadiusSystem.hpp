@@ -14,9 +14,6 @@ class RadiusSystem {
     ~RadiusSystem();
 
     void update(Registry& registry);
-    void setBehaviorIn(Entity entity, Registry& registry, std::function<void()> behavior);
-    void setBehaviorOuterMax(Entity entity, Registry& registry, std::function<void()> behavior);
-    void setBehaviorOuterMin(Entity entity, Registry& registry, std::function<void()> behavior);
 
    private:
 };

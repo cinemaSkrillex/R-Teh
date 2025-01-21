@@ -14,7 +14,7 @@ struct Interpolation {
     sf::Vector2f start;
     sf::Vector2f end;
     float        step;
-    float        current_step;
+    float        currentStep;
     bool         reset;
 };
 }  // namespace RealEngine

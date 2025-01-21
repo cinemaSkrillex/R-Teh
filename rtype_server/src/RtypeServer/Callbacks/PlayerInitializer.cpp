@@ -43,7 +43,7 @@ std::array<char, BUFFER_SIZE> createNewClientMessage(long uuid, sf::Vector2f pla
                                                      long timestamp) {
     // Populate the NewClientMessage structure
     RTypeProtocol::PlayerMoveMessage newClientMessage = {};
-    newClientMessage.message_type                     = RTypeProtocol::NEW_CLIENT;  // Message type
+    newClientMessage.messageType                      = RTypeProtocol::NEW_CLIENT;  // Message type
     newClientMessage.uuid                             = uuid;                       // Player UUID
     newClientMessage.x                                = player_start_pos.x;  // Player X position
     newClientMessage.y                                = player_start_pos.y;  // Player Y position
@@ -59,12 +59,12 @@ std::array<char, BUFFER_SIZE> createSynchronizeMessage(
     const std::vector<std::pair<long, sf::Vector2f>>& activePlayerUUIDs) {
     // Populate the SynchronizeMessage structure
     RTypeProtocol::SynchronizeMessage syncMessage;
-    syncMessage.message_type = RTypeProtocol::SYNCHRONISE;  // Message type
-    syncMessage.uuid         = uuid;                        // Player UUID
-    syncMessage.timestamp    = timestamp;                   // Synchronization timestamp
-    syncMessage.x            = x;                           // Player X position
-    syncMessage.y            = y;                           // Player Y position
-    syncMessage.players      = activePlayerUUIDs;           // List of active player UUIDs
+    syncMessage.messageType = RTypeProtocol::SYNCHRONISE;  // Message type
+    syncMessage.uuid        = uuid;                        // Player UUID
+    syncMessage.timestamp   = timestamp;                   // Synchronization timestamp
+    syncMessage.x           = x;                           // Player X position
+    syncMessage.y           = y;                           // Player Y position
+    syncMessage.players     = activePlayerUUIDs;           // List of active player UUIDs
 
     // Serialize the message
     return RTypeProtocol::serialize<BUFFER_SIZE>(syncMessage);
@@ -91,7 +91,7 @@ void PlayerInitializer::sendNewClientMessages(const asio::ip::udp::endpoint& sen
             std::cout << "Player UUID: " << currentPlayer.getUUID() << std::endl;
             serializedMessage =
                 createNewClientMessage<800>(playerEntity, player_start_pos, timestamp);
-            UdpServer->send_reliable_packet(serializedMessage, client);
+            UdpServer->sendReliablePacket(serializedMessage, client);
         }
     }
 }
@@ -132,5 +132,5 @@ void PlayerInitializer::sendSynchronizeMessage(const asio::ip::udp::endpoint& se
         createSynchronizeMessage<800>(playerEntity, timestamp, player_start_position.x,
                                       player_start_position.y, activePlayerUUIDs);
     std::cout << "Sending synchronize message" << std::endl;
-    UdpServer->send_reliable_packet(synchronizeMessage, sender);
+    UdpServer->sendReliablePacket(synchronizeMessage, sender);
 }

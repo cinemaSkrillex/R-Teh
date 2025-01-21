@@ -59,7 +59,7 @@ class PongServer {
     sf::Clock                             _clock;
     sf::Clock                             _broadcastClock;
     std::chrono::steady_clock::time_point _startTime;
-    std::shared_ptr<PongGameInstance>     _game_instance;
+    std::shared_ptr<PongGameInstance>     _gameInstance;
     std::shared_ptr<RealEngine::Entity>   _ball;
     std::shared_ptr<RealEngine::Entity>   _background;
     std::unordered_map<asio::ip::udp::endpoint, std::shared_ptr<RealEngine::Entity>> _players;

@@ -12,14 +12,14 @@ namespace rtype {
 static void addScoreToPlayer(RealEngine::Registry& registry, RealEngine::Entity entity,
                              RealEngine::Entity collider) {
     std::cout << "Add score to player" << std::endl;
-    auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
-    auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* colliderScore = registry.getComponent<RealEngine::Score>(collider);
+    auto* container     = registry.getComponent<RealEngine::NetvarContainer>(entity);
     if (!container) return;
     auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
-    auto player   = registry.entity_from_index(playerID);
+    auto player   = registry.entityFromIndex(playerID);
     if (!player) return;
-    auto playerScore           = registry.get_component<RealEngine::Score>(*player);
-    auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
+    auto playerScore           = registry.getComponent<RealEngine::Score>(*player);
+    auto playerNetvarContainer = registry.getComponent<RealEngine::NetvarContainer>(*player);
     if (playerScore && playerNetvarContainer) {
         // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;
         playerScore->amount += colliderScore->amount;
@@ -33,9 +33,9 @@ static void addScoreToPlayer(RealEngine::Registry& registry, RealEngine::Entity 
 static void bulletTakesDamage(RealEngine::CollisionType collisionType,
                               RealEngine::Registry& registry, RealEngine::Entity collider,
                               RealEngine::Entity entity) {
-    auto* health         = registry.get_component<RealEngine::Health>(entity);
-    auto* colliderHealth = registry.get_component<RealEngine::Health>(collider);
-    auto* damage         = registry.get_component<RealEngine::Damage>(entity);
+    auto* health         = registry.getComponent<RealEngine::Health>(entity);
+    auto* colliderHealth = registry.getComponent<RealEngine::Health>(collider);
+    auto* damage         = registry.getComponent<RealEngine::Damage>(entity);
 
     if ((colliderHealth && damage) && (colliderHealth->amount >= damage->amount)) {
         selfDestruct(registry, entity);
@@ -76,34 +76,34 @@ static void bulletHandleCollision(RealEngine::CollisionType collisionType,
 
 Bullet::Bullet(RealEngine::Registry& registry, sf::Vector2f position, float speed,
                std::string spriteName, float damage, int health, size_t playerID)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{speed, 0, {speed, speed}, 0.f});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity, RealEngine::Velocity{speed, 0, {speed, speed}, 0.f});
     auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet(spriteName);
     if (spriteSheet) {
-        registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+        registry.addComponent(_entity, RealEngine::SpriteSheet{*spriteSheet});
     } else {
         auto sprite = RealEngine::AssetManager::getInstance().getSprite(spriteName);
         if (sprite) {
-            registry.add_component(_entity, RealEngine::SpriteComponent{*sprite});
+            registry.addComponent(_entity, RealEngine::SpriteComponent{*sprite});
         } else {
             std::cerr << "Failed to load Sprite or SpriteSheet for ID: " << spriteName << std::endl;
         }
     }
-    registry.add_component(_entity, RealEngine::Drawable{});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::Drawable{});
+    registry.addComponent(
         _entity,
         RealEngine::Collision{{-1.f, -1.f, -1.f, -1.f},  // automatic adjustement of collision
                               "bullet",
                               false,
                               RealEngine::CollisionType::ALLY_BULLET,
                               bulletHandleCollision});
-    registry.add_component(_entity, RealEngine::AutoDestructible{5});
-    registry.add_component(_entity, RealEngine::Damage{damage});
-    registry.add_component(_entity, RealEngine::Health{health, health});
-    registry.add_component(_entity, RealEngine::NetvarContainer{{
-                                        {"playerID", {"size_t", "playerID", playerID, nullptr}},
-                                    }});
+    registry.addComponent(_entity, RealEngine::AutoDestructible{5});
+    registry.addComponent(_entity, RealEngine::Damage{damage});
+    registry.addComponent(_entity, RealEngine::Health{health, health});
+    registry.addComponent(_entity, RealEngine::NetvarContainer{{
+                                       {"playerID", {"size_t", "playerID", playerID, nullptr}},
+                                   }});
 }
 
 Bullet::~Bullet() {}

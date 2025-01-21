@@ -20,8 +20,8 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
     }
     if (destroyedEntities.empty()) return;
     for (auto& entity : destroyedEntities) {
-        auto* netvarContainer = _registry.get_component<RealEngine::NetvarContainer>(entity);
-        auto* position        = _registry.get_component<RealEngine::Position>(entity);
+        auto* netvarContainer = _registry.getComponent<RealEngine::NetvarContainer>(entity);
+        auto* position        = _registry.getComponent<RealEngine::Position>(entity);
         if (netvarContainer) {
             auto powerupDropNetvar = netvarContainer->getNetvar("powerup_drop");
             if (powerupDropNetvar && powerupDropNetvar->value.type() == typeid(float)) {
@@ -54,7 +54,7 @@ void GameInstance::manageInGameEntities(std::vector<Map::WaveMob>       enemies_
     }
     _bullets.erase(std::remove_if(_bullets.begin(), _bullets.end(),
                                   [&](const auto& bullet) {
-                                      return _registry.get_component<RealEngine::Health>(bullet) ==
+                                      return _registry.getComponent<RealEngine::Health>(bullet) ==
                                              nullptr;
                                   }),
                    _bullets.end());
@@ -88,10 +88,10 @@ std::vector<RealEngine::Entity> GameInstance::run(float deltaTime) {
     _destroySystem.update(_registry, deltaTime);
     auto destroyedEntities = _destroySystem.getDeadEntities();
     _netvarSystem.update(_registry, deltaTime);
-    if (_game_map) {
-        _game_map->updateLevel(deltaTime);
+    if (_gameMap) {
+        _gameMap->updateLevel(deltaTime);
     }
-    auto enemies_to_spawn = _game_map->invokeLevelMobs();
+    auto enemies_to_spawn = _gameMap->invokeLevelMobs();
 
     manageInGameEntities(enemies_to_spawn, destroyedEntities);
 
@@ -102,9 +102,9 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     if (_players.empty() || _players.find(playerUuid) == _players.end()) return;
 
     std::shared_ptr<RealEngine::Entity> player = _players.at(playerUuid);
-    auto* acceleration = _registry.get_component<RealEngine::Acceleration>(player);
-    auto* velocity     = _registry.get_component<RealEngine::Velocity>(player);
-    auto* position     = _registry.get_component<RealEngine::Position>(player);
+    auto* acceleration = _registry.getComponent<RealEngine::Acceleration>(player);
+    auto* velocity     = _registry.getComponent<RealEngine::Velocity>(player);
+    auto* position     = _registry.getComponent<RealEngine::Position>(player);
 
     if (!acceleration || !velocity || !position) return;
 
@@ -124,10 +124,10 @@ void GameInstance::movePlayer(long int playerUuid, sf::IntRect direction, float 
     }
 }
 
-void GameInstance::start_level() {
-    if (_game_map->getIsLevelRunning() == false) {
-        _game_map->startLevel();
+void GameInstance::startLevel() {
+    if (_gameMap->getIsLevelRunning() == false) {
+        _gameMap->startLevel();
     } else {
-        _game_map->stopLevel();
+        _gameMap->stopLevel();
     }
 }

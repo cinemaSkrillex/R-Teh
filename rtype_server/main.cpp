@@ -20,8 +20,8 @@ int main(int argc, char* argv[]) {
         server_vision = true;
     }
     try {
-        asio::io_context             io_context;
-        auto                         server = std::make_shared<UDPServer>(io_context, port);
+        asio::io_context             ioContext;
+        auto                         server = std::make_shared<UDPServer>(ioContext, port);
         std::shared_ptr<RtypeServer> rtype_server =
             std::make_shared<RtypeServer>(server, server_vision);
         std::chrono::steady_clock::time_point start_time = rtype_server->getStartTime();

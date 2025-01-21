@@ -69,9 +69,9 @@ void PlayerUI::AssignPlayerToUI(std::shared_ptr<RealEngine::Entity> playerEntity
 }
 
 void PlayerUI::update() {
-    auto playerHealth = _registry.get_component<RealEngine::Health>(_playerEntity);
-    auto playerScore  = _registry.get_component<RealEngine::Score>(_playerEntity);
-    auto playerNetvar = _registry.get_component<RealEngine::NetvarContainer>(_playerEntity);
+    auto playerHealth = _registry.getComponent<RealEngine::Health>(_playerEntity);
+    auto playerScore  = _registry.getComponent<RealEngine::Score>(_playerEntity);
+    auto playerNetvar = _registry.getComponent<RealEngine::NetvarContainer>(_playerEntity);
     if (_playerEntity && playerHealth && playerNetvar && playerScore) {
         try {
             float shootLoadValue =

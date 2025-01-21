@@ -14,27 +14,27 @@ namespace RealEngine {
 DestroySystem::DestroySystem() {}
 
 void DestroySystem::killEntity(Registry& registry, Entity entity) {
-    if (registry.is_valid(entity)) {
+    if (registry.isValid(entity)) {
         _deadEntities.push_back(entity);
-        // registry.remove_entity(entity);
+        // registry.removeEntity(entity);
     }
 }
 
 bool DestroySystem::autoDestroy(Registry& registry, Entity entity, float deltaTime) {
-    auto* destructible = registry.get_component<AutoDestructible>(entity);
+    auto* destructible = registry.getComponent<AutoDestructible>(entity);
 
     if (destructible) {
         if (destructible->lifeTime >= 0) {
             destructible->lifeTime -= deltaTime;
             if (destructible->lifeTime <= 0) {
-                if (registry.is_valid(entity)) {
+                if (registry.isValid(entity)) {
                     killEntity(registry, entity);
                     return true;
                 }
             }
         }
         if (destructible->kill) {
-            if (registry.is_valid(entity)) {
+            if (registry.isValid(entity)) {
                 killEntity(registry, entity);
                 return true;
             }
@@ -46,45 +46,28 @@ bool DestroySystem::autoDestroy(Registry& registry, Entity entity, float deltaTi
     return false;
 }
 
-// auto* colliderScore = registry.get_component<RealEngine::Score>(collider);
-// auto* container     = registry.get_component<RealEngine::NetvarContainer>(entity);
-// if (!container) return;
-// auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
-// auto player   = registry.entity_from_index(playerID);
-// if (!player) return;
-// auto playerScore = registry.get_component<RealEngine::Score>(*player);
-// auto playerNetvarContainer = registry.get_component<RealEngine::NetvarContainer>(*player);
-// if (playerScore && playerNetvarContainer) {
-//     // std::cout << "Player get score amount:" << colliderScore->amount << std::endl;
-//     playerScore->amount += colliderScore->amount;
-//     auto score_health_update = playerNetvarContainer->getNetvar("score_health_update");
-//     if (score_health_update) {
-//         score_health_update->value = true;
-//     }
-// }
-
 bool DestroySystem::healthDestroy(Registry& registry, Entity entity) {
-    auto* health = registry.get_component<Health>(entity);
+    auto* health = registry.getComponent<Health>(entity);
 
     if (!health || health->amount > 0) return false;
 
-    if (registry.is_valid(entity)) {
+    if (registry.isValid(entity)) {
         killEntity(registry, entity);
     }
 
-    std::shared_ptr<Entity> playerBullet = registry.entity_from_index(health->lastDamager);
+    std::shared_ptr<Entity> playerBullet = registry.entityFromIndex(health->lastDamager);
     if (!playerBullet) return true;
 
-    auto* colliderScore = registry.get_component<Score>(entity);
-    auto* container     = registry.get_component<NetvarContainer>(playerBullet);
+    auto* colliderScore = registry.getComponent<Score>(entity);
+    auto* container     = registry.getComponent<NetvarContainer>(playerBullet);
     if (!container || !colliderScore) return true;
 
     auto playerID = std::any_cast<size_t>(container->getNetvar("playerID")->value);
-    auto player   = registry.entity_from_index(playerID);
+    auto player   = registry.entityFromIndex(playerID);
     if (!player) return true;
 
-    auto playerScore           = registry.get_component<Score>(player);
-    auto playerNetvarContainer = registry.get_component<NetvarContainer>(player);
+    auto playerScore           = registry.getComponent<Score>(player);
+    auto playerNetvarContainer = registry.getComponent<NetvarContainer>(player);
     if (!playerScore || !playerNetvarContainer) return true;
 
     playerScore->amount += colliderScore->amount;
@@ -100,7 +83,7 @@ void DestroySystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<>();
 
     for (auto& entity : _deadEntities) {
-        if (registry.is_valid(entity)) registry.kill_entity(entity);
+        if (registry.isValid(entity)) registry.killEntity(entity);
     }
     _deadEntities.clear();
     if (entities.empty()) {

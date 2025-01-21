@@ -15,7 +15,7 @@ void HoldShootEvent::execute(const std::array<char, 800>&   buffer,
     auto gameInstance = server->getGameInstance();
     if (gameInstance == nullptr) return;
     auto* container =
-        gameInstance->getRegistry()->get_component<RealEngine::NetvarContainer>(player.getEntity());
+        gameInstance->getRegistry()->getComponent<RealEngine::NetvarContainer>(player.getEntity());
     if (!container) {
         return;
     }

@@ -23,7 +23,7 @@
 class UDPServer : public ANetwork<800> {
    public:
     // Constructor
-    UDPServer(asio::io_context& io_context, unsigned short port);
+    UDPServer(asio::io_context& ioContext, unsigned short port);
 
     // Set the endpoint for the client
     void                           setEndpoint(const asio::ip::udp::endpoint& endpoint);
@@ -34,25 +34,25 @@ class UDPServer : public ANetwork<800> {
     void setNewClientCallback(const std::function<void(const asio::ip::udp::endpoint&)>& callback);
 
     // Send methods
-    void send_unreliable_packet(const std::array<char, 800>&   message,
-                                const asio::ip::udp::endpoint& endpoint);
-    void send_reliable_packet(const std::array<char, 800>&   message,
+    void sendUnreliablePacket(const std::array<char, 800>&   message,
                               const asio::ip::udp::endpoint& endpoint);
+    void sendReliablePacket(const std::array<char, 800>&   message,
+                            const asio::ip::udp::endpoint& endpoint);
 
     // Receive methods
-    std::vector<std::array<char, 800>> get_unreliable_messages_from_endpoint(
+    std::vector<std::array<char, 800>> getUnreliableMessagesFromEndpoint(
         const asio::ip::udp::endpoint& endpoint);
-    std::vector<std::array<char, 800>> get_reliable_messages_from_endpoint(
+    std::vector<std::array<char, 800>> getReliableMessagesFromEndpoint(
         const asio::ip::udp::endpoint& endpoint);
-    std::array<char, 800> get_last_unreliable_packet_data();
-    std::array<char, 800> get_last_reliable_packet_data();
+    std::array<char, 800> getLastUnreliablePacketData();
+    std::array<char, 800> getLastReliablePacketData();
 
     // Miscellaneous methods
-    void send_new_client(const asio::ip::udp::endpoint& endpoint);
+    void sendNewClient(const asio::ip::udp::endpoint& endpoint);
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
 
    private:
-    asio::ip::udp::endpoint _client_endpoint;  // The client's endpoint
+    asio::ip::udp::endpoint _clientEndpoint;  // The client's endpoint
 };
 
 #endif  // UDPSERVER_HPP

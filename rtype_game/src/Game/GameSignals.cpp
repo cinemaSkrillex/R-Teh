@@ -19,7 +19,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
     RTypeProtocol::BaseMessage baseMessage = RTypeProtocol::deserialize<800>(signal);
     // Print the deserialized BaseMessage
     // Check the message type to handle accordingly
-    switch (baseMessage.message_type) {
+    switch (baseMessage.messageType) {
         case RTypeProtocol::NEW_CLIENT: {
             // Deserialize the PlayerMoveMessage (which is used for new client)
             RTypeProtocol::PlayerMoveMessage newClientMessage =
@@ -62,10 +62,10 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
         case RTypeProtocol::LEVEL_SIGNAL: {
             RTypeProtocol::LevelSignalMessage levelSignalMessage =
                 RTypeProtocol::deserializeLevelSignal(signal);
-            if (levelSignalMessage.startLevel && _game_map) {
-                _game_map->startLevel();
+            if (levelSignalMessage.startLevel && _gameMap) {
+                _gameMap->startLevel();
             } else {
-                _game_map->stopLevel();
+                _gameMap->stopLevel();
             }
             break;
         }
@@ -89,7 +89,7 @@ void rtype::Game::handleSignal(std::array<char, 800> signal) {
         }
         default:
             // Handle unknown or unsupported message types (you can log or handle errors)
-            std::cout << "Unknown message type: " << baseMessage.message_type << std::endl;
+            std::cout << "Unknown message type: " << baseMessage.messageType << std::endl;
             break;
     }
 }
@@ -107,8 +107,7 @@ void rtype::Game::handleSynchronize(RTypeProtocol::SynchronizeMessage parsedPack
     auto client_now             = std::chrono::steady_clock::now();
     _startTime                  = client_now - std::chrono::milliseconds(_serverTime);
     sf::Vector2f localPlayerPos = {parsedPacket.x, parsedPacket.y};
-    _registry.add_component(_player_entity,
-                            RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
+    _registry.addComponent(_playerEntity, RealEngine::Position{localPlayerPos.x, localPlayerPos.y});
     for (const auto& player : parsedPacket.players) {
         add_player(player.first, player.second);
     }
@@ -123,9 +122,9 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     if (it == _players.end()) return;
     std::shared_ptr<RealEngine::Entity> player = it->second;
     // Update the position component of the player
-    auto* player_sprite          = _registry.get_component<RealEngine::SpriteSheet>(player);
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(player);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(player);
+    auto* player_sprite          = _registry.getComponent<RealEngine::SpriteSheet>(player);
+    auto* positionComponent      = _registry.getComponent<RealEngine::Position>(player);
+    auto* interpolationComponent = _registry.getComponent<RealEngine::Interpolation>(player);
     if (!positionComponent && !interpolationComponent) return;
     if ((position.y < positionComponent->y) && (std::abs(position.y - positionComponent->y) > 7)) {
         player_sprite->spriteIndex = "up";
@@ -135,42 +134,42 @@ void rtype::Game::handlePlayerMove(RTypeProtocol::PlayerMoveMessage parsedPacket
     } else {
         player_sprite->spriteIndex = "idle";
     }
-    positionComponent->x                 = interpolationComponent->end.x;
-    positionComponent->y                 = interpolationComponent->end.y;
-    interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-    interpolationComponent->end          = position;
-    interpolationComponent->step         = 1.f / step;
-    interpolationComponent->current_step = 0.f;
-    interpolationComponent->reset        = true;
+    positionComponent->x                = interpolationComponent->end.x;
+    positionComponent->y                = interpolationComponent->end.y;
+    interpolationComponent->start       = {positionComponent->x, positionComponent->y};
+    interpolationComponent->end         = position;
+    interpolationComponent->step        = 1.f / step;
+    interpolationComponent->currentStep = 0.f;
+    interpolationComponent->reset       = true;
 }
 
 void rtype::Game::handlePlayerValues(RTypeProtocol::PlayerUpdateDataMessage parsedPacket) {
-    auto* position        = _registry.get_component<RealEngine::Position>(_player_entity);
-    auto* healthComponent = _registry.get_component<RealEngine::Health>(_player_entity);
+    auto* position        = _registry.getComponent<RealEngine::Position>(_playerEntity);
+    auto* healthComponent = _registry.getComponent<RealEngine::Health>(_playerEntity);
     if (healthComponent) {
         auto healthDiff = healthComponent->amount - parsedPacket.health;
         if (healthDiff > 0 && position) {
             RealEngine::AssetManager::getInstance().getSound("hit_hurt")->play();
             HitEffect(_registry, {position->x, position->y});
-            auto* container = _registry.get_component<RealEngine::NetvarContainer>(_player_entity);
+            auto* container = _registry.getComponent<RealEngine::NetvarContainer>(_playerEntity);
             if (container && container->getNetvar("clignotingTimer")) {
                 container->getNetvar("clignotingTimer")->value = 1.5f;
             }
-            display_temporary_text(std::to_string(healthDiff), {position->x, position->y},
-                                   sf::Color::Red, 20);
+            displayTemporaryText(std::to_string(healthDiff), {position->x, position->y},
+                                 sf::Color::Red, 20);
         } else if (healthDiff < 0 && position) {
             RealEngine::AssetManager::getInstance().getSound("powerup_heal")->play();
-            display_temporary_text(std::to_string(abs(healthDiff)), {position->x, position->y},
-                                   sf::Color::Green, 20);
+            displayTemporaryText(std::to_string(abs(healthDiff)), {position->x, position->y},
+                                 sf::Color::Green, 20);
         }
         healthComponent->amount = parsedPacket.health;
     }
-    auto* scoreComponent = _registry.get_component<RealEngine::Score>(_player_entity);
+    auto* scoreComponent = _registry.getComponent<RealEngine::Score>(_playerEntity);
     if (scoreComponent) {
         auto scoreDiff = parsedPacket.score - scoreComponent->amount;
         if (scoreDiff > 0 && position) {
-            display_temporary_text(std::to_string(scoreDiff), {position->x, position->y},
-                                   sf::Color::Yellow, 20);
+            displayTemporaryText(std::to_string(scoreDiff), {position->x, position->y},
+                                 sf::Color::Yellow, 20);
         }
         scoreComponent->amount = parsedPacket.score;
     }
@@ -182,20 +181,20 @@ void rtype::Game::handleEntityUpdate(RTypeProtocol::EntityUpdateMessage parsedPa
     if (playerIt != _players.end()) return;
     if (it == _entities.end()) return;
     std::shared_ptr<RealEngine::Entity> entity = it->second.entity;
-    auto* positionComponent      = _registry.get_component<RealEngine::Position>(entity);
-    auto* rotationComponent      = _registry.get_component<RealEngine::Rotation>(entity);
-    auto* interpolationComponent = _registry.get_component<RealEngine::Interpolation>(entity);
+    auto* positionComponent      = _registry.getComponent<RealEngine::Position>(entity);
+    auto* rotationComponent      = _registry.getComponent<RealEngine::Rotation>(entity);
+    auto* interpolationComponent = _registry.getComponent<RealEngine::Interpolation>(entity);
     if (rotationComponent && parsedPacket.angle != -1) {
         rotationComponent->angle = parsedPacket.angle;
     }
     if (interpolationComponent) {
-        positionComponent->x                 = interpolationComponent->end.x;
-        positionComponent->y                 = interpolationComponent->end.y;
-        interpolationComponent->start        = {positionComponent->x, positionComponent->y};
-        interpolationComponent->end          = {parsedPacket.x, parsedPacket.y};
-        interpolationComponent->step         = 1.f / parsedPacket.step;
-        interpolationComponent->current_step = 0.f;
-        interpolationComponent->reset        = true;
+        positionComponent->x                = interpolationComponent->end.x;
+        positionComponent->y                = interpolationComponent->end.y;
+        interpolationComponent->start       = {positionComponent->x, positionComponent->y};
+        interpolationComponent->end         = {parsedPacket.x, parsedPacket.y};
+        interpolationComponent->step        = 1.f / parsedPacket.step;
+        interpolationComponent->currentStep = 0.f;
+        interpolationComponent->reset       = true;
     } else {
         if (!positionComponent) return;
         positionComponent->x = parsedPacket.x;
@@ -209,26 +208,26 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
     //               << std::endl;
     //     return;
     // }
-    auto newEntity = _registry.spawn_entity();
+    auto newEntity = _registry.spawnEntity();
     for (const auto& component : parsedPacket.components) {
         switch (component.first) {
             case RTypeProtocol::ComponentList::POSITION: {
                 RealEngine::Position position;
                 std::memcpy(&position, component.second.data(), sizeof(position));
                 // std::cout << "Position: (" << position.x << ", " << position.y << ")\n";
-                _registry.add_component(newEntity, RealEngine::Position{position.x, position.y});
+                _registry.addComponent(newEntity, RealEngine::Position{position.x, position.y});
                 break;
             }
             case RTypeProtocol::ComponentList::INTERPOLATION: {
                 RealEngine::Interpolation interpolation;
                 std::memcpy(&interpolation, component.second.data(), sizeof(interpolation));
-                _registry.add_component(newEntity, RealEngine::Interpolation{interpolation});
+                _registry.addComponent(newEntity, RealEngine::Interpolation{interpolation});
                 break;
             }
             case RTypeProtocol::ComponentList::VELOCITY: {
                 RealEngine::Velocity velocity;
                 std::memcpy(&velocity, component.second.data(), sizeof(velocity));
-                _registry.add_component(
+                _registry.addComponent(
                     newEntity, RealEngine::Velocity{velocity.vx, velocity.vy, velocity.maxSpeed,
                                                     velocity.airFrictionForce});
                 break;
@@ -240,10 +239,10 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 auto spriteSheet =
                     RealEngine::AssetManager::getInstance().getSpriteSheet(sprite_str);
                 if (spriteSheet) {
-                    _registry.add_component(*newEntity, RealEngine::SpriteSheet{*spriteSheet});
+                    _registry.addComponent(*newEntity, RealEngine::SpriteSheet{*spriteSheet});
                 } else {
                     // if (sprite) {
-                    //     _registry.add_component(
+                    //     _registry.addComponent(
                     //         *newEntity,
                     //         RealEngine::SpriteComponent{
                     //             *sprite,
@@ -252,8 +251,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                     //                                                                          0});
                     auto sprite = RealEngine::AssetManager::getInstance().getSprite(sprite_str);
                     if (sprite) {
-                        _registry.add_component(*newEntity,
-                                                RealEngine::SpriteComponent{*sprite, 0});
+                        _registry.addComponent(*newEntity, RealEngine::SpriteComponent{*sprite, 0});
                         // parsedPacket.entity_type == RTypeProtocol::EntityType::BLOCK ? 1
                         //                                                              : 0});
                     } else {
@@ -268,7 +266,7 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 RealEngine::Rotation rotation;
                 std::memcpy(&rotation, component.second.data(), sizeof(rotation));
                 // std::cout << "Rotation: " << rotation.angle << "\n";
-                _registry.add_component(newEntity, RealEngine::Rotation{rotation.angle});
+                _registry.addComponent(newEntity, RealEngine::Rotation{rotation.angle});
                 break;
             }
             case RTypeProtocol::ComponentList::COLLISION: {
@@ -279,19 +277,19 @@ void rtype::Game::handleNewEntity(RTypeProtocol::NewEntityMessage parsedPacket) 
                 float autoDestructible;
                 std::memcpy(&autoDestructible, component.second.data(), sizeof(autoDestructible));
                 // std::cout << "AutoDestructible: " << autoDestructible << "\n";
-                _registry.add_component<RealEngine::AutoDestructible>(
+                _registry.addComponent<RealEngine::AutoDestructible>(
                     *newEntity, RealEngine::AutoDestructible{autoDestructible});
                 break;
             }
             case RTypeProtocol::ComponentList::DRAWABLE: {
                 // std::cout << "Drawable: " << std::endl;
-                _registry.add_component<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
+                _registry.addComponent<RealEngine::Drawable>(*newEntity, RealEngine::Drawable{});
                 break;
             }
             case RTypeProtocol::ComponentList::ACCELERATION: {
                 RealEngine::Acceleration acceleration;
                 std::memcpy(&acceleration, component.second.data(), sizeof(acceleration));
-                _registry.add_component(newEntity, RealEngine::Acceleration{acceleration});
+                _registry.addComponent(newEntity, RealEngine::Acceleration{acceleration});
                 break;
             }
             default:
@@ -306,8 +304,8 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
     for (const auto& entity_id : parsedPacket.entity_ids) {
         auto it = _entities.find(entity_id);
         if (it != _entities.end()) {
-            if (_registry.is_valid(*it->second.entity)) {
-                _registry.remove_entity(*it->second.entity);
+            if (_registry.isValid(*it->second.entity)) {
+                _registry.removeEntity(*it->second.entity);
                 _entities.erase(it);
             } else {
                 _entities.erase(it);
@@ -316,52 +314,52 @@ void rtype::Game::handleDestroyEntity(RTypeProtocol::DestroyEntityMessage parsed
         }
         auto playerIt = _players.find(entity_id);
         if (playerIt != _players.end()) {
-            auto* position = _registry.get_component<RealEngine::Position>(*playerIt->second);
+            auto* position = _registry.getComponent<RealEngine::Position>(*playerIt->second);
             Explosion(_registry, {position->x, position->y});
             RealEngine::AssetManager::getInstance().getSound("explosion")->play();
-            if (_registry.is_valid(*playerIt->second)) {
-                _registry.remove_entity(*playerIt->second);
+            if (_registry.isValid(*playerIt->second)) {
+                _registry.removeEntity(*playerIt->second);
                 _players.erase(playerIt);
             } else {
                 _players.erase(playerIt);
             }
         }
         if (_localPlayerUUID == entity_id) {
-            if (_registry.is_valid(*_player_entity)) {
-                _registry.remove_entity(*_player_entity);
-                _player_entity.reset();
+            if (_registry.isValid(*_playerEntity)) {
+                _registry.removeEntity(*_playerEntity);
+                _playerEntity.reset();
                 return;
             }
-            auto* position = _registry.get_component<RealEngine::Position>(*_player_entity);
+            auto* position = _registry.getComponent<RealEngine::Position>(*_playerEntity);
             if (position) {
                 Explosion(_registry, {position->x, position->y});
                 RealEngine::AssetManager::getInstance().getSound("explosion")->play();
             }
-            if (_player_entity == nullptr) return;
-            auto* health = _registry.get_component<RealEngine::Health>(*_player_entity);
+            if (_playerEntity == nullptr) return;
+            auto* health = _registry.getComponent<RealEngine::Health>(*_playerEntity);
             if (health) {
                 health->amount = 0;
             }
-            if (_registry.is_valid(*_player_entity)) {
-                _registry.remove_entity(*_player_entity);
-                _player_entity.reset();
+            if (_registry.isValid(*_playerEntity)) {
+                _registry.removeEntity(*_playerEntity);
+                _playerEntity.reset();
             }
         }
     }
 }
 
 void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
-    if (!_game_map) {
+    if (!_gameMap) {
         return;
     }
-    _game_map->setScrollingSpeed(parsedPacket.scrollingSpeed);
-    _game_map->setXLevelPosition(parsedPacket.x_level_position);
-    _game_map->setIsMapLoaded(parsedPacket.isLoaded);
+    _gameMap->setScrollingSpeed(parsedPacket.scrollingSpeed);
+    _gameMap->setXLevelPosition(parsedPacket._xLevelPosition);
+    _gameMap->setIsMapLoaded(parsedPacket.isLoaded);
     _serverTick = parsedPacket.server_tick;
-    std::cout << "Received map info: ScrollingSpeed: " << _game_map->getScrollingSpeed()
-              << ", XLevelPosition: " << _game_map->getXLevelPosition()
-              << ", isLoaded: " << _game_map->isMapLoaded() << " levelRunning"
-              << _game_map->levelRunning() << ", ServerTick: " << _serverTick << std::endl;
+    std::cout << "Received map info: ScrollingSpeed: " << _gameMap->getScrollingSpeed()
+              << ", XLevelPosition: " << _gameMap->getXLevelPosition()
+              << ", isLoaded: " << _gameMap->isMapLoaded() << " levelRunning"
+              << _gameMap->levelRunning() << ", ServerTick: " << _serverTick << std::endl;
 
     if (parsedPacket.id_level_music != -1) {
         std::string level_music_str;
@@ -382,7 +380,7 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
                 level_music_str = "level_1";
                 break;
         }
-        _game_map->setMusicName(level_music_str);
+        _gameMap->setMusicName(level_music_str);
     }
 
     for (const auto& bg : parsedPacket.backgrounds) {
@@ -409,15 +407,15 @@ void rtype::Game::handleMapMessage(RTypeProtocol::MapMessage parsedPacket) {
         }
         Background background(_registry, bg.speed, backgroundStr);
         std::cout << "Adding background: " << backgroundStr << std::endl;
-        _game_map->addBackground(background.getEntity(), _parallaxSystem);
+        _gameMap->addBackground(background.getEntity(), _parallaxSystem);
     }
 
-    if (_game_map->levelRunning() == false && parsedPacket.isLevelRunning == true) {
-        _game_map->startLevel();
-        _game_map->synchroniseLevelBlockEntities();
-    } else if (_game_map->levelRunning() == true && parsedPacket.isLevelRunning == false) {
-        _game_map->stopLevel();
-        _game_map->synchroniseLevelBlockEntities();
+    if (_gameMap->levelRunning() == false && parsedPacket.isLevelRunning == true) {
+        _gameMap->startLevel();
+        _gameMap->synchroniseLevelBlockEntities();
+    } else if (_gameMap->levelRunning() == true && parsedPacket.isLevelRunning == false) {
+        _gameMap->stopLevel();
+        _gameMap->synchroniseLevelBlockEntities();
     }
 }
 
@@ -444,8 +442,8 @@ void rtype::Game::handleChangingScene(RTypeProtocol::ChangingSceneMessage parsed
     // relocateAllBlocks();
     unloadLevel(10000.0f, 10000.0f);
     RTypeProtocol::BaseMessage baseMessage;
-    baseMessage.message_type                    = RTypeProtocol::MessageType::MAP_UNLOADED;
+    baseMessage.messageType                     = RTypeProtocol::MessageType::MAP_UNLOADED;
     baseMessage.uuid                            = 0;
     std::array<char, 800> serializedBaseMessage = RTypeProtocol::serialize<800>(baseMessage);
-    _clientUDP->send_reliable_packet(serializedBaseMessage);
+    _clientUDP->sendReliablePacket(serializedBaseMessage);
 }

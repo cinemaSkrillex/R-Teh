@@ -23,8 +23,8 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        asio::io_context            io_context;
-        auto                        server = std::make_shared<UDPServer>(io_context, port);
+        asio::io_context            ioContext;
+        auto                        server = std::make_shared<UDPServer>(ioContext, port);
         std::shared_ptr<PongServer> pong_server =
             std::make_shared<PongServer>(server, server_vision);
 

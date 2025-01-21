@@ -9,12 +9,12 @@
 
 void rtype::Game::run() {
     while (_window.isOpen()) {
-        _game_map->updateLevel(_deltaTime);
+        _gameMap->updateLevel(_deltaTime);
         if (_broadcastClock.getElapsedTime().asMilliseconds() > 1000 / 10) {
             _broadcastClock.restart();
             for (int i = 0; i < 100; i++) {
-                handleSignal(_clientUDP->get_last_reliable_packet_data());
-                handleSignal(_clientUDP->get_last_unreliable_packet_data());
+                handleSignal(_clientUDP->getLastReliablePacketData());
+                handleSignal(_clientUDP->getLastUnreliablePacketData());
             }
         }
 
@@ -45,16 +45,16 @@ void rtype::Game::run() {
             std::chrono::duration_cast<std::chrono::milliseconds>(client_now - _startTime).count();
         long                                  delta_time = client_elapsed_time - _serverTime;
         RTypeProtocol::PlayerDirectionMessage playerDirectionMessage;
-        playerDirectionMessage.message_type = RTypeProtocol::PLAYER_DIRECTION;
-        playerDirectionMessage.uuid         = _localPlayerUUID;
-        playerDirectionMessage.direction    = direction;
-        playerDirectionMessage.timestamp    = delta_time;
+        playerDirectionMessage.messageType = RTypeProtocol::PLAYER_DIRECTION;
+        playerDirectionMessage.uuid        = _localPlayerUUID;
+        playerDirectionMessage.direction   = direction;
+        playerDirectionMessage.timestamp   = delta_time;
 
         // Serialize the PlayerDirectionMessage
         std::array<char, 800> serializedPlayerDirectionMessage =
             RTypeProtocol::serialize<800>(playerDirectionMessage);
 
-        _clientUDP->send_unreliable_packet(serializedPlayerDirectionMessage);
+        _clientUDP->sendUnreliablePacket(serializedPlayerDirectionMessage);
     }
     exit(0);
 }

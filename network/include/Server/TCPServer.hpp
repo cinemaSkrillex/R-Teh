@@ -20,16 +20,16 @@ class TCPServer {
 
     void setNewClientCallback(
         const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback);
-    void send_message(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
-    void send_file(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
-    void send_directory(const std::string& directory_path, const asio::ip::tcp::endpoint& endpoint);
-    void send_directory_to_directory(const std::string&             directory_path,
-                                     const asio::ip::tcp::endpoint& endpoint,
-                                     const std::string&             client_target_directory);
-    void send_fin(const asio::ip::tcp::endpoint& endpoint);
+    void sendMessage(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
+    void send_file(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint);
+    void sendDirectory(const std::string& directoryPath, const asio::ip::tcp::endpoint& endpoint);
+    void sendDirectoryToDirectory(const std::string&             directoryPath,
+                                  const asio::ip::tcp::endpoint& endpoint,
+                                  const std::string&             clientTargetDirectory);
+    void sendFin(const asio::ip::tcp::endpoint& endpoint);
 
    private:
-    std::shared_ptr<TCPPacketManager> _packet_manager;
+    std::shared_ptr<TCPPacketManager> _packetManager;
 };
 
 #endif

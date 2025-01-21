@@ -14,7 +14,7 @@ void ParticleSystem::update(Registry& registry, float deltaTime) {
     auto entities = registry.view<ParticleEmitter>();
 
     for (auto entity : entities) {
-        auto* emitter = registry.get_component<ParticleEmitter>(entity);
+        auto* emitter = registry.getComponent<ParticleEmitter>(entity);
 
         // Update elapsed time
         emitter->elapsedTime += deltaTime;
@@ -57,7 +57,7 @@ void ParticleSystem::update(Registry& registry, float deltaTime) {
 
         // Destroy entity if emission duration has passed and no particles are left
         // if (emitter->elapsedTime >= emitter->emissionDuration && emitter->particles.empty()) {
-        //     registry.kill_entity(entity);
+        //     registry.killEntity(entity);
         // }
     }
 }

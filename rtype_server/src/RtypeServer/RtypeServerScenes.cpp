@@ -12,9 +12,9 @@
 #include "WaitingRoomScene.hpp"
 
 void RtypeServer::notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& sender) const {
-    if (_scene_manager.getCurrentSceneType() == RealEngine::SceneType::WAITING) {
+    if (_sceneManager.getCurrentSceneType() == RealEngine::SceneType::WAITING) {
         const auto waitingRoomScene =
-            std::dynamic_pointer_cast<WaitingRoomScene>(_scene_manager.getCurrentScene());
+            std::dynamic_pointer_cast<WaitingRoomScene>(_sceneManager.getCurrentScene());
         if (waitingRoomScene) {
             waitingRoomScene->handleNewClient(sender);
         }
@@ -22,25 +22,25 @@ void RtypeServer::notifyCurrentSceneOfNewClient(const asio::ip::udp::endpoint& s
 }
 
 void RtypeServer::initScenes() {
-    _scene_manager.registerScene(
-        RealEngine::SceneType::WAITING, [this](RealEngine::Registry& registry) {
-            return std::make_shared<WaitingRoomScene>(_game_instance, this, _server_config, _server,
-                                                      _scene_manager);
-        });
+    _sceneManager.registerScene(RealEngine::SceneType::WAITING,
+                                [this](RealEngine::Registry& registry) {
+                                    return std::make_shared<WaitingRoomScene>(
+                                        _gameInstance, this, _serverConfig, _server, _sceneManager);
+                                });
 
-    _scene_manager.changeScene(RealEngine::SceneType::WAITING, _game_instance->getRegistryRef());
+    _sceneManager.changeScene(RealEngine::SceneType::WAITING, _gameInstance->getRegistryRef());
 
-    _scene_manager.registerScene(
+    _sceneManager.registerScene(
         RealEngine::SceneType::MENU, [this](RealEngine::Registry& registry) {
-            return std::make_shared<MenuScene>(_game_instance, this, _server_config, _server);
+            return std::make_shared<MenuScene>(_gameInstance, this, _serverConfig, _server);
         });
-    _scene_manager.registerScene(
-        RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
-            return std::make_shared<GameScene>(_game_instance, this, _server_config, _server,
-                                               _scene_manager);
-        });
+    _sceneManager.registerScene(RealEngine::SceneType::GAME,
+                                [this](RealEngine::Registry& registry) {
+                                    return std::make_shared<GameScene>(
+                                        _gameInstance, this, _serverConfig, _server, _sceneManager);
+                                });
 }
 
-// void RtypeServer::updateScene() { _scene_manager.updateCurrentScene(); }
+// void RtypeServer::updateScene() { _sceneManager.updateCurrentScene(); }
 
-// void RtypeServer::switchScene(SceneType scene) { _scene_manager.switchScene(scene); }
+// void RtypeServer::switchScene(SceneType scene) { _sceneManager.switchScene(scene); }

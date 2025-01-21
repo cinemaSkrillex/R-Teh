@@ -9,7 +9,7 @@
 
 namespace RealEngine {
 template <typename Component>
-typename SparseArray<Component>::reference_type SparseArray<Component>::insert_at(
+typename SparseArray<Component>::reference_type SparseArray<Component>::insertAt(
     size_type pos, const Component& component) {
     if (pos >= _data.size()) {
         _data.resize(pos + 1);
@@ -19,7 +19,7 @@ typename SparseArray<Component>::reference_type SparseArray<Component>::insert_a
 }
 
 template <typename Component>
-typename SparseArray<Component>::reference_type SparseArray<Component>::insert_at(
+typename SparseArray<Component>::reference_type SparseArray<Component>::insertAt(
     size_type pos, Component&& component) {
     if (pos >= _data.size()) {
         _data.resize(pos + 1);
@@ -30,7 +30,7 @@ typename SparseArray<Component>::reference_type SparseArray<Component>::insert_a
 
 template <typename Component>
 template <class... Params>
-typename SparseArray<Component>::reference_type SparseArray<Component>::emplace_at(
+typename SparseArray<Component>::reference_type SparseArray<Component>::emplacAt(
     size_type pos, Params&&... params) {
     if (pos >= _data.size()) {
         _data.resize(pos + 1);

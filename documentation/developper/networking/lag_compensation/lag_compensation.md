@@ -84,7 +84,7 @@ void RtypeServer::run() {
             // Do server work
             for (auto client : _server->getClients()) {
                 // Process all messages from the client
-                for (const auto& message : _server->get_unreliable_messages_from_endpoint(client)) {
+                for (const auto& message : _server->getUnreliableMessagesFromEndpoint(client)) {
                     const auto parsed_data = PeterParser::parseMessage(message);
 
                     if (parsed_data.find("Event") != parsed_data.end()) {
@@ -95,7 +95,7 @@ void RtypeServer::run() {
                 }
             }
 
-            _game_instance->run(_deltaTime);
+            _gameInstance->run(_deltaTime);
         }
         if (_broadcastClock.getElapsedTime().asMilliseconds() >
             1000 / _config.SERVER_BROADCAST_TICK) {

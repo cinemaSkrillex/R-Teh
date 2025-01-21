@@ -16,9 +16,9 @@ static void handleBallCollision(RealEngine::Registry& registry, RealEngine::Enti
 
 void handleWallStop(RealEngine::Registry& registry, RealEngine::Entity collider,
                     RealEngine::Entity entity) {
-    auto* playerCollision   = registry.get_component<RealEngine::Collision>(entity);
-    auto* colliderCollision = registry.get_component<RealEngine::Collision>(collider);
-    auto* entityPosition    = registry.get_component<RealEngine::Position>(entity);
+    auto* playerCollision   = registry.getComponent<RealEngine::Collision>(entity);
+    auto* colliderCollision = registry.getComponent<RealEngine::Collision>(collider);
+    auto* entityPosition    = registry.getComponent<RealEngine::Position>(entity);
 
     if (!playerCollision || !colliderCollision || !entityPosition) {
         return;
@@ -61,24 +61,24 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
 }
 
 PongPlayer::PongPlayer(RealEngine::Registry& registry, sf::Vector2f position, size_t id)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
-    registry.add_component(_entity, RealEngine::Controllable{});
-    registry.add_component(_entity, RealEngine::Collision{{-1, -1, -1, -1},
-                                                          "player_bar",
-                                                          false,
-                                                          RealEngine::CollisionType::PLAYER,
-                                                          playerCollisionHandler});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    registry.addComponent(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
+    registry.addComponent(_entity, RealEngine::Controllable{});
+    registry.addComponent(_entity, RealEngine::Collision{{-1, -1, -1, -1},
+                                                         "player_bar",
+                                                         false,
+                                                         RealEngine::CollisionType::PLAYER,
+                                                         playerCollisionHandler});
     auto sprite = RealEngine::AssetManager::getInstance().getSprite("player_bar");
-    registry.add_component(_entity, RealEngine::SpriteComponent{*sprite});
-    registry.add_component(_entity, RealEngine::Drawable{});
-    registry.add_component(_entity, RealEngine::Score{0});
-    registry.add_component(
-        _entity, RealEngine::Interpolation{
-                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::SpriteComponent{*sprite});
+    registry.addComponent(_entity, RealEngine::Drawable{});
+    registry.addComponent(_entity, RealEngine::Score{0});
+    registry.addComponent(_entity,
+                          RealEngine::Interpolation{
+                              {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    registry.addComponent(
         _entity, RealEngine::NetvarContainer{{
                      {"player_index", {"int", "player_index", static_cast<int>(id), nullptr}},
                      {"new_entity", {"bool", "new_entity", true, nullptr}},

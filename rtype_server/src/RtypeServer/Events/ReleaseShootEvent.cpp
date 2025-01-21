@@ -60,7 +60,7 @@ void ReleaseShootEvent::execute(const std::array<char, 800>&   buffer,
                                 RtypeServer* server) {
     auto  gameInstance = server->getGameInstance();
     auto* container =
-        gameInstance->getRegistry()->get_component<RealEngine::NetvarContainer>(player.getEntity());
+        gameInstance->getRegistry()->getComponent<RealEngine::NetvarContainer>(player.getEntity());
     if (!container) {
         return;
     }

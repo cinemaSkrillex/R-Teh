@@ -160,12 +160,12 @@ void Launcher::onConnectClick() {
 
 void Launcher::connectToServer() {
     try {
-        asio::io_context io_context;
+        asio::io_context ioContext;
 
         auto tcpclient = std::make_shared<TCPClient>(
             ipBox.getText(), static_cast<unsigned short>(std::stoi(portBox.getText())));
 
-        std::thread ioThread([&io_context]() { io_context.run(); });
+        std::thread ioThread([&ioContext]() { ioContext.run(); });
 
         ioThread.join();
         std::this_thread::sleep_for(std::chrono::milliseconds(500));

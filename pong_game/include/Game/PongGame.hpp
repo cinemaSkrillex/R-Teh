@@ -34,7 +34,7 @@
 namespace pong {
 class Game {
    public:
-    Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port);
+    Game(std::shared_ptr<UDPClient> clientUDP, unsigned short clientPort);
     ~Game();
 
     void        run();
@@ -44,16 +44,16 @@ class Game {
     std::shared_ptr<UDPClient> _clientUDP;
 
    private:
-    void init_systems();
-    void init_textures();
-    void init_musics();
-    void init_sounds();
-    void init_fonts();
-    void init_screen_limits();
+    void initSystems();
+    void initTextures();
+    void initMusics();
+    void initSounds();
+    void initFonts();
+    void initScreenLimits();
 
-    void register_components();
-    void bind_keys();
-    void set_action_handlers();
+    void registerComponents();
+    void bindKeys();
+    void setActionHandlers();
 
     // GameSignals
     void handlePlayerMove(PongProtocol::PlayerMoveMessage parsedPacket);
@@ -77,7 +77,7 @@ class Game {
     RealEngine::NetvarSystem          _netvarSystem;
     pong::Controls                    _controls;
 
-    std::shared_ptr<RealEngine::Entity>                               _player_entity;
+    std::shared_ptr<RealEngine::Entity>                               _playerEntity;
     std::unordered_map<long int, std::shared_ptr<RealEngine::Entity>> _entities;
 
     std::chrono::steady_clock::time_point _startTime;

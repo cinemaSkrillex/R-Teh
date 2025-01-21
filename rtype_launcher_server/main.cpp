@@ -21,21 +21,22 @@ int main(int argc, char* argv[]) {
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
 
     try {
-        asio::io_context io_context;
+        asio::io_context ioContext;
         auto             tcp_server = std::make_shared<TCPServer>(port);
-        tcp_server->setNewClientCallback(
-            [tcp_server](const asio::ip::tcp::endpoint& client_endpoint) {
-                std::cout << "New client connected: " << client_endpoint << std::endl;
-                tcp_server->send_message("UWU1", client_endpoint);
-                tcp_server->send_directory("../rtype_game", client_endpoint);
-                tcp_server->send_directory_to_directory("../../../assets", client_endpoint, "rtype_game");
-                // tcp_server->send_directory("../pong_game", client_endpoint);
-                // tcp_server->send_directory_to_directory("../../../assets", client_endpoint, "pong_game");
-                tcp_server->send_message("T'as tout les fichiers", client_endpoint);
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                tcp_server->send_fin(client_endpoint);
-            });
-        io_context.run();
+        tcp_server->setNewClientCallback([tcp_server](
+                                             const asio::ip::tcp::endpoint& client_endpoint) {
+            std::cout << "New client connected: " << client_endpoint << std::endl;
+            tcp_server->sendMessage("UWU1", client_endpoint);
+            tcp_server->sendDirectory("../rtype_game", client_endpoint);
+            tcp_server->sendDirectoryToDirectory("../../../assets", client_endpoint, "rtype_game");
+            // tcp_server->sendDirectory("../pong_game", client_endpoint);
+            // tcp_server->sendDirectoryToDirectory("../../../assets", client_endpoint,
+            // "pong_game");
+            tcp_server->sendMessage("T'as tout les fichiers", client_endpoint);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            tcp_server->sendFin(client_endpoint);
+        });
+        ioContext.run();
         std::this_thread::sleep_for(std::chrono::minutes(30));
         std::cout << "Server stopped" << std::endl;
         return 0;

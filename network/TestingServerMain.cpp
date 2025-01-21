@@ -27,18 +27,18 @@ int main(int argc, char* argv[]) {
     unsigned short port = static_cast<unsigned short>(std::stoi(argv[1]));
 
     try {
-        asio::io_context io_context;
+        asio::io_context ioContext;
         auto             tcpserver = std::make_shared<TCPServer>(port);
-        tcpserver->setNewClientCallback(
-            [tcpserver](const asio::ip::tcp::endpoint& client_endpoint) {
-                std::cout << "New client connected: " << client_endpoint << std::endl;
-                // tcpserver->send_directory("../../../assets", client_endpoint);
-                tcpserver->send_directory("../rtype_game", client_endpoint);
-                tcpserver->send_directory_to_directory("../../../assets", client_endpoint, "rtype_game");
-                std::this_thread::sleep_for(std::chrono::seconds(5));
-                tcpserver->send_fin(client_endpoint);
-            });
-        // auto             server = std::make_shared<UDPServer>(io_context, port);
+        tcpserver->setNewClientCallback([tcpserver](
+                                            const asio::ip::tcp::endpoint& client_endpoint) {
+            std::cout << "New client connected: " << client_endpoint << std::endl;
+            // tcpserver->sendDirectory("../../../assets", client_endpoint);
+            tcpserver->sendDirectory("../rtype_game", client_endpoint);
+            tcpserver->sendDirectoryToDirectory("../../../assets", client_endpoint, "rtype_game");
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+            tcpserver->sendFin(client_endpoint);
+        });
+        // auto             server = std::make_shared<UDPServer>(ioContext, port);
 
         // for how long the server will run:
         std::this_thread::sleep_for(std::chrono::seconds(10000000));

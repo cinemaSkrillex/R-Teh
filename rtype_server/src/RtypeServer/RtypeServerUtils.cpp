@@ -20,21 +20,21 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
     if (!entity) {
         return;
     }
-    auto& registry        = _game_instance->getRegistryRef();
-    auto* position        = registry.get_component<RealEngine::Position>(*entity);
-    auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(*entity);
+    auto& registry        = _gameInstance->getRegistryRef();
+    auto* position        = registry.getComponent<RealEngine::Position>(*entity);
+    auto* netvarContainer = registry.getComponent<RealEngine::NetvarContainer>(*entity);
 
     if (netvarContainer) {
         auto* score_health_update = netvarContainer->getNetvar("score_health_update");
         if (score_health_update) {
             if (std::any_cast<bool>(score_health_update->value)) {
                 std::cout << "Score health update" << std::endl;
-                auto* score  = registry.get_component<RealEngine::Score>(*entity);
-                auto* health = registry.get_component<RealEngine::Health>(*entity);
+                auto* score  = registry.getComponent<RealEngine::Score>(*entity);
+                auto* health = registry.getComponent<RealEngine::Health>(*entity);
 
                 RTypeProtocol::PlayerUpdateDataMessage playerUpdateDataMessage = {};
-                playerUpdateDataMessage.message_type = RTypeProtocol::PLAYER_UPDATE_DATA;
-                playerUpdateDataMessage.uuid         = player.getUUID();
+                playerUpdateDataMessage.messageType = RTypeProtocol::PLAYER_UPDATE_DATA;
+                playerUpdateDataMessage.uuid        = player.getUUID();
                 if (score) {
                     playerUpdateDataMessage.score = score->amount;
                 } else {
@@ -63,7 +63,7 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
 
     // Create a PlayerMoveMessage
     RTypeProtocol::PlayerMoveMessage playerMoveMessage = {};
-    playerMoveMessage.message_type                     = RTypeProtocol::PLAYER_MOVE;
+    playerMoveMessage.messageType                      = RTypeProtocol::PLAYER_MOVE;
     playerMoveMessage.uuid                             = player.getUUID();
     playerMoveMessage.x                                = position->x;
     playerMoveMessage.y                                = position->y;
@@ -78,21 +78,21 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
 }
 
 void RtypeServer::startAndBroadcastLevel() {
-    _game_instance->getMap()->startLevel();
+    _gameInstance->getMap()->startLevel();
     broadcastStartLevel();
 }
 
 void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry) {
     // broadcast position, angle
-    auto* position = registry->get_component<RealEngine::Position>(entity);
-    auto* rotation = registry->get_component<RealEngine::Rotation>(entity);
+    auto* position = registry->getComponent<RealEngine::Position>(entity);
+    auto* rotation = registry->getComponent<RealEngine::Rotation>(entity);
 
     if (!position) {
         return;
     }
 
     RTypeProtocol::EntityUpdateMessage entityStateMessage = {};
-    entityStateMessage.message_type                       = RTypeProtocol::ENTITY_UPDATE;
+    entityStateMessage.messageType                        = RTypeProtocol::ENTITY_UPDATE;
     entityStateMessage.uuid                               = entity;
     entityStateMessage.x                                  = position->x;
     entityStateMessage.y                                  = position->y;
@@ -113,23 +113,23 @@ void RtypeServer::broadcastEntityState(RealEngine::Entity entity, RealEngine::Re
 
 void RtypeServer::broadcastAllReliable(const std::array<char, 800>& message) {
     for (const auto& client : _server->getClients()) {
-        _server->send_reliable_packet(message, client);
+        _server->sendReliablePacket(message, client);
     }
 }
 
 void RtypeServer::broadcastAllUnreliable(const std::array<char, 800>& message) {
     for (const auto& client : _server->getClients()) {
-        _server->send_unreliable_packet(message, client);
+        _server->sendUnreliablePacket(message, client);
     }
 }
 
 void RtypeServer::printServerStartupBanner() {
     std::string  timestamp   = formatTimestamp(_startTime);
-    int          server_tick = _server_config.getConfigItem<int>("SERVER_TICK");
+    int          server_tick = _serverConfig.getConfigItem<int>("SERVER_TICK");
     sf::Vector2f player_start_position =
-        _server_config.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
-    int  server_broadcast_tick = _server_config.getConfigItem<int>("SERVER_BROADCAST_TICK");
-    auto GameMap               = _game_instance->getMap();
+        _serverConfig.getConfigItem<sf::Vector2f>("PLAYER_START_POSITION");
+    int  server_broadcast_tick = _serverConfig.getConfigItem<int>("SERVER_BROADCAST_TICK");
+    auto GameMap               = _gameInstance->getMap();
     auto blockEntities         = GameMap->getBlockEntities();
     auto waveEntities          = GameMap->getWaves();
     auto tiles                 = GameMap->getTiles();
@@ -172,9 +172,9 @@ void RtypeServer::printServerStartupBanner() {
 
 void RtypeServer::broadcastStartLevel() {
     RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
-    levelSignalMessage.message_type                      = RTypeProtocol::LEVEL_SIGNAL;
-    levelSignalMessage.startLevel = _game_instance->getMap()->getIsLevelRunning();
-    std::cout << "getMap()->getIsLevelRunning() = " << _game_instance->getMap()->getIsLevelRunning()
+    levelSignalMessage.messageType                       = RTypeProtocol::LEVEL_SIGNAL;
+    levelSignalMessage.startLevel = _gameInstance->getMap()->getIsLevelRunning();
+    std::cout << "getMap()->getIsLevelRunning() = " << _gameInstance->getMap()->getIsLevelRunning()
               << std::endl;
     std::cout << "levelSignalMessage.startLevel = " << levelSignalMessage.startLevel << std::endl;
     // Serialize the LevelSignalMessage
@@ -196,11 +196,11 @@ void RtypeServer::BroadcastStopLevel() {
 }
 
 void RtypeServer::startLevel() {
-    _game_instance->getMap()->startLevel();
+    _gameInstance->getMap()->startLevel();
     std::cout << "Level started" << std::endl;
 }
 
 void RtypeServer::stopLevel() {
-    _game_instance->getMap()->stopLevel();
+    _gameInstance->getMap()->stopLevel();
     std::cout << "Level stopped" << std::endl;
 }

@@ -9,10 +9,10 @@
 
 RtypeServer::RtypeServer(std::shared_ptr<UDPServer> server, bool server_vision)
     : _server(server),
-      _game_instance(std::make_shared<GameInstance>(server_vision)),
-      _server_config(),
+      _gameInstance(std::make_shared<GameInstance>(server_vision)),
+      _serverConfig(),
       _startTime(std::chrono::steady_clock::now()),
-      _scene_manager() {
+      _sceneManager() {
     initCallbacks();
     initEventHandlers();
     printServerStartupBanner();

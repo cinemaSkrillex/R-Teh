@@ -9,7 +9,7 @@
 
 void PongServer::initCallbacks() {
     _server->setNewClientCallback([this](const asio::ip::udp::endpoint& sender) {
-        auto registry           = _game_instance->getRegistry();
+        auto registry           = _gameInstance->getRegistry();
         bool is_a_player        = false;
         long controlled_players = 0;
 
@@ -21,10 +21,10 @@ void PongServer::initCallbacks() {
 
         // send background
         PongProtocol::NewEntityMessage backgroundMessage;
-        backgroundMessage.message_type = PongProtocol::NEW_ENTITY;
-        backgroundMessage.uuid         = *_background;
-        auto* backgroundPosition       = registry->get_component<RealEngine::Position>(_background);
-        auto* drawable                 = registry->get_component<RealEngine::Drawable>(_background);
+        backgroundMessage.messageType = PongProtocol::NEW_ENTITY;
+        backgroundMessage.uuid        = *_background;
+        auto* backgroundPosition      = registry->getComponent<RealEngine::Position>(_background);
+        auto* drawable                = registry->getComponent<RealEngine::Drawable>(_background);
         if (backgroundPosition) {
             addComponentToMessage(backgroundMessage, PongProtocol::ComponentList::POSITION,
                                   *backgroundPosition);
@@ -37,17 +37,17 @@ void PongServer::initCallbacks() {
         // serialize and send background message
         std::array<char, 800> serializedBackgroundMessage =
             PongProtocol::serialize<800>(backgroundMessage);
-        _server->send_reliable_packet(serializedBackgroundMessage, sender);
+        _server->sendReliablePacket(serializedBackgroundMessage, sender);
 
         // send ball
         PongProtocol::NewEntityMessage ballMessage;
-        ballMessage.message_type = PongProtocol::NEW_ENTITY;
-        ballMessage.uuid         = *_ball;
-        auto* ballPosition       = registry->get_component<RealEngine::Position>(_ball);
-        auto* ballVelocity       = registry->get_component<RealEngine::Velocity>(_ball);
-        auto* ballInterpolation  = registry->get_component<RealEngine::Interpolation>(_ball);
-        // auto* ballAcceleration   = registry->get_component<RealEngine::Acceleration>(_ball);
-        auto* ballDrawable = registry->get_component<RealEngine::Drawable>(_ball);
+        ballMessage.messageType = PongProtocol::NEW_ENTITY;
+        ballMessage.uuid        = *_ball;
+        auto* ballPosition      = registry->getComponent<RealEngine::Position>(_ball);
+        auto* ballVelocity      = registry->getComponent<RealEngine::Velocity>(_ball);
+        auto* ballInterpolation = registry->getComponent<RealEngine::Interpolation>(_ball);
+        // auto* ballAcceleration   = registry->getComponent<RealEngine::Acceleration>(_ball);
+        auto* ballDrawable = registry->getComponent<RealEngine::Drawable>(_ball);
         if (ballPosition) {
             addComponentToMessage(ballMessage, PongProtocol::ComponentList::POSITION,
                                   *ballPosition);
@@ -74,16 +74,16 @@ void PongServer::initCallbacks() {
         }
         // serialize and send ball message
         std::array<char, 800> serializedBallMessage = PongProtocol::serialize<800>(ballMessage);
-        _server->send_reliable_packet(serializedBallMessage, sender);
+        _server->sendReliablePacket(serializedBallMessage, sender);
 
         if (is_a_player) {
             if (_players.size() == 1) {
-                _players[sender] = _game_instance->addAndGetPlayer({20, 500}, 2);
+                _players[sender] = _gameInstance->addAndGetPlayer({20, 500}, 2);
                 _playerTimestamps[sender] =
                     std::chrono::system_clock::now().time_since_epoch().count();
             }
             if (_players.size() == 0) {
-                _players[sender] = _game_instance->addAndGetPlayer({780, 500}, 1);
+                _players[sender] = _gameInstance->addAndGetPlayer({780, 500}, 1);
                 _playerTimestamps[sender] =
                     std::chrono::system_clock::now().time_since_epoch().count();
             }
@@ -93,15 +93,15 @@ void PongServer::initCallbacks() {
         // send players
         for (auto& player : _players) {
             PongProtocol::NewEntityMessage playerMessage;
-            playerMessage.message_type = PongProtocol::NEW_ENTITY;
-            playerMessage.uuid         = *player.second;
-            auto* playerPosition = registry->get_component<RealEngine::Position>(player.second);
-            auto* playerVelocity = registry->get_component<RealEngine::Velocity>(player.second);
+            playerMessage.messageType = PongProtocol::NEW_ENTITY;
+            playerMessage.uuid        = *player.second;
+            auto* playerPosition      = registry->getComponent<RealEngine::Position>(player.second);
+            auto* playerVelocity      = registry->getComponent<RealEngine::Velocity>(player.second);
             auto* playerInterpolation =
-                registry->get_component<RealEngine::Interpolation>(player.second);
+                registry->getComponent<RealEngine::Interpolation>(player.second);
             auto* playerAcceleration =
-                registry->get_component<RealEngine::Acceleration>(player.second);
-            auto* playerDrawable = registry->get_component<RealEngine::Drawable>(player.second);
+                registry->getComponent<RealEngine::Acceleration>(player.second);
+            auto* playerDrawable = registry->getComponent<RealEngine::Drawable>(player.second);
             if (playerPosition) {
                 addComponentToMessage(playerMessage, PongProtocol::ComponentList::POSITION,
                                       *playerPosition);
@@ -130,31 +130,31 @@ void PongServer::initCallbacks() {
             // serialize and send player message
             std::array<char, 800> serializedPlayerMessage =
                 PongProtocol::serialize<800>(playerMessage);
-            _server->send_reliable_packet(serializedPlayerMessage, sender);
+            _server->sendReliablePacket(serializedPlayerMessage, sender);
 
             // send player score
             PongProtocol::PlayerUpdateDataMessage playerScoreMessage;
-            playerScoreMessage.message_type = PongProtocol::PLAYER_UPDATE_DATA;
-            playerScoreMessage.uuid         = *player.second;
-            auto* playerScore = registry->get_component<RealEngine::Score>(player.second);
+            playerScoreMessage.messageType = PongProtocol::PLAYER_UPDATE_DATA;
+            playerScoreMessage.uuid        = *player.second;
+            auto* playerScore = registry->getComponent<RealEngine::Score>(player.second);
             if (playerScore) {
                 playerScoreMessage.score = playerScore->amount;
             }
             // serialize and send player score message
             std::array<char, 800> serializedPlayerScoreMessage =
                 PongProtocol::serialize<800>(playerScoreMessage);
-            _server->send_reliable_packet(serializedPlayerScoreMessage, sender);
+            _server->sendReliablePacket(serializedPlayerScoreMessage, sender);
         }
 
         // send controlled player
         if (is_a_player) {
             PongProtocol::BaseMessage playerControlMessage;
-            playerControlMessage.message_type = PongProtocol::PLAYER_CONTROL;
-            playerControlMessage.uuid         = controlled_players;
+            playerControlMessage.messageType = PongProtocol::PLAYER_CONTROL;
+            playerControlMessage.uuid        = controlled_players;
             // serialize and send controlled player message
             std::array<char, 800> serializedPlayerControlMessage =
                 PongProtocol::serialize<800>(playerControlMessage);
-            _server->send_reliable_packet(serializedPlayerControlMessage, sender);
+            _server->sendReliablePacket(serializedPlayerControlMessage, sender);
         }
     });
 }

@@ -17,20 +17,20 @@ void LagCompensationSystem::update(Registry &registry, float deltaTime) {
 
     if (entities.empty()) return;
     for (auto entity : entities) {
-        Interpolation *interpolation = registry.get_component<Interpolation>(entity);
-        Position      *position      = registry.get_component<Position>(entity);
+        Interpolation *interpolation = registry.getComponent<Interpolation>(entity);
+        Position      *position      = registry.getComponent<Position>(entity);
         if (interpolation->reset) {
             position->x          = interpolation->end.x;
             position->y          = interpolation->end.y;
             interpolation->reset = false;
         }
         sf::Vector2f newPos = LagCompensation::lerp(interpolation->start, interpolation->end,
-                                                    interpolation->current_step);
+                                                    interpolation->currentStep);
         position->x         = newPos.x;
         position->y         = newPos.y;
 
-        interpolation->current_step =
-            std::min(interpolation->current_step + interpolation->step * deltaTime, 1.0f);
+        interpolation->currentStep =
+            std::min(interpolation->currentStep + interpolation->step * deltaTime, 1.0f);
     }
 }
 }  // namespace RealEngine

@@ -10,8 +10,8 @@
 ServerPlayer::ServerPlayer(/* args */) {}
 
 ServerPlayer::ServerPlayer(long int uuid, long int timestamp,
-                           std::shared_ptr<RealEngine::Entity> _player_entity,
+                           std::shared_ptr<RealEngine::Entity> _playerEntity,
                            RealEngine::Registry*               registry)
-    : _uuid(uuid), _entity(_player_entity), _registry(registry), _last_update(timestamp) {}
+    : _uuid(uuid), _entity(_playerEntity), _registry(registry), _lastUpdate(timestamp) {}
 
 ServerPlayer::~ServerPlayer() {}

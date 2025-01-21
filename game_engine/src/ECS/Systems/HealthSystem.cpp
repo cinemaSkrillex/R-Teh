@@ -17,7 +17,7 @@ void HealthSystem::update(Registry& registry, float deltaTime) {
         return;
     }
     for (auto entity : entities) {
-        auto* health   = registry.get_component<Health>(entity);
+        auto* health   = registry.getComponent<Health>(entity);
         health->amount = std::clamp(health->amount, 0, health->maxHealth);
         if (health->invincibilityTime > 0.0f) {
             health->invincibilityTime -= deltaTime;

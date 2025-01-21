@@ -7,11 +7,10 @@
 
 #include "../../include/Client/UDPClient.hpp"
 
-UDPClient::UDPClient(asio::io_context& io_context, unsigned short port,
-                     const std::string& server_ip, unsigned short server_port)
-    : ANetwork<800>(io_context, port, Role::CLIENT) {
-    _server_endpoint =
-        asio::ip::udp::endpoint(asio::ip::address::from_string(server_ip), server_port);
+UDPClient::UDPClient(asio::io_context& ioContext, unsigned short port, const std::string& serverIp,
+                     unsigned short serverPort)
+    : ANetwork<800>(ioContext, port, Role::CLIENT) {
+    _serverEndpoint = asio::ip::udp::endpoint(asio::ip::address::from_string(serverIp), serverPort);
 }
 
 // Callbacks
@@ -21,32 +20,32 @@ void UDPClient::setNewClientCallback(
 }
 
 // Send methods
-void UDPClient::send_unreliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_unreliable_packet(message, _server_endpoint);
+void UDPClient::sendUnreliablePacket(const std::array<char, 800>& message) {
+    ANetwork<800>::sendUnreliablePacket(message, _serverEndpoint);
 }
 
-void UDPClient::send_reliable_packet(const std::array<char, 800>& message) {
-    ANetwork<800>::send_reliable_packet(message, _server_endpoint);
+void UDPClient::sendReliablePacket(const std::array<char, 800>& message) {
+    ANetwork<800>::sendReliablePacket(message, _serverEndpoint);
 }
 
 // Receive methods
-std::vector<std::array<char, 800>> UDPClient::get_unreliable_messages_from_endpoint(
+std::vector<std::array<char, 800>> UDPClient::getUnreliableMessagesFromEndpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return ANetwork<800>::get_unreliable_messages_from_endpoint(endpoint);
+    return ANetwork<800>::getUnreliableMessagesFromEndpoint(endpoint);
 }
 
-std::vector<std::array<char, 800>> UDPClient::get_reliable_messages_from_endpoint(
+std::vector<std::array<char, 800>> UDPClient::getReliableMessagesFromEndpoint(
     const asio::ip::udp::endpoint& endpoint) {
-    return ANetwork<800>::get_reliable_messages_from_endpoint(endpoint);
+    return ANetwork<800>::getReliableMessagesFromEndpoint(endpoint);
 }
 
-std::array<char, 800> UDPClient::get_last_unreliable_packet_data() {
-    return ANetwork<800>::get_last_unreliable_packet_data();
+std::array<char, 800> UDPClient::getLastUnreliablePacketData() {
+    return ANetwork<800>::getLastUnreliablePacketData();
 }
 
-std::array<char, 800> UDPClient::get_last_reliable_packet_data() {
-    return ANetwork<800>::get_last_reliable_packet_data();
+std::array<char, 800> UDPClient::getLastReliablePacketData() {
+    return ANetwork<800>::getLastReliablePacketData();
 }
 
 // Miscellaneous methods
-void UDPClient::send_new_client() { ANetwork<800>::send_new_client(_server_endpoint); }
+void UDPClient::sendNewClient() { ANetwork<800>::sendNewClient(_serverEndpoint); }

@@ -11,9 +11,9 @@ namespace rtype {
 
 static void goUpAndDown(RealEngine::Registry& registry, RealEngine::Entity entity,
                         float deltaTime) {
-    auto* position     = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity     = registry.get_component<RealEngine::Velocity>(entity);
-    auto* acceleration = registry.get_component<RealEngine::Acceleration>(entity);
+    auto* position     = registry.getComponent<RealEngine::Position>(entity);
+    auto* velocity     = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* acceleration = registry.getComponent<RealEngine::Acceleration>(entity);
 
     if (position && acceleration) {
         position->y += acceleration->ay * deltaTime;
@@ -22,11 +22,11 @@ static void goUpAndDown(RealEngine::Registry& registry, RealEngine::Entity entit
 
 static void alignOnTargetOnY(RealEngine::Registry& registry, RealEngine::Entity entity,
                              float deltaTime) {
-    auto  entity_target  = registry.get_component<RealEngine::Target>(entity);
-    auto* position       = registry.get_component<RealEngine::Position>(entity);
-    auto* velocity       = registry.get_component<RealEngine::Velocity>(entity);
-    auto* targetPosition = registry.get_component<RealEngine::Position>(entity_target->target);
-    auto* acceleration   = registry.get_component<RealEngine::Acceleration>(entity);
+    auto  entity_target  = registry.getComponent<RealEngine::Target>(entity);
+    auto* position       = registry.getComponent<RealEngine::Position>(entity);
+    auto* velocity       = registry.getComponent<RealEngine::Velocity>(entity);
+    auto* targetPosition = registry.getComponent<RealEngine::Position>(entity_target->target);
+    auto* acceleration   = registry.getComponent<RealEngine::Acceleration>(entity);
 
     if (position && targetPosition) {
         float dy = targetPosition->y - position->y;
@@ -42,12 +42,12 @@ static void alignOnTargetOnY(RealEngine::Registry& registry, RealEngine::Entity 
 
 static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                 RealEngine::Netvar& currentNetvar, float deltaTime) {
-    auto* target = registry.get_component<RealEngine::Target>(entity);
+    auto* target = registry.getComponent<RealEngine::Target>(entity);
     if (!target) return;
 
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto* position  = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation  = registry.getComponent<RealEngine::Rotation>(entity);
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
@@ -64,12 +64,12 @@ static void updateShootCooldown(RealEngine::Registry& registry, RealEngine::Enti
 
 static void updateVortexCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                  RealEngine::Netvar& currentNetvar, float deltaTime) {
-    auto* target = registry.get_component<RealEngine::Target>(entity);
+    auto* target = registry.getComponent<RealEngine::Target>(entity);
     if (!target) return;
 
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto* position  = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation  = registry.getComponent<RealEngine::Rotation>(entity);
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
@@ -82,12 +82,12 @@ static void updateVortexCooldown(RealEngine::Registry& registry, RealEngine::Ent
 
 static void updateHorizontalMoveCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                          RealEngine::Netvar& currentNetvar, float deltaTime) {
-    auto* target = registry.get_component<RealEngine::Target>(entity);
+    auto* target = registry.getComponent<RealEngine::Target>(entity);
     if (!target) return;
 
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto* position  = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation  = registry.getComponent<RealEngine::Rotation>(entity);
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
@@ -104,12 +104,12 @@ static void updateHorizontalMoveCooldown(RealEngine::Registry& registry, RealEng
 
 static void updateMinionsCooldown(RealEngine::Registry& registry, RealEngine::Entity entity,
                                   RealEngine::Netvar& currentNetvar, float deltaTime) {
-    auto* target = registry.get_component<RealEngine::Target>(entity);
+    auto* target = registry.getComponent<RealEngine::Target>(entity);
     if (!target) return;
 
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
-    auto* position  = registry.get_component<RealEngine::Position>(entity);
-    auto* rotation  = registry.get_component<RealEngine::Rotation>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
+    auto* position  = registry.getComponent<RealEngine::Position>(entity);
+    auto* rotation  = registry.getComponent<RealEngine::Rotation>(entity);
     float cooldown  = std::any_cast<float>(currentNetvar.value);
 
     if (cooldown <= 0) {
@@ -123,28 +123,28 @@ static void updateMinionsCooldown(RealEngine::Registry& registry, RealEngine::En
 }
 
 RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(
-        _entity, RealEngine::Interpolation{
-                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(_entity, RealEngine::Velocity{0, 0, {50.f, 200.f}, 0.5f});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity,
+                          RealEngine::Interpolation{
+                              {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    registry.addComponent(_entity, RealEngine::Velocity{0, 0, {50.f, 200.f}, 0.5f});
     auto spriteSheet = *RealEngine::AssetManager::getInstance().getSpriteSheet("robot_mini_boss");
-    registry.add_component(_entity, RealEngine::SpriteSheet{spriteSheet});
-    registry.add_component(_entity, RealEngine::Drawable{});
-    registry.add_component(_entity,
-                           RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
-                                                 "mob",
-                                                 false,
-                                                 RealEngine::CollisionType::ENEMY,
-                                                 takesDamage});
-    registry.add_component(_entity, RealEngine::AI{alignOnTargetOnY, noBehavior, true});
-    registry.add_component(_entity, RealEngine::Damage{50});
-    registry.add_component(_entity, RealEngine::Health{850, 850});
-    registry.add_component(_entity, RealEngine::Rotation{0.f});
-    registry.add_component(_entity, RealEngine::Damage{25});
-    registry.add_component(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::SpriteSheet{spriteSheet});
+    registry.addComponent(_entity, RealEngine::Drawable{});
+    registry.addComponent(_entity,
+                          RealEngine::Collision{{0.f, 0.f, 16.f * GAME_SCALE, 8.f * GAME_SCALE},
+                                                "mob",
+                                                false,
+                                                RealEngine::CollisionType::ENEMY,
+                                                takesDamage});
+    registry.addComponent(_entity, RealEngine::AI{alignOnTargetOnY, noBehavior, true});
+    registry.addComponent(_entity, RealEngine::Damage{50});
+    registry.addComponent(_entity, RealEngine::Health{850, 850});
+    registry.addComponent(_entity, RealEngine::Rotation{0.f});
+    registry.addComponent(_entity, RealEngine::Damage{25});
+    registry.addComponent(_entity, RealEngine::AutoDestructible{-1.0f, true, false});
+    registry.addComponent(
         _entity,
         RealEngine::NetvarContainer{{
             {"sprite_name", {"string", "sprite_name", std::string("robot_mini_boss"), nullptr}},
@@ -159,7 +159,7 @@ RobotMiniBoss::RobotMiniBoss(RealEngine::Registry& registry, sf::Vector2f positi
             {"verticalMoveCooldown", {"float", "verticalMoveCooldown", 2.5f, updateVortexCooldown}},
             {"minionsCooldown", {"float", "minionsCooldown", 5.0f, updateMinionsCooldown}},
         }});
-    registry.add_component(_entity, RealEngine::Score{500});
+    registry.addComponent(_entity, RealEngine::Score{500});
 }
 
 RobotMiniBoss::~RobotMiniBoss() {}

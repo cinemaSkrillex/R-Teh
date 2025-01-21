@@ -24,7 +24,7 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
     RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
     std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
 
-    _UdpServer->send_reliable_packet(serializedMapMessage, sender);
+    _UdpServer->sendReliablePacket(serializedMapMessage, sender);
     // Serialize and send map info
 }
 
@@ -38,15 +38,15 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block
     }
 
     RTypeProtocol::NewEntityMessage newTileMessage;
-    newTileMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-    newTileMessage.uuid         = *blockEntity;
-    newTileMessage.entity_type  = RTypeProtocol::EntityType::BLOCK;
+    newTileMessage.messageType = RTypeProtocol::MessageType::NEW_ENTITY;
+    newTileMessage.uuid        = *blockEntity;
+    newTileMessage.entity_type = RTypeProtocol::EntityType::BLOCK;
     std::cout << "Block entity: " << *blockEntity << std::endl;
 
     auto& registry      = _gameInstance->getRegistryRef();
-    auto* position      = registry.get_component<RealEngine::Position>(*blockEntity);
-    auto* rotation      = registry.get_component<RealEngine::Rotation>(*blockEntity);
-    auto* Interpolation = registry.get_component<RealEngine::Interpolation>(*blockEntity);
+    auto* position      = registry.getComponent<RealEngine::Position>(*blockEntity);
+    auto* rotation      = registry.getComponent<RealEngine::Rotation>(*blockEntity);
+    auto* Interpolation = registry.getComponent<RealEngine::Interpolation>(*blockEntity);
     if (!position || position->x < 0) {
         std::cerr << "Error: Block position is null" << std::endl;
         return;
@@ -77,14 +77,14 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block
 RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     const std::shared_ptr<ServerMap>& GameMap) {
     RTypeProtocol::MapMessage mapMessage;
-    mapMessage.message_type     = RTypeProtocol::MessageType::MAP_INFO;
-    mapMessage.uuid             = 0;
-    mapMessage.scrollingSpeed   = GameMap->getScrollingSpeed();
-    mapMessage.x_level_position = GameMap->getXLevelPosition();
-    mapMessage.isLoaded         = GameMap->isLoaded();
-    mapMessage.isLevelRunning   = GameMap->getIsLevelRunning();
+    mapMessage.messageType     = RTypeProtocol::MessageType::MAP_INFO;
+    mapMessage.uuid            = 0;
+    mapMessage.scrollingSpeed  = GameMap->getScrollingSpeed();
+    mapMessage._xLevelPosition = GameMap->getXLevelPosition();
+    mapMessage.isLoaded        = GameMap->isLoaded();
+    mapMessage.isLevelRunning  = GameMap->getIsLevelRunning();
     std::cout << "map scrolling speed: " << mapMessage.scrollingSpeed << std::endl;
-    std::cout << "map x level position: " << mapMessage.x_level_position << std::endl;
+    std::cout << "map x level position: " << mapMessage._xLevelPosition << std::endl;
     std::cout << "Map is loaded: " << mapMessage.isLoaded << std::endl;
     std::cout << "Map is running: " << mapMessage.isLevelRunning << std::endl;
     mapMessage.server_tick = _serverConfig.getConfigItem<int>("SERVER_TICK");

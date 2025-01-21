@@ -14,9 +14,9 @@ void RotationSystem::update(Registry& registry, float deltaTime) {
         return;
     }
     for (auto entity : entities) {
-        auto* rotation    = registry.get_component<Rotation>(entity);
-        auto* sprite      = registry.get_component<SpriteComponent>(entity);
-        auto* spritesheet = registry.get_component<SpriteSheet>(entity);
+        auto* rotation    = registry.getComponent<Rotation>(entity);
+        auto* sprite      = registry.getComponent<SpriteComponent>(entity);
+        auto* spritesheet = registry.getComponent<SpriteSheet>(entity);
 
         if (rotation && sprite) {
             sprite->sprite.setRotation(rotation->angle);

@@ -4,12 +4,12 @@ namespace rtype {
 
 static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
-    auto* playerHealth    = registry.get_component<RealEngine::Health>(entity);
-    auto* colliderDamage  = registry.get_component<RealEngine::Damage>(collider);
-    auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* playerHealth    = registry.getComponent<RealEngine::Health>(entity);
+    auto* colliderDamage  = registry.getComponent<RealEngine::Damage>(collider);
+    auto* netvarContainer = registry.getComponent<RealEngine::NetvarContainer>(entity);
 
     if (playerHealth && colliderDamage && playerHealth->invincibilityTime <= 0.0f) {
-        auto* playerPosition = registry.get_component<RealEngine::Position>(entity);
+        auto* playerPosition = registry.getComponent<RealEngine::Position>(entity);
         std::cout << "Player take damage amount:" << colliderDamage->amount << std::endl;
         if (colliderDamage->effect) {
             playerHealth->regenerationRate     = -colliderDamage->amount;
@@ -31,14 +31,14 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
 
 static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity entity,
                               RealEngine::Entity bonus) {
-    auto* playerHealth    = registry.get_component<RealEngine::Health>(entity);
-    auto* bonusType       = registry.get_component<RealEngine::NetvarContainer>(bonus);
-    auto* playerContainer = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* playerHealth    = registry.getComponent<RealEngine::Health>(entity);
+    auto* bonusType       = registry.getComponent<RealEngine::NetvarContainer>(bonus);
+    auto* playerContainer = registry.getComponent<RealEngine::NetvarContainer>(entity);
 
     if (playerHealth && bonusType) {
         auto* type        = bonusType->getNetvar("powerup_type");
-        auto* bonusScore  = registry.get_component<RealEngine::Score>(bonus);
-        auto* playerScore = registry.get_component<RealEngine::Score>(entity);
+        auto* bonusScore  = registry.getComponent<RealEngine::Score>(bonus);
+        auto* playerScore = registry.getComponent<RealEngine::Score>(entity);
         if (std::any_cast<int>(type->value) == 0) {
             playerHealth->amount += 10;
         }
@@ -49,7 +49,7 @@ static void playerBonusEffect(RealEngine::Registry& registry, RealEngine::Entity
             }
         }
         if (std::any_cast<int>(type->value) == 2) {
-            auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+            auto* velocity = registry.getComponent<RealEngine::Velocity>(entity);
             velocity->maxSpeed.x += 50.0f;
             velocity->maxSpeed.y += 50.0f;
         }
@@ -106,7 +106,7 @@ static void updateCooldown(RealEngine::Registry& registry, RealEngine::Entity& e
 
 static void updateHoldTime(RealEngine::Registry& registry, RealEngine::Entity& entity,
                            RealEngine::Netvar& currentNetvar, float deltaTime) {
-    auto* container = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
     auto* isHolding = container->getNetvar("isHolding");
     if (std::any_cast<bool>(isHolding->value)) {
         currentNetvar.value = std::any_cast<float>(currentNetvar.value) + deltaTime;
@@ -118,8 +118,8 @@ static void updateHoldTime(RealEngine::Registry& registry, RealEngine::Entity& e
 static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
                                     RealEngine::Netvar& currentNetvar, float deltaTime) {
     currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
-    auto* health        = registry.get_component<RealEngine::Health>(entity);
-    auto* spritesheet   = registry.get_component<RealEngine::SpriteSheet>(entity);
+    auto* health        = registry.getComponent<RealEngine::Health>(entity);
+    auto* spritesheet   = registry.getComponent<RealEngine::SpriteSheet>(entity);
 
     if (!health || !spritesheet) {
         return;
@@ -146,29 +146,29 @@ static void updateInvincibilityAnim(RealEngine::Registry& registry, RealEngine::
 }
 
 PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()) {
+    : _entity(registry.spawnEntity()) {
     _playerSpriteSheet.emplace(
         "idle", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_idle")));
     _playerSpriteSheet.emplace(
         "up", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_up")));
     _playerSpriteSheet.emplace(
         "down", *(RealEngine::AssetManager::getInstance().getSprite("spaceship_down")));
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-    registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
-    registry.add_component(_entity, RealEngine::Controllable{});
-    registry.add_component(_entity, RealEngine::Health{100, 200});
-    registry.add_component(
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+    registry.addComponent(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
+    registry.addComponent(_entity, RealEngine::Controllable{});
+    registry.addComponent(_entity, RealEngine::Health{100, 200});
+    registry.addComponent(
         _entity,
         RealEngine::SpriteSheet{
             _playerSpriteSheet, "idle", 0, {32, 15}, false, false, 100, {-1, -1}, sf::Clock()});
-    registry.add_component(_entity,
-                           RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
-                                                 "spaceship",
-                                                 false,
-                                                 RealEngine::CollisionType::PLAYER,
-                                                 playerCollisionHandler});
-    registry.add_component(
+    registry.addComponent(_entity,
+                          RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
+                                                "spaceship",
+                                                false,
+                                                RealEngine::CollisionType::PLAYER,
+                                                playerCollisionHandler});
+    registry.addComponent(
         _entity, RealEngine::NetvarContainer{{
                      {"shootCooldown", {"float", "shootCooldown", 0.5f, updateCooldown}},
                      {"holdTime", {"float", "holdTime", 0.0f, updateHoldTime}},
@@ -178,7 +178,7 @@ PlayerEntity::PlayerEntity(RealEngine::Registry& registry, sf::Vector2f position
                      {"shootDamage", {"float", "shootDamage", 10.0f, nullptr}},
                      {"score_health_update", {"bool", "score_health_update", false, nullptr}},
                  }});
-    registry.add_component(_entity, RealEngine::Score{0});
+    registry.addComponent(_entity, RealEngine::Score{0});
 }
 
 PlayerEntity::~PlayerEntity() {}

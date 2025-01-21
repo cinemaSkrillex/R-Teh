@@ -83,11 +83,11 @@ class PongGameInstance {
    public:
     PongGameInstance(bool serverVision = false);
     ~PongGameInstance() = default;
-    void init_components();
-    void init_systems();
-    void init_textures();
-    void init_sprite_sheets();
-    void init_screen_limits();
+    void initComponents();
+    void initSystems();
+    void initTextures();
+    void initSpriteSheets();
+    void initScreenLimits();
 
     std::shared_ptr<RealEngine::Entity> addAndGetPlayer(sf::Vector2f position, size_t id);
     std::shared_ptr<RealEngine::Entity> addAndGetEntity(std::shared_ptr<RealEngine::Entity> entity);

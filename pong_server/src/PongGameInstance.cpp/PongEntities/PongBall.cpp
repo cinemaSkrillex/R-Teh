@@ -11,7 +11,7 @@ namespace pong {
 
 static void handlePlayerCollision(RealEngine::Registry& registry, RealEngine::Entity collider,
                                   RealEngine::Entity entity) {
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+    auto* velocity = registry.getComponent<RealEngine::Velocity>(entity);
     if (!velocity) {
         return;
     }
@@ -21,7 +21,7 @@ static void handlePlayerCollision(RealEngine::Registry& registry, RealEngine::En
 
 static void handleWallCollision(RealEngine::Registry& registry, RealEngine::Entity collider,
                                 RealEngine::Entity entity) {
-    auto* velocity = registry.get_component<RealEngine::Velocity>(entity);
+    auto* velocity = registry.getComponent<RealEngine::Velocity>(entity);
     if (!velocity) {
         return;
     }
@@ -31,8 +31,8 @@ static void handleWallCollision(RealEngine::Registry& registry, RealEngine::Enti
 
 static void handleRestartCollision(RealEngine::Registry& registry, RealEngine::Entity collider,
                                    RealEngine::Entity entity) {
-    auto* position        = registry.get_component<RealEngine::Position>(entity);
-    auto* netvarContainer = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* position        = registry.getComponent<RealEngine::Position>(entity);
+    auto* netvarContainer = registry.getComponent<RealEngine::NetvarContainer>(entity);
     if (!position) {
         return;
     }
@@ -68,25 +68,25 @@ static void BallCollisionHandler(RealEngine::CollisionType collisionType,
 }
 
 PongBall::PongBall(RealEngine::Registry& registry, sf::Vector2f position)
-    : _entity(registry.spawn_entity()) {
-    registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-    registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 0.0f});
-    registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
-    registry.add_component(_entity, RealEngine::Collision{{-1, -1, -1, -1},
-                                                          "ball",
-                                                          false,
-                                                          RealEngine::CollisionType::OTHER,
-                                                          BallCollisionHandler});
+    : _entity(registry.spawnEntity()) {
+    registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+    registry.addComponent(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 0.0f});
+    registry.addComponent(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
+    registry.addComponent(_entity, RealEngine::Collision{{-1, -1, -1, -1},
+                                                         "ball",
+                                                         false,
+                                                         RealEngine::CollisionType::OTHER,
+                                                         BallCollisionHandler});
     auto sprite = RealEngine::AssetManager::getInstance().getSprite("ball");
-    registry.add_component(_entity, RealEngine::SpriteComponent{*sprite});
-    registry.add_component(_entity, RealEngine::Drawable{});
-    registry.add_component(_entity, RealEngine::Score{1});
-    registry.add_component(
-        _entity, RealEngine::Interpolation{
-                     {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    registry.add_component(_entity, RealEngine::NetvarContainer{{
-                                        {"score_to_update", {"int", "score", 0, nullptr}},
-                                    }});
+    registry.addComponent(_entity, RealEngine::SpriteComponent{*sprite});
+    registry.addComponent(_entity, RealEngine::Drawable{});
+    registry.addComponent(_entity, RealEngine::Score{1});
+    registry.addComponent(_entity,
+                          RealEngine::Interpolation{
+                              {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
+    registry.addComponent(_entity, RealEngine::NetvarContainer{{
+                                       {"score_to_update", {"int", "score", 0, nullptr}},
+                                   }});
 }
 
 PongBall::~PongBall() {}

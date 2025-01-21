@@ -3,7 +3,7 @@
 namespace rtype {
 
 static void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity entity) {
-    auto* health = registry.get_component<RealEngine::Health>(entity);
+    auto* health = registry.getComponent<RealEngine::Health>(entity);
 
     if (health) {
         health->amount -= health->maxHealth;
@@ -12,11 +12,11 @@ static void selfDestruct(RealEngine::Registry& registry, RealEngine::Entity enti
 
 static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity collider,
                              RealEngine::Entity entity) {
-    auto* playerHealth   = registry.get_component<RealEngine::Health>(entity);
-    auto* colliderDamage = registry.get_component<RealEngine::Damage>(collider);
+    auto* playerHealth   = registry.getComponent<RealEngine::Health>(entity);
+    auto* colliderDamage = registry.getComponent<RealEngine::Damage>(collider);
 
     if (playerHealth && colliderDamage && playerHealth->invincibilityTime <= 0.0f) {
-        auto* playerPosition = registry.get_component<RealEngine::Position>(entity);
+        auto* playerPosition = registry.getComponent<RealEngine::Position>(entity);
         std::cout << "Player take damage amount:" << colliderDamage->amount << std::endl;
         if (colliderDamage->effect) {
             playerHealth->regenerationRate     = -colliderDamage->amount;
@@ -33,9 +33,9 @@ static void playerTakeDamage(RealEngine::Registry& registry, RealEngine::Entity 
 static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Entity& entity,
                                  RealEngine::Netvar& currentNetvar, float deltaTime) {
     currentNetvar.value = std::any_cast<float>(currentNetvar.value) - deltaTime;
-    auto* health        = registry.get_component<RealEngine::Health>(entity);
-    auto* spritesheet   = registry.get_component<RealEngine::SpriteSheet>(entity);
-    auto* netvars       = registry.get_component<RealEngine::NetvarContainer>(entity);
+    auto* health        = registry.getComponent<RealEngine::Health>(entity);
+    auto* spritesheet   = registry.getComponent<RealEngine::SpriteSheet>(entity);
+    auto* netvars       = registry.getComponent<RealEngine::NetvarContainer>(entity);
 
     if (!health || !spritesheet || !netvars) {
         return;
@@ -68,9 +68,9 @@ static void updateClignotingAnim(RealEngine::Registry& registry, RealEngine::Ent
 
 static void blockPlayer(RealEngine::Registry& registry, RealEngine::Entity collider,
                         RealEngine::Entity entity) {
-    auto* playerCollision   = registry.get_component<RealEngine::Collision>(entity);
-    auto* colliderCollision = registry.get_component<RealEngine::Collision>(collider);
-    auto* playerPosition    = registry.get_component<RealEngine::Position>(entity);
+    auto* playerCollision   = registry.getComponent<RealEngine::Collision>(entity);
+    auto* colliderCollision = registry.getComponent<RealEngine::Collision>(collider);
+    auto* playerPosition    = registry.getComponent<RealEngine::Position>(entity);
 
     if (playerCollision && colliderCollision) {
         sf::FloatRect playerBounds   = playerCollision->bounds;
@@ -121,28 +121,28 @@ static void playerCollisionHandler(RealEngine::CollisionType collisionType,
 }
 
 Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool otherPlayer)
-    : _entity(registry.spawn_entity()) {
+    : _entity(registry.spawnEntity()) {
     if (!otherPlayer) {
-        registry.add_component(_entity, RealEngine::Position{200.f, 200.f});
-        registry.add_component(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
-        registry.add_component(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
-        registry.add_component(_entity, RealEngine::Controllable{});
-        registry.add_component(_entity, RealEngine::Drawable{});
+        registry.addComponent(_entity, RealEngine::Position{200.f, 200.f});
+        registry.addComponent(_entity, RealEngine::Velocity{0.0f, 0.0f, {300.0f, 300.0f}, 3.0f});
+        registry.addComponent(_entity, RealEngine::Acceleration{1000.0f, 1000.0f, 1000.0f});
+        registry.addComponent(_entity, RealEngine::Controllable{});
+        registry.addComponent(_entity, RealEngine::Drawable{});
         auto spriteSheet = RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship");
         if (spriteSheet) {
-            registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+            registry.addComponent(_entity, RealEngine::SpriteSheet{*spriteSheet});
         } else {
             std::cerr << "Failed to load Sprite or SpriteSheet for player" << std::endl;
         }
-        registry.add_component(
+        registry.addComponent(
             _entity, RealEngine::Collision{{0.f, 0.f, 32.f * GAME_SCALE, 15.f * GAME_SCALE},
                                            "spaceship",
                                            false,
                                            RealEngine::CollisionType::OTHER,
                                            playerCollisionHandler});
-        registry.add_component(_entity, RealEngine::Health{100, 200, *_entity});
-        registry.add_component(_entity, RealEngine::Score{0});
-        registry.add_component(
+        registry.addComponent(_entity, RealEngine::Health{100, 200, *_entity});
+        registry.addComponent(_entity, RealEngine::Score{0});
+        registry.addComponent(
             _entity,
             RealEngine::NetvarContainer{{
                 {"clignotingTimer", {"float", "clignotingTimer", float(0.f), updateClignotingAnim}},
@@ -150,15 +150,15 @@ Player::Player(RealEngine::Registry& registry, sf::Vector2f position, bool other
                 {"hold_shoot", {"float", "hold_shoot", float(0.f), nullptr}},
             }});
     } else {
-        registry.add_component(_entity, RealEngine::Position{position.x, position.y});
-        registry.add_component(_entity, RealEngine::Drawable{});
-        registry.add_component(
+        registry.addComponent(_entity, RealEngine::Position{position.x, position.y});
+        registry.addComponent(_entity, RealEngine::Drawable{});
+        registry.addComponent(
             _entity, RealEngine::Interpolation{
                          {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
         auto spriteSheet =
             RealEngine::AssetManager::getInstance().getSpriteSheet("spaceship_other");
         if (spriteSheet) {
-            registry.add_component(_entity, RealEngine::SpriteSheet{*spriteSheet});
+            registry.addComponent(_entity, RealEngine::SpriteSheet{*spriteSheet});
         } else {
             std::cerr << "Failed to load Sprite or SpriteSheet for player" << std::endl;
         }

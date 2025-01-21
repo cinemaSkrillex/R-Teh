@@ -26,7 +26,7 @@ class WaitingRoomScene : public Scene {
           _server(server),
           _serverConfig(serverConfig),
           _UdpServer(UdpServer),
-          _scene_manager(scene_manager),
+          _sceneManager(scene_manager),
           _isChangingScene(false) {}
 
     void handleNewClient(const asio::ip::udp::endpoint& sender) {
@@ -48,7 +48,7 @@ class WaitingRoomScene : public Scene {
         gameMap->loadFromJSON("../../assets/maps/level_waiting.json");
         auto mapInitializer =
             std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
-        _gameInstance->start_level();
+        _gameInstance->startLevel();
         _server->BroadcastStartLevel();
 
         // for (auto& client : _UdpServer->getClients()) {
@@ -66,7 +66,7 @@ class WaitingRoomScene : public Scene {
 
     static std::array<char, 800> createChangeSceneMessage(RTypeProtocol::SceneType sceneType) {
         RTypeProtocol::ChangingSceneMessage changeSceneMessage = {};
-        changeSceneMessage.message_type                        = RTypeProtocol::CHANGING_SCENE;
+        changeSceneMessage.messageType                         = RTypeProtocol::CHANGING_SCENE;
         changeSceneMessage.scene_id                            = sceneType;
         return RTypeProtocol::serialize<800>(changeSceneMessage);
     }
@@ -89,7 +89,7 @@ class WaitingRoomScene : public Scene {
                 // std::cout << "WaitingBlock entity: " << waitingBlockEntity << std::endl;
                 int  playerInBox = waitingBlock->getPlayersInBox();
                 auto container =
-                    _gameInstance->getRegistryRef().get_component<RealEngine::NetvarContainer>(
+                    _gameInstance->getRegistryRef().getComponent<RealEngine::NetvarContainer>(
                         waitingBlockEntity);
 
                 if (!container) {
@@ -112,12 +112,12 @@ class WaitingRoomScene : public Scene {
                     if (timer <= 0) {
                         _isChangingScene = true;
                         std::cout << "All players are ready" << std::endl;
-                        _scene_manager.changeScene(RealEngine::SceneType::GAME,
-                                                   _gameInstance->getRegistryRef());
+                        _sceneManager.changeScene(RealEngine::SceneType::GAME,
+                                                  _gameInstance->getRegistryRef());
                         auto changeSceneMessage =
                             createChangeSceneMessage(RTypeProtocol::SceneType::GAME);
                         for (const auto& client : _UdpServer->getClients()) {
-                            _UdpServer->send_reliable_packet(changeSceneMessage, client);
+                            _UdpServer->sendReliablePacket(changeSceneMessage, client);
                         }
                         _gameInstance->getMap()->unloadLevel();
                         _server->BroadcastStartLevel();
@@ -140,7 +140,7 @@ class WaitingRoomScene : public Scene {
     RtypeServer*                      _server;
     ServerConfig                      _serverConfig;
     std::shared_ptr<UDPServer>        _UdpServer;
-    RealEngine::SceneManager&         _scene_manager;
+    RealEngine::SceneManager&         _sceneManager;
     bool                              _isChangingScene;
     std::set<asio::ip::udp::endpoint> sentClients;
 };

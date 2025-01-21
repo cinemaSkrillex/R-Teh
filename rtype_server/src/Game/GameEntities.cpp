@@ -31,7 +31,7 @@ std::shared_ptr<RealEngine::Entity> GameInstance::addAndGetBullet(sf::Vector2f p
 }
 
 void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, float angle) {
-    float                               level_speed = _game_map->getScrollingSpeed();
+    float                               level_speed = _gameMap->getScrollingSpeed();
     std::shared_ptr<RealEngine::Entity> mobEntity   = nullptr;
     bool                                invoke_boss = false;
     if (mobName.rfind("boss_", 0) == 0) {
@@ -73,9 +73,9 @@ void GameInstance::spawnMob(std::string mobName, const sf::Vector2f position, fl
         mobEntity = spaceSphere.getEntity();
     }
     if (mobEntity) {
-        if (_registry.is_valid(*mobEntity)) {
+        if (_registry.isValid(*mobEntity)) {
             if (invoke_boss) {
-                _game_map->setBossEntity(mobEntity);
+                _gameMap->setBossEntity(mobEntity);
             }
             addAndGetEntity(mobEntity);
         }

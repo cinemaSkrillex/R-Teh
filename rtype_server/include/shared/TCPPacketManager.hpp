@@ -24,35 +24,35 @@ class TCPPacketManager {
    public:
     TCPPacketManager(Role role);
 
-    void start_server(unsigned short port);
-    void start_client(const std::string& host, unsigned short port);
-    void listen_for_server_data();
-    void send_message_to_server(const std::string& message);
-    void send_message_to_client_endpoint(const std::string&             message,
-                                         const asio::ip::tcp::endpoint& endpoint);
-    void send_file_to_client(const std::string& file_path, const asio::ip::tcp::endpoint& endpoint);
-    void send_directory_to_client(const std::string&             directory_path,
-                                  const asio::ip::tcp::endpoint& endpoint);
-    void handle_file_reception(std::string& data, const std::string& current_directory);
-    void handle_directory_reception(const std::string& directory_name,
-                                    const std::string& parent_directory);
-    void send_directory_to_directory(const std::string&             directory_path,
-                                     const asio::ip::tcp::endpoint& endpoint,
-                                     const std::string&             target_directory);
+    void startServer(unsigned short port);
+    void startClient(const std::string& host, unsigned short port);
+    void listenForServerData();
+    void sendMessageToServer(const std::string& message);
+    void sendMessageToClientEndpoint(const std::string&             message,
+                                     const asio::ip::tcp::endpoint& endpoint);
+    void sendFileToClient(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint);
+    void sendDirectoryToClient(const std::string&             directoryPath,
+                               const asio::ip::tcp::endpoint& endpoint);
+    void handleFileReception(std::string& data, const std::string& currentDirectory);
+    void handleDirectoryReception(const std::string& directoryName,
+                                  const std::string& parent_directory);
+    void sendDirectoryToDirectory(const std::string&             directoryPath,
+                                  const asio::ip::tcp::endpoint& endpoint,
+                                  const std::string&             targetDirectory);
     void close();
 
-    std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _new_client_callback;
-    const std::vector<std::shared_ptr<asio::ip::tcp::socket>>&          get_client_sockets() const;
+    std::function<void(const asio::ip::tcp::endpoint& client_endpoint)> _newClientCallback;
+    const std::vector<std::shared_ptr<asio::ip::tcp::socket>>&          getClientSockets() const;
 
    private:
     void accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);
 
     Role                                                       _role;
-    asio::io_context                                           _io_context;
+    asio::io_context                                           _ioContext;
     std::shared_ptr<asio::ip::tcp::socket>                     _socket;
-    std::vector<std::shared_ptr<asio::ip::tcp::socket>>        _client_sockets;
-    asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
-    std::thread                                                _io_thread;
+    std::vector<std::shared_ptr<asio::ip::tcp::socket>>        _clientSockets;
+    asio::executor_work_guard<asio::io_context::executor_type> _workGuard;
+    std::thread                                                _ioThread;
 };
 
 #endif

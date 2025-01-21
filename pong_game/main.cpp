@@ -13,27 +13,26 @@
 int main(int argc, char* argv[]) {
     // Check and parse command-line arguments
     if (argc != 4) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_port>"
-                  << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <serverIp> <serverPort> <clientPort>" << std::endl;
         return 1;
     }
 
-    std::string    server_ip   = argv[1];
-    unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-    unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    std::string    serverIp   = argv[1];
+    unsigned short serverPort = static_cast<unsigned short>(std::stoi(argv[2]));
+    unsigned short clientPort = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
         // Initialize ASIO and the UDP client
-        asio::io_context io_context;
-        auto client = std::make_shared<UDPClient>(io_context, client_port, server_ip, server_port);
+        asio::io_context ioContext;
+        auto client = std::make_shared<UDPClient>(ioContext, clientPort, serverIp, serverPort);
 
         std::atomic<bool> running(true);
 
         // Launch the game on the main thread
         // added the port, temporarily for testing.
-        pong::Game game(client, client_port);
+        pong::Game game(client, clientPort);
 
-        client->send_new_client();
+        client->sendNewClient();
 
         // Game loop
 

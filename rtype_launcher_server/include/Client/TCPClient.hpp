@@ -17,10 +17,10 @@ class TCPClient {
     TCPClient(const std::string& host, unsigned short port);
     ~TCPClient();
 
-    void send_message(const std::string& message);
+    void sendMessage(const std::string& message);
 
    private:
-    std::shared_ptr<TCPPacketManager> _packet_manager;
+    std::shared_ptr<TCPPacketManager> _packetManager;
 };
 
 #endif

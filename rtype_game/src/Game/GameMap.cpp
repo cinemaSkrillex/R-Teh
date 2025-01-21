@@ -23,31 +23,31 @@ void GameMap::updateLevel(float deltaTime) {
     if (!_levelRunning) {
         return;
     }
-    x_level_position += _scrollingSpeed * deltaTime;
+    _xLevelPosition += _scrollingSpeed * deltaTime;
     removeDeadBlocks();
 }
 
 void GameMap::startLevel() {
     _levelRunning = true;
-    if (!_music_name.empty()) {
-        RealEngine::AssetManager::getInstance().getMusic(_music_name)->play();
+    if (!_musicName.empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_musicName)->play();
     }
 }
 
 void GameMap::stopLevel() {
     _levelRunning = false;
-    if (!_music_name.empty()) {
-        RealEngine::AssetManager::getInstance().getMusic(_music_name)->stop();
+    if (!_musicName.empty()) {
+        RealEngine::AssetManager::getInstance().getMusic(_musicName)->stop();
     }
 }
 
 void GameMap::removeDeadBlocks() {
     auto entities = _game->getEntities();
     for (auto it = entities.begin(); it != entities.end();) {
-        auto* position = _registry.get_component<RealEngine::Position>(it->second.entity);
+        auto* position = _registry.getComponent<RealEngine::Position>(it->second.entity);
         if (it->second.type == RTypeProtocol::EntityType::BLOCK && position && position->x < -250) {
-            if (_registry.is_valid(*it->second.entity)) {
-                _registry.remove_entity(*it->second.entity);
+            if (_registry.isValid(*it->second.entity)) {
+                _registry.removeEntity(*it->second.entity);
             }
             it = entities.erase(it);
         } else {
@@ -65,9 +65,9 @@ void GameMap::addBackground(std::shared_ptr<RealEngine::Entity> background,
 void GameMap::synchroniseLevelBlockEntities() {
     for (auto& block : _blockEntities) {
         auto  posBlock = block.second;
-        auto* position = _registry.get_component<RealEngine::Position>(posBlock);
+        auto* position = _registry.getComponent<RealEngine::Position>(posBlock);
         if (position) {
-            position->x += x_level_position;
+            position->x += _xLevelPosition;
         }
     }
 }

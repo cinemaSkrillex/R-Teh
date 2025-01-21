@@ -47,8 +47,8 @@ void Sprite::setRotation(float angle) { _sprite.setRotation(angle); }
 
 void Sprite::rotate(float angle) { _sprite.rotate(angle); }
 
-void Sprite::setTextureRect(int start_x, int start_y, int width, int height) {
-    _sprite.setTextureRect(sf::IntRect(start_x, start_y, width, height));
+void Sprite::setTextureRect(int startX, int startY, int width, int height) {
+    _sprite.setTextureRect(sf::IntRect(startX, startY, width, height));
 }
 
 void Sprite::setSmooth(bool smooth) { _texture->setSmooth(smooth); }

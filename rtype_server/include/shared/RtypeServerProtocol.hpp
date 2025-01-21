@@ -65,7 +65,7 @@ struct BackgroundData {
 
 // Base message structure (common across all message types)
 struct BaseMessage {
-    int  message_type;
+    int  messageType;
     long uuid;
 };
 
@@ -104,7 +104,7 @@ struct DestroyEntityMessage : BaseMessage {
 
 struct MapMessage : BaseMessage {
     float                       scrollingSpeed;
-    float                       x_level_position;
+    float                       _xLevelPosition;
     bool                        isLoaded;
     bool                        isLevelRunning;
     int                         server_tick;

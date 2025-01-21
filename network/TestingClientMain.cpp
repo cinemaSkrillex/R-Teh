@@ -24,31 +24,30 @@
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port>"
-                  << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <serverIp> <serverPort>" << std::endl;
         return 1;
     }
 
-    std::string    server_ip   = argv[1];
-    unsigned short server_port = static_cast<unsigned short>(std::stoi(argv[2]));
-    // unsigned short client_port = static_cast<unsigned short>(std::stoi(argv[3]));
+    std::string    serverIp   = argv[1];
+    unsigned short serverPort = static_cast<unsigned short>(std::stoi(argv[2]));
+    // unsigned short clientPort = static_cast<unsigned short>(std::stoi(argv[3]));
 
     try {
         std::cout << "Starting client" << std::endl;
-        asio::io_context io_context;
+        asio::io_context ioContext;
 
-        auto tcpclient = std::make_shared<TCPClient>(server_ip, server_port);
+        auto tcpclient = std::make_shared<TCPClient>(serverIp, serverPort);
 
-        // auto client = std::make_shared<UDPClient>(io_context, server_ip, server_port);
-        // client->send_new_client();
+        // auto client = std::make_shared<UDPClient>(ioContext, serverIp, serverPort);
+        // client->sendNewClient();
         // client->send_test();
-        // client->send_unreliable_packet("Hello");
-        // client->send_unreliable_packet("World");
-        // client->send_reliable_packet("Hello1");
-        // client->send_unreliable_packet("Hello2");
-        // client->send_reliable_packet("Hello3");
-        // client->send_unreliable_packet("Hello4");
-        // io_context.run();
+        // client->sendUnreliablePacket("Hello");
+        // client->sendUnreliablePacket("World");
+        // client->sendReliablePacket("Hello1");
+        // client->sendUnreliablePacket("Hello2");
+        // client->sendReliablePacket("Hello3");
+        // client->sendUnreliablePacket("Hello4");
+        // ioContext.run();
 
         // for how long the client will run:
         std::this_thread::sleep_for(std::chrono::seconds(1));

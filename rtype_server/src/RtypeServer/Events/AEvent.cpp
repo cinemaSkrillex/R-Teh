@@ -11,13 +11,13 @@
 
 void AEvent::broadcastAllUnreliable(const std::array<char, 800>& message, RtypeServer* server) {
     for (const auto& client : server->getServer()->getClients()) {
-        server->getServer()->send_unreliable_packet(message, client);
+        server->getServer()->sendUnreliablePacket(message, client);
     }
 }
 
 void AEvent::broadcastAllReliable(const std::array<char, 800>& message, RtypeServer* server) {
     for (const auto& client : server->getServer()->getClients()) {
-        server->getServer()->send_reliable_packet(message, client);
+        server->getServer()->sendReliablePacket(message, client);
     }
 }
 
@@ -25,8 +25,8 @@ std::array<char, 800> AEvent::createBulletMessage(long int id, sf::Vector2f posi
                                                   std::string          sprite_name,
                                                   RealEngine::Velocity velocity) {
     RTypeProtocol::NewEntityMessage bulletMessage;
-    bulletMessage.message_type = RTypeProtocol::MessageType::NEW_ENTITY;
-    bulletMessage.uuid         = id;
+    bulletMessage.messageType = RTypeProtocol::MessageType::NEW_ENTITY;
+    bulletMessage.uuid        = id;
 
     // Serialize position component
     addComponentToMessage(bulletMessage, RTypeProtocol::ComponentList::POSITION, position);
