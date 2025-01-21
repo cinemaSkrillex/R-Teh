@@ -78,9 +78,6 @@ void ServerMap::updateLevel(float deltaTime) {
 }
 
 std::vector<Map::WaveMob> ServerMap::invokeLevelMobs() {
-    // if (!_isLevelRunning) {
-    //     return {};
-    // }
     std::vector<Map::WaveMob> enemiesToSpawn;
     for (auto& wave : _waves) {
         if (x_level_position < wave.startPosition.x) {
