@@ -20,7 +20,7 @@
 #include "GameInstance/PongGameInstance.hpp"
 #include "PongServerUtils.hpp"
 #include "Server/UDPServer.hpp"
-#include "shared/PongServerProtocol.hpp"
+#include "Shared/PongServerProtocol.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _WIN32_WINNT 0x0A00

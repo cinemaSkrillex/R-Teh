@@ -6,7 +6,7 @@
 */
 
 #include "../../include/RtypeServer/RtypeServer.hpp"
-#include "../../include/shared/RtypeServerProtocol.hpp"
+#include "../../include/Shared/RtypeServerProtocol.hpp"
 #include "GameScene.hpp"
 #include "WaitingRoomScene.hpp"
 

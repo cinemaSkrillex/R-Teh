@@ -19,7 +19,7 @@ target_link_libraries(r_type_server
 target_include_directories(r_type_server PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Callbacks
         ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer/Events
@@ -79,7 +79,7 @@ if (WIN32)
     )
 endif ()
 
-# Copy the include headers (client, server, and shared) into the include folder of ../RtypeGame and ../RtypeServer and ../GameEngine
+# Copy the include headers (client, server, and Shared) into the include folder of ../RtypeGame and ../RtypeServer and ../GameEngine
 # add_custom_target(copy_headers ALL
 #     COMMAND ${CMAKE_COMMAND} -E copy_directory
 #     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
@@ -89,9 +89,9 @@ endif ()
 
 add_custom_target(copy_headers_protocol ALL
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
-        ${CMAKE_SOURCE_DIR}/RtypeGame/include/shared/RtypeServerProtocol.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared/RtypeServerProtocol.hpp
+        ${CMAKE_SOURCE_DIR}/RtypeGame/include/Shared/RtypeServerProtocol.hpp
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
-        ${CMAKE_SOURCE_DIR}/RtypeGame/include/shared/RtypeServerProtocol.tpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared/RtypeServerProtocol.tpp
+        ${CMAKE_SOURCE_DIR}/RtypeGame/include/Shared/RtypeServerProtocol.tpp
 )

@@ -17,7 +17,7 @@ target_link_libraries(pong rtype_client)
 target_include_directories(pong PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Game
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
         ${CMAKE_CURRENT_SOURCE_DIR}/include/ECS

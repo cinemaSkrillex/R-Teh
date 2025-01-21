@@ -19,7 +19,7 @@ target_link_libraries(rtype_l_auncher_server
 target_include_directories(rtype_l_auncher_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared
     ${CMAKE_CURRENT_SOURCE_DIR}/include/RtypeServer
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GameMap
     ${CMAKE_CURRENT_SOURCE_DIR}/Config

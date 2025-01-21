@@ -19,7 +19,7 @@ target_link_libraries(pong_server_exe
 target_include_directories(pong_server_exe PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         # ${CMAKE_CURRENT_SOURCE_DIR}/include/Server
-        # ${CMAKE_CURRENT_SOURCE_DIR}/include/shared
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared
         # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer
         # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer/Callbacks
         # ${CMAKE_CURRENT_SOURCE_DIR}/include/PongServer/Events
@@ -74,7 +74,7 @@ if (WIN32)
     )
 endif ()
 
-# Copy the include headers (client, server, and shared) into the include folder of ../RtypeGame and ../PongServer and ../GameEngine
+# Copy the include headers (client, server, and Shared) into the include folder of ../RtypeGame and ../PongServer and ../GameEngine
 # add_custom_target(copy_headers ALL
 #     COMMAND ${CMAKE_COMMAND} -E copy_directory
 #     ${CMAKE_CURRENT_SOURCE_DIR}/include/Client
@@ -84,9 +84,9 @@ endif ()
 
 # add_custom_target(copy_headers_protocol ALL
 #         COMMAND ${CMAKE_COMMAND} -E copy
-#         ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.hpp
-#         ${CMAKE_SOURCE_DIR}/PongGame/include/shared/RtypeServerProtocol.hpp
+#         ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared/RtypeServerProtocol.hpp
+#         ${CMAKE_SOURCE_DIR}/PongGame/include/Shared/RtypeServerProtocol.hpp
 #         COMMAND ${CMAKE_COMMAND} -E copy
-#         ${CMAKE_CURRENT_SOURCE_DIR}/include/shared/RtypeServerProtocol.tpp
-#         ${CMAKE_SOURCE_DIR}/PongGame/include/shared/RtypeServerProtocol.tpp
+#         ${CMAKE_CURRENT_SOURCE_DIR}/include/Shared/RtypeServerProtocol.tpp
+#         ${CMAKE_SOURCE_DIR}/PongGame/include/Shared/RtypeServerProtocol.tpp
 # )

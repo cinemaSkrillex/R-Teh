@@ -8,7 +8,7 @@
 #ifndef PONGSERVERUTILS_HPP_
 #define PONGSERVERUTILS_HPP_
 
-#include "shared/PongServerProtocol.hpp"
+#include "Shared/PongServerProtocol.hpp"
 
 template <typename T>
 void addComponentToMessage(PongProtocol::NewEntityMessage& message,

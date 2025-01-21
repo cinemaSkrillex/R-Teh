@@ -21,6 +21,7 @@
 #include "Core/Window.hpp"
 #include "ECS/Registry/Registry.hpp"
 #include "PongControls.hpp"
+#include "Shared/PongServerProtocol.hpp"
 #include "Systems/CollisionSystem.hpp"
 #include "Systems/ControlSystem.hpp"
 #include "Systems/DrawSystem.hpp"
@@ -29,7 +30,6 @@
 #include "Systems/NetvarSystem.hpp"
 #include "Systems/ParallaxSystem.hpp"
 #include "Systems/ParticleSystem.hpp"
-#include "shared/PongServerProtocol.hpp"
 
 namespace pong {
 class Game {

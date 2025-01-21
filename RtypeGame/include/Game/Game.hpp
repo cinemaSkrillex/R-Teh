@@ -22,7 +22,7 @@
 #include "Game/PlayerUI.hpp"
 #include "Launcher/LaunchGame.hpp"
 #include "Log.hpp"
-#include "shared/RtypeServerProtocol.hpp"
+#include "Shared/RtypeServerProtocol.hpp"
 
 namespace rtype {
 

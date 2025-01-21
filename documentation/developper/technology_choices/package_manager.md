@@ -68,7 +68,7 @@ Table of Contents
 
 ### 6. Influence of Our Peers
 
-- Our friends developing **R-Type** are using **vcpkg** and shared that it is the **easiest to use**.  
+- Our friends developing **R-Type** are using **vcpkg** and Shared that it is the **easiest to use**.  
 - We trust their experience and know they are leveraging it wisely.  
 
 
