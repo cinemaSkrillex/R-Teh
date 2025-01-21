@@ -88,9 +88,6 @@ add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Server/TCPServer.cpp
     ${CMAKE_SOURCE_DIR}/RtypeLauncherGame/src/Server/TCPServer.cpp
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Shared
-    ${CMAKE_SOURCE_DIR}/RtypeLauncherGame/src/Shared
     COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Client/TCPClient.cpp
     ${CMAKE_SOURCE_DIR}/RtypeLauncherGame/src/Client/TCPClient.cpp
@@ -103,9 +100,6 @@ add_custom_target(copy_headers ALL
     COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Server/TCPServer.cpp
     ${CMAKE_SOURCE_DIR}/RtypeLauncherServer/src/Server/TCPServer.cpp
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Shared
-    ${CMAKE_SOURCE_DIR}/RtypeLauncherServer/src/Shared
     COMMAND ${CMAKE_COMMAND} -E copy
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Client/TCPClient.cpp
     ${CMAKE_SOURCE_DIR}/RtypeLauncherServer/src/Client/TCPClient.cpp
