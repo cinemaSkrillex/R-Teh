@@ -37,15 +37,8 @@ add_custom_target(copy_headers_engine_for_game_pong ALL
         ${CMAKE_SOURCE_DIR}/PongGame/include
 )
 
-add_custom_target(copy_headers_lagcompensation_pong ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/LibUtils/LagCompensation/include
-        ${CMAKE_SOURCE_DIR}/PongGame/include
-)
-
 # Ensure the headers are copied before building PongGame
 add_dependencies(pong copy_headers_engine_for_game_pong)
-add_dependencies(pong copy_headers_lagcompensation_pong)
 
 if (WIN32)
     # Copy all DLLs from the bin directory to the output directory

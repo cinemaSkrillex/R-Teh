@@ -39,12 +39,6 @@ add_custom_target(copy_headers_engine_for_server_pong ALL
         ${CMAKE_SOURCE_DIR}/PongServer/include
 )
 
-add_custom_target(copy_headers_server_lagcompensation_pong ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/LibUtils/LagCompensation/include
-        ${CMAKE_SOURCE_DIR}/PongServer/include
-)
-
 # add_custom_target(copy_config_pong ALL
 #         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/PongServer/Config
 #         COMMAND ${CMAKE_COMMAND} -E copy
@@ -60,7 +54,6 @@ add_custom_target(copy_headers_server_lagcompensation_pong ALL
 
 # Ensure the headers are copied before building RtypeGame
 add_dependencies(pong copy_headers_engine_for_server_pong)
-add_dependencies(pong copy_headers_server_lagcompensation_pong)
 # add_dependencies(pong copy_config_pong)
 # add_dependencies(r_type copy_assets_server)
 

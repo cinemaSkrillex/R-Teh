@@ -37,15 +37,8 @@ add_custom_target(copy_headers_engine_for_game ALL
         ${CMAKE_SOURCE_DIR}/RtypeGame/include
 )
 
-add_custom_target(copy_headers_lagcompensation ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/LibUtils/LagCompensation/include
-        ${CMAKE_SOURCE_DIR}/RtypeGame/include
-)
-
 # Ensure the headers are copied before building RtypeGame
 add_dependencies(r_type copy_headers_engine_for_game)
-add_dependencies(r_type copy_headers_lagcompensation)
 
 if (WIN32)
     # Copy all DLLs from the bin directory to the output directory

@@ -34,14 +34,6 @@ target_include_directories(rtype_engine PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Media
 )
 
-add_custom_target(copy_headers_lagcompensation_engine ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/LibUtils/LagCompensation/include
-        ${CMAKE_SOURCE_DIR}/GameEngine/include
-)
-
-add_dependencies(rtype_engine copy_headers_lagcompensation_engine)
-
 # Link libraries
 if (UNIX)
     target_link_libraries(rtype_engine
