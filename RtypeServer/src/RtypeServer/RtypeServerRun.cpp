@@ -75,8 +75,6 @@ void RtypeServer::handleMapUnloadedMessage(const asio::ip::udp::endpoint& client
 }
 
 bool RtypeServer::allClientsUnloadedMap() const {
-    std::cout << "Clients unloaded map size: " << _clientsUnloadedMap.size() << std::endl;
-    std::cout << "Server clients size: " << _server->getClients().size() << std::endl;
     return _clientsUnloadedMap.size() == _server->getClients().size();
 }
 

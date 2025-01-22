@@ -82,6 +82,7 @@ class RtypeServer {
     std::chrono::steady_clock::time_point                                    _startTime;
     std::unordered_map<int, std::unique_ptr<IEvent>>                         _eventHandlers;
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _clientsUnloadedMap;
+    std::shared_ptr<Log>                                                     _log;
 
     void initCallbacks();
     void initEventHandlers();

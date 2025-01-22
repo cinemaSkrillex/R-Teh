@@ -57,8 +57,6 @@ void ServerMap::updateLevel(float deltaTime) {
         auto* position = _registry.getComponent<RealEngine::Position>(*block->getEntity());
         if (position) {
             position->x -= _scrollingSpeed * deltaTime;
-            std::cout << "Block position: " << position->x << " block: " << *block->getEntity()
-                      << std::endl;
             if (position->x < -100) {
                 _registry.addComponent(block->getEntity(), RealEngine::AutoDestructible{0.0f});
                 it = _blockEntities.erase(it);

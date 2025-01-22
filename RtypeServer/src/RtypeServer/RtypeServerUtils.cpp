@@ -28,7 +28,8 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
         auto* score_health_update = netvarContainer->getNetvar("score_health_update");
         if (score_health_update) {
             if (std::any_cast<bool>(score_health_update->value)) {
-                std::cout << "Score health update" << std::endl;
+                std::cout << "Score health update : "
+                          << std::any_cast<bool>(score_health_update->value) << std::endl;
                 auto* score  = registry.getComponent<RealEngine::Score>(*entity);
                 auto* health = registry.getComponent<RealEngine::Health>(*entity);
 
@@ -36,7 +37,19 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
                 playerUpdateDataMessage.messageType = RTypeProtocol::PLAYER_UPDATE_DATA;
                 playerUpdateDataMessage.uuid        = player.getUUID();
                 if (score) {
-                    playerUpdateDataMessage.score = score->amount;
+                    std::cout << "Score amount : " << score->amount << std::endl;
+                    std::cout << "PlayerUpdateDataMessage score : " << playerUpdateDataMessage.score
+                              << std::endl;
+                    if (score->amount > playerUpdateDataMessage.score) {
+                        playerUpdateDataMessage.score = score->amount;
+                        _log->log("Player " + std::to_string(player.getUUID()) +
+                                  " has a new best score: " + std::to_string(score->amount));
+                    } else {
+                        _log->log("Player " + std::to_string(player.getUUID()) + " score " +
+                                  std::to_string(score->amount) +
+                                  " is not higher than their current best score: " +
+                                  std::to_string(playerUpdateDataMessage.score));
+                    }
                 } else {
                     playerUpdateDataMessage.score = -1;
                 }
