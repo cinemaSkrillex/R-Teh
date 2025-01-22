@@ -11,33 +11,13 @@ namespace rtype {
 
 static void collisionHandler(RealEngine::CollisionType collisionType,
                              RealEngine::Registry& registry, RealEngine::Entity collider,
-                             RealEngine::Entity entity) {
-    // auto* autoDestructible = registry.getComponent<RealEngine::AutoDestructible>(entity);
-    //
-    // if (collisionType != RealEngine::CollisionType::SCREEN) return;
-    // if (!autoDestructible) {
-    //     auto* container = registry.getComponent<RealEngine::NetvarContainer>(entity);
-    //     if (container) {
-    //         try {
-    //             if (std::any_cast<bool>(container->getNetvar("destroy_out_of_screen")->value) ==
-    //                 false) {
-    //                 registry.addComponent(entity,
-    //                                        RealEngine::AutoDestructible{-1.0f, true, false});
-    //             }
-    //         } catch (const std::bad_any_cast& e) {
-    //             std::cerr << "Error: " << e.what() << std::endl;
-    //         }
-    //     }
-    // } else {
-    //     autoDestructible->kill = false;
-    // }
-}
+                             RealEngine::Entity entity) {}
 
 void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
                        const std::string& spriteName, float rotation, float scrollingSpeed,
                        RealEngine::CollisionType collisionType) {
     if (position.x < 0 || position.y < 0 || rotation < 0) {
-        std::cerr << "Error: Block position is null" << std::endl;
+        std::cerr << "initialize: Error: Block position is null" << std::endl;
         return;
     }
 
@@ -49,8 +29,6 @@ void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
     registry.addComponent(_blockEntity, RealEngine::Rotation{rotation});
     registry.addComponent(_blockEntity, RealEngine::Drawable{});
     std::cout << "scrolling speed of block BLOCK: " << scrollingSpeed << std::endl;
-    // registry.addComponent(_blockEntity,
-    //                        RealEngine::Velocity{scrollingSpeed, 0.0f, {1000.0f, 100.0f}, 0.0f});
     registry.addComponent(_blockEntity,
                           RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                 spriteName,

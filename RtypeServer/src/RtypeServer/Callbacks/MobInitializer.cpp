@@ -69,8 +69,7 @@ void MobInitializer::initializeMobs(const asio::ip::udp::endpoint& sender) {
 
         auto netvar = container->getNetvar("sprite_name");
         if (netvar && netvar->value.type() == typeid(std::string)) {
-            std::string sprite_str = std::any_cast<std::string>(netvar->value);
-            // std::cout << "Sprite: " << sprite_str << std::endl;
+            std::string       sprite_str = std::any_cast<std::string>(netvar->value);
             std::vector<char> spriteData(sprite_str.begin(), sprite_str.end());
             addComponentToMessage(eventMessage, RTypeProtocol::ComponentList::SPRITE, spriteData);
         } else {

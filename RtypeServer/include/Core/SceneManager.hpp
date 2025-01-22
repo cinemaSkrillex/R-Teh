@@ -25,6 +25,8 @@ class SceneManager {
             _currentScene     = it->second(registry);
             _currentSceneType = type;
             std::cout << "Changing scene to " << static_cast<int>(type) << std::endl;
+        } else {
+            std::cerr << "changeScene: Scene not found: " << static_cast<int>(type) << std::endl;
         }
     }
 

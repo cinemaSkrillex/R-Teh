@@ -170,7 +170,7 @@ void RtypeServer::printServerStartupBanner() {
     std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
 }
 
-void RtypeServer::broadcastStartLevel() {
+void RtypeServer::broadcastStartLevelUtils() {
     RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
     levelSignalMessage.messageType                       = RTypeProtocol::LEVEL_SIGNAL;
     levelSignalMessage.startLevel = _gameInstance->getMap()->getIsLevelRunning();
@@ -184,12 +184,12 @@ void RtypeServer::broadcastStartLevel() {
     broadcastAllReliable(serializedMessage);
 }
 
-void RtypeServer::BroadcastStartLevel() {
+void RtypeServer::broadcastStartLevel() {
     broadcastStartLevel();
     std::cout << "broadcasting start level" << std::endl;
 }
 
-void RtypeServer::BroadcastStopLevel() {
+void RtypeServer::broadcastStopLevel() {
     broadcastStartLevel();
     std::cout << "broadcasting stop level" << std::endl;
     // we get the variables from getIsLevelRunning() and we broadcast it to all clients

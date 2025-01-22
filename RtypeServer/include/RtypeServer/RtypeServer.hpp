@@ -56,8 +56,8 @@ class RtypeServer {
                   ServerPlayer& player);
     void runSimulation(const std::array<char, 800>& buffer, const asio::ip::udp::endpoint& client,
                        ServerPlayer& player);
-    void BroadcastStartLevel();
-    void BroadcastStopLevel();
+    void broadcastStartLevel();
+    void broadcastStopLevel();
     void startLevel();
     void stopLevel();
     bool allClientsUnloadedMap() const;
@@ -89,7 +89,7 @@ class RtypeServer {
     void startAndBroadcastLevel();
 
     void broadcastPlayerState(const ServerPlayer& player);
-    void broadcastStartLevel();
+    void broadcastStartLevelUtils();
     void broadcastEntityState(RealEngine::Entity entity, RealEngine::Registry* registry);
     void broadcastAllReliable(const std::array<char, 800>& message);
     void broadcastAllUnreliable(const std::array<char, 800>& message);
