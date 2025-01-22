@@ -17,25 +17,6 @@
 #include "Scene.hpp"
 #include "ServerConfig.hpp"
 
-// _sceneManager.registerScene(
-//     RealEngine::SceneType::GAME, [this](RealEngine::Registry& registry) {
-//         // Initialization logic for GAME scene
-//         // works but right now we don't use it
-//         std::cout << "Initializing GAME scene" << std::endl;
-//         auto        gameMap = _gameInstance->getMap();
-//         std::string path    = "../../assets/maps/";
-//         gameMap->loadFromJSON(path + "level_1.json");
-//         auto mapInitializer =
-//             std::make_shared<MapInitializer>(_gameInstance, _server, _serverConfig);
-//         auto mobInitializer = std::make_shared<MobInitializer>(_gameInstance, _server);
-
-//         startAndBroadcastLevel();
-//         for (auto& client : _server->getClients()) {
-//             mapInitializer->initializeMap(client);
-//             mobInitializer->initializeMobs(client);
-//         }
-//     });
-
 class GameScene : public Scene {
    public:
     GameScene(const std::shared_ptr<GameInstance>& gameInstance, RtypeServer* server,
@@ -48,7 +29,6 @@ class GameScene : public Scene {
           _isInitialized(false) {}
 
     void initialize(RealEngine::Registry& registry) override {
-        // Initialization logic for MENU scene
         std::cout << "Initializing GAME scene" << std::endl;
         const auto        gameMap = _gameInstance->getMap();
         const std::string path    = "../../assets/maps/";
@@ -57,7 +37,7 @@ class GameScene : public Scene {
             std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
 
         _gameInstance->startLevel();
-        _server->BroadcastStartLevel();
+        _server->broadcastStartLevel();
 
         for (auto& client : _UdpServer->getClients()) {
             std::cout << "GAME yes i know New client connected: " << client << std::endl;
@@ -67,7 +47,6 @@ class GameScene : public Scene {
 
     void update(float deltaTime) override {
         if (!_isInitialized && _server->allClientsUnloadedMap()) {
-            std::cout << "All clients unloaded map" << std::endl;
             initialize(_gameInstance->getRegistryRef());
             _isInitialized = true;
         }

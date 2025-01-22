@@ -27,17 +27,12 @@ class MenuScene : public Scene {
           _UdpServer(udpServer) {}
 
     void initialize(RealEngine::Registry& registry) override {
-        // Initialization logic for MENU scene
         std::cout << "Initializing MENU scene" << std::endl;
     }
 
-    void update(float deltaTime) override {
-        // Update logic for MENU scene
-    }
+    void update(float deltaTime) override {}
 
-    void render() override {
-        // Render logic for MENU scene
-    }
+    void render() override {}
 
    private:
     std::shared_ptr<GameInstance> _gameInstance;

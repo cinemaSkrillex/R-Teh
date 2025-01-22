@@ -40,7 +40,3 @@ void RtypeServer::initScenes() {
                                         _gameInstance, this, _serverConfig, _server, _sceneManager);
                                 });
 }
-
-// void RtypeServer::updateScene() { _sceneManager.updateCurrentScene(); }
-
-// void RtypeServer::switchScene(SceneType scene) { _sceneManager.switchScene(scene); }

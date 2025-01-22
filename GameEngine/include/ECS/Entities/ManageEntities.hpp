@@ -20,8 +20,8 @@ class ManageEntities {
 
     Entity              entityFromIndex(std::size_t idx);
     void                killEntity(Entity const& e);
-    std::vector<Entity> get_dead_entities() { return _deadEntities; }
-    void                clear_dead_entities() { _deadEntities.clear(); }
+    std::vector<Entity> getDeadEntities() { return _deadEntities; }
+    void                clearDeadEntities() { _deadEntities.clear(); }
     bool                isValid(Entity const& e) const;
 
     std::size_t size() const;

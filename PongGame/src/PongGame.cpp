@@ -120,7 +120,7 @@ void Game::initSounds() {
 
 void Game::initFonts() {
     std::string path = "../../assets/fonts/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/fonts/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();

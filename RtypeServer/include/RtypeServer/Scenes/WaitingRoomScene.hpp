@@ -39,7 +39,7 @@ class WaitingRoomScene : public Scene {
         }
         playerInitializer->sendNewClientMessage(sender, player);
         playerInitializer->sendSynchronizeMessage(sender, player);
-        sentClients.insert(sender);
+        _sentClients.insert(sender);
         initialize(_gameInstance->getRegistryRef());
     }
 
@@ -49,17 +49,12 @@ class WaitingRoomScene : public Scene {
         auto mapInitializer =
             std::make_shared<MapInitializer>(_gameInstance, _UdpServer, _serverConfig);
         _gameInstance->startLevel();
-        _server->BroadcastStartLevel();
+        _server->broadcastStartLevel();
 
-        // for (auto& client : _UdpServer->getClients()) {
-        //  std::cout << "Yes i know New client connected: " << client << std::endl;
-        //  mapInitializer->initializeMap(client);
-        //}
-        for (const auto& client : sentClients) {
-            std::cout << "Yes i know New client connected: " << client << std::endl;
+        for (const auto& client : _sentClients) {
             mapInitializer->initializeMap(client);
         }
-        clearSentClients();
+        clear_sentClients();
 
         std::cout << "Initializing WAITING scene" << std::endl;
     }
@@ -71,7 +66,7 @@ class WaitingRoomScene : public Scene {
         return RTypeProtocol::serialize<800>(changeSceneMessage);
     }
 
-    void clearSentClients() { sentClients.clear(); }
+    void clear_sentClients() { _sentClients.clear(); }
 
     void update(float deltaTime) override {
         if (_isChangingScene) {
@@ -120,7 +115,7 @@ class WaitingRoomScene : public Scene {
                             _UdpServer->sendReliablePacket(changeSceneMessage, client);
                         }
                         _gameInstance->getMap()->unloadLevel();
-                        _server->BroadcastStartLevel();
+                        _server->broadcastStartLevel();
                     }
                     netvar->value = timer;
                 } else if (playerInBox < static_cast<int>(_UdpServer->getClients().size())) {
@@ -131,9 +126,7 @@ class WaitingRoomScene : public Scene {
         }
     }
 
-    void render() override {
-        // Render logic for WAITING scene
-    }
+    void render() override {}
 
    private:
     std::shared_ptr<GameInstance>     _gameInstance;
@@ -142,7 +135,7 @@ class WaitingRoomScene : public Scene {
     std::shared_ptr<UDPServer>        _UdpServer;
     RealEngine::SceneManager&         _sceneManager;
     bool                              _isChangingScene;
-    std::set<asio::ip::udp::endpoint> sentClients;
+    std::set<asio::ip::udp::endpoint> _sentClients;
 };
 
 #endif /* !WAITINGROOMSCENE_HPP_ */

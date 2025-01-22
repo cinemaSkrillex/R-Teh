@@ -18,14 +18,10 @@ void MapInitializer::initializeMap(const asio::ip::udp::endpoint& sender) {
         return;
     }
 
-    // Send blocks
-    // sendEntities(GameMap->getBlockEntities(), "block", sender);
-    // sendEntities(GameMap->getWaves(), "wave", sender);
     RTypeProtocol::MapMessage mapMessage           = createMapMessage(GameMap);
     std::array<char, 800>     serializedMapMessage = RTypeProtocol::serialize<800>(mapMessage);
 
     _UdpServer->sendReliablePacket(serializedMapMessage, sender);
-    // Serialize and send map info
 }
 
 void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block,
@@ -58,8 +54,6 @@ void MapInitializer::processBlock(const std::shared_ptr<rtype::BaseBlock>& block
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::POSITION, *position);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::ROTATION, *rotation);
     addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::DRAWABLE, true);
-    // addComponentToMessage(newTileMessage, RTypeProtocol::ComponentList::INTERPOLATION,
-    //                       *Interpolation);
 
     sf::FloatRect bounds = {0, 0, 16, 8};
     addCollisionComponentToMessage(newTileMessage, bounds, block->getElement(), false,
@@ -106,7 +100,6 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     }
 
     const auto& backgrounds = GameMap->getBackgrounds();
-    std::cout << "backgrounds size: " << backgrounds.size() << std::endl;
     for (const auto& background : backgrounds) {
         RTypeProtocol::BackgroundData bgData;
         if (background.first.empty()) {
@@ -128,7 +121,6 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         }
         bgData.speed = background.second;
         mapMessage.backgrounds.push_back(bgData);
-        std::cout << "map message backgrounds size: " << mapMessage.backgrounds.size() << std::endl;
     }
     return mapMessage;
 }

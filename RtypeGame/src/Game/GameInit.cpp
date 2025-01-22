@@ -16,7 +16,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short clientPort)
             sf::Vector2f(VIEW_WIDTH, VIEW_HEIGHT + 100)),
       _window("SKRILLEX clientPort: " + std::to_string(clientPort),
               sf::Vector2u(VIEW_WIDTH, VIEW_HEIGHT + 100), _view,
-              assetLauncher ? "assets/shaders/display_options.frag"
+              ASSETLAUNCHER ? "assets/shaders/display_options.frag"
                             : "../../assets/shaders/display_options.frag"),
       _clock(),
       _playerUI(_registry, _window.getRenderTexture()),
@@ -51,7 +51,7 @@ void Game::initAllGame() {
     initControls();
     initSystems();
     std::string path = "../../assets/sprites/r_type/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/sprites/r_type/";
     }
     initLevel(path + "tiles/lv1", "lvl1");
@@ -97,7 +97,7 @@ void Game::initScreenLimits() {
 
 void Game::initTextures() {
     std::string path = "../../assets/sprites/r_type/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/sprites/r_type/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
@@ -540,7 +540,7 @@ void Game::initSpriteSheets() {
 
 void Game::initMusics() {
     std::string path = "../../assets/musics/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/musics/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
@@ -560,7 +560,7 @@ void Game::initMusics() {
 
 void Game::initSounds() {
     std::string path = "../../assets/sounds/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/sounds/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();
@@ -577,7 +577,7 @@ void Game::initSounds() {
 
 void Game::initFonts() {
     std::string path = "../../assets/fonts/";
-    if (assetLauncher == true) {
+    if (ASSETLAUNCHER == true) {
         path = "assets/fonts/";
     }
     auto& AssetManagerInstance = RealEngine::AssetManager::getInstance();

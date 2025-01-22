@@ -27,13 +27,11 @@ enum MessageType : int {
     MAP_INFO            = 0x0A,
     LEVEL_SIGNAL        = 0x0B,
     ENTITY_UPDATE       = 0x0C,
-    // PLAYER_UPDATE_SCORE  = 0x0D,
-    // PLAYER_UPDATE_HEALTH = 0x0E,
-    PLAYER_UPDATE_DATA = 0x0D,
-    MAP_UNLOADED       = 0x0E,
-    CHANGING_SCENE     = 0x0F,
-    PING               = 0x10,
-    PONG               = 0x11,
+    PLAYER_UPDATE_DATA  = 0x0D,
+    MAP_UNLOADED        = 0x0E,
+    CHANGING_SCENE      = 0x0F,
+    PING                = 0x10,
+    PONG                = 0x11,
 };
 
 enum ComponentList : int {

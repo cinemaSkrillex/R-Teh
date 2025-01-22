@@ -16,7 +16,6 @@ void WaitingBlock::waitingBlockCollisionHandler(RealEngine::CollisionType collis
     switch (collisionType) {
         case RealEngine::CollisionType::PLAYER:
             _playersInBox++;
-            std::cout << "Players in box: " << _playersInBox << std::endl;
             break;
     }
 }
@@ -33,7 +32,6 @@ void WaitingBlock::initialize(RealEngine::Registry& registry, sf::Vector2f posit
     registry.addComponent(_waitingEntity,
                           RealEngine::Interpolation{
                               {position.x, position.y}, {position.x, position.y}, 0.f, 1.f, false});
-    // std::cout << "scrolling speed of block: " << scrollingSpeed << std::endl;
     registry.addComponent(_waitingEntity,
                           RealEngine::Velocity{scrollingSpeed, 0.0f, {100.0f, 100.0f}, 0.0f});
     registry.addComponent(_waitingEntity, RealEngine::SpriteComponent{_waitingBlockSprite});

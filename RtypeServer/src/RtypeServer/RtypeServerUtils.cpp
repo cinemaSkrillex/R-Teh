@@ -28,7 +28,6 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
         auto* score_health_update = netvarContainer->getNetvar("score_health_update");
         if (score_health_update) {
             if (std::any_cast<bool>(score_health_update->value)) {
-                std::cout << "Score health update" << std::endl;
                 auto* score  = registry.getComponent<RealEngine::Score>(*entity);
                 auto* health = registry.getComponent<RealEngine::Health>(*entity);
 
@@ -36,7 +35,18 @@ void RtypeServer::broadcastPlayerState(const ServerPlayer& player) {
                 playerUpdateDataMessage.messageType = RTypeProtocol::PLAYER_UPDATE_DATA;
                 playerUpdateDataMessage.uuid        = player.getUUID();
                 if (score) {
-                    playerUpdateDataMessage.score = score->amount;
+                    int currentBestScore = _bestScores[player.getUUID()];
+                    if (score->amount > currentBestScore) {
+                        playerUpdateDataMessage.score = score->amount;
+                        _bestScores[player.getUUID()] = score->amount;
+                        _log->log("Player " + std::to_string(player.getUUID()) +
+                                  " has a new best score: " + std::to_string(score->amount));
+                    } else {
+                        std::cout << "Player " << player.getUUID() << " score "
+                                  << std::to_string(score->amount)
+                                  << " is not higher than their current best score: "
+                                  << std::to_string(currentBestScore) << std::endl;
+                    }
                 } else {
                     playerUpdateDataMessage.score = -1;
                 }
@@ -170,26 +180,24 @@ void RtypeServer::printServerStartupBanner() {
     std::cout << colorText("=========================================", BOLD_GREEN) << std::endl;
 }
 
-void RtypeServer::broadcastStartLevel() {
+void RtypeServer::broadcastStartLevelUtils() {
     RTypeProtocol::LevelSignalMessage levelSignalMessage = {};
     levelSignalMessage.messageType                       = RTypeProtocol::LEVEL_SIGNAL;
     levelSignalMessage.startLevel = _gameInstance->getMap()->getIsLevelRunning();
     std::cout << "getMap()->getIsLevelRunning() = " << _gameInstance->getMap()->getIsLevelRunning()
               << std::endl;
     std::cout << "levelSignalMessage.startLevel = " << levelSignalMessage.startLevel << std::endl;
-    // Serialize the LevelSignalMessage
-    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
 
-    // Broadcast the serialized message to all clients
+    std::array<char, 800> serializedMessage = RTypeProtocol::serialize<800>(levelSignalMessage);
     broadcastAllReliable(serializedMessage);
 }
 
-void RtypeServer::BroadcastStartLevel() {
-    broadcastStartLevel();
+void RtypeServer::broadcastStartLevel() {
+    broadcastStartLevelUtils();
     std::cout << "broadcasting start level" << std::endl;
 }
 
-void RtypeServer::BroadcastStopLevel() {
+void RtypeServer::broadcastStopLevel() {
     broadcastStartLevel();
     std::cout << "broadcasting stop level" << std::endl;
     // we get the variables from getIsLevelRunning() and we broadcast it to all clients

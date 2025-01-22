@@ -13,14 +13,14 @@
 
 #include "RtypeServerProtocol.hpp"
 
-// Helper: write any POD type to buffer and advance pointer
+// Helper: write any type to buffer and advance pointer
 template <typename T>
 inline void writeToBuffer(char*& dest, const T& value) {
     std::memcpy(dest, &value, sizeof(T));
     dest += sizeof(T);
 }
 
-// Helper: read any POD type from buffer and advance pointer
+// Helper: read any type from buffer and advance pointer
 template <typename T>
 inline void readFromBuffer(const char*& src, T& value) {
     std::memcpy(&value, src, sizeof(T));

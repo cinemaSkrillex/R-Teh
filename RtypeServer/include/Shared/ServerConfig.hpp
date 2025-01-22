@@ -51,7 +51,7 @@ class ServerConfig {
     void loadConfig() {
         std::ifstream configFile(_configFilePath);
         if (!configFile.is_open()) {
-            throw std::runtime_error("Could not open config file: " + _configFilePath);
+            throw std::runtime_error("loadConfig: Could not open config file: " + _configFilePath);
         }
 
         std::string line;

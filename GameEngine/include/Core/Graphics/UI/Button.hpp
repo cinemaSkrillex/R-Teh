@@ -31,8 +31,8 @@ class Button {
     void centerText();
 
    private:
-    sf::RectangleShape box;
-    Text               label;
+    sf::RectangleShape _box;
+    Text               _label;
     bool               _visible;
 };
 }  // namespace RealEngine

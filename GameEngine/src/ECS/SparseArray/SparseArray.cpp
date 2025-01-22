@@ -30,7 +30,7 @@ typename SparseArray<Component>::reference_type SparseArray<Component>::insertAt
 
 template <typename Component>
 template <class... Params>
-typename SparseArray<Component>::reference_type SparseArray<Component>::emplacAt(
+typename SparseArray<Component>::reference_type SparseArray<Component>::emplaceAt(
     size_type pos, Params&&... params) {
     if (pos >= _data.size()) {
         _data.resize(pos + 1);
@@ -63,7 +63,7 @@ void SparseArray<Component>::erase(size_type pos) {
 }
 
 template <typename Component>
-typename SparseArray<Component>::size_type SparseArray<Component>::get_index(
+typename SparseArray<Component>::size_type SparseArray<Component>::getIndex(
     const value_type& component) const {
     for (size_type i = 0; i < _data.size(); ++i) {
         if (std::addressof(_data[i]) == std::addressof(component)) {

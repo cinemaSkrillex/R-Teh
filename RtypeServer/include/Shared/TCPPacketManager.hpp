@@ -18,8 +18,6 @@
 
 #include "PacketUtils.hpp"
 
-// enum class Role { SERVER, CLIENT };
-
 class TCPPacketManager {
    public:
     TCPPacketManager(Role role);
@@ -45,7 +43,7 @@ class TCPPacketManager {
     const std::vector<std::shared_ptr<asio::ip::tcp::socket>>&          getClientSockets() const;
 
    private:
-    void accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);
+    void acceptClients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor);
 
     Role                                                       _role;
     asio::io_context                                           _ioContext;

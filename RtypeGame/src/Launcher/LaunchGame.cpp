@@ -12,22 +12,22 @@ namespace rtype {
 LaunchGame::LaunchGame()
     : window("Game Launcher", sf::Vector2u(800, 600)),
       ipBox(sf::Vector2f(400, 50), sf::Vector2f(200, 150), "127.0.0.1",
-            assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+            ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
             RealEngine::InputBox::ContentType::IpAddress),
       portBox(sf::Vector2f(400, 50), sf::Vector2f(200, 250), "1212",
-              assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+              ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
               RealEngine::InputBox::ContentType::Numeric),
       portBoxClient(sf::Vector2f(400, 50), sf::Vector2f(200, 350), "1213",
-                    assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
+                    ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf",
                     RealEngine::InputBox::ContentType::Numeric),
       launchButton(sf::Vector2f(275, 50), sf::Vector2f(275, 450), "Launch Game",
-                   assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+                   ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
       labelIp("Server IP",
-              assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+              ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
       labelServerPort("Server Port",
-                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
+                      ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf"),
       labelClientPort("Client Port",
-                      assetLauncher ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
+                      ASSETLAUNCHER ? "assets/fonts/arial.ttf" : "../../assets/fonts/arial.ttf") {
     initUIComponents();
     initBackground();
 }
@@ -51,7 +51,7 @@ void LaunchGame::initUIComponents() {
 
 void LaunchGame::initBackground() {
     launcherBackground =
-        new LauncherBackground(assetLauncher ? "assets/sprites/r_type/backgrounds/stars.png"
+        new LauncherBackground(ASSETLAUNCHER ? "assets/sprites/r_type/backgrounds/stars.png"
                                              : "../../assets/sprites/r_type/backgrounds/stars.png",
                                50.f);
 }

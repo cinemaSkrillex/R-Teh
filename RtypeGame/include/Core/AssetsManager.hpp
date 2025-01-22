@@ -22,7 +22,7 @@
 namespace RealEngine {
 
 #define DEBUG 0
-#define assetLauncher false
+#define ASSETLAUNCHER false
 class AssetManager {
    public:
     static AssetManager& getInstance() {
@@ -77,8 +77,6 @@ class AssetManager {
             }
             return it->second;
         } catch (const std::exception& e) {
-            // std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
-            // std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
             return nullptr;
         }
     }

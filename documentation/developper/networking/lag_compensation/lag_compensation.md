@@ -4,11 +4,12 @@ parent: Networking
 grand_parent: Developper
 nav_order: 3
 ---
+
 ## Synchronized Movement
 
 ### Overview
 
-The R-type server uses interpolation and delta times to achieve synchronized movement between the server and clients. 
+The R-type server uses interpolation and delta times to achieve synchronized movement between the server and clients.
 
 This ensures smooth and consistent movement across all clients, even in the presence of Network latency.
 
@@ -22,7 +23,7 @@ The server calculates the interpolation factor and sends it to the clients, whic
 
 Interpolation works by estimating the position of an entity at a given point in time based on its previous and current positions.
 
-This is particularly useful in networked games where there may be delays in receiving position updates from the server. 
+This is particularly useful in networked games where there may be delays in receiving position updates from the server.
 
 By interpolating between known positions, the client can provide smooth and continuous movement, reducing the visual impact of Network latency.
 
@@ -64,7 +65,7 @@ T invlerp(const T& a, const T& b, const T& v) {
 } // namespace LagCompensation
 ```
 
-### Delta time 
+### Delta time
 
 Delta time is used to calculate the time elapsed between updates. This ensures that the movement of entities is consistent regardless of the frame rate.
 

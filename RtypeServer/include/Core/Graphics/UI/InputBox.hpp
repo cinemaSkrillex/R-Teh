@@ -38,15 +38,15 @@ class InputBox {
     sf::FloatRect getGlobalBounds() const;
 
    private:
-    sf::RectangleShape box;
-    Text               text;
-    ContentType        contentType;
-    size_t             characterLimit;
-    bool               isActive;
-    std::string        currentText;
-    sf::RectangleShape cursor;
-    sf::Clock          cursorClock;
-    bool               cursorVisible;
+    sf::RectangleShape _box;
+    Text               _text;
+    ContentType        _contentType;
+    size_t             _characterLimit;
+    bool               _isActive;
+    std::string        _currentText;
+    sf::RectangleShape _cursor;
+    sf::Clock          _cursorClock;
+    bool               _cursorVisible;
 
     bool isValidCharacter(uint32_t unicode) const;
 };
