@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "../Render.hpp"
 #include "Sprite.hpp"
 
@@ -75,24 +77,4 @@ class ImageBackground : public ABackground {
     sf::IntRect _rect;
 };
 
-// Not correctly implemented
-class ParallaxBackground : public ABackground {
-   public:
-    ParallaxBackground(sf::Image image, int layers);
-    void update(float deltaTime) override;
-    void draw(sf::RenderTexture& window) override;
-    void setPosition(float x, float y) override;
-    void setSize(float x, float y) override;
-    void setScale(float x, float y) override;
-    void setRotation(float angle) override;
-    void setSpeed(int layer, float speed);
-    void setDirection(float angle);
-
-   private:
-    sf::Texture         _texture;
-    std::vector<Sprite> _sprites;
-    std::vector<float>  _speeds;
-    sf::Vector2f        _position;
-    float               _angle;
-};
 }  // namespace RealEngine

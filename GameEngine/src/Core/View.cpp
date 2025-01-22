@@ -10,7 +10,12 @@ View::~View() {}
 
 void View::setCenter(const sf::Vector2f center) { _view.setCenter(center); }
 
-void View::setSize(const sf::Vector2f size) { _view.setSize(size); }
+void View::setSize(const sf::Vector2f size) {
+    if (size.x < 1 || size.y < 1) {
+        std::cerr << "View size must be greater than 0" << std::endl;
+    }
+    _view.setSize(size);
+}
 
 void View::setRotation(float angle) { _view.setRotation(angle); }
 

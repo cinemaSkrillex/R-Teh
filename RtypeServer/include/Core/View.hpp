@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #define VIEW_WIDTH 800
 #define VIEW_HEIGHT 600

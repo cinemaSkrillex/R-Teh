@@ -23,6 +23,10 @@ TemporaryText::TemporaryText(std::string text, sf::Vector2f position, float dura
 TemporaryText::~TemporaryText() {}
 
 void TemporaryText::update(float deltaTime) {
+    if (deltaTime < 0) {
+        std::cerr << "Error: deltaTime is negative" << std::endl;
+        return;
+    }
     _elapsedTime += deltaTime;
     if (_elapsedTime >= _duration) {
         _text.disappear();

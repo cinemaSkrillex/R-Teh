@@ -40,6 +40,10 @@ void Button::setPosition(const sf::Vector2f& position) {
 }
 
 void Button::setSize(const sf::Vector2f& size) {
+    if (size.x < 0 || size.y < 0) {
+        std::cerr << "Button size cannot be negative" << std::endl;
+        return;
+    }
     box.setSize(size);
     centerText();
 }

@@ -27,10 +27,9 @@ void Sprite::draw(sf::RenderTexture& window) { window.draw(_sprite); }
 void Sprite::disappear() { _sprite.setColor(sf::Color::Transparent); }
 
 void Sprite::setOpacity(float opacity) {
-    if (opacity > 255) {
-        opacity = 255;
-    } else if (opacity < 0) {
-        opacity = 0;
+    if (opacity < 0 || opacity > 255) {
+        std::cerr << "Opacity must be between 0 and 255" << std::endl;
+        return;
     }
     sf::Color color = _sprite.getColor();
     color.a         = opacity;
@@ -48,6 +47,10 @@ void Sprite::setRotation(float angle) { _sprite.setRotation(angle); }
 void Sprite::rotate(float angle) { _sprite.rotate(angle); }
 
 void Sprite::setTextureRect(int startX, int startY, int width, int height) {
+    if (startX < 0 || startY < 0 || width < 0 || height < 0) {
+        std::cerr << "Texture rect values must be greater than 0" << std::endl;
+        return;
+    }
     _sprite.setTextureRect(sf::IntRect(startX, startY, width, height));
 }
 

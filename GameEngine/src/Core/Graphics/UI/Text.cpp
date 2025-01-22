@@ -27,6 +27,7 @@ Text::~Text() {}
 void Text::draw(sf::RenderTexture& window) { window.draw(_text); }
 
 void Text::loadFont(const std::string filePath) {
+    if (filePath.empty()) return;
     _font.loadFromFile(filePath);
     _text.setFont(_font);
 }
@@ -57,6 +58,10 @@ void Text::setFont(sf::Font font) {
 }
 
 void Text::setOpacity(int opacity) {
+    if (opacity < 0 || opacity > 255) {
+        std::cerr << "Opacity must be between 0 and 255" << std::endl;
+        return;
+    }
     sf::Color color = _text.getFillColor();
     color.a         = opacity;
     _text.setFillColor(color);
@@ -66,14 +71,28 @@ void Text::setOpacity(int opacity) {
 }
 
 void Text::setColor(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color must be between 0 and 255" << std::endl;
+        return;
+    }
     _text.setFillColor(sf::Color(r, g, b, a));
 }
 
 void Text::setBorderColor(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color must be between 0 and 255" << std::endl;
+        return;
+    }
     _text.setOutlineColor(sf::Color(r, g, b, a));
 }
 
-void Text::setBorderThickness(float thickness) { _text.setOutlineThickness(thickness); }
+void Text::setBorderThickness(float thickness) {
+    if (thickness < 0) {
+        std::cerr << "Thickness must be positive" << std::endl;
+        return;
+    }
+    _text.setOutlineThickness(thickness);
+}
 
 void Text::setString(const std::string text) {
     _text.setString(text);
@@ -82,5 +101,11 @@ void Text::setString(const std::string text) {
 
 sf::Vector2f Text::getPosition() const { return _text.getPosition(); }
 
-void Text::setCharacterSize(int size) { _text.setCharacterSize(size); }
+void Text::setCharacterSize(int size) {
+    if (size < 0) {
+        std::cerr << "Size must be positive" << std::endl;
+        return;
+    }
+    _text.setCharacterSize(size);
+}
 }  // namespace RealEngine

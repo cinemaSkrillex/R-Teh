@@ -13,6 +13,10 @@
 
 namespace RealEngine {
 SolidColorBackground::SolidColorBackground(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color values must be between 0 and 255" << std::endl;
+        return;
+    }
     setPosition(0, 0);
     setSize(800, 600);
     _shape.setFillColor(sf::Color(r, g, b, a));
@@ -24,13 +28,23 @@ void SolidColorBackground::draw(sf::RenderTexture& window) { window.draw(_shape)
 
 void SolidColorBackground::setPosition(float x, float y) { _shape.setPosition(x, y); }
 
-void SolidColorBackground::setSize(float x, float y) { _shape.setSize(sf::Vector2f(x, y)); }
+void SolidColorBackground::setSize(float x, float y) {
+    if (x < 0 || y < 0) {
+        std::cerr << "Size values must be greater than 0" << std::endl;
+        return;
+    }
+    _shape.setSize(sf::Vector2f(x, y));
+}
 
 void SolidColorBackground::setScale(float x, float y) { _shape.setScale(x, y); }
 
 void SolidColorBackground::setRotation(float angle) { _shape.setRotation(angle); }
 
 void SolidColorBackground::setColor(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color values must be between 0 and 255" << std::endl;
+        return;
+    }
     _shape.setFillColor(sf::Color(r, g, b, a));
 }
 
@@ -48,6 +62,10 @@ ScrollingBackground::ScrollingBackground(sf::Image image) {
 }
 
 void ScrollingBackground::update(float deltaTime) {
+    if (deltaTime < 0) {
+        std::cerr << "Delta can't be negative" << std::endl;
+        return;
+    }
     _sprite.move(_speed * cos(_angle), _speed * sin(_angle));
     sf::Vector2f position = _sprite.getPosition();
     position.x += 800 / 2;
@@ -62,13 +80,13 @@ void ScrollingBackground::draw(sf::RenderTexture& window) { window.draw(_sprite)
 void ScrollingBackground::setPosition(float x, float y) { _sprite.setPosition(x, y); }
 
 void ScrollingBackground::setSize(float x, float y) {
+    if (x == 0 || y == 0) return;
     float scaleFactorX = x / _sprite.getGlobalBounds().width;
     float scaleFactorY = y / _sprite.getGlobalBounds().height;
     setScale(scaleFactorX, scaleFactorY);
 }
 
 void ScrollingBackground::setScale(float x, float y) {
-    if (x == 0 || y == 0) return;
     setSpriteRect(0, 0, 800 * 2 * 1 / x, 600 * 2 * 1 / y);
     _sprite.setTexture(_texture);
     _textureSize.x = _texture.getSize().x * x;
@@ -85,8 +103,12 @@ void ScrollingBackground::reinitPosition(bool horizontal, bool vertical) {
 }
 
 void ScrollingBackground::setSpriteRect(int posX, int posY, int sizeX, int sizeY) {
-    _rect.left   = posX;
-    _rect.top    = posY;
+    _rect.left = posX;
+    _rect.top  = posY;
+    if (sizeX < 0 || sizeY < 0) {
+        std::cerr << "Size values must be greater than 0" << std::endl;
+        return;
+    }
     _rect.width  = sizeX;
     _rect.height = sizeY;
     _sprite.setTextureRect(_rect);
@@ -103,6 +125,10 @@ void ScrollingBackground::setDirection(float angle) {
 }
 
 void ScrollingBackground::setColor(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color values must be between 0 and 255" << std::endl;
+        return;
+    }
     _sprite.setColor(sf::Color(r, g, b, a));
 }
 
@@ -119,6 +145,10 @@ void ImageBackground::draw(sf::RenderTexture& window) { window.draw(_sprite); }
 void ImageBackground::setPosition(float x, float y) { _sprite.setPosition(x, y); }
 
 void ImageBackground::setSize(float x, float y) {
+    if (x < 0 || y < 0) {
+        std::cerr << "Size values must be greater than 0" << std::endl;
+        return;
+    }
     _rect.width  = x;
     _rect.height = y;
     _sprite.setTextureRect(_rect);
@@ -127,8 +157,12 @@ void ImageBackground::setSize(float x, float y) {
 void ImageBackground::setScale(float x, float y) { _sprite.setScale(x, y); }
 
 void ImageBackground::setSpriteRect(int posX, int posY, int sizeX, int sizeY) {
-    _rect.left   = posX;
-    _rect.top    = posY;
+    _rect.left = posX;
+    _rect.top  = posY;
+    if (sizeX < 0 || sizeY < 0) {
+        std::cerr << "Size values must be greater than 0" << std::endl;
+        return;
+    }
     _rect.width  = sizeX;
     _rect.height = sizeY;
     _sprite.setTextureRect(_rect);
@@ -137,51 +171,11 @@ void ImageBackground::setSpriteRect(int posX, int posY, int sizeX, int sizeY) {
 void ImageBackground::setRotation(float angle) { _sprite.setRotation(angle); }
 
 void ImageBackground::setColor(float r, float g, float b, float a) {
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
+        std::cerr << "Color values must be between 0 and 255" << std::endl;
+        return;
+    }
     _sprite.setColor(sf::Color(r, g, b, a));
 }
-
-ParallaxBackground::ParallaxBackground(sf::Image image, int layers) {
-    if (layers == 0) return;
-    _texture.loadFromImage(image);
-    _texture.setSmooth(true);
-}
-
-void ParallaxBackground::update(float deltaTime) {}
-
-void ParallaxBackground::draw(sf::RenderTexture& window) {
-    for (const auto& sprite : _sprites) {
-        window.draw(sprite.getSprite());
-    }
-}
-
-void ParallaxBackground::setPosition(float x, float y) {
-    for (auto& sprite : _sprites) {
-        sprite.setPosition(x, y);
-    }
-}
-
-void ParallaxBackground::setSize(float x, float y) {
-    (void)x;
-    (void)y;
-}
-
-void ParallaxBackground::setScale(float x, float y) {
-    for (auto& sprite : _sprites) {
-        sprite.setPosition(x, y);
-    }
-}
-
-void ParallaxBackground::setRotation(float angle) {
-    for (auto& sprite : _sprites) {
-        sprite.setRotation(angle);
-    }
-}
-
-void ParallaxBackground::setSpeed(int layer, float speed) {
-    if (layer < 0 || layer > (int)(_sprites.size())) return;
-    _speeds[layer] = speed;
-}
-
-void ParallaxBackground::setDirection(float angle) { _angle = angle; }
 
 }  // namespace RealEngine

@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include <iostream>
 
 #include "Text.hpp"
 
