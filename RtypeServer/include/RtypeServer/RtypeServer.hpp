@@ -23,7 +23,6 @@
 #include "GenerateUuid.hpp"
 #include "HoldShootEvent.hpp"
 #include "Log.hpp"
-#include "PlayerUtils.hpp"
 #include "ReleaseShootEvent.hpp"
 #include "RtypeServer/Callbacks/MapInitializer.hpp"
 #include "RtypeServer/Callbacks/MobInitializer.hpp"
