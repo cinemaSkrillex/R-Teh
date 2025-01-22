@@ -65,14 +65,14 @@ class PacketManager {
         size_t end_idx   = start_idx + pkt.packetSize;
 
         if (start_idx > message.size()) {
-            std::cerr << "Error: Start index out of range!" << std::endl;
+            std::cerr << "build_packet: Error: Start index out of range!" << std::endl;
             std::cerr << "Start index: " << start_idx << " Message size: " << message.size()
                       << std::endl;
-            return {};  // Return an empty packet<BUFFER_SIZE> or handle the error
+            return {};
         }
 
         // Clear existing data in pkt.data and copy relevant bytes
-        pkt.data.fill(0);  // Ensure pkt.data is zero-initialized
+        pkt.data.fill(0);
         std::copy(message.begin() + start_idx, message.begin() + std::min(end_idx, message.size()),
                   pkt.data.begin());
 
@@ -80,6 +80,7 @@ class PacketManager {
         pkt.endpoint = endpoint;
         return pkt;
     }
+
     // threads function
     void receive() {
         _socket.async_receive_from(asio::buffer(_recvBuffer), _endpoint,
@@ -214,15 +215,6 @@ class PacketManager {
                           [](const packet<BUFFER_SIZE>& a, const packet<BUFFER_SIZE>& b) {
                               return a.sequenceNb < b.sequenceNb;
                           });
-
-                // for (const auto& packet<BUFFER_SIZE> : _receivedPackets[pkt.startSequenceNb])
-                // {
-                //     completeData.insert(completeData.end(), packet<BUFFER_SIZE>.data.begin(),
-                //     packet<BUFFER_SIZE>.data.end());
-                // }
-                // _receivedPackets.erase(pkt.startSequenceNb);
-                // const std::string message = std::string(completeData.begin(),
-                // completeData.end());
                 for (const auto& packet : _receivedPackets[pkt.startSequenceNb]) {
                     size_t dataSize = std::min(packet.data.size(), BUFFER_SIZE - currentIndex);
                     std::copy(packet.data.begin(), packet.data.begin() + dataSize,
@@ -230,7 +222,7 @@ class PacketManager {
                     currentIndex += dataSize;
 
                     if (currentIndex >= BUFFER_SIZE) {
-                        break;  // Prevent exceeding the fixed size
+                        break;
                     }
                     _receivedPackets.erase(pkt.startSequenceNb);
                 }
@@ -238,38 +230,25 @@ class PacketManager {
                 std::lock_guard<std::mutex> unprocessed_lock(_unprocessedReliableMessagesDataMutex);
                 // Push the complete data and endpoint into the reliable messages vector
                 _unprocessedReliableMessagesData.push_back(std::make_pair(completeData, _endpoint));
-
-                // Process the message content
-                // std::lock_guard<std::mutex>
-                // unprocessed_lock(_unprocessed_reliable_messages_mutex);
-                // // For now: we will push with the last _endpoint. Can cause issues in the future
-                // DON'T REMOVE
-                // _unprocessed_reliable_messages.push_back(std::make_pair(message,
-                // _endpoint));
             }
         }
         send_ack(pkt.startSequenceNb, pkt.sequenceNb, _endpoint);
     }
 
     void handleUnreliablePacket(const std::array<char, BUFFER_SIZE>& message) {
-        // Process the message content
         std::lock_guard<std::mutex> lock(_unprocessedUnreliableMessagesDataMutex);
         _unprocessedUnreliableMessagesData.push_back(std::make_pair(message, _endpoint));
     }
-    // void handleUnreliablePacket(const std::array<char, BUFFER_SIZE>& message);
+
     void handleNewClient(const asio::ip::udp::endpoint& client_endpoint) {
         if (_knownClients.find(client_endpoint) != _knownClients.end()) return;
 
         _knownClients.insert(client_endpoint);
-        // here we used to send test message. TODO test flag to trigger the test
 
         if (_newClientCallback) _newClientCallback(client_endpoint);
     }
 
-    void handleTest(const asio::ip::udp::endpoint& endpoint) {
-        // send reliable packet<BUFFER_SIZE> to the client with message testPacketManager()
-        // sendReliablePacket(testPacketManager(), endpoint);
-    }
+    void handleTest(const asio::ip::udp::endpoint& endpoint) {}
 
     // send functions
     void send_ack(SEQUENCE_TYPE startSequenceNumber, SEQUENCE_TYPE sequenceNumber,
@@ -288,10 +267,8 @@ class PacketManager {
         ackMessage.startSequenceNumber = startSequenceNumber;
         ackMessage.sequenceNumber      = sequenceNumber;
 
-        // Serialize the AckMessage into the buffer
         serialize_ack(ackMessage, buffer);
 
-        // build packet
         packet<BUFFER_SIZE> pkt = build_packet(0, 0, 0, ACK, endpoint_, buffer);
 
         queuePacketForSending(pkt);
@@ -315,7 +292,7 @@ class PacketManager {
         _socket.async_send_to(asio::buffer(*buffer), pkt.endpoint,
                               [this, buffer](std::error_code ec, std::size_t bytes_sent) {
                                   if (ec) {
-                                      std::cerr << "Send error: " << ec.message()
+                                      std::cerr << "sendPacket: Send error: " << ec.message()
                                                 << " size: " << bytes_sent << std::endl;
                                   }
                               });
@@ -344,12 +321,12 @@ class PacketManager {
             }
 
             if (endpoint.address().is_unspecified()) {
-                std::cerr << "Server endpoint is unspecified" << std::endl;
+                std::cerr << "sendReliablePacket: Server endpoint is unspecified" << std::endl;
                 return;
             }
             if (pkt.sequenceNb > pkt.endSequenceNb) {
-                std::cerr << "sending reliable Invalid sequence number: " << pkt.sequenceNb
-                          << " startSequenceNb: " << pkt.startSequenceNb
+                std::cerr << "sendReliablePacket: sending reliable Invalid sequence number: "
+                          << pkt.sequenceNb << " startSequenceNb: " << pkt.startSequenceNb
                           << " endSequenceNb: " << pkt.endSequenceNb << std::endl;
                 continue;
             }
@@ -434,9 +411,7 @@ class PacketManager {
         return messages;
     }
 
-    // void               retransmit_unacknowledged_packets(const asio::ip::udp::endpoint&
-    // endpoint);
-    void print_packet(const packet<BUFFER_SIZE>& pkt) {
+    void printPacket(const packet<BUFFER_SIZE>& pkt) {
         std::cout << "Packet: " << std::endl;
         std::cout << "Sequence number: " << pkt.sequenceNb << std::endl;
         std::cout << "Start sequence number: " << pkt.startSequenceNb << std::endl;
@@ -482,6 +457,7 @@ class PacketManager {
     std::deque<packet<BUFFER_SIZE>> _retryQueue;
     std::mutex                      _retryQueueMutex;
 
+    // unprocessed messages
     std::vector<std::pair<std::array<char, BUFFER_SIZE>, asio::ip::udp::endpoint>>
                _unprocessedUnreliableMessagesData;
     std::mutex _unprocessedUnreliableMessagesDataMutex;
@@ -490,7 +466,7 @@ class PacketManager {
                _unprocessedReliableMessagesData;
     std::mutex _unprocessedReliableMessagesDataMutex;
 
-    // work guard
+    // work guard (keep io_context alive)
     asio::executor_work_guard<asio::io_context::executor_type> _work_guard;
 };
 

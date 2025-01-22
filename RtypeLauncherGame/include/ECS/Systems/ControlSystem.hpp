@@ -41,12 +41,12 @@ class ControlSystem {
     void              setHoldTreashold(float treashold) { _holdTreashold = treashold; }
 
    private:
-    std::unordered_map<sf::Keyboard::Key, Action>   keyBindings;
-    std::unordered_map<Action, ActionHandler>       actionHandlers;
-    std::unordered_map<Action, ActionHandler>       actionReleaseHandlers;
-    std::unordered_map<Action, ActionHandler>       actionHoldHandlers;
+    std::unordered_map<sf::Keyboard::Key, Action>   _keyBindings;
+    std::unordered_map<Action, ActionHandler>       _actionHandlers;
+    std::unordered_map<Action, ActionHandler>       _actionReleaseHandlers;
+    std::unordered_map<Action, ActionHandler>       _actionHoldHandlers;
     Window&                                         _window;
-    std::unordered_map<sf::Keyboard::Key, KeyState> keyStates;
+    std::unordered_map<sf::Keyboard::Key, KeyState> _keyStates;
     float                                           _holdTreashold;
 };
 }  // namespace RealEngine

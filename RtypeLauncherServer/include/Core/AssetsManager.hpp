@@ -77,8 +77,6 @@ class AssetManager {
             }
             return it->second;
         } catch (const std::exception& e) {
-            // std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
-            // std::cerr << "Failed to get spriteSheet: " << id << " - " << e.what() << std::endl;
             return nullptr;
         }
     }

@@ -18,8 +18,6 @@
 
 #include "PacketUtils.hpp"
 
-// enum class Role { SERVER, CLIENT };
-
 class TCPPacketManager {
    public:
     TCPPacketManager(Role role);

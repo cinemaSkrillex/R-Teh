@@ -28,7 +28,7 @@ By interpolating between known positions, the client can provide smooth and cont
 
 #### Interpolation Function
 
-The interpolation function is defined in the `interpolation.hpp` file:
+The interpolation function is defined in the `Interpolation.hpp` file:
 
 ```cpp
 namespace LagCompensation {

@@ -56,9 +56,9 @@ class SparseArray {
     reference_type insertAt(size_type pos, const Component& component);
     reference_type insertAt(size_type pos, Component&& component);
     template <class... Params>
-    reference_type emplacAt(size_type pos, Params&&... params);
+    reference_type emplaceAt(size_type pos, Params&&... params);
     void           erase(size_type pos);
-    size_type      get_index(const value_type& component) const;
+    size_type      getIndex(const value_type& component) const;
 
    private:
     container_t _data;

@@ -10,7 +10,7 @@
 #include "../include/ECS/Components/Interpolation.hpp"
 #include "../include/ECS/Components/Position.hpp"
 #include "../include/ECS/Registry/Registry.hpp"
-#include "../include/interpolation.hpp"
+#include "../include/Interpolation.hpp"
 
 namespace RealEngine {
 class LagCompensationSystem {

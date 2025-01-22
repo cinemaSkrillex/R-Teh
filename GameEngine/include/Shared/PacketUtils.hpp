@@ -12,8 +12,7 @@
 #include <asio.hpp>
 #include <vector>
 
-#define SEQUENCE_TYPE std::uint32_t  // TODO change int to SEQUENCE_TYPE
-// #define BUFFER_SIZE 800 // TOOD CHANGE TO TEMPLATE
+#define SEQUENCE_TYPE std::uint32_t
 
 enum class Role { SERVER, CLIENT };
 
@@ -201,7 +200,7 @@ void serialize_ack(const AckMessage& ack, std::array<char, BUFFER_SIZE>& buffer)
         "Buffer size is too small for AckMessage serialization");
 
     // Copy the AckType enum value to the buffer
-    buffer[0] = static_cast<char>(ack.ack_type);  // Save AckType as a byte
+    buffer[0] = static_cast<char>(ack.ack_type);
 
     // Copy the sequence numbers to the buffer (in a platform-independent way)
     std::memcpy(buffer.data() + 1, &ack.startSequenceNumber, sizeof(ack.startSequenceNumber));
