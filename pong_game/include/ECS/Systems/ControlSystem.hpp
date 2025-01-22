@@ -32,6 +32,7 @@ class ControlSystem {
     using ActionHandler = std::function<void(float, RealEngine::Entity)>;
     void              update(Registry& registry, float deltaTime);
     void              bindKey(sf::Keyboard::Key key, Action action, bool supportHold = false);
+    void              replaceKey(sf::Keyboard::Key key, Action action, bool supportHold = false);
     void              setActionHandler(Action action, ActionHandler handler);
     void              setActionReleaseHandler(Action action, ActionHandler handler);
     void              setActionHoldHandler(Action action, ActionHandler handler);

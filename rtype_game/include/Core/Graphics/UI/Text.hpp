@@ -9,7 +9,7 @@ class Text : public IRender {
    public:
     Text() = default;
     Text(const std::string text, const std::string fontPath);
-    Text(const std::string text, sf::Font font);
+    Text(const std::string text, sf::Font& font);
     ~Text();
     void        draw(sf::RenderTexture& window);
     void        loadFont(const std::string filePath);
@@ -28,7 +28,7 @@ class Text : public IRender {
     void        setString(const std::string text);
     void        setCharacterSize(int size);
     std::string getString() const { return _text.getString(); }
-    float       getWidth() const { return _text.getGlobalBounds().width; }
+    float getWidth() const { return _text.getGlobalBounds().width + _text.getGlobalBounds().left; }
     float getHeight() const { return _text.getLocalBounds().height + _text.getLocalBounds().top; }
     int   getCharacterSize() const { return _text.getCharacterSize(); }
     sf::FloatRect getLocalBounds() const { return _text.getLocalBounds(); }

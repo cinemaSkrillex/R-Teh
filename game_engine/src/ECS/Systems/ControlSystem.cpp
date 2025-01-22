@@ -91,6 +91,16 @@ void ControlSystem::bindKey(sf::Keyboard::Key key, Action action, bool supportHo
     keyStates[key].supported = supportHold;
 }
 
+void ControlSystem::replaceKey(sf::Keyboard::Key key, Action action, bool supportHold) {
+    for (auto it = keyBindings.begin(); it != keyBindings.end(); ++it) {
+        if (it->second == action) {
+            keyBindings.erase(it);
+            break;
+        }
+    }
+    bindKey(key, action, supportHold);
+}
+
 void ControlSystem::setActionHandler(Action action, ActionHandler handler) {
     actionHandlers[action] = handler;
 }

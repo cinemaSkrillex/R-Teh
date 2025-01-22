@@ -19,6 +19,8 @@ class Button {
     Button() = default;
     Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& labelText,
            const std::string& fontPath);
+    Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& labelText,
+           sf::Font& font);
     Button(Sprite spriteButton);
     ~Button();
 

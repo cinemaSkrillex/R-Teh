@@ -15,7 +15,7 @@ Text::Text(const std::string text, const std::string fontPath) {
     center();
 }
 
-Text::Text(const std::string text, sf::Font font) {
+Text::Text(const std::string text, sf::Font& font) {
     _text.setFont(font);
     setString(text);
     center();

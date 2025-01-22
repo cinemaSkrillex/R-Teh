@@ -25,6 +25,7 @@
 #include "Core/Graphics/Rendering/Sprite.hpp"
 #include "Core/Graphics/UI/Button.hpp"
 #include "Core/Graphics/UI/InputBox.hpp"
+#include "Core/Graphics/UI/KeyToString.hpp"
 #include "Core/Graphics/UI/TemporaryText.hpp"
 #include "Core/Graphics/UI/Text.hpp"
 #include "Core/View.hpp"

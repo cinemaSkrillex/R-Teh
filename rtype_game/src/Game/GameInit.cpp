@@ -20,7 +20,6 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
                             : "../../assets/shaders/display_options.frag"),
       _clock(),
       _playerUI(_registry, _window.getRenderTexture()),
-      _gameMenu(clientUDP, _window),
       _controls(_registry, clientUDP),
       _lagCompensationSystem(),
       _movementSystem(),
@@ -36,6 +35,7 @@ Game::Game(std::shared_ptr<UDPClient> clientUDP, unsigned short client_port)
       _destroySystem(),
       _particleSystem(),
       _netvarSystem(),
+      _gameMenu(clientUDP, _window, _controlSystem),
       _game_map(new GameMap(_registry, this)),
       _localPlayerUUID(0),
       _startTime(std::chrono::steady_clock::now()) {
@@ -309,10 +309,6 @@ void Game::bind_keys() {
     _controlSystem.bindKey(sf::Keyboard::S, RealEngine::Action::Down);
     _controlSystem.bindKey(sf::Keyboard::Q, RealEngine::Action::Left);
     _controlSystem.bindKey(sf::Keyboard::D, RealEngine::Action::Right);
-    _controlSystem.bindKey(sf::Keyboard::Up, RealEngine::Action::Up);
-    _controlSystem.bindKey(sf::Keyboard::Down, RealEngine::Action::Down);
-    _controlSystem.bindKey(sf::Keyboard::Left, RealEngine::Action::Left);
-    _controlSystem.bindKey(sf::Keyboard::Right, RealEngine::Action::Right);
     _controlSystem.bindKey(sf::Keyboard::Space, RealEngine::Action::Action1, true);
 }
 

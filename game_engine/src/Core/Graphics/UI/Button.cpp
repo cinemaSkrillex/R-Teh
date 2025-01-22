@@ -22,6 +22,19 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
     centerText();
 }
 
+Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& labelText,
+               sf::Font& font)
+    : label(labelText, font),
+      _useSprite(false),
+      _visible(true),
+      _originalColor(sf::Color::White),
+      _hoverColor(sf::Color::White) {
+    box.setSize(size);
+    box.setPosition(position);
+    box.setFillColor(sf::Color::White);
+    centerText();
+}
+
 Button::Button(Sprite spriteButton)
     : _visible(true),
       _useSprite(true),
@@ -106,12 +119,10 @@ void Button::setLabel(const std::string& labelText) {
 }
 
 void Button::centerText() {
-    sf::FloatRect textBounds = label.getLocalBounds();
-    float         textPositionX =
-        box.getPosition().x + (box.getSize().x - textBounds.width) / 2 - textBounds.left;
-    float textPositionY =
-        box.getPosition().y + (box.getSize().y - textBounds.height) / 2 - textBounds.top;
-    label.setPosition((textPositionX + 132), (textPositionY + 10));
+    if (!_useSprite) {
+        label.setPosition(box.getPosition().x + box.getSize().x / 2,
+                          box.getPosition().y + box.getSize().y / 2);
+    }
 }
 
 }  // namespace RealEngine
