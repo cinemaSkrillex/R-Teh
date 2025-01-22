@@ -1,8 +1,6 @@
 # Network project
 project(Network)
 
-
-
 # Include directories
 if (UNIX)
     include_directories(${CMAKE_SOURCE_DIR}/build/default/vcpkg_installed/x64-linux/include)
@@ -38,18 +36,12 @@ target_include_directories(RtypeServer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includ
 # Link pthread for Linux
 if(UNIX)
     target_link_libraries(RtypeServer pthread)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
-    target_link_libraries(testing_rtype_server RtypeServer)  # Link with RtypeServer and dl for dynamic loading on Linux   
-    add_executable(testing_rtype_client TestingClientMain.cpp)
-    target_link_libraries(testing_rtype_client rtype_client)
 endif()
 
 # Link ws2_32 for Windows
 if(WIN32)
     target_link_libraries(RtypeServer ws2_32)
-    add_executable(testing_rtype_server TestingServerMain.cpp)
     target_link_libraries(testing_rtype_server RtypeServer)  # Link with RtypeServer on Windows
-    add_executable(testing_rtype_client TestingClientMain.cpp)
     target_link_libraries(testing_rtype_client rtype_client)
 endif()
 
