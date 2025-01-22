@@ -22,38 +22,38 @@ class DynamicLibrary {
    public:
     DynamicLibrary(const std::string& path) {
 #if defined(_WIN32) || defined(_WIN64)
-        handle_ = LoadLibrary(path.c_str());
-        if (!handle_) {
+        _handle = LoadLibrary(path.c_str());
+        if (!_handle) {
             throw std::runtime_error("Cannot open library: " + path);
         }
 #else
-        handle_ = dlopen(path.c_str(), RTLD_LAZY);
-        if (!handle_) {
+        _handle = dlopen(path.c_str(), RTLD_LAZY);
+        if (!_handle) {
             throw std::runtime_error(dlerror());
         }
 #endif
     }
 
     ~DynamicLibrary() {
-        if (handle_) {
+        if (_handle) {
 #if defined(_WIN32) || defined(_WIN64)
-            FreeLibrary(static_cast<HMODULE>(handle_));
+            FreeLibrary(static_cast<HMODULE>(_handle));
 #else
-            dlclose(handle_);
+            dlclose(_handle);
 #endif
         }
     }
 
     template <typename T>
-    T get_symbol(const std::string& name) {
+    T getSymbol(const std::string& name) {
 #if defined(_WIN32) || defined(_WIN64)
-        T symbol = reinterpret_cast<T>(GetProcAddress(static_cast<HMODULE>(handle_), name.c_str()));
+        T symbol = reinterpret_cast<T>(GetProcAddress(static_cast<HMODULE>(_handle), name.c_str()));
         if (!symbol) {
             throw std::runtime_error("Cannot load symbol: " + name);
         }
 #else
         dlerror();  // Reset errors
-        T           symbol      = reinterpret_cast<T>(dlsym(handle_, name.c_str()));
+        T           symbol      = reinterpret_cast<T>(dlsym(_handle, name.c_str()));
         const char* dlsym_error = dlerror();
         if (dlsym_error) {
             throw std::runtime_error(dlsym_error);
@@ -63,7 +63,7 @@ class DynamicLibrary {
     }
 
    private:
-    void* handle_;
+    void* _handle;
 };
 
 #endif  // DynamicLibrary_HPP

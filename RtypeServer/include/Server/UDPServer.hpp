@@ -52,7 +52,7 @@ class UDPServer : public ANetwork<800> {
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> getClients();
 
    private:
-    asio::ip::udp::endpoint _clientEndpoint;  // The client's endpoint
+    asio::ip::udp::endpoint _clientEndpoint;
 };
 
 #endif  // UDPSERVER_HPP

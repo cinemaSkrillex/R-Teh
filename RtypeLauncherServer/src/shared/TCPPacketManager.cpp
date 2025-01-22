@@ -18,7 +18,7 @@ TCPPacketManager::TCPPacketManager(Role role)
 void TCPPacketManager::startServer(unsigned short port) {
     auto acceptor = std::make_shared<asio::ip::tcp::acceptor>(
         _ioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
-    accept_clients(acceptor);
+    acceptClients(acceptor);
     _ioThread = std::thread([this]() { _ioContext.run(); });
 }
 
@@ -32,7 +32,7 @@ void TCPPacketManager::startClient(const std::string& host, unsigned short port)
     _ioThread = std::thread([this]() { _ioContext.run(); });
 }
 
-void TCPPacketManager::accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor) {
+void TCPPacketManager::acceptClients(std::shared_ptr<asio::ip::tcp::acceptor> acceptor) {
     auto new_socket = std::make_shared<asio::ip::tcp::socket>(_ioContext);
     acceptor->async_accept(*new_socket, [this, acceptor, new_socket](asio::error_code ec) {
         if (!ec) {
@@ -41,7 +41,7 @@ void TCPPacketManager::accept_clients(std::shared_ptr<asio::ip::tcp::acceptor> a
                 _newClientCallback(new_socket->remote_endpoint());
             }
         }
-        accept_clients(acceptor);
+        acceptClients(acceptor);
     });
 }
 

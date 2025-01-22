@@ -21,7 +21,7 @@ class TCPServer {
     void setNewClientCallback(
         const std::function<void(const asio::ip::tcp::endpoint& client_endpoint)>& callback);
     void sendMessage(const std::string& message, const asio::ip::tcp::endpoint& endpoint);
-    void send_file(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint);
+    void sendFile(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint);
     void sendDirectory(const std::string& directoryPath, const asio::ip::tcp::endpoint& endpoint);
     void sendDirectoryToDirectory(const std::string&             directoryPath,
                                   const asio::ip::tcp::endpoint& endpoint,

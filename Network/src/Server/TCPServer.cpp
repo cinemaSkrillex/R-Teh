@@ -25,7 +25,7 @@ void TCPServer::sendMessage(const std::string& message, const asio::ip::tcp::end
     _packetManager->sendMessageToClientEndpoint(message, endpoint);
 }
 
-void TCPServer::send_file(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint) {
+void TCPServer::sendFile(const std::string& filePath, const asio::ip::tcp::endpoint& endpoint) {
     _packetManager->sendFileToClient(filePath, endpoint);
 }
 
