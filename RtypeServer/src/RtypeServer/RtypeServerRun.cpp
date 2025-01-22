@@ -125,7 +125,6 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
         if (collisionType->type == RealEngine::CollisionType::SOLID ||
             collisionType->type == RealEngine::CollisionType::INACTIVE) {
             entityType = RTypeProtocol::EntityType::BLOCK;
-            std::cout << "Block" << std::endl;
         } else {
             entityType = RTypeProtocol::EntityType::OTHER_ENTITY;
         }
@@ -135,7 +134,6 @@ void RtypeServer::sendNewEntity(RealEngine::Entity entity, RealEngine::Registry*
     newEntityMessage.messageType = RTypeProtocol::MessageType::NEW_ENTITY;
     newEntityMessage.uuid        = entity;
     newEntityMessage.entity_type = entityType;
-    std::cout << "Entity type: " << static_cast<int>(entityType) << std::endl;
 
     // Serialize position component
     auto* position = registry->getComponent<RealEngine::Position>(entity);

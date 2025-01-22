@@ -16,7 +16,6 @@ void WaitingBlock::waitingBlockCollisionHandler(RealEngine::CollisionType collis
     switch (collisionType) {
         case RealEngine::CollisionType::PLAYER:
             _playersInBox++;
-            std::cout << "Players in box: " << _playersInBox << std::endl;
             break;
     }
 }

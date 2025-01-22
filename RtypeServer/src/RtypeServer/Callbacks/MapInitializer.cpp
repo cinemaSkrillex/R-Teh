@@ -100,7 +100,6 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
     }
 
     const auto& backgrounds = GameMap->getBackgrounds();
-    std::cout << "backgrounds size: " << backgrounds.size() << std::endl;
     for (const auto& background : backgrounds) {
         RTypeProtocol::BackgroundData bgData;
         if (background.first.empty()) {
@@ -122,7 +121,6 @@ RTypeProtocol::MapMessage MapInitializer::createMapMessage(
         }
         bgData.speed = background.second;
         mapMessage.backgrounds.push_back(bgData);
-        std::cout << "map message backgrounds size: " << mapMessage.backgrounds.size() << std::endl;
     }
     return mapMessage;
 }

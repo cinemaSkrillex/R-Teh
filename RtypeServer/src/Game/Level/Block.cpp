@@ -28,7 +28,6 @@ void Block::initialize(RealEngine::Registry& registry, sf::Vector2f position,
     registry.addComponent(_blockEntity, RealEngine::SpriteComponent{_blockSprite});
     registry.addComponent(_blockEntity, RealEngine::Rotation{rotation});
     registry.addComponent(_blockEntity, RealEngine::Drawable{});
-    std::cout << "scrolling speed of block BLOCK: " << scrollingSpeed << std::endl;
     registry.addComponent(_blockEntity,
                           RealEngine::Collision{{0.0f, 0.0f, 15.f * GAME_SCALE, 10.f * GAME_SCALE},
                                                 spriteName,

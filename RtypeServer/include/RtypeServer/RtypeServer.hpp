@@ -83,6 +83,7 @@ class RtypeServer {
     std::unordered_map<int, std::unique_ptr<IEvent>>                         _eventHandlers;
     std::unordered_set<asio::ip::udp::endpoint, EndpointHash, EndpointEqual> _clientsUnloadedMap;
     std::shared_ptr<Log>                                                     _log;
+    std::unordered_map<int, int>                                             _bestScores;
 
     void initCallbacks();
     void initEventHandlers();
