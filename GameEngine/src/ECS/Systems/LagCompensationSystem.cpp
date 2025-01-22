@@ -24,10 +24,10 @@ void LagCompensationSystem::update(Registry& registry, float deltaTime) {
             position->y          = interpolation->end.y;
             interpolation->reset = false;
         }
-        sf::Vector2f newPos = LagCompensation::lerp(interpolation->start, interpolation->end,
-                                                    interpolation->currentStep);
-        position->x         = newPos.x;
-        position->y         = newPos.y;
+        sf::Vector2f newPos =
+            lerp(interpolation->start, interpolation->end, interpolation->currentStep);
+        position->x = newPos.x;
+        position->y = newPos.y;
 
         interpolation->currentStep =
             std::min(interpolation->currentStep + interpolation->step * deltaTime, 1.0f);
