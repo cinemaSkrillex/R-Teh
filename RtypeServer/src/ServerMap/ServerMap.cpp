@@ -15,26 +15,27 @@ ServerMap::~ServerMap() { std::cout << "ServerMap destroyed" << std::endl; }
 Json::Value ServerMap::readJSONFile(const std::string& filepath) {
     try {
         if (!std::filesystem::exists(filepath)) {
-            throw std::runtime_error("JSON file does not exist: " + filepath);
+            throw std::runtime_error("readJSONFile: JSON file does not exist: " + filepath);
         }
         Json::Value root;
 
         std::ifstream file(filepath, std::ifstream::binary);
 
         if (!file.is_open()) {
-            throw std::runtime_error("Unable to open JSON file: " + filepath);
+            throw std::runtime_error("readJSONFile: Unable to open JSON file: " + filepath);
         }
 
         try {
             file >> root;
         } catch (const Json::Exception& e) {
-            throw std::runtime_error("Error parsing JSON file: " + std::string(e.what()));
+            throw std::runtime_error("readJSONFile: Error parsing JSON file: " +
+                                     std::string(e.what()));
         }
 
         file.close();
         return root;
     } catch (const std::exception& e) {
-        std::cerr << "Error reading JSON file: " << e.what() << std::endl;
+        std::cerr << "readJSONFile: Error reading JSON file: " << e.what() << std::endl;
         return Json::Value();
     }
 }
