@@ -156,6 +156,15 @@ void Window::update(float deltaTime) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::M)) {
         setVueSmooth(false);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F)) {
+        _view.zoom(0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G)) {
+        _view.zoom(-0.1f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H)) {
+        _view.setZoom(1.0f);
+    }
     if (_event.type == sf::Event::Resized) {
         _view.resizeWithAspectRatio(_window.getSize().x, _window.getSize().y);
         _blackScreen.setSize(sf::Vector2f(_window.getSize().x, _window.getSize().y));

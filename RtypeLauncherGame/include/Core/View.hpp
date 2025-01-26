@@ -19,6 +19,7 @@ class View {
     void          move(const sf::Vector2f offset);
     void          rotate(float angle);
     void          zoom(float factor);
+    void          setZoom(float zoom);
     sf::View&     getView() { return _view; }
     sf::Vector2f  getCenter() { return _view.getCenter(); }
     sf::Vector2f  getSize() { return _view.getSize(); }
@@ -30,5 +31,6 @@ class View {
 
    private:
     sf::View _view;
+    float    _zoom;
 };
 }  // namespace RealEngine

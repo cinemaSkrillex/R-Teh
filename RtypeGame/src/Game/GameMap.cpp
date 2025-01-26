@@ -14,10 +14,9 @@ namespace rtype {
 // GameMap::GameMap(RealEngine::Registry& registry) : _registry(registry), _levelRunning(false) {}
 
 GameMap::GameMap(RealEngine::Registry& registry, Game* game)
-    : _registry(registry), _game(game), _levelRunning(false) {
-    std::cout << "GameMap created at: " << this << std::endl;
-}
-GameMap::~GameMap() { std::cout << "GameMap destroyed at: " << this << std::endl; }
+    : _registry(registry), _game(game), _levelRunning(false) {}
+
+GameMap::~GameMap() {}
 
 void GameMap::updateLevel(float deltaTime) {
     if (!_levelRunning) {

@@ -1,7 +1,7 @@
 #include "../include/Core/View.hpp"
 
 namespace RealEngine {
-View::View(const sf::Vector2f center, const sf::Vector2f size) {
+View::View(const sf::Vector2f center, const sf::Vector2f size) : _zoom(1.0f) {
     _view.setCenter(center);
     _view.setSize(size);
 }
@@ -25,7 +25,16 @@ void View::move(const sf::Vector2f offset) { _view.move(offset); }
 
 void View::rotate(float angle) { _view.rotate(angle); }
 
-void View::zoom(float factor) { _view.zoom(factor); }
+void View::zoom(float factor) {
+    if ((factor > 0 && _zoom >= 8.0f) || (factor < 0 && _zoom <= 0.1f)) return;
+    _zoom += factor;
+    _view.zoom(_zoom);
+}
+
+void View::setZoom(float zoom) {
+    _zoom = zoom;
+    _view.zoom(_zoom);
+}
 
 void View::resizeWithAspectRatio(int width, int height) {
     float viewWidth         = _view.getSize().x;
